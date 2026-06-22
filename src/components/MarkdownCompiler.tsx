@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   FileText, 
   Upload, 
@@ -31,6 +31,7 @@ function getContrast(hex1: string, hex2: string): number {
 
 export default function MarkdownCompiler() {
   const { toast } = useToast();
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Markdown editor states
   const [markdown, setMarkdown] = useState<string>(`---
@@ -52,13 +53,67 @@ style: custom-blue
 <!-- slide -->
 # 💡 숏코드 테스트
 
-[editor-box]
+::: editor-box dev_env (javascript)
 ### 🛠️ 개발 환경 설정
 - **OS**: Windows / macOS / Linux 지원
 - **Runtime**: Node.js v18 이상 권장
-[/editor-box]
+:::
 `);
   const [filename, setFilename] = useState("guide_v2.md");
+
+  // Insert shortcode at cursor position
+  const insertShortcode = (type: string) => {
+    if (!type) return;
+    let snippet = "";
+    switch (type) {
+      case "editor-box":
+        snippet = `\n::: editor-box filename.js (javascript)\n### 🛠️ 타이틀\n- 내용 1\n- 내용 2\n:::\n`;
+        break;
+      case "compare-split":
+        snippet = `\n::: compare-split\n- name: AS-IS\n  desc: 구형 사양 설명\n- name: TO-BE\n  desc: 신형 사양 설명\n:::\n`;
+        break;
+      case "compare-grid":
+        snippet = `\n::: compare-grid\n- name: 구분 1\n  desc: 설명 1\n- name: 구분 2\n  desc: 설명 2\n:::\n`;
+        break;
+      case "network-box":
+        snippet = `\n::: network-box\n- name: 중앙 노드\n  desc: 핵심 개념\n- name: 서브 노드 1\n  desc: 연결 개념 1\n- name: 서브 노드 2\n  desc: 연결 개념 2\n:::\n`;
+        break;
+      case "stat-grid":
+        snippet = `\n::: stat-grid\n- name: 85%\n  desc: 지표 설명\n- name: 120ms\n  desc: 성능 지표\n:::\n`;
+        break;
+      case "git-flow":
+        snippet = `\n::: git-flow\n- title: main\n  meta: init | feat-A | release\n- title: dev\n  meta: branch | working | merge\n:::\n`;
+        break;
+      case "alert-box":
+        snippet = `\n::: alert-box warning\n### ⚠️ 경고\n여기에 주의할 점을 작성하세요.\n:::\n`;
+        break;
+      case "tool-list":
+        snippet = `\n::: tool-list\n- name: 🛠️ 도구명\n  desc: 도구의 역할 및 용도 설명\n  bullet: 특장점 1, 특장점 2\n:::\n`;
+        break;
+      case "plan-grid":
+        snippet = `\n::: plan-grid\n- name: Basic Plan\n  desc: 기본적인 요금제 혜택\n  tag: Free\n- name: Premium Plan\n  desc: 모든 기능 제공 베스트 요금제\n  tag: Popular\n  featured: true\n:::\n`;
+        break;
+      default:
+        return;
+    }
+
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const before = text.substring(0, start);
+    const after = text.substring(end, text.length);
+
+    setMarkdown(before + snippet + after);
+
+    // Focus back and position cursor after inserted snippet
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + snippet.length, start + snippet.length);
+    }, 0);
+  };
   
   // Style and Server files
   const [styles, setStyles] = useState<Record<string, any>>({});
@@ -333,21 +388,46 @@ style: custom-blue
       <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col h-full space-y-4">
         {/* Editor Top Toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
-          <div className="flex items-center gap-2">
-            <label className="text-xs text-slate-500 font-semibold">문서 열기:</label>
-            <select
-              onChange={(e) => handleLoadFile(e.target.value)}
-              className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            >
-              <option value="">서버 문서 선택...</option>
-              {sourceFiles.map((file) => (
-                <option key={file} value={file}>{file}</option>
-              ))}
-            </select>
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-slate-500 font-semibold">문서 열기:</label>
+              <select
+                onChange={(e) => handleLoadFile(e.target.value)}
+                className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              >
+                <option value="">서버 문서 선택...</option>
+                {sourceFiles.map((file) => (
+                  <option key={file} value={file}>{file}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-slate-500 font-semibold">🧩 숏코드 삽입:</label>
+              <select
+                onChange={(e) => {
+                  insertShortcode(e.target.value);
+                  e.target.value = ""; // Reset value
+                }}
+                value=""
+                className="bg-blue-50/50 border border-blue-200 text-blue-800 rounded px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer hover:bg-blue-550 hover:text-white transition-colors"
+              >
+                <option value="" disabled>선택 삽입...</option>
+                <option value="editor-box">🖥️ 에디터 박스 (editor-box)</option>
+                <option value="compare-split">⚖️ 명도/사양 대비 (compare-split)</option>
+                <option value="compare-grid">📋 비교 그리드 (compare-grid)</option>
+                <option value="network-box">🕸️ 네트워크 다이어그램 (network-box)</option>
+                <option value="stat-grid">📊 통계 지표 (stat-grid)</option>
+                <option value="git-flow">🔧 깃 플로우 (git-flow)</option>
+                <option value="alert-box">⚠️ 경고 박스 (alert-box)</option>
+                <option value="tool-list">🧰 도구 목록 (tool-list)</option>
+                <option value="plan-grid">💳 요금제 카드 (plan-grid)</option>
+              </select>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <label className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-800 px-3 py-1.5 rounded text-xs flex items-center gap-1 cursor-pointer transition-colors font-semibold">
+            <label className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 hover:text-slate-800 px-3 py-1.5 rounded text-xs flex items-center gap-1 cursor-pointer transition-colors font-semibold font-sans">
               <Upload className="h-3 w-3" /> 로컬 파일 업로드
               <input
                 type="file"
@@ -369,7 +449,7 @@ style: custom-blue
                   return prev;
                 });
               }}
-              className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 font-sans"
             >
               {Object.entries(styles).map(([key, value]) => (
                 <option key={key} value={key}>{value.label || key}</option>
@@ -403,6 +483,7 @@ style: custom-blue
         {/* Markdown Source Area */}
         <div className="flex-1 min-h-[220px]">
           <textarea
+            ref={textareaRef}
             value={markdown}
             onChange={(e) => setMarkdown(e.target.value)}
             className="w-full h-full bg-slate-50 text-slate-800 border border-slate-200 rounded-lg p-4 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"

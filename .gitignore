@@ -1,0 +1,23 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Output directory
+dist/*
+!dist/.gitkeep
+publish/*
+!publish/.gitkeep
+dist-pptx/
+scratch/
+
+# Local env files
+.env.local
+.env.*.local
+
+# V2 Specific Storage Folder (ignored as requested)
+storage/

@@ -1,0 +1,61 @@
+{
+  "$comment": "V2.0 숏코드 컴포넌트별 렌더링 물리 규격 설정 (HTML & PPTX)",
+  "page": {
+    "width_inch": 13.333,
+    "height_inch": 7.5,
+    "margin_top_inch": 0.8,
+    "margin_bottom_inch": 0.6,
+    "margin_left_inch": 0.8,
+    "margin_right_inch": 0.8
+  },
+  "components": {
+    "workflow-flow": {
+      "default_width_inch": 10.0,
+      "default_height_inch": 2.5,
+      "top_offset_inch": 2.2,
+      "left_offset_inch": 0.8,
+      "valign": "middle",
+      "arrow_color": "#888888",
+      "font_size_title": 12,
+      "font_size_desc": 10
+    },
+    "feature-grid": {
+      "default_width_inch": 11.5,
+      "default_height_inch": 4.2,
+      "top_offset_inch": 2.0,
+      "left_offset_inch": 0.8,
+      "cols": 3,
+      "gap_inch": 0.3,
+      "font_size_title": 13,
+      "font_size_desc": 11
+    },
+    "terminal": {
+      "default_width_inch": 10.5,
+      "default_height_inch": 3.8,
+      "top_offset_inch": 2.2,
+      "left_offset_inch": 1.4,
+      "font_size_code": 10,
+      "line_height": 1.4,
+      "comment_color": "#8B949E",
+      "keyword_color": "#FF7B72",
+      "command_color": "#79C0FF"
+    },
+    "git-flow": {
+      "default_width_inch": 11.0,
+      "default_height_inch": 4.0,
+      "top_offset_inch": 2.0,
+      "left_offset_inch": 1.0,
+      "branch_height_inch": 0.8,
+      "commit_radius_inch": 0.15
+    },
+    "table": {
+      "default_width_inch": 11.7,
+      "top_offset_inch": 2.2,
+      "left_offset_inch": 0.8,
+      "font_size_header": 11,
+      "font_size_body": 10,
+      "align": "center",
+      "valign": "middle"
+    }
+  }
+}

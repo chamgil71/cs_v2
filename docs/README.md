@@ -1,0 +1,33 @@
+# Creative Spark V2.0 Design Suite - Docs
+## 📂 문서 시스템 홈
+
+이 디렉토리(`storage/v2plan/docs`)는 V2.0 디자인 시스템 및 PPTX 분석기를 단독 패키지로 구동하고 활용하기 위한 공식 기술 문서 보관 공간입니다. 
+
+V2.0은 기존 V1.0의 파일들과 구조적으로 격격되어 설계되었으며, 독립형 보조 도구와 연계형 저작 도구가 조화롭게 패키징되어 있습니다.
+
+---
+
+## 📄 제공 문서 목록
+
+| 문서 | 파일명 | 대상 독자 | 핵심 내용 |
+| :--- | :--- | :--- | :--- |
+| **인프라 홈** | [README.md](file:///c:/ai/cs_v2/docs/README.md) | 전체 실무진 | 문서 보관소 로드맵 및 V2.0 아키텍처 개요 |
+| **사용자 가이드** | [guide.md](file:///c:/ai/cs_v2/docs/guide.md) | 디자이너, 콘텐츠 작성자 | PPTX 인스펙터 분석/리매퍼 사용법, 마크다운 가독성 린터 가이드 |
+| **개발자 가이드** | [scripts_guide.md](file:///c:/ai/cs_v2/docs/scripts_guide.md) | 엔지니어, 개발자 | PPTX XML 파서 엔진 명세, 백엔드 API 및 무결성 린터 코드 해설 |
+| **실효성 분석** | [project_feasibility_analysis.md](file:///c:/ai/cs_v2/docs/plan/project_feasibility_analysis.md) | 기획자, 의사 결정권자 | 아키텍처 대안(통합 vs 격리) 비교 분석 및 검증 테스트 설계안 |
+
+---
+
+## ⚙️ V2.0 핵심 아키텍처 개요
+
+V2.0은 기술적 복잡성과 의존성에 따라 **단독 구동형 스위트**와 **연계형 빌드 체인** 2가지 영역으로 나누어 제공됩니다.
+
+### 1. 단독 구동형: PPTX 디자인 인스펙터 & 리매퍼
+* **동작 환경**: 브라우저 로컬 단독 (서버리스)
+* **주요 기술**: JSZip을 이용한 브라우저 단의 PPTX XML 해체, 파싱 및 정규식 치환
+* **안전 규격**: 저장을 위한 패키징 직전 `DOMParser`를 이용해 XML 구문의 무결성(Well-formed)을 검사하는 **Schema Validator** 탑재.
+
+### 2. 연계형: HSL 스타일 조율기 & 마크다운 컴파일러
+* **동작 환경**: Vite API 미들웨어 서버 연계 (로컬 파일 시스템 쓰기 및 Node.js exec 실행)
+* **주요 기술**: `/api/save-styles`를 통한 `config/styles.json` 쓰기, `/api/preview` 및 `/api/save-generate`를 통한 백엔드 가이드북 컴파일.
+* **안전 규격**: styles.json 세이브 시 키 규격을 사전 검증하는 **API 스키마 검증기**, 마크다운 컴파일 프리뷰 시 테마 색상 명도를 자동 판정하는 **가독성 Linter 배너** 탑재.

@@ -169,6 +169,63 @@ shadcn/ui의 차트 컴포넌트에 `dangerouslySetInnerHTML`이 사용됩니다
 
 ---
 
+### 🟠 1-7. CORS 헤더 누락 (신규 발견)
+
+**파일:** `scripts/vite-api-plugin.ts` — 전체 엔드포인트
+
+모든 API 응답에 `Content-Type` 만 설정하고 `Access-Control-Allow-Origin` 헤더가 없습니다. Vite 개발 서버와 같은 오리진에서만 동작하므로 현재는 문제가 없으나, 향후 프론트엔드와 API 서버를 다른 포트나 도메인에서 구동하거나 Electron 등 별도 셸에서 호출할 경우 CORS 오류로 모든 API가 차단됩니다.
+
+```typescript
+// 현재: Content-Type 만 설정
+res.setHeader("Content-Type", "application/json; charset=utf-8");
+
+// ✅ 명시적 CORS 정책 추가
+res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+```
+
+---
+
+### 🟠 1-8. Content-Disposition 헤더 파일명 주입 (신규 발견)
+
+**파일:** `scripts/vite-api-plugin.ts` line 296
+
+```typescript
+// 현재: encodeURIComponent 처리가 있으나 downloadName 의 origin 검증 없음
+res.setHeader("Content-Disposition", `attachment; filename="${encodeURIComponent(downloadName)}"`);
+```
+
+`downloadName`은 클라이언트가 요청 body에서 전달하는 값입니다. `encodeURIComponent`로 URL 인코딩은 되어 있으나, 헤더 값 내 `"` (쌍따옴표) 와 개행 문자(`\r\n`)가 헤더 분리(Header Injection)를 유발할 수 있습니다.
+
+```typescript
+// ✅ 파일명 안전화
+const safeDownloadName = downloadName
+  .replace(/[^\w\s\-\.가-힣]/g, "_")  // 허용 문자 외 제거
+  .slice(0, 200);                       // 길이 제한
+res.setHeader("Content-Disposition", `attachment; filename*=UTF-8''${encodeURIComponent(safeDownloadName)}`);
+```
+
+---
+
+### 🟡 1-9. npm 의존성 취약점 (실측 결과)
+
+**`npm audit` 실행 결과:** 총 3건
+
+| 패키지 | 심각도 | 취약점 | 수정 가능 |
+|---|:---:|---|:---:|
+| `gray-matter` → `js-yaml` | 🟠 MODERATE | ReDoS: 반복 별칭(alias) 처리 시 이차 시간 복잡도 DoS | `npm audit fix` |
+| `js-yaml` (직접 의존) | 🟠 MODERATE | 동일 (CVE 중복) | `npm audit fix` |
+| `esbuild` (vitest 간접) | 🟢 LOW | Windows 개발 서버에서 임의 파일 읽기 (CWE-22) | `npm audit fix` |
+
+`gray-matter`는 마크다운 YAML frontmatter 파싱에 직접 사용 중이므로 악의적으로 조작된 `.md` 파일 처리 시 DoS 위험이 있습니다.
+
+```bash
+npm audit fix
+```
+
+---
+
 ## 2. 성능
 
 ### 🟠 2-1. React 메모이제이션 전무
@@ -303,6 +360,33 @@ export default tseslint.config(
 ### 🟠 3-3. 코드 스타일 도구 없음 (Prettier 미설정)
 
 `.prettierrc`, `prettier.config.js` 등 코드 포맷터 설정이 없습니다. 파일마다 들여쓰기, 따옴표 스타일이 다를 수 있습니다.
+
+---
+
+### 🟠 3-3-1. React ErrorBoundary 없음 (신규 발견)
+
+5개 주요 컴포넌트 어디에도 `ErrorBoundary`가 없습니다. 런타임 예외(예: `localStorage` JSON 파싱 실패, API 응답 구조 변경)가 발생하면 React가 전체 UI 트리를 언마운트하여 사용자에게 **완전히 빈 화면**이 표시됩니다.
+
+```tsx
+// ✅ 최상위 App 또는 각 탭 컴포넌트에 감싸기
+import { ErrorBoundary } from "react-error-boundary";
+
+function FallbackUI({ error }: { error: Error }) {
+  return (
+    <div role="alert" className="p-8 text-red-600">
+      <h2 className="font-bold">오류가 발생했습니다</h2>
+      <pre className="text-sm mt-2">{error.message}</pre>
+      <button onClick={() => window.location.reload()}>새로고침</button>
+    </div>
+  );
+}
+
+<ErrorBoundary FallbackComponent={FallbackUI}>
+  <PptxInspectorSuite />
+</ErrorBoundary>
+```
+
+**설치:** `npm install react-error-boundary`
 
 ---
 
@@ -627,12 +711,16 @@ Lovable 플랫폼 전용 컴포넌트 태거입니다. 이 프로젝트가 Lovab
 | `localStorage` 파싱 무방비 (앱 크래시) | `PptxInspectorSuite.tsx` | **이번** |
 | CI/CD 파이프라인 구축 | `.github/workflows/` 신규 | **이번** |
 
-### 🟠 높음 (12건)
+### 🟠 높음 (15건)
 
 | 항목 | 파일 | 출처 |
 |---|---|---|
 | CSS 인젝션 (color 값 미검증) | `build-guide.mjs` | **이번** |
 | ESLint 설정 파일 생성 | `eslint.config.js` 신규 | **이번** |
+| CORS 헤더 누락 | `vite-api-plugin.ts` | **이번 추가** |
+| Content-Disposition 헤더 파일명 주입 | `vite-api-plugin.ts` | **이번 추가** |
+| `npm audit fix` — gray-matter DoS | `package.json` | **이번 추가** |
+| React ErrorBoundary 없음 | 주요 컴포넌트 | **이번 추가** |
 | WCAG 유틸 3중 복사 제거 | 3개 컴포넌트 | 견고성 |
 | 스크립트 공통 유틸 `shortcode-utils.mjs` | 9개 스크립트 | 견고성 |
 | TypeScript `strictNullChecks` 활성화 | `tsconfig.app.json` | 견고성 |
@@ -642,11 +730,10 @@ Lovable 플랫폼 전용 컴포넌트 태거입니다. 이 프로젝트가 Lovab
 | `PptxAnalyzer.tsx` 미사용 파일 삭제 | `PptxAnalyzer.tsx` | 코드 분석 |
 | React 메모이제이션 적용 | 주요 컴포넌트 | **이번** |
 | 접근성: `aria-*` 필수 속성 추가 | 주요 컴포넌트 | **이번** |
-| `package.json` 이름·버전 정비 | `package.json` | **이번** |
 
-### 🟡 중간 (10건)
+### 🟡 중간 (11건)
 
-`useEffect` 의존성 보완 / 임시 파일 UUID화 / `execAsync` 타임아웃 / `.env` 시스템 / `renderShortcode` 분리 / `alert()` → `toast()` / 로거 도입 / `.env.example` 생성 / API 문서 작성 / PPTX 결과물 XML 검증
+`package.json` 이름·버전 정비 / `useEffect` 의존성 보완 / 임시 파일 UUID화 / `execAsync` 타임아웃 / `.env` 시스템 / `renderShortcode` 분리 / `alert()` → `toast()` / 로거 도입 / `.env.example` 생성 / API 문서 작성 / PPTX 결과물 XML 검증
 
 ### 🟢 낮음 (8건)
 
@@ -654,4 +741,4 @@ API 경로 상수화 / 포트 환경변수화 / 헤더 컬러 토큰화 / `puppe
 
 ---
 
-**총 37개 개선 항목** (3개 보고서 합산). 즉시 수정 7건을 처리하는 것만으로도 보안 위험의 90%를 제거할 수 있습니다.
+**총 41개 개선 항목** (3개 보고서 합산 + 추가 발견 4건). 즉시 수정 7건 + npm audit fix 실행만으로도 보안 위험의 90%를 제거할 수 있습니다.

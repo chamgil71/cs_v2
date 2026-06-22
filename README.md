@@ -27,73 +27,94 @@ npm run dev
 ```bash
 npm run build
 ```
-빌드가 완료되면 빌드 결과물(정적 웹 리소스)이 `dist/` 폴더로 저장됩니다.
+빌드가 완료되면 리액트 앱 정적 빌드 결과물이 `dist/` 폴더로 저장됩니다.
 
 ---
 
-## 2. V2.0 프로젝트 핵심 모듈 관계 분석
+## 2. 아키텍처 분석: React UI (src/ TSX) vs Backend Engine (scripts/ mjs)
 
-각 모듈이 완전히 독립적으로 돌아가는 부분과, 상호 연계되어 돌아가는 데이터 흐름(연결고리)을 명확히 분류하여 안내합니다.
+본 프로젝트는 시각적 사용성을 다루는 **프론트엔드 UI 계층**과, 실제 파일을 제어하고 변환하는 **백엔드 엔진 계층**이 Vite API 미들웨어를 축으로 긴밀하게 연동되어 있습니다.
 
 ```mermaid
-flowchart TD
-    %% 독립형 도구 그룹
-    subgraph Independent [완전 독립형 단독 도구]
-        ModuleA[Module A. PPTX 디자인 분석기] -->|브라우저 단독 가공| DownloadA[분석 완료 및 직접 변환 PPTX 다운로드]
-        Remapper[초경량 PPTX 컬러 리매퍼] -->|1:1 XML 색상 강제 교체| DownloadRemap[치환된 PPTX 다운로드]
-    end
+sequenceDiagram
+    actor User as 사용자 (브라우저)
+    participant UI as React UI (src/components/*.tsx)
+    participant Middleware as Vite API 미들웨어 (scripts/vite-api-plugin.ts)
+    participant Engine as Backend Engine (scripts/*.mjs)
+    participant Output as 산출물 저장소 (publish/ & storage/)
 
-    %% 연계형 빌드 체인 그룹
-    subgraph Connected [연계형 디자인 시스템 빌드 체인]
-        Builder[부가서비스 2. 커스텀 배색 빌더] -->|메인/서브/강조색 조합| RegisterAPI[styles.json 신규 테마 등록]
-        RegisterAPI --> StylesJSON[(config/styles.json)]
-        StylesJSON --> Adjuster[Module B. HSL 스타일 조율기]
-        Adjuster -->|HSL 세부 튜닝 및 확정 저장| StylesJSON
-        StylesJSON ===>|디자인 사양 주입| Compiler[Module C. 마크다운 컴파일러]
-        Markdown[마크다운 소스 style: custom-navy] --> Compiler
-        Compiler -->|가이드 및 PPTX 빌드| FinalOut[(최종 HTML & PPTX 산출물)]
+    User->>UI: 폴더 지정 일괄 변환 및 컴파일 실행 클릭
+    UI->>Middleware: POST /api/bulk-convert (inputDir, outputDir, style) 요청
+    Note over Middleware: Node.js 환경에서 요청 수신
+    loop 각 마크다운 파일마다
+        Middleware->>Engine: node scripts/build-guide.mjs 실행 (exec)
+        Engine->>Output: 숏코드 HTML 변환 파일 적재
     end
+    Middleware->>Output: 변환 리스트를 수집하여 publish/index.html 포털 자동 생성
+    Middleware-->>UI: 컴파일 성공 토스트 및 포털 주소 반환
+    UI-->>User: '가이드북 포털 허브 바로가기 ↗' 링크 버튼 노출
 ```
 
-### 🟩 완전 독립형 단독 도구
-1. **Module A. PPTX 디자인 분석기**
-   - **관계성**: **완벽하게 독립적으로 동작하는 단독형 유틸리티**입니다.
-   - **설명**: 사용자가 벤치마킹할 PPTX 파일을 로드하면 브라우저 내에서 직접 XML 구조를 해체하여 테마 색상과 폰트 기준을 분석하고 시각화해 줍니다. 나아가 타깃 PPTX의 서체/색상을 1:1로 치환하여 본래 프로젝트의 흐름과 무관하게 독립적으로 즉시 변환된 PPTX를 다운로드할 수 있습니다.
-2. **초경량 PPTX 컬러 리매퍼 (부가서비스 3번)**
-   - **관계성**: **완전 독립적인 1회성 보조 유틸리티**입니다.
-   - **설명**: 가이드 문서 컴파일 및 변환 파이프라인과 아무런 데이터 연결이 없으며, 순수하게 구형 색상이 쓰인 PPTX 파일 내부의 XML 색상 코드를 원하는 세련된 신형 색상으로 1:1 일괄 강제 변경해 주는 독립 보조 도구입니다.
+### 🎨 프론트엔드 UI 계층 (`src/` 하위 TSX 파일)
+* **역할**: 사용자가 직접 웹 브라우저에서 조작하는 시각적인 **디자인 관리 센터 인터페이스**입니다.
+* **주요 구성**:
+  - `src/main.tsx`: 대시보드 탭 레이아웃 및 전체 뷰포트를 통제하는 메인 대시보드 뷰.
+  - `src/components/MarkdownCompiler.tsx` (모듈 C): 실시간 마크다운 에디터, split-pane 미리보기 iframe 윈도우, 단일/일괄 폴더 변환 실행 및 컴파일 설정 패널.
+  - `src/components/VisualAdjuster.tsx` (모듈 B): HSL 테마 값을 미세 튜닝하고 새로운 배색을 만들며 WCAG 대비도를 검사하는 디자인 조율 UI.
+  - `src/components/PptxAnalyzer.tsx` (모듈 A): 벤치마킹할 PPTX를 로드하여 분석하고 색상을 XML 수준에서 1:1 리매핑하는 UI.
 
-### 🟦 연계형 디자인 시스템 빌드 체인
-* **[배색 조합 빌더] ➡️ [세부 HSL 조율(모듈 B)] ➡️ [마크다운 컴파일러(모듈 C)]**는 `styles.json` 디자인 설정 파일을 축으로 유기적으로 연결된 하나의 거대한 가이드 빌딩 파이프라인입니다.
-1. **커스텀 배색 빌더 (부가서비스 2번)**
-   - 사용자가 직접 **메인(Brand), 서브(Dark/Mid), 강조(Deep/Light), 배경(Bg), 테두리(Border)** 등 핵심 색상 세트를 피커로 새롭게 커스텀 조합하여 모형 UI의 조화를 확인하고, 새로운 영문 ID 테마로 `styles.json` 디자인 시스템에 직접 등록합니다.
-2. **Module B. 실시간 스타일 조율기**
-   - 배색 빌더나 프리셋을 통해 `styles.json`에 등록된 테마들의 세부 HSL 값이나 폰트 매핑 등을 미세 조율하고 서버에 최종 저장(Update)합니다.
-3. **Module C. 마크다운 컴파일러**
-   - 작성 중인 마크다운 문서의 Frontmatter에 `style: 영문-테마-ID`를 선언하면, 컴파일러 엔진이 해당 문서를 빌드할 때 `styles.json`에서 해당 ID의 색상과 서체 정의를 읽어와 템플릿(HTML)과 생성 슬라이드(PPTX)에 반영시킵니다.
+### ⚙️ 백엔드 엔진 계층 (`scripts/` 하위 mjs/js 파일)
+* **역할**: 웹 화면의 변환/저장 요청을 받아 Node.js 환경에서 **실제 파일 IO 및 마크다운 파싱, PPTX 셰이프 드로잉을 전담하는 변환 코어 엔진**입니다.
+* **주요 구성**:
+  - `scripts/vite-api-plugin.ts`: 리액트 UI 화면(TSX)이 내보내는 API 요청을 받아 Node.js 프로세스로 엔진 코어를 호출해주는 브리지 미들웨어.
+  - `scripts/build-guide.mjs`: 마크다운 ➡️ 가이드 HTML 숏코드 컴파일. (스타일 인라인화를 통한 standalone HTML 생성 전담)
+  - `scripts/build-presentation.mjs`: 마크다운 ➡️ 웹 슬라이드 컴파일. (aspect-ratio 16:9 뷰 템플릿 렌더링)
+  - `scripts/md-to-pptx.mjs`: 마크다운 ➡️ PowerPoint PPTX 파일 빌드.
+  - `scripts/pptx-analyzer.js` & `spec-parser.js`: PPTX XML 구조 압축 해제 및 디자인 사양 데이터 추출/치환 코어.
+  - `scripts/pptx-renderers/`: 각 개별 숏코드(git-flow, editor-box 등)의 PPTX 네이티브 드로잉 코어 렌더러 모듈들.
 
 ---
 
-## 2. 폴더 구조 및 파일 명세
+## 3. 평탄화된 폴더 구조 및 파일 명세
 
 ```text
-storage/v2plan/
-├── README.md               # 본 문서 (모듈 연동 분석 및 마이그레이션 가이드)
-├── v2.html                 # V2.0 단독 에디터 HTML 진입점
-├── vite.config.ts          # v2.html 엔트리가 설정된 Vite 설정 파일
-├── package.json            # jszip 라이브러리 의존성이 포함된 패키지 사양서
+cs_v2/
+├── index.html              # V2.0 디자인 스위트 웹 대시보드 진입점
+├── vite.config.ts          # 단일 index.html entry 시스템 Vite 설정 파일
+├── package.json            # Vite 8.0 개발 사양 및 의존 패키지 선언서
+├── tsconfig.json           # TS 빌드 및 컴파일 환경 설정
+├── tailwind.config.ts      # Tailwind CSS 시스템 토큰 및 스타일 설정
 ├── src/
-│   └── v2/
-│       ├── main-v2.tsx      # V2.0 메인 대시보드 뷰포트
-│       └── components/
-│           ├── PptxAnalyzer.tsx     # Module A. PPTX 디자인 분석 및 타깃 변환기 (독립형)
-│           ├── VisualAdjuster.tsx   # Module B. 실시간 HSL 스타일 조율기 (연계형)
-│           ├── MarkdownCompiler.tsx # Module C. 마크다운 컴파일러 & 실시간 프리뷰어 (연계형)
-│           └── SubUtilities.tsx     # 부가서비스 (대비 검사기, 커스텀 배색 빌더, 컬러 리매퍼)
+│   ├── main.tsx            # V2.0 메인 대시보드 뷰포트
+│   ├── index.css           # Tailwind 기반 디자인 시스템 스타일 시트
+│   └── components/
+│       ├── PptxAnalyzer.tsx     # Module A. PPTX 디자인 분석 및 타깃 변환기 (독립형)
+│       ├── VisualAdjuster.tsx   # Module B. 실시간 HSL 스타일 조율기 (연계형)
+│       ├── MarkdownCompiler.tsx # Module C. 마크다운 컴파일러 & 실시간 프리뷰어 (연계형)
+│       ├── PptxInspectorSuite.tsx # PPTX 디자인 분석 마스터 슬라이드 뷰어
+│       ├── SubUtilities.tsx     # 부가서비스 (대비 검사기, 커스텀 배색 빌더, 컬러 리매퍼)
+│       └── ui/                  # Shadcn UI 컴포넌트 라이브러리
 ├── scripts/
-│   └── v2/
-│       ├── pptx-analyzer.js   # PPTX XML 구조 파싱 코어 엔진
-│       └── spec-parser.js     # PPTX 디자인 스펙 데이터 파서
+│   ├── vite-api-plugin.ts  # Vite 개발 서버 API 미들웨어 (Bridge)
+│   ├── pptx-analyzer.js    # PPTX XML 구조 파싱 코어 엔진
+│   ├── spec-parser.js      # PPTX 디자인 스펙 데이터 파서
+│   ├── build-guide.mjs     # 마크다운 ➡️ 가이드 HTML 숏코드 컴파일 엔진
+│   ├── build-presentation.mjs # 마크다운 ➡️ 웹 슬라이드 컴파일 엔진
+│   └── md-to-pptx.mjs      # 마크다운 ➡️ PPTX 컴파일 엔진
+├── docs/                   # V2.0 공식 마스터 문서 보관 공간
+│   ├── docs_index.md       # 문서 시스템 종합 안내 홈 (README.md에서 명칭 변경)
+│   ├── guide.md            # 사용자 기능 설명서
+│   ├── scripts_guide.md    # 개발자 변환 코어 엔진 설명서
+│   └── plan/               # 아키텍처 및 구현 기획 계획서 보관 폴더
+├── config/
+│   ├── styles.json         # 테마 배색 사전 설정 보관 JSON
+│   └── layout.json         # [NEW] PPTX 분석 가공 오프셋 보관 JSON
+├── md_src/                 # 마크다운 원천 소스 보관 폴더
+├── publish/                # [산출물] 컴파일 완료된 가이드북 포털 및 HTML 저장소
+└── storage/                # [산출물] 프레젠테이션/PPTX 파일 독립 보관 저장소
+    ├── presentation/       # 변환된 Presentation HTML
+    └── pptx/               # 변환된 PPTX 디자인 결과물
+```�─ spec-parser.js     # PPTX 디자인 스펙 데이터 파서
 ├── docs/
 │   └── plan/
 │       ├── master_refactoring_and_v2_plan.md    # V2 리팩토링 마스터 계획서

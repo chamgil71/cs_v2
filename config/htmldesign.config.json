@@ -1,0 +1,13 @@
+{
+  // ════════════════════════════════════════════════════════════════
+  //  HTML 가이드 및 프레젠테이션 공통 웹폰트 및 크기 배율 설정
+  // ════════════════════════════════════════════════════════════════
+  "htmlFont": {
+    "title":      "'Noto Serif KR', serif",
+    "desc":       "'Noto Sans KR', sans-serif",
+    "note":       "'JetBrains Mono', monospace",
+    "code":       "'JetBrains Mono', monospace",
+    "tag":        "'Noto Sans KR', sans-serif",
+    "scale":      1.0
+  }
+}

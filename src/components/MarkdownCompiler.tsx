@@ -73,7 +73,7 @@ style: custom-blue
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
   
   // Final Save Options
-  const [outputPath, setOutputPath] = useState("dist-pptx");
+  const [outputPath, setOutputPath] = useState("");
   const [saveOption, setSaveOption] = useState<"standalone" | "guideHub">("standalone");
   const [targetFormats, setTargetFormats] = useState<string[]>(["html", "presentation", "pptx"]);
   const [options] = useState({
@@ -450,11 +450,11 @@ style: custom-blue
 
             <div className="space-y-2">
               <div className="font-semibold text-slate-500">2. 저장 위치 옵션</div>
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-1.5">
                 <select
                   value={saveOption}
                   onChange={(e) => setSaveOption(e.target.value as any)}
-                  className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 flex-1"
+                  className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
                 >
                   <option value="standalone">독립 파일 단독 생성</option>
                   <option value="guideHub">가이드 허브 목록 추가 및 전체 빌드</option>
@@ -463,8 +463,8 @@ style: custom-blue
                   type="text"
                   value={outputPath}
                   onChange={(e) => setOutputPath(e.target.value)}
-                  className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 font-mono w-24 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  placeholder="dist-pptx"
+                  className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 font-mono w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  placeholder="기본값 (storage/)"
                 />
               </div>
             </div>

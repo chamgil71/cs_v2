@@ -1,0 +1,121 @@
+{
+  // ════════════════════════════════════════════════════════════════
+  //  md-to-pptx.mjs 디자인 설정 (PowerPoint 전용)
+  //  이 파일의 주석은 스크립트 로더(loadJsonWithComments)가 자동으로 제거합니다.
+  //  모든 수치 단위는 인치(Inch)이며, 폰트 크기는 pt 기준입니다.
+  // ════════════════════════════════════════════════════════════════
+
+  // ── 슬라이드 물리 및 기본 폰트 설정 ──────────────────────────────
+  "slide": {
+    "layout":      "LAYOUT_WIDE", // 16:9 와이드 스크린 레이아웃
+    "widthIn":     13.333,
+    "heightIn":    7.5,
+    "font":        "Malgun Gothic",      // 본문 기본 폰트 (예: Paperlogy 4)
+    "fontTitle":   "Malgun Gothic",      // 대제목 기본 폰트 (예: Paperlogy 8)
+    "fontSubTitle":"Malgun Gothic",      // 중간제목 기본 폰트 (예: Paperlogy 6)
+    "fontMono":    "Consolas",      // 코드용 고정폭 폰트
+    "marginX":     0.5,             // 좌우 기본 여백
+    
+    // [중요] 모든 카드/도형의 모서리 둥글기 (0이면 직각, 0.1~0.2면 둥근 사각형)
+    "globalRadius": 0.08,
+    
+    // 콘텐츠 배치 시작 지점 (헤더 높이를 고려한 Y값)
+    "bodyTopY":    1.25,
+    "bodyBottomY": 7.05
+  },
+
+  // ── 표지 슬라이드 (Cover) 미세 조정 ──────────────────────────────
+  "cover": {
+    "accentBarX":       0.5,    // 좌측 컬러 바 시작 X
+    "accentBarY":       2.3,    // 좌측 컬러 바 시작 Y
+    "accentBarW":       0.18,   // 바 너비
+    "accentBarH":       1.7,    // 바 높이
+    "titleX":           1.0,    // 메인 제목 시작 X
+    "titleY":           2.4,    // 메인 제목 시작 Y
+    "titleFontSize":    40,
+    "subtitleFontSize": 16,
+    "logoFontSize":     46      // 중앙 이모지 로고 크기
+  },
+
+  // ── 상단 헤더 (Header / Navigation) ───────────────────────────
+  "header": {
+    "y":             0.0,
+    "h":             1.05,      // 헤더 전체 높이
+    "numBoxSize":    0.55,      // 좌측 상단 슬라이드 번호 박스 크기
+    "numFontSize":   16,
+    "titleFontSize": 22,        // 섹션 제목 폰트
+    "paddingX":      0.55       // 헤더 내 텍스트 시작 여백
+  },
+
+  // ── 공통 카드 및 텍스트 블록 (6대 표준 키 대응) ─────────────────
+  "card": {
+    "padX":          0.25,      // 카드 내부 좌우 패딩
+    "padY":          0.2,       // 카드 내부 상하 패딩
+    "gap":           0.15,      // 요소 간 간격
+    "titleSize":     14,        // 표준 키 'title'의 폰트 크기
+    "bodySize":      11,        // 표준 키 'desc'의 폰트 크기
+    "h3Size":        13,        // 소제목 폰트 크기
+    "codeSize":      10,        // 코드 블록 폰트 크기
+    "quoteBarW":     0.07       // 인용문 좌측 라인 두께
+  },
+
+  // ── 그리드 시스템 (Grid Layout) ───────────────────────────────
+  "grid": {
+    "gap":                0.15, // 카드 사이의 간격
+    "iconCardMinW":       1.8,  // icon-grid 카드의 최소 너비 (열 수 계산 기준)
+    "featureCardMinW":    2.6,  // feature-grid 카드의 최소 너비
+    "stepItemH":          0.72  // steps 리스트 항목 하나의 높이
+  },
+
+  // ── 개별 숏코드 컴포넌트 미세 조정 ──────────────────────────────
+  
+  // workflow: 업무 흐름도 (icon, title, meta)
+  "workflow": {
+    "stepH":    0.95,           // 각 단계 박스 높이
+    "iconSize": 0.45,           // 아이콘 크기
+    "arrowW":   0.25            // 화살표(→) 영역 너비
+  },
+
+  // tool-card: 강조형 도구 배너 (color 키로 배경색 제어)
+  "toolCard": {
+    "h": 0.8                    // 배너 한 줄의 높이
+  },
+
+  // plan-grid: 요금제/플랜 비교 (meta의 리스트 항목 제어)
+  "planGrid": {
+    "maxCols":      4,
+    "featureLineH": 0.28        // 특징 목록(meta) 한 줄당 높이
+  },
+
+  // summary-box: 하단 칩 목록 (meta에 정의된 태그들)
+  "bottomList": {
+    "chipGap":    0.12,
+    "chipRadius": 0.1,
+    "chipH":      0.45,
+    "fontSize":   11
+  },
+
+  // compare-2col: 좌우 대조 비교 (items 필드 구분자 '|' 대응)
+  "compare2col": {
+    "colGap":     0.25,
+    "itemLineH":  0.32          // 비교 항목 간 줄 간격
+  },
+
+  // ── 고정 팔레트 및 출력 설정 ──────────────────────────────────
+  "palette": {
+    "bgDark":         "2563FF", // 다크 테마 배경색
+    "white":          "FFFFFF",
+    "text":           "1A1A2E", // 기본 본문 색상
+    "text2":          "475569", // 보조 본문 색상 (회색조)
+    "muted":          "8892B0", // 부제목·레이블·화살표 공통 흐린 텍스트
+    "mutedLight":     "CCDDDD", // 다크 배경 위 흐린 텍스트 (tool-card desc, done 부제목)
+    "codeBg":         "0F172A", // 코드 블록 배경
+    "codeText":       "A8B2D8", // 코드 블록 내 텍스트 색상
+    "workflowArrow":  "8892B0"  // 워크플로우 화살표 색상
+  },
+
+  "output": {
+    "dir":    "dist-pptx",      // 생성된 파일 저장 경로
+    "suffix": ""                // 파일명 뒤에 붙일 접미사 (예: "-v1")
+  }
+}

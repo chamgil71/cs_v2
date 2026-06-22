@@ -312,7 +312,8 @@ export function viteApiPlugin(): Plugin {
 
           // 5-2. POST /api/bulk-convert
           if (url.pathname === "/api/bulk-convert" && method === "POST") {
-            const { inputDir, outputDir, style, options } = await getBody();
+            const { inputDir, outputDir, style, formats, options } = await getBody();
+            const targetFormats = (formats && Array.isArray(formats) && formats.length > 0) ? formats : ["html"];
             
             const inPath = path.join(rootDir, inputDir || "md_src");
             const outPath = path.join(rootDir, outputDir || "publish");
@@ -330,40 +331,83 @@ export function viteApiPlugin(): Plugin {
             
             // Find all .md files recursively
             const files = getMarkdownFiles(inPath);
-            const convertedFiles: Array<{ name: string; relPath: string }> = [];
+            const convertedFiles: Array<{ name: string; formats: Array<{ format: string; label: string; relPath: string }> }> = [];
             const styleFlag = style ? ` --style ${style}` : "";
             
             for (const relFile of files) {
               const fullInFile = path.join(inPath, relFile);
               const baseName = relFile.replace(/\.[^/.]+$/, "");
-              const outFilename = `${baseName}.html`;
-              const fullOutFile = path.join(outPath, outFilename);
               
-              // Ensure parent directory exists in output path
-              fs.mkdirSync(path.dirname(fullOutFile), { recursive: true });
+              const fileFormats: Array<{ format: string; label: string; relPath: string }> = [];
               
-              // Run build-guide
-              const cmd = `node scripts/build-guide.mjs "${fullInFile}" --out "${fullOutFile}"${styleFlag}`;
-              await execAsync(cmd);
+              for (const format of targetFormats) {
+                let outFilename = "";
+                let cmd = "";
+                
+                if (format === "html") {
+                  outFilename = `${baseName}.html`;
+                  const fullOutFile = path.join(outPath, outFilename);
+                  fs.mkdirSync(path.dirname(fullOutFile), { recursive: true });
+                  cmd = `node scripts/build-guide.mjs "${fullInFile}" --out "${fullOutFile}"${styleFlag}`;
+                  await execAsync(cmd);
+                  fileFormats.push({
+                    format: "html",
+                    label: "📄 HTML Guide",
+                    relPath: path.join(outputDir || "publish", outFilename).replace(/\\/g, "/")
+                  });
+                } else if (format === "presentation") {
+                  outFilename = `${baseName}_presentation.html`;
+                  const fullOutFile = path.join(outPath, outFilename);
+                  fs.mkdirSync(path.dirname(fullOutFile), { recursive: true });
+                  cmd = `node scripts/build-presentation.mjs "${fullInFile}" "${fullOutFile}"${styleFlag}`;
+                  await execAsync(cmd);
+                  fileFormats.push({
+                    format: "presentation",
+                    label: "🖥️ Presentation Slides",
+                    relPath: path.join(outputDir || "publish", outFilename).replace(/\\/g, "/")
+                  });
+                } else if (format === "pptx") {
+                  outFilename = `${baseName}.pptx`;
+                  const fullOutFile = path.join(outPath, outFilename);
+                  fs.mkdirSync(path.dirname(fullOutFile), { recursive: true });
+                  const noCoverFlag = (options && options.noCover) ? " --no-cover" : "";
+                  cmd = `node scripts/md-to-pptx.mjs "${fullInFile}" --out "${fullOutFile}"${styleFlag}${noCoverFlag}`;
+                  await execAsync(cmd);
+                  fileFormats.push({
+                    format: "pptx",
+                    label: "📊 PPTX Slides",
+                    relPath: path.join(outputDir || "publish", outFilename).replace(/\\/g, "/")
+                  });
+                }
+              }
               
               convertedFiles.push({
                 name: path.basename(fullInFile),
-                relPath: path.join(outputDir || "publish", outFilename).replace(/\\/g, "/")
+                formats: fileFormats
               });
             }
             
             // Generate portal index.html inside the outputDir (e.g. publish/index.html)
             const portalTitle = "Creative Spark - 가이드북 포털";
             const portalItemsHtml = convertedFiles.map(f => {
-              const linkPath = path.relative(outPath, path.join(rootDir, f.relPath)).replace(/\\/g, "/");
+              const linksHtml = f.formats.map(fmt => {
+                const linkPath = path.relative(outPath, path.join(rootDir, fmt.relPath)).replace(/\\/g, "/");
+                return `
+                <a href="./${linkPath}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 rounded-lg text-xs font-semibold transition-all">
+                  <span>${fmt.label}</span>
+                </a>`;
+              }).join("\n");
+
               return `
-              <a href="./${linkPath}" target="_blank" class="block p-5 bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:border-blue-500 transition-all group">
-                <div class="flex items-center gap-3 mb-2">
+              <div class="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all">
+                <div class="flex items-center gap-3 mb-4">
                   <span class="text-2xl">📄</span>
-                  <h3 class="font-bold text-slate-800 group-hover:text-blue-600 transition-colors text-base">${f.name}</h3>
+                  <h3 class="font-bold text-slate-800 text-base">${f.name}</h3>
                 </div>
-                <p class="text-xs text-slate-500 font-mono">${f.relPath}</p>
-              </a>`;
+                <div class="flex flex-wrap gap-2">
+                  ${linksHtml}
+                </div>
+              </div>`;
             }).join("\n");
             
             const portalHtml = `
@@ -388,7 +432,7 @@ export function viteApiPlugin(): Plugin {
     </div>
   </header>
   <main class="max-w-5xl mx-auto p-8">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       ${portalItemsHtml}
     </div>
   </main>

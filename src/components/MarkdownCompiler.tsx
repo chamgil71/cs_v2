@@ -335,6 +335,15 @@ style: custom-blue
     setSaving(true);
     setPortalUrl("");
     try {
+      if (targetFormats.length === 0) {
+        toast({
+          title: "알림",
+          description: "최소 한 개 이상의 변환 포맷을 선택해 주세요.",
+        });
+        setSaving(false);
+        return;
+      }
+
       if (isBulkMode) {
         // Bulk Mode Compilation
         const res = await fetch("/api/bulk-convert", {
@@ -344,6 +353,7 @@ style: custom-blue
             inputDir: bulkInputPath,
             outputDir: bulkOutputPath,
             style: selectedStyle,
+            formats: targetFormats,
             options,
           })
         });
@@ -367,15 +377,6 @@ style: custom-blue
             title: "입력 오류",
             description: "저장할 파일명을 작성해 주세요.",
             variant: "destructive",
-          });
-          setSaving(false);
-          return;
-        }
-
-        if (targetFormats.length === 0) {
-          toast({
-            title: "알림",
-            description: "최소 한 개 이상의 변환 포맷을 선택해 주세요.",
           });
           setSaving(false);
           return;
@@ -585,76 +586,77 @@ style: custom-blue
         </div>
 
         {/* Compile Settings */}
-        {!isBulkMode ? (
-          <div className="border-t border-slate-200 pt-3 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div className="space-y-2">
-              <div className="font-semibold text-slate-500">1. 대상 포맷 선택</div>
-              <div className="flex flex-wrap gap-2">
-                {["html", "presentation", "pptx"].map((fmt) => {
-                  const checked = targetFormats.includes(fmt);
-                  return (
-                    <button
-                      key={fmt}
-                      onClick={() => handleFormatToggle(fmt)}
-                      className={`px-3 py-1.5 rounded-md border flex items-center gap-1 transition-all font-semibold ${
-                        checked
-                          ? 'bg-blue-600/10 border-blue-500 text-blue-600'
-                          : 'bg-white border-slate-200 text-slate-500 hover:border-slate-350'
-                      }`}
-                    >
-                      <span>{fmt.toUpperCase()}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div className="font-semibold text-slate-500">2. 저장 위치 옵션</div>
-              <div className="flex flex-col gap-1.5">
-                <select
-                  value={saveOption}
-                  onChange={(e) => setSaveOption(e.target.value as any)}
-                  className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
-                >
-                  <option value="standalone">독립 파일 단독 생성</option>
-                  <option value="guideHub">가이드 허브 목록 추가 및 전체 빌드</option>
-                </select>
-                <input
-                  type="text"
-                  value={outputPath}
-                  onChange={(e) => setOutputPath(e.target.value)}
-                  className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 font-mono w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  placeholder="기본값 (storage/)"
-                />
-              </div>
+        <div className="border-t border-slate-200 pt-3 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div className="space-y-2">
+            <div className="font-semibold text-slate-500">1. 대상 포맷 선택</div>
+            <div className="flex flex-wrap gap-2">
+              {["html", "presentation", "pptx"].map((fmt) => {
+                const checked = targetFormats.includes(fmt);
+                return (
+                  <button
+                    key={fmt}
+                    onClick={() => handleFormatToggle(fmt)}
+                    className={`px-3 py-1.5 rounded-md border flex items-center gap-1 transition-all font-semibold ${
+                      checked
+                        ? 'bg-blue-600/10 border-blue-500 text-blue-600'
+                        : 'bg-white border-slate-200 text-slate-500 hover:border-slate-350'
+                    }`}
+                  >
+                    <span>{fmt.toUpperCase()}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
-        ) : (
-          <div className="border-t border-slate-200 pt-3 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div className="space-y-2">
-              <div className="font-semibold text-slate-500">1. 입력 마크다운 폴더</div>
-              <input
-                type="text"
-                value={bulkInputPath}
-                onChange={(e) => setBulkInputPath(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="md_src/guide"
-              />
-            </div>
 
-            <div className="space-y-2">
-              <div className="font-semibold text-slate-500">2. 출력 변환 폴더</div>
-              <input
-                type="text"
-                value={bulkOutputPath}
-                onChange={(e) => setBulkOutputPath(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="publish/guide"
-              />
-            </div>
+          <div className="space-y-2">
+            {!isBulkMode ? (
+              <>
+                <div className="font-semibold text-slate-500">2. 저장 위치 옵션</div>
+                <div className="flex flex-col gap-1.5">
+                  <select
+                    value={saveOption}
+                    onChange={(e) => setSaveOption(e.target.value as any)}
+                    className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
+                  >
+                    <option value="standalone">독립 파일 단독 생성</option>
+                    <option value="guideHub">가이드 허브 목록 추가 및 전체 빌드</option>
+                  </select>
+                  <input
+                    type="text"
+                    value={outputPath}
+                    onChange={(e) => setOutputPath(e.target.value)}
+                    className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 font-mono w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    placeholder="기본값 (storage/)"
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <div className="font-semibold text-slate-500">2. 입력 폴더</div>
+                  <input
+                    type="text"
+                    value={bulkInputPath}
+                    onChange={(e) => setBulkInputPath(e.target.value)}
+                    className="w-full bg-white border border-slate-200 rounded px-2 py-1.5 text-[11px] text-slate-800 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    placeholder="md_src"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <div className="font-semibold text-slate-500">3. 출력 폴더</div>
+                  <input
+                    type="text"
+                    value={bulkOutputPath}
+                    onChange={(e) => setBulkOutputPath(e.target.value)}
+                    className="w-full bg-white border border-slate-200 rounded px-2 py-1.5 text-[11px] text-slate-800 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    placeholder="publish"
+                  />
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Link to generated portal */}
         {portalUrl && (

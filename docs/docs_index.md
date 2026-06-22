@@ -29,5 +29,6 @@ V2.0은 기술적 복잡성과 의존성에 따라 **단독 구동형 스위트*
 
 ### 2. 연계형: HSL 스타일 조율기 & 마크다운 컴파일러
 * **동작 환경**: Vite API 미들웨어 서버 연계 (로컬 파일 시스템 쓰기 및 Node.js exec 실행)
-* **주요 기술**: `/api/save-styles`를 통한 `config/styles.json` 쓰기, `/api/preview` 및 `/api/save-generate`를 통한 백엔드 가이드북 컴파일.
+* **주요 기술**: `/api/save-styles`를 통한 `config/styles.json` 쓰기, `/api/preview` 및 `/api/save-generate`를 통한 백엔드 가이드북 컴파일, `/api/select-folder`를 통한 로컬 폴더 선택 탐색기 연동
 * **안전 규격**: styles.json 세이브 시 키 규격을 사전 검증하는 **API 스키마 검증기**, 마크다운 컴파일 프리뷰 시 테마 색상 명도를 자동 판정하는 **가독성 Linter 배너** 탑재.
+* **확장 기능**: 26종의 대화형 숏코드 드롭다운 스니펫 툴바와 HTML/Presentation/PPTX 멀티포맷 일괄 변환 파이프라인 탑재.

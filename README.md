@@ -44,11 +44,13 @@ sequenceDiagram
     participant Output as 산출물 저장소 (publish/ & storage/)
 
     User->>UI: 폴더 지정 일괄 변환 및 컴파일 실행 클릭
-    UI->>Middleware: POST /api/bulk-convert (inputDir, outputDir, style) 요청
+    UI->>Middleware: POST /api/bulk-convert (inputDir, outputDir, style, formats) 요청
     Note over Middleware: Node.js 환경에서 요청 수신
     loop 각 마크다운 파일마다
-        Middleware->>Engine: node scripts/build-guide.mjs 실행 (exec)
-        Engine->>Output: 숏코드 HTML 변환 파일 적재
+        loop 각 선택된 포맷마다 (html, presentation, pptx)
+            Middleware->>Engine: node scripts/build-guide.mjs / build-presentation.mjs / md-to-pptx.mjs 실행
+            Engine->>Output: 숏코드 변환 파일 적재
+        end
     end
     Middleware->>Output: 변환 리스트를 수집하여 publish/index.html 포털 자동 생성
     Middleware-->>UI: 컴파일 성공 토스트 및 포털 주소 반환
@@ -114,7 +116,7 @@ cs_v2/
 └── storage/                # [산출물] 프레젠테이션/PPTX 파일 독립 보관 저장소
     ├── presentation/       # 변환된 Presentation HTML
     └── pptx/               # 변환된 PPTX 디자인 결과물
-```�─ spec-parser.js     # PPTX 디자인 스펙 데이터 파서
+```�─ spec-parser.js     # PPTX 디자인 스펙 데이터 파서
 ├── docs/
 │   └── plan/
 │       ├── master_refactoring_and_v2_plan.md    # V2 리팩토링 마스터 계획서
@@ -145,40 +147,15 @@ cs_v2/
   - **디자인 시스템 자동 등록**: 조율이 완료된 나만의 커스텀 배색 테마를 원하는 영문 ID로 지정하여 `config/styles.json`에 원클릭으로 신규 등록(추가)할 수 있습니다.
   - **프리셋 복원**: 페이퍼로지 오리지널(블루), AI 챗봇(그린) 등 누락된 대표 배색 프리셋을 목록에 추가하여 즉시 불러와 커스텀 시작점으로 활용할 수 있도록 보강했습니다.
 
+### 3. 🧩 26종 전체 숏코드 선택 삽입 에디터 툴바
+* **개선**: 기존의 일부 숏코드만 들어있던 드롭다운 선택 툴바를 V2 컴파일러와 PPTX 변환기에서 지원하는 21종의 핵심 숏코드 및 8종의 별칭(총 26가지 옵션) 전체 목록으로 확장했습니다.
+* **용도별 카테고리 구성**: 사용의 편의를 위해 비교/대조, 코드/터미널, 흐름도 등 6가지 카테고리로 드롭다운을 정리(optgroup 적용)하여 더욱 완성도 높은 사용자 경험을 제공합니다. 선택 삽입 시 V2 스펙에 알맞은 YAML 규격 템플릿 코드가 현재 마우스 커서의 위치에 맞게 자동으로 자동 삽입됩니다.
+
+### 4. 네이티브 폴더 선택기 & 멀티포맷 일괄 폴더 변환
+* **개선**: 웹 브라우저 보안 제약으로 발생하던 로컬 절대 경로 입력의 불편을 제거하기 위해 백엔드와 연동된 **윈도우 네이티브 폴더 선택 탐색기(PowerShell FolderBrowserDialog)**를 도입하여 원클릭으로 경로를 자동 완성 및 바인딩할 수 있습니다.
+* **멀티포맷 일괄 변환**: 폴더 일괄 컴파일 시 HTML뿐만 아니라 슬라이드(Presentation) 및 PPTX 파워포인트 파일을 동시 다중 생성 또는 독립 변환이 가능해졌으며, 생성 완료된 가이드북 포털 페이지(`index.html`)에서 다운로드 및 바로보기 링크들이 반응형 카드로 자동 취합 및 목록화됩니다.
+
 ---
 
-## 4. 새 프로젝트로 복사 및 이식 방법 (Migration Guide)
-
-이 `storage/v2plan` 폴더의 구조를 다른 React-Vite 프로젝트로 복사해서 독립 구동할 때의 절차는 다음과 같습니다.
-
-### 1단계: 파일 배치
-- `v2.html`을 대상 프로젝트의 **루트 디렉토리**에 붙여넣습니다.
-- `src/v2/` 및 `scripts/v2/` 폴더를 대상 프로젝트의 동일한 경로인 `src/`, `scripts/` 아래에 배치합니다.
-
-### 2단계: 의존성 패키지 설치
-PPTX 파일을 브라우저 단에서 zip 해제하고 파싱하기 위해 `jszip` 패키지가 필요합니다. 대상 프로젝트의 터미널에서 다음 명령을 실행합니다.
-```bash
-npm install jszip lucide-react
-# 또는
-yarn add jszip lucide-react
-```
-
-### 3단계: Vite 설정 추가 (`vite.config.ts`)
-Vite 빌드 시 `v2.html`을 멀티 페이지 엔트리로 인식하도록 설정 파일의 `build.rollupOptions.input` 섹션에 `v2` 속성을 추가합니다.
-```typescript
-// vite.config.ts
-export default defineConfig({
-  build: {
-    rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, "index.html"),
-        v2: path.resolve(__dirname, "v2.html"), // 이 줄을 추가합니다.
-      },
-    },
-  },
-});
-```
-
-### 4단계: 백엔드 API 미들웨어 연동 (필수)
-모듈 B의 스타일 저장, 모듈 C의 마크다운 컴파일 및 저장 기능은 **Vite 개발 서버의 API 미들웨어**(`/api/save-styles`, `/api/preview`, `/api/save-generate` 등)를 경유합니다.
-- `vite-api-plugin.ts` 등 API 미들웨어를 대상 프로젝트의 개발 서버 플러그인에 등록해야 컴파일러 엔진 및 프리뷰어가 정상 동작합니다.
+## 4. 독립 프로젝트 평탄화 완료
+* 본 프로젝트는 평탄화가 완료되어 별도로 이식 가이드를 따를 필요가 없습니다. `C:\ai\cs_v2` 하위에서 바로 `npm run dev` 또는 `npm run build`를 구동하시면 단독 프로젝트로서 정상 동작합니다.

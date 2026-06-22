@@ -67,31 +67,82 @@ style: custom-blue
     let snippet = "";
     switch (type) {
       case "editor-box":
-        snippet = `\n::: editor-box filename.js (javascript)\n### 🛠️ 타이틀\n- 내용 1\n- 내용 2\n:::\n`;
+        snippet = `\n::: editor-box\n- title: "filename.js"\n  tag: "javascript"\n  desc: |\n    // 코드 내용\n    console.log("Hello, World!");\n:::\n`;
         break;
       case "compare-split":
-        snippet = `\n::: compare-split\n- name: AS-IS\n  desc: 구형 사양 설명\n- name: TO-BE\n  desc: 신형 사양 설명\n:::\n`;
+        snippet = `\n::: compare-split\n- title: "Before"\n  desc: "기존 수동 렌더링"\n  meta: "수동 HTML 태그 관리 | 스타일 일관성 부족"\n- title: "After"\n  desc: "V2 자동 숏코드"\n  meta: "마크다운 기반 시각화 | 동적 높이 및 일관성"\n:::\n`;
+        break;
+      case "compare-diff":
+        snippet = `\n::: compare-diff\n- title: "AS-IS 구형 코드"\n  desc: "legacyCode()"\n- title: "TO-BE 신규 코드"\n  desc: "modernCode()"\n:::\n`;
         break;
       case "compare-grid":
-        snippet = `\n::: compare-grid\n- name: 구분 1\n  desc: 설명 1\n- name: 구분 2\n  desc: 설명 2\n:::\n`;
+        snippet = `\n::: compare-grid\n- title: "구분 1"\n  desc: "설명 1"\n- title: "구분 2"\n  desc: "설명 2"\n:::\n`;
         break;
       case "network-box":
-        snippet = `\n::: network-box\n- name: 중앙 노드\n  desc: 핵심 개념\n- name: 서브 노드 1\n  desc: 연결 개념 1\n- name: 서브 노드 2\n  desc: 연결 개념 2\n:::\n`;
+        snippet = `\n::: network-box\n- title: "중앙 핵심 개념"\n  color: "#EC4899"\n- title: "연결 개념 A"\n  meta: "세부 관계"\n- title: "연결 개념 B"\n  meta: "세부 관계"\n:::\n`;
         break;
       case "stat-grid":
-        snippet = `\n::: stat-grid\n- name: 85%\n  desc: 지표 설명\n- name: 120ms\n  desc: 성능 지표\n:::\n`;
+        snippet = `\n::: stat-grid\n- icon: "99.9%"\n  title: "가동 시간"\n  desc: "평균 가동률"\n- icon: "120ms"\n  title: "응답 지연"\n  desc: "API 응답 지연"\n:::\n`;
         break;
       case "git-flow":
-        snippet = `\n::: git-flow\n- title: main\n  meta: init | feat-A | release\n- title: dev\n  meta: branch | working | merge\n:::\n`;
+        snippet = `\n::: git-flow\n- title: "main"\n  tag: "v2.0.0"\n  meta: "초기 버전 | 패치 배포"\n  color: "#10B981"\n- title: "dev"\n  tag: "develop"\n  meta: "신규 기능 추가 | 버그 수정"\n  color: "#3B82F6"\n:::\n`;
         break;
       case "alert-box":
-        snippet = `\n::: alert-box warning\n### ⚠️ 경고\n여기에 주의할 점을 작성하세요.\n:::\n`;
+        snippet = `\n::: alert-box tip\n- title: "작성 팁"\n  desc: "기본 본문은 desc 속성 하위에서 작성해 주세요."\n:::\n`;
         break;
       case "tool-list":
-        snippet = `\n::: tool-list\n- name: 🛠️ 도구명\n  desc: 도구의 역할 및 용도 설명\n  bullet: 특장점 1, 특장점 2\n:::\n`;
+        snippet = `\n::: tool-list\n- icon: "🛠️"\n  title: "Vite"\n  desc: "초고속 프론트엔드 빌드 도구"\n  meta: "HMR 지원 | 플러그인 생태계"\n:::\n`;
         break;
       case "plan-grid":
-        snippet = `\n::: plan-grid\n- name: Basic Plan\n  desc: 기본적인 요금제 혜택\n  tag: Free\n- name: Premium Plan\n  desc: 모든 기능 제공 베스트 요금제\n  tag: Popular\n  featured: true\n:::\n`;
+        snippet = `\n::: plan-grid\n- title: "Basic Plan"\n  tag: "Free"\n  meta: "기본 기능 제공 | 일간 10회 컴파일"\n- title: "Premium Plan"\n  tag: "Best"\n  meta: "모든 숏코드 지원 | 무제한 빌드 및 익스포트"\n  featured: "true"\n  color: "#3B82F6"\n:::\n`;
+        break;
+      case "icon-grid":
+        snippet = `\n::: icon-grid cols=3 bullet=✔️\n- icon: "🚀"\n  title: "빠른 퍼포먼스"\n  desc: "최적화된 빌드와 빌트인 파서 탑재"\n- icon: "🎨"\n  title: "디자인 테마 선택"\n  desc: "다양한 테마 조합 가능"\n:::\n`;
+        break;
+      case "feature-grid":
+        snippet = `\n::: feature-grid cols=2\n- icon: "⚡"\n  title: "실시간 미리보기"\n  desc: "수정 즉시 빌드 결과를 반영합니다."\n  tag: "핵심"\n- icon: "📦"\n  title: "일괄 변환 기능"\n  desc: "전체 폴더를 원클릭으로 변환합니다."\n  tag: "실무"\n:::\n`;
+        break;
+      case "step-list":
+        snippet = `\n::: step-list\n- title: "문서 선택"\n  desc: "가이드 문서를 로드하거나 새로 작성합니다."\n- title: "숏코드 편집"\n  desc: "필요한 시각화 숏코드를 삽입하고 옵션을 조절합니다."\n:::\n`;
+        break;
+      case "columns-grid":
+        snippet = `\n::: columns-grid cols=2\n- title: "HTML Guide"\n  desc: "가로 다단 형태의 깔끔한 가이드 북 레이아웃"\n  meta: "독립 실행 HTML 파일"\n- title: "16:9 Slides"\n  desc: "발표 및 스크린 공유를 위한 와이드 슬라이드 레이아웃"\n  meta: "프레젠테이션 최적화"\n:::\n`;
+        break;
+      case "workflow-flow":
+        snippet = `\n::: workflow-flow\n- icon: "✏️"\n  title: "마크다운 작성"\n  meta: "에디터 사용"\n- icon: "⚙️"\n  title: "V2 컴파일"\n  meta: "백엔드 변환"\n:::\n`;
+        break;
+      case "summary-box":
+        snippet = `\n::: summary-box\n- title: "요약정리"\n  desc: "시각화 숏코드를 활용하면 핵심 개념을 직관적으로 전달할 수 있습니다."\n  meta: "21종 숏코드 | HTML 연동 | PPTX 연동"\n:::\n`;
+        break;
+      case "faq-list":
+        snippet = `\n::: faq-list\n- title: "Q. 숏코드가 정상적으로 렌더링되지 않아요."\n  desc: "A. 숏코드 내부 인덴트(여백)나 문법이 V2 규격(::: 숏코드명)과 일치하는지 확인하십시오."\n:::\n`;
+        break;
+      case "console-box":
+        snippet = `\n::: console-box\n- title: "가이드 생성 결과"\n  desc: |\n    [System] build-guide.mjs 빌드 완료\n    [Success] C:\\ai\\cs_v2\\publish\\index.html 생성 성공!\n:::\n`;
+        break;
+      case "cmd-box":
+        snippet = `\n::: cmd-box\n- title: "V2 서버 구동"\n  tag: "bash"\n  desc: "npm run dev"\n:::\n`;
+        break;
+      case "os-tabs":
+        snippet = `\n::: os-tabs\n- title: "Windows"\n  desc: "Windows OS의 설정 가이드 내용을 마크다운으로 기술합니다."\n- title: "macOS"\n  desc: "macOS용 단축키 및 실행 명령어 가이드를 작성합니다."\n:::\n`;
+        break;
+      case "takeaway-banner":
+        snippet = `\n::: takeaway-banner\n- icon: "💡"\n  title: "Key Takeaway"\n  desc: "숏코드의 진정한 가치는 텍스트 정보의 시각적 컴포넌트 자동화에 있습니다."\n:::\n`;
+        break;
+      case "step-flow":
+        snippet = `\n::: step-flow\n- icon: "👨"\n  title: "요구사항 정의"\n  desc: "기능 정의 및 범위 확정"\n  tag: "active"\n- icon: "💻"\n  title: "시나리오 설계"\n  desc: "동선 및 와이어프레임 설계"\n:::\n`;
+        break;
+      case "part-banner":
+        snippet = `\n::: part-banner\n- icon: "2부"\n  title: "핵심 가이드 마스터"\n  desc: "V2.0에서 강화된 숏코드로 다양한 웹/PPTX 변환 실무 적용하기"\n  tag: "Ch.10 - 20"\n:::\n`;
+        break;
+      case "summary-bar":
+        snippet = `\n::: summary-bar\n- icon: "21종"\n  title: "핵심 숏코드"\n- icon: "29종"\n  title: "별칭 포함 지원 규격"\n:::\n`;
+        break;
+      case "badge-grid":
+        snippet = `\n::: badge-grid\n- icon: "🌟"\n  title: "신속성"\n  tag: "Fast"\n- icon: "🔒"\n  title: "보안성"\n  tag: "Secure"\n:::\n`;
+        break;
+      case "skill-list":
+        snippet = `\n::: skill-list\n- icon: "⚡"\n  title: "초고속 로딩"\n  desc: "Vite 기반 빌드로 브라우저 첫 렌더링 최적화"\n  bullet: "HMR 지원"\n:::\n`;
         break;
       default:
         return;
@@ -413,15 +464,44 @@ style: custom-blue
                 className="bg-blue-50/50 border border-blue-200 text-blue-800 rounded px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer hover:bg-blue-550 hover:text-white transition-colors"
               >
                 <option value="" disabled>선택 삽입...</option>
-                <option value="editor-box">🖥️ 에디터 박스 (editor-box)</option>
-                <option value="compare-split">⚖️ 명도/사양 대비 (compare-split)</option>
-                <option value="compare-grid">📋 비교 그리드 (compare-grid)</option>
-                <option value="network-box">🕸️ 네트워크 다이어그램 (network-box)</option>
-                <option value="stat-grid">📊 통계 지표 (stat-grid)</option>
-                <option value="git-flow">🔧 깃 플로우 (git-flow)</option>
-                <option value="alert-box">⚠️ 경고 박스 (alert-box)</option>
-                <option value="tool-list">🧰 도구 목록 (tool-list)</option>
-                <option value="plan-grid">💳 요금제 카드 (plan-grid)</option>
+                <optgroup label="📋 비교 & 대조 (Compare & Diff)">
+                  <option value="compare-split">⚖️ 2단 대조 비교 (compare-split)</option>
+                  <option value="compare-diff">🔍 Before/After 대조 (compare-diff)</option>
+                  <option value="compare-grid">📋 비교 그리드 (compare-grid)</option>
+                  <option value="columns-grid">🗂️ 다단 정보 카드 그리드 (columns-grid)</option>
+                </optgroup>
+                <optgroup label="🖥️ 코드 & 터미널 (Code & Command)">
+                  <option value="editor-box">🖥️ 에디터 시뮬레이션 (editor-box)</option>
+                  <option value="console-box">💻 콘솔 출력 (console-box)</option>
+                  <option value="cmd-box">⌨️ 터미널 명령어 (cmd-box)</option>
+                </optgroup>
+                <optgroup label="🕸️ 시각 자료 & 흐름 (Visuals & Flows)">
+                  <option value="network-box">🕸️ 네트워크 다이어그램 (network-box)</option>
+                  <option value="git-flow">🔧 Git Flow 흐름도 (git-flow)</option>
+                  <option value="workflow-flow">🔄 가로 워크플로우 (workflow-flow)</option>
+                  <option value="step-flow">➡️ 가로 이정표 흐름도 (step-flow)</option>
+                </optgroup>
+                <optgroup label="🧩 콘텐츠 그리드 (Content Grids)">
+                  <option value="icon-grid">🧩 아이콘 카드 그리드 (icon-grid)</option>
+                  <option value="feature-grid">⭐ 핵심 기능 카드 그리드 (feature-grid)</option>
+                  <option value="tool-list">🧰 도구 목록 (tool-list)</option>
+                  <option value="plan-grid">💳 요금제 카드 그리드 (plan-grid)</option>
+                  <option value="badge-grid">🏷️ 배지 칩 그리드 (badge-grid)</option>
+                  <option value="stat-grid">📊 통계 지표 그리드 (stat-grid)</option>
+                  <option value="skill-list">🎯 스킬 리스트 (skill-list)</option>
+                </optgroup>
+                <optgroup label="📢 정보 & 알림 (Info & Highlights)">
+                  <option value="alert-box">⚠️ 경고/알림 박스 (alert-box)</option>
+                  <option value="summary-box">📝 하단 요약 박스 (summary-box)</option>
+                  <option value="takeaway-banner">💡 핵심 테이크어웨이 (takeaway-banner)</option>
+                  <option value="part-banner">🚩 파트/챕터 시작 배너 (part-banner)</option>
+                  <option value="summary-bar">📈 하단 수치 요약 바 (summary-bar)</option>
+                </optgroup>
+                <optgroup label="🔢 구조 & 내비게이션 (Structure & Nav)">
+                  <option value="step-list">🔢 순서형 단계 리스트 (step-list)</option>
+                  <option value="faq-list">❓ FAQ 아코디언 (faq-list)</option>
+                  <option value="os-tabs">📁 OS/탭 전환 (os-tabs)</option>
+                </optgroup>
               </select>
             </div>
           </div>

@@ -434,6 +434,39 @@ style: custom-blue
     }
   };
 
+  const handleFolderPick = async (target: "input" | "output" | "save") => {
+    try {
+      const res = await fetch("/api/select-folder", {
+        method: "POST"
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.selectedPath) {
+          if (target === "input") {
+            setBulkInputPath(data.selectedPath);
+          } else if (target === "output") {
+            setBulkOutputPath(data.selectedPath);
+          } else if (target === "save") {
+            setOutputPath(data.selectedPath);
+          }
+          toast({
+            title: "폴더 선택 완료",
+            description: `선택된 경로: ${data.selectedPath}`,
+          });
+        }
+      } else {
+        const errData = await res.json();
+        throw new Error(errData.error || "폴더 선택 실패");
+      }
+    } catch (err: any) {
+      toast({
+        title: "오류",
+        description: err.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-140px)] min-h-[500px] text-slate-800">
       {/* Left panel: Editor & Settings */}
@@ -612,7 +645,16 @@ style: custom-blue
           <div className="space-y-2">
             {!isBulkMode ? (
               <>
-                <div className="font-semibold text-slate-500">2. 저장 위치 옵션</div>
+                <div className="font-semibold text-slate-500 flex items-center justify-between">
+                  <span>2. 저장 위치 옵션</span>
+                  <button
+                    type="button"
+                    onClick={() => handleFolderPick("save")}
+                    className="text-[10px] text-blue-600 hover:text-blue-800 font-bold underline"
+                  >
+                    폴더 선택...
+                  </button>
+                </div>
                 <div className="flex flex-col gap-1.5">
                   <select
                     value={saveOption}
@@ -634,7 +676,16 @@ style: custom-blue
             ) : (
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <div className="font-semibold text-slate-500">2. 입력 폴더</div>
+                  <div className="font-semibold text-slate-500 flex items-center justify-between">
+                    <span>2. 입력 폴더</span>
+                    <button
+                      type="button"
+                      onClick={() => handleFolderPick("input")}
+                      className="text-[10px] text-blue-600 hover:text-blue-800 font-bold underline"
+                    >
+                      선택...
+                    </button>
+                  </div>
                   <input
                     type="text"
                     value={bulkInputPath}
@@ -644,7 +695,16 @@ style: custom-blue
                   />
                 </div>
                 <div className="space-y-1">
-                  <div className="font-semibold text-slate-500">3. 출력 폴더</div>
+                  <div className="font-semibold text-slate-500 flex items-center justify-between">
+                    <span>3. 출력 폴더</span>
+                    <button
+                      type="button"
+                      onClick={() => handleFolderPick("output")}
+                      className="text-[10px] text-blue-600 hover:text-blue-800 font-bold underline"
+                    >
+                      선택...
+                    </button>
+                  </div>
                   <input
                     type="text"
                     value={bulkOutputPath}

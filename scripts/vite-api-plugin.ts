@@ -453,6 +453,33 @@ export function viteApiPlugin(): Plugin {
             return;
           }
 
+          // 5-3. POST /api/select-folder
+          if (url.pathname === "/api/select-folder" && method === "POST") {
+            try {
+              const rootDirEscaped = rootDir.replace(/\\/g, "\\\\");
+              const psCommand = `Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.FolderBrowserDialog; $f.Description = '변환 또는 저장할 폴더를 선택하십시오.'; $f.SelectedPath = '${rootDirEscaped}'; if ($f.ShowDialog() -eq 'OK') { Write-Output $f.SelectedPath }`;
+              const { stdout } = await execAsync(`powershell -NoProfile -Command "${psCommand}"`);
+              const selectedPath = stdout.trim();
+              
+              if (selectedPath) {
+                let resultPath = selectedPath;
+                if (selectedPath.toLowerCase().startsWith(rootDir.toLowerCase())) {
+                  resultPath = path.relative(rootDir, selectedPath).replace(/\\/g, "/");
+                }
+                res.setHeader("Content-Type", "application/json; charset=utf-8");
+                res.end(JSON.stringify({ selectedPath: resultPath }));
+              } else {
+                res.setHeader("Content-Type", "application/json; charset=utf-8");
+                res.end(JSON.stringify({ selectedPath: null }));
+              }
+            } catch (err: any) {
+              res.statusCode = 500;
+              res.setHeader("Content-Type", "application/json; charset=utf-8");
+              res.end(JSON.stringify({ error: err.message }));
+            }
+            return;
+          }
+
           // 6. POST /api/save-generate
           if (url.pathname === "/api/save-generate" && method === "POST") {
             const { markdown, filename, outputPath, saveOption, formats, style, options } = await getBody();

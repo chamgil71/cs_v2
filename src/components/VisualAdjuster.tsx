@@ -10,6 +10,11 @@ import {
   Settings
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { FALLBACK_STYLES } from '../lib/client-compiler';
+
+// file:// 로 직접 열린 standalone 환경: 백엔드 API가 없으므로 내장 폴백 스타일로 동작하고
+// 서버 저장(styles.json 쓰기)은 비활성화한다.
+const IS_STANDALONE = typeof window !== "undefined" && window.location.protocol === "file:";
 
 interface ThemeDetails {
   label: string;
@@ -88,6 +93,18 @@ export default function VisualAdjuster() {
   };
 
   useEffect(() => {
+    // standalone(file://) 환경: API 호출 없이 내장 폴백 스타일을 로드
+    if (IS_STANDALONE) {
+      const data = FALLBACK_STYLES as Record<string, any>;
+      setStyles(data);
+      const firstKey = data[selectedStyle] ? selectedStyle : Object.keys(data)[0];
+      if (firstKey) {
+        setSelectedStyle(firstKey);
+        setThemeForm({ ...data[firstKey] });
+        setEditingThemeKey(firstKey);
+      }
+      return;
+    }
     fetchStyles();
   }, []);
 
@@ -183,6 +200,15 @@ export default function VisualAdjuster() {
 
   // Save styles to backend
   const handleSaveStylesToServer = async () => {
+    // standalone(file://) 환경에서는 서버 파일 쓰기가 불가능하므로 안내 후 중단
+    if (IS_STANDALONE) {
+      toast({
+        title: "standalone 모드 안내",
+        description: "서버 없이 단독 실행 중이라 styles.json 파일 저장은 사용할 수 없습니다. 서버 연계 모드(dev)에서 저장하세요.",
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       const res = await fetch("/api/save-styles", {
         method: "POST",

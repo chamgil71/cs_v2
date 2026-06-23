@@ -21,6 +21,10 @@ import { useToast } from '@/hooks/use-toast';
 import { getContrast } from '../lib/wcag';
 import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
 
+// file:// 로 직접 열린 standalone 환경에서는 백엔드 API가 존재하지 않으므로,
+// 마운트 시 list-styles/list-files 호출을 생략하고 내장 폴백으로 동작한다.
+const IS_STANDALONE = typeof window !== "undefined" && window.location.protocol === "file:";
+
 const downloadFile = (content: string, filename: string, contentType: string) => {
   const blob = new Blob([content], { type: contentType });
   const url = URL.createObjectURL(blob);
@@ -596,6 +600,11 @@ style: custom-blue
 
   // Load styles and file list on mount
   useEffect(() => {
+    // 서버가 없는 standalone(file://) 환경: API 호출을 생략하고 내장 폴백 스타일 사용
+    if (IS_STANDALONE) {
+      setStyles(FALLBACK_STYLES);
+      return;
+    }
     fetchStyles();
     fetchFiles();
   }, []);
@@ -701,6 +710,17 @@ style: custom-blue
   // Trigger preview compilation
   const triggerPreview = async (mdContent = markdown, mode = previewMode, style = selectedStyle) => {
     setGeneratingPreview(true);
+    // standalone(file://) 환경: API 시도 없이 클라이언트 컴파일러로 바로 미리보기 생성
+    if (IS_STANDALONE) {
+      try {
+        setPreviewHtml(clientCompileMarkdown(mdContent, mode, style, styles));
+      } catch (localErr: any) {
+        toast({ title: "로컬 컴파일 오류", description: localErr.message, variant: "destructive" });
+      } finally {
+        setGeneratingPreview(false);
+      }
+      return;
+    }
     try {
       const res = await fetch("/api/preview", {
         method: "POST",

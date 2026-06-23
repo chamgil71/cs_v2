@@ -244,3 +244,50 @@ b60a9cd feat: standalone 빌드 파이프라인 및 클라이언트 사이드 �
 | `npx tsc --noEmit` | ✅ 통과 |
 | `vite build` (일반) | ✅ 472 KB (gzip 135 KB) |
 | `vite build` (standalone) | ✅ 단일 파일 빌드 정상 |
+
+---
+
+## 8. 모듈 분리 standalone 패키징 (3차)
+
+> 작업일: 2026-06-23 (3차)  
+> 요청: `build:standalone` 산출물의 서버리스 동작 검증 + 모듈 1·2를 각각 별도 HTML로 분리
+
+### 8-1. 서버리스 동작 검증
+
+`dist/standalone.html`을 **네트워크를 전부 차단한 file:// 환경**(puppeteer headless)에서 로드하여 검증:
+
+- React 마운트 성공(root 17KB 렌더), 모듈 1·2 모두 표시, **치명 콘솔/페이지 에러 0건**
+- 외부 의존성은 Google Fonts(`fonts.googleapis.com`) 1건뿐 — 오프라인 시 시스템 폰트로 자동 폴백, 기능 영향 없음
+- JS/CSS는 `vite-plugin-singlefile`로 전량 인라인됨
+
+### 8-2. 모듈 1·2 분리 빌드
+
+`vite-plugin-singlefile`은 코드 스플리팅을 끄므로 다중 입력을 지원하지 않는다. 따라서 엔트리를 환경변수(`SA_ENTRY`)로 선택해 **순차 빌드 후 dist에 누적**하는 구조로 전환.
+
+| 산출물 | 내용 | 크기 | 서버 의존 |
+|---|---|---:|---|
+| `dist/standalone.html` | 모듈 1 + 2 통합 (탭 전환) | 548 KB | 없음 |
+| `dist/module1.html` | **모듈 1** — PPTX 디자인 인스펙터 | 415 KB | 없음 (완전 서버리스) |
+| `dist/module2.html` | **모듈 2** — 가이드북 컴파일러 & 배색 빌더 | 357 KB | 없음 (클라이언트 컴파일 폴백) |
+
+- 신규: `src/standalone/module1-main.tsx`, `module2-main.tsx`, `module1.html`, `module2.html`, `scripts/build-standalone.mjs`
+- 트리 셰이킹으로 각 모듈은 필요한 라이브러리만 포함 (모듈 1은 JSZip/pptxgenjs/html2canvas 포함으로 더 큼)
+- `npm run build:standalone` 한 번으로 3종 모두 생성
+
+### 8-3. 모듈 2의 서버리스 개선
+
+`file://` 환경(`window.location.protocol === 'file:'`)을 감지하여 백엔드 API 호출을 생략하도록 `MarkdownCompiler`·`VisualAdjuster` 개선:
+
+- 마운트 시 `list-styles`/`list-files` 호출 생략 → 내장 `FALLBACK_STYLES` 즉시 사용
+- 미리보기는 API 시도 없이 `clientCompileMarkdown`으로 직접 생성
+- 서버 전용 기능(styles.json 디스크 저장)은 안내 토스트 후 비활성화
+- **결과:** 분리 전 발생하던 마운트 시 CORS/fetch 에러 → **0건**으로 제거
+
+### 8-4. 검증 요약 (puppeteer headless, 네트워크 차단)
+
+| 산출물 | 마운트 | 모듈 격리 | 치명 에러 |
+|---|:---:|:---:|:---:|
+| `module1.html` | ✅ | ✅ 컴파일러 미포함 | 0건 |
+| `module2.html` (작성 탭) | ✅ | — | 0건 |
+| `module2.html` (배색 빌더 탭) | ✅ | — | 0건 |
+| `standalone.html` (통합) | ✅ | — | 0건 |

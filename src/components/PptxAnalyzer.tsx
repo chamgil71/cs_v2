@@ -15,8 +15,49 @@ import {
   applyShapeFillLine,
   applyShapePresets,
   applyLayoutToXml,
-  doLayoutAnalysis
+  doLayoutAnalysis,
+  FROM_NM
 } from '../../scripts/pptx-analyzer';
+
+async function generateReorderedPptx(zip: JSZip): Promise<Blob> {
+  const newZip = new JSZip();
+
+  // 1. Add [Content_Types].xml first
+  const ctFile = zip.file("[Content_Types].xml");
+  if (ctFile) {
+    const txt = await ctFile.async("string");
+    newZip.file("[Content_Types].xml", txt, { compression: 'DEFLATE' });
+  }
+
+  // 2. Add _rels/.rels second
+  const relsFile = zip.file("_rels/.rels");
+  if (relsFile) {
+    const txt = await relsFile.async("string");
+    newZip.file("_rels/.rels", txt, { compression: 'DEFLATE' });
+  }
+
+  // 3. Add all other files
+  for (const name of Object.keys(zip.files)) {
+    if (name === "[Content_Types].xml" || name === "_rels/.rels") continue;
+    const file = zip.files[name];
+    if (file.dir) continue;
+
+    const isXml = name.endsWith('.xml') || name.endsWith('.rels');
+    if (isXml) {
+      const txt = await file.async("string");
+      newZip.file(name, txt, { compression: 'DEFLATE' });
+    } else {
+      const bin = await file.async("uint8array");
+      newZip.file(name, bin, { binary: true, compression: 'STORE' });
+    }
+  }
+
+  return await newZip.generateAsync({
+    type: 'blob',
+    mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+  });
+}
+
 import {
   Upload,
   Settings,
@@ -39,6 +80,55 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+// trigDl triggers browser file downloads
+const trigDl = (blob: Blob, filename: string) => {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+// renderShapeThumb draws a preview representation of a shape based on its geometry, solid fill, and outline
+const renderShapeThumb = (s: any) => {
+  let bgColor = '#cbd5e1'; // default slate-300
+  if (s.fill && s.fill.type === 'solid' && s.fill.color) {
+    bgColor = s.fill.color.startsWith('#') ? s.fill.color : `#${s.fill.color}`;
+  }
+  let borderColor = '#94a3b8'; // default slate-400
+  let borderWidth = '1px';
+  if (s.outline && s.outline.color) {
+    borderColor = s.outline.color.startsWith('#') ? s.outline.color : `#${s.outline.color}`;
+    borderWidth = `${Math.max(1, Math.round(parseFloat(s.outline.widthPt) || 1))}px`;
+  }
+  
+  let borderRadius = '2px';
+  if (s.geom === 'ellipse' || s.geom === 'circle') {
+    borderRadius = '50%';
+  } else if (s.geom === 'roundRect') {
+    borderRadius = '6px';
+  }
+  
+  return (
+    <div className="flex items-center justify-center w-full">
+      <div 
+        style={{ 
+          backgroundColor: bgColor, 
+          borderColor: borderColor, 
+          borderWidth: borderWidth,
+          borderStyle: 'solid',
+          borderRadius: borderRadius
+        }} 
+        className="w-6 h-6 shadow-sm"
+        title={`${s.geom || 'rect'} | Fill: ${s.fill?.type || 'none'} | Outline: ${s.outline?.color || 'none'}`}
+      />
+    </div>
+  );
+};
 
 // Recommended 11 fonts list
 const FONT_PRESETS = [
@@ -231,6 +321,8 @@ export default function PptxAnalyzer() {
   const [resultBlob, setResultBlob] = useState<Blob | null>(null);
   const [convSummary, setConvSummary] = useState<any>({});
 
+  const [isTgtDragging, setIsTgtDragging] = useState(false);
+
   const baselineInputRef = useRef<HTMLInputElement>(null);
   const targetInputRef = useRef<HTMLInputElement>(null);
 
@@ -417,6 +509,12 @@ export default function PptxAnalyzer() {
     setLayoutPresets(layoutPresets.filter(p => p.id !== id));
   };
 
+  const handleUpdateLayoutValue = (index: number, field: 'x' | 'y' | 'w' | 'h', val: number) => {
+    const updated = [...v2LayoutRules];
+    updated[index][field] = val;
+    setV2LayoutRules(updated);
+  };
+
   // Baseline Logo Registration
   const handleLogoUpload = (key: 'normal' | 'bg', e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0]) return;
@@ -518,6 +616,178 @@ export default function PptxAnalyzer() {
     e.target.value = '';
   };
 
+  // Target Conversion Event Handlers
+  const handleToggleColorActive = (idx: number, active: boolean) => {
+    const updated = [...colorMappings];
+    updated[idx].active = active;
+    setColorMappings(updated);
+  };
+
+  const handleUpdateToColor = (idx: number, value: string) => {
+    const updated = [...colorMappings];
+    let cleaned = value.replace('#', '').toUpperCase();
+    if (cleaned.length > 6) cleaned = cleaned.slice(0, 6);
+    updated[idx].to = cleaned;
+    updated[idx].active = true;
+    setColorMappings(updated);
+  };
+
+  const applyPaletteToSelected = (hex: string, name: string) => {
+    if (selectedColorIdx < 0) return;
+    const updated = [...colorMappings];
+    updated[selectedColorIdx].to = hex.replace('#', '').toUpperCase();
+    updated[selectedColorIdx].toName = name;
+    updated[selectedColorIdx].active = true;
+    setColorMappings(updated);
+  };
+
+  const handleToggleFontActive = (idx: number, active: boolean) => {
+    const updated = [...fontMappings];
+    updated[idx].active = active;
+    setFontMappings(updated);
+  };
+
+  const handleUpdateToFont = (idx: number, toFont: string) => {
+    const updated = [...fontMappings];
+    updated[idx].to = toFont;
+    updated[idx].active = !!(toFont && toFont !== updated[idx].from);
+    setFontMappings(updated);
+  };
+
+  const handleUpdateFontBold = (idx: number, boldMode: string) => {
+    const updated = [...fontMappings];
+    updated[idx].boldMode = boldMode;
+    setFontMappings(updated);
+  };
+
+  const handleUpdateFontSize = (idx: number, scale: number) => {
+    const updated = [...fontMappings];
+    updated[idx].sizeScale = scale;
+    setFontMappings(updated);
+  };
+
+  const handleToggleShapeOp = (key: string) => {
+    setShapeOps(prev => ({
+      ...prev,
+      [key]: !prev[key as keyof typeof prev]
+    }));
+  };
+
+  const handleUpdateFillLine = (key: string, value: any) => {
+    setFillLine(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const registerShapeAsPreset = (uid: string) => {
+    const shape = tgtShapes.find(s => s.uid === uid);
+    if (!shape) return;
+    const newPreset = {
+      id: 'sp' + Date.now(),
+      name: `${shape.name} Preset`,
+      srcSlide: shape.slide,
+      srcName: shape.name,
+      effects: shape.effects || {},
+      fill: shape.fill || {},
+      line: shape.line || {}
+    };
+    setShapePresets(prev => [...prev, newPreset]);
+    toast({ title: "표준 프리셋 등록", description: `${shape.name}의 디자인 효과가 프리셋으로 등록되었습니다.` });
+  };
+
+  const deletePreset = (id: string) => {
+    setShapePresets(prev => prev.filter(p => p.id !== id));
+    setActivePresetsMap(prev => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach(k => {
+        if (updated[k] === id) delete updated[k];
+      });
+      return updated;
+    });
+  };
+
+  const assignPresetToShapesWithEffects = (presetId: string) => {
+    const updated = { ...activePresetsMap };
+    tgtShapes.forEach(s => {
+      if (s.effects?.shadow || s.effects?.glow) {
+        updated[s.uid] = presetId;
+      }
+    });
+    setActivePresetsMap(updated);
+  };
+
+  const assignPresetToAll = (presetId: string) => {
+    const updated = { ...activePresetsMap };
+    tgtShapes.forEach(s => {
+      updated[s.uid] = presetId;
+    });
+    setActivePresetsMap(updated);
+  };
+
+  const clearAllPresetsAssignments = () => {
+    setActivePresetsMap({});
+  };
+
+  const assignPresetToShape = (uid: string, presetId: string) => {
+    setActivePresetsMap(prev => {
+      const updated = { ...prev };
+      if (!presetId) {
+        delete updated[uid];
+      } else {
+        updated[uid] = presetId;
+      }
+      return updated;
+    });
+  };
+
+  const handleDownloadMappingJson = () => {
+    const data = {
+      name: 'Creative Spark V2 Mapping Config',
+      colors: colorMappings,
+      fonts: fontMappings,
+      shapeOps,
+      fillLine,
+      shapePresets,
+      activePresetsMap
+    };
+    trigDl(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }), 'target_mappings.json');
+  };
+
+  const handleUploadMappingJson = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0]) return;
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const parsed = JSON.parse(evt.target?.result as string);
+        if (Array.isArray(parsed.colors)) {
+          setColorMappings(parsed.colors);
+        }
+        if (Array.isArray(parsed.fonts)) {
+          setFontMappings(parsed.fonts);
+        }
+        if (parsed.shapeOps) {
+          setShapeOps(prev => ({ ...prev, ...parsed.shapeOps }));
+        }
+        if (parsed.fillLine) {
+          setFillLine(prev => ({ ...prev, ...parsed.fillLine }));
+        }
+        if (Array.isArray(parsed.shapePresets)) {
+          setShapePresets(parsed.shapePresets);
+        }
+        if (parsed.activePresetsMap) {
+          setActivePresetsMap(parsed.activePresetsMap);
+        }
+        toast({ title: "매핑 파일 로드 성공", description: `${file.name} 매핑 설정이 적용되었습니다.` });
+      } catch (err: any) {
+        alert(`파싱 실패: ${err.message}`);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
 
   // --- TARGET UPLOAD & CONVERSION (Module B) ---
   const handleTargetFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -598,7 +868,8 @@ export default function PptxAnalyzer() {
             inSlides: details.inSlides,
             inMasters: details.inMasters,
             boldMode: 'keep',
-            sizeScale: 1
+            sizeScale: 1,
+            sizes: details.sizes || []
           };
         });
 
@@ -654,11 +925,22 @@ export default function PptxAnalyzer() {
         const f = zip.files[k];
         if (f.dir || !k.endsWith('.xml')) continue;
 
-        let txt = await f.async('string');
-        let isChanged = false;
-
         const isSlide = /^ppt\/slides\/slide\d+\.xml$/.test(k);
         const isMasterLayout = /slideLayout|slideMaster/.test(k);
+        const isContentXml = 
+          isSlide || 
+          isMasterLayout ||
+          k.startsWith('ppt/notesSlides/') || 
+          k.startsWith('ppt/notesMasters/') || 
+          k.startsWith('ppt/handoutMasters/') || 
+          k.startsWith('ppt/drawings/') || 
+          k.startsWith('ppt/charts/') || 
+          k.startsWith('ppt/diagrams/');
+
+        if (!isContentXml) continue;
+
+        let txt = await f.async('string');
+        let isChanged = false;
 
         // 1. Font run size/bold
         if (runFnt.length && (isSlide || isMasterLayout)) {
@@ -744,17 +1026,13 @@ export default function PptxAnalyzer() {
         }
 
         if (isChanged) {
-          zip.file(k, txt);
+          zip.file(k, txt, { compression: 'DEFLATE' });
           filesModified++;
         }
       }
 
       setLoadingMsg('바이너리 합산 패키징 중...');
-      const outBlob = await zip.generateAsync({
-        type: 'blob',
-        compression: 'DEFLATE',
-        mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-      });
+      const outBlob = await generateReorderedPptx(zip);
 
       const outName = `${tgtFileName.replace(/\.pptx$/i, '')}_변환_v2.pptx`;
       setResultBlob(outBlob);
@@ -916,7 +1194,7 @@ export default function PptxAnalyzer() {
                   <div key={i} className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex flex-col gap-2 relative group">
                     <button
                       onClick={() => handleDeleteBaseColor(i)}
-                      className="absolute top-2 right-2 text-slate-650 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-2 right-2 text-slate-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       ✕
                     </button>
@@ -1306,7 +1584,38 @@ export default function PptxAnalyzer() {
             <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-xl">
               <div
                 onClick={() => targetInputRef.current?.click()}
-                className="border-2 border-dashed border-slate-200 bg-slate-50/30 hover:border-slate-700 hover:bg-slate-50/50 rounded-xl p-16 flex flex-col items-center justify-center cursor-pointer transition-all duration-200"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsTgtDragging(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsTgtDragging(false);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsTgtDragging(false);
+                  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    const file = e.dataTransfer.files[0];
+                    if (file.name.toLowerCase().endsWith('.pptx')) {
+                      processTargetFile(file);
+                    } else {
+                      alert('PPTX 파일만 업로드할 수 있습니다.');
+                    }
+                  }
+                }}
+                className={`border-2 border-dashed rounded-xl p-16 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 ${
+                  isTgtDragging
+                    ? 'border-blue-600 bg-blue-50/50 shadow-md scale-[1.01]'
+                    : 'border-slate-200 bg-slate-50/30 hover:border-slate-700 hover:bg-slate-50/50'
+                }`}
               >
                 <input
                   type="file"
@@ -1571,7 +1880,14 @@ export default function PptxAnalyzer() {
                                 />
                               </td>
                               <td className="p-3">
-                                <div className="font-mono text-slate-800">{m.from}</div>
+                                <div className="font-mono text-slate-800 flex items-center gap-1.5">
+                                  {m.from}
+                                  {m.sizes && m.sizes.length > 0 && (
+                                    <span className="text-[10px] text-slate-400 font-normal">
+                                      (크기: {m.sizes[0]}pt{m.sizes.length > 1 ? ` ~ ${m.sizes[m.sizes.length - 1]}pt` : ''})
+                                    </span>
+                                  )}
+                                </div>
                                 <div className="text-[9px] text-slate-500">{[m.inSlides && '슬라이드', m.inMasters && '마스터'].filter(Boolean).join(' / ')}</div>
                               </td>
                               <td className="p-3 text-slate-500 font-bold text-center">→</td>
@@ -1579,7 +1895,7 @@ export default function PptxAnalyzer() {
                                 <select
                                   value={m.to}
                                   onChange={(e) => handleUpdateToFont(idx, e.target.value)}
-                                  className="bg-slate-905 border border-slate-200 rounded px-2 py-1 text-slate-700 w-full max-w-[180px]"
+                                  className="bg-white border border-slate-200 rounded px-2 py-1 text-slate-700 w-full max-w-[180px] text-xs"
                                 >
                                   <option value="">(변환 안 함 - 원본 유지)</option>
                                   {FONT_PRESETS.map(f => (
@@ -1591,7 +1907,7 @@ export default function PptxAnalyzer() {
                                 <select
                                   value={m.boldMode}
                                   onChange={(e) => handleUpdateFontBold(idx, e.target.value)}
-                                  className="bg-slate-905 border border-slate-200 rounded px-1.5 py-1 text-slate-350 text-[11px]"
+                                  className="bg-white border border-slate-200 rounded px-1.5 py-1 text-slate-600 text-[11px]"
                                 >
                                   <option value="keep">유지</option>
                                   <option value="on">굵게</option>
@@ -1602,7 +1918,7 @@ export default function PptxAnalyzer() {
                                 <select
                                   value={m.sizeScale.toString()}
                                   onChange={(e) => handleUpdateFontSize(idx, parseFloat(e.target.value))}
-                                  className="bg-slate-905 border border-slate-200 rounded px-1.5 py-1 text-slate-355 text-[11px]"
+                                  className="bg-white border border-slate-200 rounded px-1.5 py-1 text-slate-600 text-[11px]"
                                 >
                                   <option value="1">유지</option>
                                   <option value="0.9">×0.9</option>
@@ -2050,7 +2366,7 @@ export default function PptxAnalyzer() {
                 {resultBlob && (
                   <button
                     onClick={() => trigDl(resultBlob, convSummary.outFileName)}
-                    className="bg-emerald-650 hover:bg-emerald-600 text-white font-semibold py-2 px-5 rounded-lg text-xs transition-colors"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-5 rounded-lg text-xs transition-colors"
                   >
                     다시 다운로드
                   </button>

@@ -93,7 +93,11 @@ export async function extractThemeColors(zip) {
 
 // 2. Extract All Colors from Zip XML files
 export async function extractColors(zip) {
-  const xmlKeys = Object.keys(zip.files).filter(k => k.endsWith('.xml') && !zip.files[k].dir);
+  const xmlKeys = Object.keys(zip.files).filter(k => 
+    k.endsWith('.xml') && 
+    !zip.files[k].dir && 
+    (k.startsWith('ppt/slides/') || k.startsWith('ppt/slideMasters/') || k.startsWith('ppt/slideLayouts/'))
+  );
   const det = {};
   const sch = {};
   for (const k of xmlKeys) {
@@ -129,7 +133,11 @@ export async function extractColors(zip) {
 
 // 3. Extract All Fonts from Zip XML files
 export async function extractFonts(zip) {
-  const xmlKeys = Object.keys(zip.files).filter(k => k.endsWith('.xml') && !zip.files[k].dir);
+  const xmlKeys = Object.keys(zip.files).filter(k => 
+    k.endsWith('.xml') && 
+    !zip.files[k].dir && 
+    (k.startsWith('ppt/slides/') || k.startsWith('ppt/slideMasters/') || k.startsWith('ppt/slideLayouts/'))
+  );
   const fontMap = {};
   const SKIP_FONTS = new Set([
     '+mj-lt', '+mn-lt', '+mj-ea', '+mn-ea', '+mj-cs', '+mn-cs',
@@ -142,13 +150,39 @@ export async function extractFonts(zip) {
     while ((m = re.exec(txt)) !== null) {
       const tf = m[1];
       if (SKIP_FONTS.has(tf) || tf.startsWith('+')) continue;
-      if (!fontMap[tf]) fontMap[tf] = { count: 0, inSlides: false, inMasters: false, inTheme: false };
+      if (!fontMap[tf]) {
+        fontMap[tf] = { 
+          count: 0, 
+          inSlides: false, 
+          inMasters: false, 
+          inTheme: false,
+          sizes: new Set()
+        };
+      }
       fontMap[tf].count++;
       if (/ppt\/slides\/slide\d/.test(k)) fontMap[tf].inSlides = true;
       if (/slideMaster|slideLayout/.test(k)) fontMap[tf].inMasters = true;
       if (/theme/.test(k)) fontMap[tf].inTheme = true;
+
+      // Search backwards in the XML for a size property (sz="...") within 250 characters
+      const before = txt.substring(Math.max(0, m.index - 250), m.index);
+      const szMatch = before.match(/sz="(\d+)"/g);
+      if (szMatch) {
+        const lastSz = szMatch[szMatch.length - 1];
+        const valMatch = lastSz.match(/\d+/);
+        if (valMatch) {
+          const sizePt = parseInt(valMatch[0]) / 100;
+          fontMap[tf].sizes.add(sizePt);
+        }
+      }
     }
   }
+
+  // Convert sets to sorted arrays
+  for (const tf of Object.keys(fontMap)) {
+    fontMap[tf].sizes = Array.from(fontMap[tf].sizes).sort((a, b) => a - b);
+  }
+
   return fontMap;
 }
 

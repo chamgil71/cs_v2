@@ -15,7 +15,8 @@ import {
   applyShapeFillLine,
   applyShapePresets,
   applyLayoutToXml,
-  doLayoutAnalysis
+  doLayoutAnalysis,
+  FROM_NM
 } from '../../scripts/pptx-analyzer';
 import {
   Upload,
@@ -36,9 +37,59 @@ import {
   Trash2,
   Plus,
   Image as ImageIcon,
-  ChevronRight
+  ChevronRight,
+  HelpCircle
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+
+// trigDl triggers browser file downloads
+const trigDl = (blob: Blob, filename: string) => {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+// renderShapeThumb draws a preview representation of a shape based on its geometry, solid fill, and outline
+const renderShapeThumb = (s: any) => {
+  let bgColor = '#cbd5e1'; // default slate-300
+  if (s.fill && s.fill.type === 'solid' && s.fill.color) {
+    bgColor = s.fill.color.startsWith('#') ? s.fill.color : `#${s.fill.color}`;
+  }
+  let borderColor = '#94a3b8'; // default slate-400
+  let borderWidth = '1px';
+  if (s.outline && s.outline.color) {
+    borderColor = s.outline.color.startsWith('#') ? s.outline.color : `#${s.outline.color}`;
+    borderWidth = `${Math.max(1, Math.round(parseFloat(s.outline.widthPt) || 1))}px`;
+  }
+  
+  let borderRadius = '2px';
+  if (s.geom === 'ellipse' || s.geom === 'circle') {
+    borderRadius = '50%';
+  } else if (s.geom === 'roundRect') {
+    borderRadius = '6px';
+  }
+  
+  return (
+    <div className="flex items-center justify-center w-full">
+      <div 
+        style={{ 
+          backgroundColor: bgColor, 
+          borderColor: borderColor, 
+          borderWidth: borderWidth,
+          borderStyle: 'solid',
+          borderRadius: borderRadius
+        }} 
+        className="w-6 h-6 shadow-sm"
+        title={`${s.geom || 'rect'} | Fill: ${s.fill?.type || 'none'} | Outline: ${s.outline?.color || 'none'}`}
+      />
+    </div>
+  );
+};
 
 // Recommended 11 fonts list
 const FONT_PRESETS = [
@@ -133,6 +184,16 @@ function resolveShapeColor(c: string, themeColors: Record<string, string>) {
   return null;
 }
 
+const safeParse = (key: string, fallback: any) => {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : fallback;
+  } catch (err) {
+    console.error(`Failed to parse localStorage key "${key}":`, err);
+    return fallback;
+  }
+};
+
 function validateXmlStructure(xmlString: string, filename: string): boolean {
   try {
     const parser = new DOMParser();
@@ -171,26 +232,21 @@ export default function PptxInspectorSuite() {
   const [slideCx, setSlideCx] = useState(9144000); // 10 inches in EMUs (default 720pt)
   const [slideCy, setSlideCy] = useState(5143500); // 5.625 inches in EMUs (default 405pt)
   
-  const [v2Palette, setV2Palette] = useState<any[]>(() => {
-    const saved = localStorage.getItem('v2_baseline_palette');
-    return saved ? JSON.parse(saved) : DEFAULT_PALETTE.map(p => ({ ...p }));
-  });
-  const [v2LayoutRules, setV2LayoutRules] = useState<any[]>(() => {
-    const saved = localStorage.getItem('v2_baseline_layout');
-    return saved ? JSON.parse(saved) : DEFAULT_LAYOUT.map(l => ({ ...l }));
-  });
-  const [v2FontMappings, setV2FontMappings] = useState<any[]>(() => {
-    const saved = localStorage.getItem('v2_baseline_fonts');
-    return saved ? JSON.parse(saved) : DEFAULT_FONT_MAPPINGS.map(m => ({ ...m }));
-  });
-  const [logos, setLogos] = useState<{ normal: string | null; bg: string | null }>(() => {
-    const saved = localStorage.getItem('v2_baseline_logos');
-    return saved ? JSON.parse(saved) : { normal: null, bg: null };
-  });
-  const [layoutPresets, setLayoutPresets] = useState<any[]>(() => {
-    const saved = localStorage.getItem('v2_baseline_presets');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [v2Palette, setV2Palette] = useState<any[]>(() => 
+    safeParse('v2_baseline_palette', DEFAULT_PALETTE.map(p => ({ ...p })))
+  );
+  const [v2LayoutRules, setV2LayoutRules] = useState<any[]>(() => 
+    safeParse('v2_baseline_layout', DEFAULT_LAYOUT.map(l => ({ ...l })))
+  );
+  const [v2FontMappings, setV2FontMappings] = useState<any[]>(() => 
+    safeParse('v2_baseline_fonts', DEFAULT_FONT_MAPPINGS.map(m => ({ ...m })))
+  );
+  const [logos, setLogos] = useState<{ normal: string | null; bg: string | null }>(() => 
+    safeParse('v2_baseline_logos', { normal: null, bg: null })
+  );
+  const [layoutPresets, setLayoutPresets] = useState<any[]>(() => 
+    safeParse('v2_baseline_presets', [])
+  );
 
   // Detected stats in baseline PPTX
   const [rawDetectedColors, setRawDetectedColors] = useState<Record<string, any>>({});
@@ -256,14 +312,20 @@ export default function PptxInspectorSuite() {
   const [remapStatus, setRemapStatus] = useState('');
   const [remapResultBlob, setRemapResultBlob] = useState<Blob | null>(null);
   const [remapResultName, setRemapResultName] = useState('');
+  const [isTgtDragging, setIsTgtDragging] = useState(false);
+  const [isRemapDragging, setIsRemapDragging] = useState(false);
 
   const baselineInputRef = useRef<HTMLInputElement>(null);
   const targetInputRef = useRef<HTMLInputElement>(null);
 
   // --- HANDLERS FOR REMAPPER ---
-  const handleRemapperUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || !e.target.files[0]) return;
-    const uploadedFile = e.target.files[0];
+  const handleRemapperUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      processRemapFile(e.target.files[0]);
+    }
+  };
+
+  const processRemapFile = async (uploadedFile: File) => {
     setRemapFile(uploadedFile);
     setRemapLoading(true);
     setRemapStatus('PPTX 파일 로드 및 색상 검사 중...');
@@ -362,6 +424,21 @@ export default function PptxInspectorSuite() {
       for (const k of Object.keys(zip.files)) {
         const f = zip.files[k];
         if (f.dir || !k.endsWith('.xml')) continue;
+
+        const isSlide = /^ppt\/slides\/slide\d+\.xml$/.test(k);
+        const isMasterLayout = /slideLayout|slideMaster/.test(k);
+        const isContentXml = 
+          isSlide || 
+          isMasterLayout ||
+          k.startsWith('ppt/notesSlides/') || 
+          k.startsWith('ppt/notesMasters/') || 
+          k.startsWith('ppt/handoutMasters/') || 
+          k.startsWith('ppt/drawings/') || 
+          k.startsWith('ppt/charts/') || 
+          k.startsWith('ppt/diagrams/');
+
+        if (!isContentXml) continue;
+
         let txt = await f.async('string');
         let fileChanged = false;
 
@@ -381,7 +458,7 @@ export default function PptxInspectorSuite() {
           if (!validateXmlStructure(txt, k)) {
             throw new Error(`${k} XML 스키마 파싱 테스트 실패! 무결성이 훼손되었습니다.`);
           }
-          zip.file(k, txt);
+          zip.file(k, txt, { compression: 'DEFLATE' });
           changedFiles++;
         }
       }
@@ -389,7 +466,6 @@ export default function PptxInspectorSuite() {
       setRemapStatus('새로운 PPTX 바이너리 패키징 중...');
       const blob = await zip.generateAsync({
         type: 'blob',
-        compression: 'DEFLATE',
         mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
       });
 
@@ -605,6 +681,12 @@ export default function PptxInspectorSuite() {
     setLayoutPresets(layoutPresets.filter(p => p.id !== id));
   };
 
+  const handleUpdateLayoutValue = (index: number, field: 'x' | 'y' | 'w' | 'h', val: number) => {
+    const updated = [...v2LayoutRules];
+    updated[index][field] = val;
+    setV2LayoutRules(updated);
+  };
+
   // Baseline Logo Registration
   const handleLogoUpload = (key: 'normal' | 'bg', e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0]) return;
@@ -706,6 +788,178 @@ export default function PptxInspectorSuite() {
     e.target.value = '';
   };
 
+  // Target Conversion Event Handlers
+  const handleToggleColorActive = (idx: number, active: boolean) => {
+    const updated = [...colorMappings];
+    updated[idx].active = active;
+    setColorMappings(updated);
+  };
+
+  const handleUpdateToColor = (idx: number, value: string) => {
+    const updated = [...colorMappings];
+    let cleaned = value.replace('#', '').toUpperCase();
+    if (cleaned.length > 6) cleaned = cleaned.slice(0, 6);
+    updated[idx].to = cleaned;
+    updated[idx].active = true;
+    setColorMappings(updated);
+  };
+
+  const applyPaletteToSelected = (hex: string, name: string) => {
+    if (selectedColorIdx < 0) return;
+    const updated = [...colorMappings];
+    updated[selectedColorIdx].to = hex.replace('#', '').toUpperCase();
+    updated[selectedColorIdx].toName = name;
+    updated[selectedColorIdx].active = true;
+    setColorMappings(updated);
+  };
+
+  const handleToggleFontActive = (idx: number, active: boolean) => {
+    const updated = [...fontMappings];
+    updated[idx].active = active;
+    setFontMappings(updated);
+  };
+
+  const handleUpdateToFont = (idx: number, toFont: string) => {
+    const updated = [...fontMappings];
+    updated[idx].to = toFont;
+    updated[idx].active = !!(toFont && toFont !== updated[idx].from);
+    setFontMappings(updated);
+  };
+
+  const handleUpdateFontBold = (idx: number, boldMode: string) => {
+    const updated = [...fontMappings];
+    updated[idx].boldMode = boldMode;
+    setFontMappings(updated);
+  };
+
+  const handleUpdateFontSize = (idx: number, scale: number) => {
+    const updated = [...fontMappings];
+    updated[idx].sizeScale = scale;
+    setFontMappings(updated);
+  };
+
+  const handleToggleShapeOp = (key: string) => {
+    setShapeOps(prev => ({
+      ...prev,
+      [key]: !prev[key as keyof typeof prev]
+    }));
+  };
+
+  const handleUpdateFillLine = (key: string, value: any) => {
+    setFillLine(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const registerShapeAsPreset = (uid: string) => {
+    const shape = tgtShapes.find(s => s.uid === uid);
+    if (!shape) return;
+    const newPreset = {
+      id: 'sp' + Date.now(),
+      name: `${shape.name} Preset`,
+      srcSlide: shape.slide,
+      srcName: shape.name,
+      effects: shape.effects || {},
+      fill: shape.fill || {},
+      line: shape.line || {}
+    };
+    setShapePresets(prev => [...prev, newPreset]);
+    toast({ title: "표준 프리셋 등록", description: `${shape.name}의 디자인 효과가 프리셋으로 등록되었습니다.` });
+  };
+
+  const deletePreset = (id: string) => {
+    setShapePresets(prev => prev.filter(p => p.id !== id));
+    setActivePresetsMap(prev => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach(k => {
+        if (updated[k] === id) delete updated[k];
+      });
+      return updated;
+    });
+  };
+
+  const assignPresetToShapesWithEffects = (presetId: string) => {
+    const updated = { ...activePresetsMap };
+    tgtShapes.forEach(s => {
+      if (s.effects?.shadow || s.effects?.glow) {
+        updated[s.uid] = presetId;
+      }
+    });
+    setActivePresetsMap(updated);
+  };
+
+  const assignPresetToAll = (presetId: string) => {
+    const updated = { ...activePresetsMap };
+    tgtShapes.forEach(s => {
+      updated[s.uid] = presetId;
+    });
+    setActivePresetsMap(updated);
+  };
+
+  const clearAllPresetsAssignments = () => {
+    setActivePresetsMap({});
+  };
+
+  const assignPresetToShape = (uid: string, presetId: string) => {
+    setActivePresetsMap(prev => {
+      const updated = { ...prev };
+      if (!presetId) {
+        delete updated[uid];
+      } else {
+        updated[uid] = presetId;
+      }
+      return updated;
+    });
+  };
+
+  const handleDownloadMappingJson = () => {
+    const data = {
+      name: 'Creative Spark V2 Mapping Config',
+      colors: colorMappings,
+      fonts: fontMappings,
+      shapeOps,
+      fillLine,
+      shapePresets,
+      activePresetsMap
+    };
+    trigDl(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }), 'target_mappings.json');
+  };
+
+  const handleUploadMappingJson = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0]) return;
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const parsed = JSON.parse(evt.target?.result as string);
+        if (Array.isArray(parsed.colors)) {
+          setColorMappings(parsed.colors);
+        }
+        if (Array.isArray(parsed.fonts)) {
+          setFontMappings(parsed.fonts);
+        }
+        if (parsed.shapeOps) {
+          setShapeOps(prev => ({ ...prev, ...parsed.shapeOps }));
+        }
+        if (parsed.fillLine) {
+          setFillLine(prev => ({ ...prev, ...parsed.fillLine }));
+        }
+        if (Array.isArray(parsed.shapePresets)) {
+          setShapePresets(parsed.shapePresets);
+        }
+        if (parsed.activePresetsMap) {
+          setActivePresetsMap(parsed.activePresetsMap);
+        }
+        toast({ title: "매핑 파일 로드 성공", description: `${file.name} 매핑 설정이 적용되었습니다.` });
+      } catch (err: any) {
+        alert(`파싱 실패: ${err.message}`);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
 
   // --- TARGET UPLOAD & CONVERSION (Module B) ---
   const handleTargetFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -786,7 +1040,8 @@ export default function PptxInspectorSuite() {
             inSlides: details.inSlides,
             inMasters: details.inMasters,
             boldMode: 'keep',
-            sizeScale: 1
+            sizeScale: 1,
+            sizes: details.sizes || []
           };
         });
 
@@ -842,11 +1097,22 @@ export default function PptxInspectorSuite() {
         const f = zip.files[k];
         if (f.dir || !k.endsWith('.xml')) continue;
 
-        let txt = await f.async('string');
-        let isChanged = false;
-
         const isSlide = /^ppt\/slides\/slide\d+\.xml$/.test(k);
         const isMasterLayout = /slideLayout|slideMaster/.test(k);
+        const isContentXml = 
+          isSlide || 
+          isMasterLayout ||
+          k.startsWith('ppt/notesSlides/') || 
+          k.startsWith('ppt/notesMasters/') || 
+          k.startsWith('ppt/handoutMasters/') || 
+          k.startsWith('ppt/drawings/') || 
+          k.startsWith('ppt/charts/') || 
+          k.startsWith('ppt/diagrams/');
+
+        if (!isContentXml) continue;
+
+        let txt = await f.async('string');
+        let isChanged = false;
 
         // 1. Font run size/bold
         if (runFnt.length && (isSlide || isMasterLayout)) {
@@ -935,7 +1201,7 @@ export default function PptxInspectorSuite() {
           if (!validateXmlStructure(txt, k)) {
             throw new Error(`${k} XML 스키마 파싱 테스트 실패! 무결성이 훼손되었습니다.`);
           }
-          zip.file(k, txt);
+          zip.file(k, txt, { compression: 'DEFLATE' });
           filesModified++;
         }
       }
@@ -943,7 +1209,6 @@ export default function PptxInspectorSuite() {
       setLoadingMsg('바이너리 합산 패키징 중...');
       const outBlob = await zip.generateAsync({
         type: 'blob',
-        compression: 'DEFLATE',
         mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
       });
 
@@ -985,7 +1250,7 @@ export default function PptxInspectorSuite() {
               : 'text-slate-500 hover:text-slate-800'
           }`}
         >
-          <Settings className="h-4 w-4" /> ⚙️ Module A — 기준 설정
+          <Settings className="h-4 w-4" /> Module A — 기준 설정
         </button>
         <button
           onClick={() => setMainTab('convert')}
@@ -995,7 +1260,7 @@ export default function PptxInspectorSuite() {
               : 'text-slate-500 hover:text-slate-800'
           }`}
         >
-          <ArrowRight className="h-4 w-4 animate-pulse" /> ▶ Module B — 변환 실행
+          <ArrowRight className="h-4 w-4 animate-pulse" /> Module B — 변환 실행
         </button>
         <button
           onClick={() => setMainTab('remapper')}
@@ -1005,7 +1270,7 @@ export default function PptxInspectorSuite() {
               : 'text-slate-500 hover:text-slate-800'
           }`}
         >
-          <Palette className="h-4 w-4" /> ⚡ 초경량 컬러 리매퍼 (단독)
+          <Palette className="h-4 w-4" /> 초경량 컬러 리매퍼 (단독)
         </button>
       </div>
 
@@ -1013,17 +1278,17 @@ export default function PptxInspectorSuite() {
       {mainTab === 'baseline' && (
         <div className="space-y-6">
           {/* Baseline File Bar */}
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xl flex flex-wrap items-center justify-between gap-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-xl flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 shrink-0" />
               <div>
-                <div className="text-xs text-slate-500">현재 디자인 기준 (Baseline Source)</div>
+                <div className="text-sm text-slate-500">현재 디자인 기준 (Baseline Source)</div>
                 <div className="text-sm font-bold text-slate-900 font-mono mt-0.5">{rawFileName}</div>
               </div>
             </div>
 
-            <div className="flex gap-2 text-xs">
-              <label className="bg-slate-50 hover:bg-slate-850 border border-slate-200 text-slate-350 hover:text-white px-3 py-2 rounded-lg cursor-pointer transition-all flex items-center gap-1.5">
+            <div className="flex gap-2 text-sm">
+              <label className="bg-slate-50 hover:bg-slate-800 border border-slate-200 text-slate-500 hover:text-white px-3 py-2 rounded-lg cursor-pointer transition-all flex items-center gap-1.5">
                 <FolderOpen className="h-3.5 w-3.5" /> 기준 PPTX 업로드
                 <input
                   type="file"
@@ -1035,7 +1300,7 @@ export default function PptxInspectorSuite() {
               </label>
               <button
                 onClick={resetBaselineToDefaults}
-                className="bg-slate-50 hover:bg-slate-850 border border-slate-200 text-slate-350 hover:text-white px-3 py-2 rounded-lg transition-all flex items-center gap-1.5"
+                className="bg-slate-50 hover:bg-slate-800 border border-slate-200 text-slate-500 hover:text-white px-3 py-2 rounded-lg transition-all flex items-center gap-1.5"
               >
                 <RefreshCw className="h-3.5 w-3.5" /> 기준 초기화
               </button>
@@ -1046,33 +1311,33 @@ export default function PptxInspectorSuite() {
           <div className="flex gap-2 border-b border-slate-200 pb-px">
             <button
               onClick={() => setBaseSubTab('color')}
-              className={`px-4 py-2.5 text-xs font-semibold border-b-2 -mb-px transition-all ${
+              className={`px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
                 baseSubTab === 'color'
                   ? 'border-blue-500 text-white font-bold'
                   : 'border-transparent text-slate-500 hover:text-slate-700'
               }`}
             >
-              🎨 색상 기준 설정
+              색상 기준 설정
             </button>
             <button
               onClick={() => setBaseSubTab('layout')}
-              className={`px-4 py-2.5 text-xs font-semibold border-b-2 -mb-px transition-all ${
+              className={`px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
                 baseSubTab === 'layout'
                   ? 'border-blue-500 text-white font-bold'
                   : 'border-transparent text-slate-500 hover:text-slate-700'
               }`}
             >
-              📐 위치·크기 기준 설정
+              위치·크기 기준 설정
             </button>
             <button
               onClick={() => setBaseSubTab('font')}
-              className={`px-4 py-2.5 text-xs font-semibold border-b-2 -mb-px transition-all ${
+              className={`px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
                 baseSubTab === 'font'
                   ? 'border-blue-500 text-white font-bold'
                   : 'border-transparent text-slate-500 hover:text-slate-700'
               }`}
             >
-              🔤 폰트 기준 설정
+              폰트 기준 설정
             </button>
           </div>
 
@@ -1081,12 +1346,12 @@ export default function PptxInspectorSuite() {
             <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">🎨 기준 색상 팔레트 편집</h4>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <h4 className="text-sm font-bold text-slate-900">기준 색상 팔레트 편집</h4>
+                  <p className="text-sm text-slate-500 mt-0.5">
                     Target PPTX의 색상을 이식할 목표 팔레트 명세입니다. 직접 편집하거나 기준 PPTX를 올려 자동 갱신할 수 있습니다.
                   </p>
                 </div>
-                <div className="flex gap-2 text-xs">
+                <div className="flex gap-2 text-sm">
                   <button
                     onClick={handleAddBaseColor}
                     className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded flex items-center gap-1 transition-colors"
@@ -1097,10 +1362,10 @@ export default function PptxInspectorSuite() {
                     onClick={() => handleDownloadBaselineJson('colors')}
                     className="bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded flex items-center gap-1 transition-colors"
                   >
-                    💾 colors_baseline.json 저장
+                    colors_baseline.json 저장
                   </button>
                   <label className="bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded flex items-center gap-1 cursor-pointer transition-colors">
-                    📥 불러오기
+                    불러오기
                     <input
                       type="file"
                       onChange={(e) => handleUploadBaselineJson('colors', e)}
@@ -1117,7 +1382,7 @@ export default function PptxInspectorSuite() {
                   <div key={i} className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex flex-col gap-2 relative group">
                     <button
                       onClick={() => handleDeleteBaseColor(i)}
-                      className="absolute top-2 right-2 text-slate-650 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-2 right-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       ✕
                     </button>
@@ -1150,14 +1415,14 @@ export default function PptxInspectorSuite() {
               {/* Baseline PPTX detected colors (if loaded) */}
               {showRawInfo && Object.keys(rawDetectedColors).length > 0 && (
                 <div className="border-t border-slate-200 pt-6 space-y-3">
-                  <h5 className="text-xs font-bold text-slate-350">📊 업로드된 기준 PPTX 내부 감지 색상 목록</h5>
+                  <h5 className="text-sm font-bold text-slate-400">업로드된 기준 PPTX 내부 감지 색상 목록</h5>
                   <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
                     {Object.entries(rawDetectedColors).slice(0, 36).map(([hex, d]: [string, any]) => (
                       <div key={hex} className="bg-slate-50/40 border border-slate-200/60 p-2.5 rounded-lg flex items-center gap-2">
                         <div className="w-5 h-5 rounded border border-slate-950 shrink-0" style={{ backgroundColor: `#${hex}` }} />
                         <div className="min-w-0">
-                          <div className="text-[10px] text-slate-700 font-mono">#{hex}</div>
-                          <div className="text-[9px] text-slate-500">{d.count}회 감지</div>
+                          <div className="text-xs text-slate-700 font-mono">#{hex}</div>
+                          <div className="text-xs text-slate-500">{d.count}회 감지</div>
                         </div>
                       </div>
                     ))}
@@ -1172,12 +1437,12 @@ export default function PptxInspectorSuite() {
             <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-4">
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">📐 위치·크기 기준 설계 매니저</h4>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <h4 className="text-sm font-bold text-slate-900">위치·크기 기준 설계 매니저</h4>
+                  <p className="text-sm text-slate-500 mt-0.5">
                     숏코드 및 메우개가 가져갈 기준 픽셀(pt) 좌표입니다. 우측에서 가로/세로 레이아웃 배치를 확인하세요.
                   </p>
                 </div>
-                <div className="flex gap-2 text-xs">
+                <div className="flex gap-2 text-sm">
                   <button
                     onClick={handleSaveLayoutPreset}
                     className="bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded flex items-center gap-1 transition-colors"
@@ -1188,10 +1453,10 @@ export default function PptxInspectorSuite() {
                     onClick={() => handleDownloadBaselineJson('layout')}
                     className="bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded flex items-center gap-1 transition-colors"
                   >
-                    💾 layout_baseline.json 저장
+                    layout_baseline.json 저장
                   </button>
                   <label className="bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded flex items-center gap-1 cursor-pointer transition-colors">
-                    📥 불러오기
+                    불러오기
                     <input
                       type="file"
                       onChange={(e) => handleUploadBaselineJson('layout', e)}
@@ -1204,11 +1469,11 @@ export default function PptxInspectorSuite() {
 
               {/* Preset Chips */}
               {layoutPresets.length > 0 && (
-                <div className="flex flex-wrap items-center gap-1.5 bg-slate-50/30 border border-slate-200 p-2 rounded-lg text-xs">
+                <div className="flex flex-wrap items-center gap-1.5 bg-slate-50/30 border border-slate-200 p-2 rounded-lg text-sm">
                   <span className="text-slate-500 font-medium">저장된 프리셋:</span>
                   {layoutPresets.map(p => (
-                    <span key={p.id} className="inline-flex items-center gap-1 bg-white border border-slate-200 px-2 py-0.5 rounded text-[11px]">
-                      <button onClick={() => handleApplyLayoutPreset(p.id)} className="text-blue-400 font-bold hover:text-blue-300">
+                    <span key={p.id} className="inline-flex items-center gap-1 bg-white border border-slate-200 px-2 py-0.5 rounded text-xs">
+                      <button onClick={() => handleApplyLayoutPreset(p.id)} className="text-blue-500 font-bold hover:text-blue-400">
                         {p.name}
                       </button>
                       <button onClick={() => handleDeleteLayoutPreset(p.id)} className="text-slate-600 hover:text-red-400 ml-1">✕</button>
@@ -1507,7 +1772,38 @@ export default function PptxInspectorSuite() {
             <div className="bg-white border border-slate-200 rounded-xl p-8 shadow-xl">
               <div
                 onClick={() => targetInputRef.current?.click()}
-                className="border-2 border-dashed border-slate-200 bg-slate-50/30 hover:border-slate-700 hover:bg-slate-50/50 rounded-xl p-16 flex flex-col items-center justify-center cursor-pointer transition-all duration-200"
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onDragEnter={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsTgtDragging(true);
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsTgtDragging(false);
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsTgtDragging(false);
+                  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    const file = e.dataTransfer.files[0];
+                    if (file.name.toLowerCase().endsWith('.pptx')) {
+                      processTargetFile(file);
+                    } else {
+                      alert('PPTX 파일만 업로드할 수 있습니다.');
+                    }
+                  }
+                }}
+                className={`border-2 border-dashed rounded-xl p-16 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 ${
+                  isTgtDragging
+                    ? 'border-blue-600 bg-blue-50/50 shadow-md scale-[1.01]'
+                    : 'border-slate-200 bg-slate-50/30 hover:border-slate-800 hover:bg-slate-50/50'
+                }`}
               >
                 <input
                   type="file"
@@ -1519,16 +1815,16 @@ export default function PptxInspectorSuite() {
                 {isLoading ? (
                   <div className="text-center space-y-4">
                     <RefreshCw className="h-12 w-12 text-blue-500 animate-spin mx-auto" />
-                    <p className="text-slate-700 font-medium text-xs">{loadingMsg}</p>
+                    <p className="text-slate-700 font-medium text-sm">{loadingMsg}</p>
                   </div>
                 ) : (
                   <div className="text-center space-y-4">
-                    <div className="h-16 w-16 bg-slate-850 border border-slate-700/50 rounded-2xl flex items-center justify-center mx-auto text-3xl">
-                      📂
+                    <div className="h-16 w-16 bg-slate-800 border border-slate-700/50 rounded-2xl flex items-center justify-center mx-auto">
+                      <FolderOpen className="h-8 w-8 text-slate-400" />
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-slate-900 mb-1">변환할 Target PPTX 파일 올리기</h3>
-                      <p className="text-slate-500 text-xs max-w-sm mx-auto">
+                      <p className="text-slate-500 text-sm max-w-sm mx-auto">
                         디자인 변환 대상 파일을 로드하여 기준 설정(Module A) 규격으로 이식시킵니다.
                       </p>
                     </div>
@@ -1543,10 +1839,10 @@ export default function PptxInspectorSuite() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Category tabs */}
               <div className="lg:col-span-3 bg-white border border-slate-200 rounded-xl p-4 h-fit space-y-2">
-                <div className="text-slate-500 text-[10px] uppercase font-bold tracking-wider px-3 mb-2">대상 맵핑 카테고리</div>
+                <div className="text-slate-500 text-xs uppercase font-bold tracking-wider px-3 mb-2">대상 맵핑 카테고리</div>
                 <button
                   onClick={() => setConvertSubTab('clr')}
-                  className={`w-full text-left px-4 py-3 rounded-lg flex items-center justify-between text-xs font-semibold transition-all ${
+                  className={`w-full text-left px-4 py-3 rounded-lg flex items-center justify-between text-sm font-semibold transition-all ${
                     convertSubTab === 'clr' ? 'bg-blue-600 text-white shadow' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
                   }`}
                 >
@@ -1554,11 +1850,11 @@ export default function PptxInspectorSuite() {
                     <Palette className="h-4 w-4" />
                     <span>색상 치환</span>
                   </div>
-                  <span className="text-[10px] bg-slate-50 px-2 py-0.5 rounded-full">{tgtColorCount}색</span>
+                  <span className="text-xs bg-slate-50 px-2 py-0.5 rounded-full">{tgtColorCount}색</span>
                 </button>
                 <button
                   onClick={() => setConvertSubTab('fnt')}
-                  className={`w-full text-left px-4 py-3 rounded-lg flex items-center justify-between text-xs font-semibold transition-all ${
+                  className={`w-full text-left px-4 py-3 rounded-lg flex items-center justify-between text-sm font-semibold transition-all ${
                     convertSubTab === 'fnt' ? 'bg-blue-600 text-white shadow' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
                   }`}
                 >
@@ -1566,12 +1862,12 @@ export default function PptxInspectorSuite() {
                     <Type className="h-4 w-4" />
                     <span>글꼴 및 크기 치환</span>
                   </div>
-                  <span className="text-[10px] bg-slate-50 px-2 py-0.5 rounded-full">{tgtFontCount}종</span>
+                  <span className="text-xs bg-slate-50 px-2 py-0.5 rounded-full">{tgtFontCount}종</span>
                 </button>
                 <button
                   onClick={() => setConvertSubTab('lyt')}
-                  className={`w-full text-left px-4 py-3 rounded-lg flex items-center justify-between text-xs font-semibold transition-all ${
-                    convertSubTab === 'lyt' ? 'bg-blue-600 text-white shadow' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                  className={`w-full text-left px-4 py-3 rounded-lg flex items-center justify-between text-sm font-semibold transition-all ${
+                    convertSubTab === 'lyt' ? 'bg-blue-600 text-white shadow' : 'text-slate-50 hover:bg-slate-50 hover:text-slate-800'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -1581,27 +1877,27 @@ export default function PptxInspectorSuite() {
                 </button>
                 <button
                   onClick={() => setConvertSubTab('shp')}
-                  className={`w-full text-left px-4 py-3 rounded-lg flex items-center justify-between text-xs font-semibold transition-all ${
-                    convertSubTab === 'shp' ? 'bg-blue-600 text-white shadow' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                  className={`w-full text-left px-4 py-3 rounded-lg flex items-center justify-between text-sm font-semibold transition-all ${
+                    convertSubTab === 'shp' ? 'bg-blue-600 text-white shadow' : 'text-slate-50 hover:bg-slate-50 hover:text-slate-800'
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     <Layers className="h-4 w-4" />
                     <span>도형 효과 프리셋</span>
                   </div>
-                  <span className="text-[10px] bg-slate-50 px-2 py-0.5 rounded-full">{tgtShapes.length}개</span>
+                  <span className="text-xs bg-slate-50 px-2 py-0.5 rounded-full">{tgtShapes.length}개</span>
                 </button>
 
                 <div className="pt-4 border-t border-slate-200 mt-4 space-y-2">
                   <button
                     onClick={() => setConvertStep(3)}
-                    className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-1 transition-colors"
+                    className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold py-2.5 rounded-lg flex items-center justify-center gap-1 transition-colors"
                   >
                     다음 단계 검토 <ChevronRight className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => setConvertStep(1)}
-                    className="w-full border border-slate-200 text-slate-500 hover:text-slate-700 text-xs py-2 rounded-lg transition-colors"
+                    className="w-full border border-slate-200 text-slate-500 hover:text-slate-700 text-sm py-2 rounded-lg transition-colors"
                   >
                     다른 파일 선택
                   </button>
@@ -1612,23 +1908,23 @@ export default function PptxInspectorSuite() {
               <div className="lg:col-span-9 space-y-6">
                 {/* Target Color Mapping Workspace */}
                 {convertSubTab === 'clr' && (
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-4">
+                  <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
                     <div className="flex justify-between items-center border-b border-slate-200 pb-3">
                       <div>
-                        <h4 className="text-xs font-bold text-slate-900">🎨 색상 치환 설정</h4>
-                        <p className="text-[10px] text-slate-500 mt-0.5">
+                        <h4 className="text-sm font-bold text-slate-900">색상 치환 설정</h4>
+                        <p className="text-sm text-slate-500 mt-0.5">
                           Target PPTX 색상들을 기준 설정(Module A)에서 정의한 색상 팔레트로 매핑합니다.
                         </p>
                       </div>
-                      <div className="flex gap-1.5 text-xs">
+                      <div className="flex gap-1.5 text-sm">
                         <button
                           onClick={handleDownloadMappingJson}
                           className="bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded flex items-center gap-1 transition-colors"
                         >
-                          💾 mapping.json 저장
+                          mapping.json 저장
                         </button>
                         <label className="bg-slate-50 border border-slate-200 text-slate-500 hover:text-slate-800 px-3 py-1.5 rounded flex items-center gap-1 cursor-pointer transition-colors">
-                          📥 불러오기
+                          불러오기
                           <input type="file" onChange={handleUploadMappingJson} accept=".json" className="hidden" />
                         </label>
                       </div>
@@ -1636,9 +1932,9 @@ export default function PptxInspectorSuite() {
 
                     <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
                       {/* Mapping Table */}
-                      <div className="xl:col-span-8 overflow-y-auto max-h-[420px] border border-slate-200 rounded-lg text-xs">
+                      <div className="xl:col-span-8 overflow-y-auto max-h-[420px] border border-slate-200 rounded-lg text-sm">
                         <table className="w-full text-left border-collapse">
-                          <thead className="bg-white sticky top-0 border-b border-slate-200 text-slate-500 uppercase font-semibold text-[10px] tracking-wider">
+                          <thead className="bg-white sticky top-0 border-b border-slate-200 text-slate-500 uppercase font-semibold text-xs tracking-wider">
                             <tr>
                               <th className="p-3 w-12 text-center">변환</th>
                               <th className="p-3">감지 원본 색상 (Target)</th>
@@ -1700,18 +1996,21 @@ export default function PptxInspectorSuite() {
                       </div>
 
                       {/* Baseline palettes quick inject */}
-                      <div className="xl:col-span-4 bg-slate-50/20 border border-slate-200 p-4 rounded-xl space-y-3">
-                        <div className="text-[11px] font-bold text-slate-700">🎨 V2.0 커스텀 기준 팔레트 주입</div>
-                        <p className="text-[10px] text-slate-500">
+                      <div className="xl:col-span-4 bg-slate-50 border border-slate-200 p-6 rounded-xl space-y-4">
+                        <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2">
+                          <Palette className="h-4 w-4 text-blue-600" />
+                          <div className="text-sm font-bold text-slate-800">V2.0 커스텀 기준 팔레트 주입</div>
+                        </div>
+                        <p className="text-xs text-slate-500 leading-relaxed">
                           테이블에서 치환하려는 색상 행을 클릭한 다음, 아래 기준 색상을 선택하면 매핑 값이 즉시 바뀝니다.
                         </p>
                         {selectedColorIdx >= 0 ? (
-                          <div className="bg-white border border-slate-200 p-2 rounded text-[10px] text-slate-500">
-                            선택 행: <strong className="text-blue-400">#{colorMappings[selectedColorIdx]?.from}</strong> →{' '}
-                            <strong className="text-indigo-400">#{colorMappings[selectedColorIdx]?.to}</strong>
+                          <div className="bg-white border border-slate-200 p-3 rounded-lg text-xs text-slate-600 leading-relaxed">
+                            선택 행: <strong className="text-blue-600 font-mono">#{colorMappings[selectedColorIdx]?.from}</strong> →{' '}
+                            <strong className="text-indigo-600 font-mono">#{colorMappings[selectedColorIdx]?.to}</strong>
                           </div>
                         ) : (
-                          <div className="text-[9px] text-yellow-500 bg-yellow-500/5 p-2 rounded border border-yellow-500/10">
+                          <div className="text-xs text-amber-600 bg-amber-50 p-3 rounded-lg border border-amber-200 leading-relaxed">
                             ※ 색상 주입을 위해 매핑 테이블 행을 선택하세요.
                           </div>
                         )}
@@ -1722,12 +2021,12 @@ export default function PptxInspectorSuite() {
                               key={i}
                               disabled={selectedColorIdx < 0}
                               onClick={() => applyPaletteToSelected(p.hex, p.name)}
-                              className="bg-white hover:border-blue-500 border border-slate-200 rounded p-1.5 text-left text-[10px] flex items-center gap-1.5 w-full disabled:opacity-40"
+                              className="bg-white hover:border-blue-500 border border-slate-200 rounded-lg p-2 text-left text-xs flex items-center gap-2 w-full disabled:opacity-40 transition-all cursor-pointer"
                             >
-                              <div className="w-4 h-4 rounded shrink-0 border border-slate-200" style={{ backgroundColor: `#${p.hex}` }} />
+                              <div className="w-5 h-5 rounded shrink-0 border border-slate-200" style={{ backgroundColor: `#${p.hex}` }} />
                               <div className="min-w-0">
                                 <div className="font-bold text-slate-800 truncate">{p.name}</div>
-                                <div className="text-[9px] text-slate-500 font-mono">#{p.hex}</div>
+                                <div className="text-[10px] text-slate-500 font-mono">#{p.hex}</div>
                               </div>
                             </button>
                           ))}
@@ -1739,17 +2038,20 @@ export default function PptxInspectorSuite() {
 
                 {/* Target Font Mapping Workspace */}
                 {convertSubTab === 'fnt' && (
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 space-y-4">
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-900">🔤 글꼴(Font) 패밀리 매핑 및 크기 조율</h4>
-                      <p className="text-[10px] text-slate-500 mt-0.5">
-                        Target 파일 내부의typeface 서체를 기준 명세 글꼴로 자동 매핑합니다.
+                  <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
+                    <div className="border-b border-slate-200 pb-3">
+                      <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                        <Type className="h-4.5 w-4.5 text-blue-600" />
+                        <span>글꼴(Font) 패밀리 매핑 및 크기 조율</span>
+                      </h4>
+                      <p className="text-sm text-slate-500 mt-1 leading-relaxed">
+                        Target 파일 내부의 서체를 기준 명세 글꼴로 자동 매핑하고 크기 배율 및 볼드 처리를 제어합니다.
                       </p>
                     </div>
 
-                    <div className="overflow-x-auto border border-slate-200 rounded-lg text-xs">
+                    <div className="overflow-x-auto border border-slate-200 rounded-lg text-sm bg-slate-50/10">
                       <table className="w-full text-left border-collapse">
-                        <thead className="bg-white sticky top-0 border-b border-slate-200 text-slate-500 uppercase font-semibold text-[10px] tracking-wider">
+                        <thead className="bg-white sticky top-0 border-b border-slate-200 text-slate-500 uppercase font-semibold text-xs tracking-wider">
                           <tr>
                             <th className="p-3 w-12 text-center">변환</th>
                             <th className="p-3">감지 원본 글꼴 (Target)</th>
@@ -1772,15 +2074,22 @@ export default function PptxInspectorSuite() {
                                 />
                               </td>
                               <td className="p-3">
-                                <div className="font-mono text-slate-800">{m.from}</div>
-                                <div className="text-[9px] text-slate-500">{[m.inSlides && '슬라이드', m.inMasters && '마스터'].filter(Boolean).join(' / ')}</div>
+                                <div className="font-mono text-slate-800 flex items-center gap-1.5">
+                                  {m.from}
+                                  {m.sizes && m.sizes.length > 0 && (
+                                    <span className="text-[10px] text-slate-400 font-normal">
+                                      (크기: {m.sizes[0]}pt{m.sizes.length > 1 ? ` ~ ${m.sizes[m.sizes.length - 1]}pt` : ''})
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-xs text-slate-500">{[m.inSlides && '슬라이드', m.inMasters && '마스터'].filter(Boolean).join(' / ')}</div>
                               </td>
                               <td className="p-3 text-slate-500 font-bold text-center">→</td>
                               <td className="p-3">
                                 <select
                                   value={m.to}
                                   onChange={(e) => handleUpdateToFont(idx, e.target.value)}
-                                  className="bg-slate-905 border border-slate-200 rounded px-2 py-1 text-slate-700 w-full max-w-[180px]"
+                                  className="bg-white border border-slate-200 rounded px-2.5 py-1 text-slate-700 w-full max-w-[180px] text-xs"
                                 >
                                   <option value="">(변환 안 함 - 원본 유지)</option>
                                   {FONT_PRESETS.map(f => (
@@ -1792,7 +2101,7 @@ export default function PptxInspectorSuite() {
                                 <select
                                   value={m.boldMode}
                                   onChange={(e) => handleUpdateFontBold(idx, e.target.value)}
-                                  className="bg-slate-905 border border-slate-200 rounded px-1.5 py-1 text-slate-350 text-[11px]"
+                                  className="bg-white border border-slate-200 rounded px-2 py-1 text-slate-700 text-xs"
                                 >
                                   <option value="keep">유지</option>
                                   <option value="on">굵게</option>
@@ -1803,7 +2112,7 @@ export default function PptxInspectorSuite() {
                                 <select
                                   value={m.sizeScale.toString()}
                                   onChange={(e) => handleUpdateFontSize(idx, parseFloat(e.target.value))}
-                                  className="bg-slate-905 border border-slate-200 rounded px-1.5 py-1 text-slate-355 text-[11px]"
+                                  className="bg-white border border-slate-200 rounded px-2 py-1 text-slate-700 text-xs"
                                 >
                                   <option value="1">유지</option>
                                   <option value="0.9">×0.9</option>
@@ -2251,7 +2560,7 @@ export default function PptxInspectorSuite() {
                 {resultBlob && (
                   <button
                     onClick={() => trigDl(resultBlob, convSummary.outFileName)}
-                    className="bg-emerald-650 hover:bg-emerald-600 text-white font-semibold py-2 px-5 rounded-lg text-xs transition-colors"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-5 rounded-lg text-xs transition-colors"
                   >
                     다시 다운로드
                   </button>
@@ -2290,7 +2599,40 @@ export default function PptxInspectorSuite() {
           </div>
 
           {!remapFile ? (
-            <div className="border-2 dashed border-slate-200 bg-slate-50 rounded-xl p-8 text-center space-y-3">
+            <div
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onDragEnter={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsRemapDragging(true);
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsRemapDragging(false);
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsRemapDragging(false);
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                  const file = e.dataTransfer.files[0];
+                  if (file.name.toLowerCase().endsWith('.pptx')) {
+                    processRemapFile(file);
+                  } else {
+                    alert('PPTX 파일만 업로드할 수 있습니다.');
+                  }
+                }
+              }}
+              className={`border-2 border-dashed rounded-xl p-8 text-center space-y-3 transition-all duration-200 ${
+                isRemapDragging
+                  ? 'border-blue-600 bg-blue-50/50 shadow-md scale-[1.01]'
+                  : 'border-slate-200 bg-slate-50'
+              }`}
+            >
               <Upload className="h-8 w-8 text-slate-400 mx-auto" />
               <div>
                 <strong className="text-xs text-slate-700 block">색상을 변경할 PPTX 파일 드래그 & 드롭</strong>
@@ -2309,7 +2651,7 @@ export default function PptxInspectorSuite() {
                   <FileCheck className="h-4 w-4 text-blue-600" />
                   <div>
                     <strong className="text-blue-900">{remapFile.name}</strong>
-                    <span className="text-blue-650 block text-[10px] mt-0.5">슬라이드: {remapSlideCount}개 | 검출 색상: {remapDetectedColors.length}개</span>
+                    <span className="text-blue-600 block text-[10px] mt-0.5">슬라이드: {remapSlideCount}개 | 검출 색상: {remapDetectedColors.length}개</span>
                   </div>
                 </div>
                 <button

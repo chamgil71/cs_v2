@@ -11,23 +11,6 @@ All colors MUST be HSL.
     --background: 220 30% 98%;
     --foreground: 230 25% 12%;
 
-    --hero-from: 245 70% 60%;
-    --hero-to: 280 70% 55%;
-    --gradient-hero: linear-gradient(135deg, hsl(var(--hero-from)), hsl(var(--hero-to)));
-
-    --cat-chat: 210 90% 55%;
-    --cat-dev: 150 65% 42%;
-    --cat-webdev: 199 89% 48%;
-    --cat-knowledge: 280 70% 58%;
-    --cat-prod: 25 90% 55%;
-    --cat-creative: 340 80% 60%;
-    --cat-security: 188 94% 43%;
-    --cat-finance: 43 80% 46%;
-    --cat-future: 84 81% 44%;
-    --cat-enterprise: 215 19% 35%;
-    --cat-media: 347 77% 50%;
-    --cat-uncategorized: 215 16% 47%;
-
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
 
@@ -56,19 +39,12 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 

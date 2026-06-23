@@ -6,7 +6,8 @@ import {
   Plus, 
   RefreshCw, 
   Check, 
-  BookOpen
+  BookOpen,
+  Settings
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -26,35 +27,8 @@ interface ThemeDetails {
   pptxFontSubTitle: string;
 }
 
-// Relative Luminance for WCAG Contrast
-function getLuminance(hex: string): number {
-  const cleanHex = hex.replace('#', '');
-  if (cleanHex.length !== 6) return 0;
-  const r = parseInt(cleanHex.slice(0, 2), 16) / 255;
-  const g = parseInt(cleanHex.slice(2, 4), 16) / 255;
-  const b = parseInt(cleanHex.slice(4, 6), 16) / 255;
-  const a = [r, g, b].map(v => v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4));
-  return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-}
+import { getContrast, getWCAGRating } from '../lib/wcag';
 
-function getContrast(hex1: string, hex2: string): number {
-  const l1 = getLuminance(hex1);
-  const l2 = getLuminance(hex2);
-  return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
-}
-
-function getWCAGRating(contrast: number) {
-  if (contrast >= 7.0) {
-    return { rating: 'AAA (아주 우수)', color: 'text-emerald-600', desc: '본문 및 모든 텍스트에 매우 안전' };
-  }
-  if (contrast >= 4.5) {
-    return { rating: 'AA (우수)', color: 'text-green-600', desc: '일반 본문 텍스트에 사용 가능' };
-  }
-  if (contrast >= 3.0) {
-    return { rating: 'AA (큰 텍스트 전용)', color: 'text-amber-500', desc: '제목이나 큰 글씨에만 권장' };
-  }
-  return { rating: 'Fail (부적합)', color: 'text-rose-600', desc: '가독성이 낮아 텍스트로 사용 불가' };
-}
 
 export default function VisualAdjuster() {
   const { toast } = useToast();
@@ -260,7 +234,7 @@ export default function VisualAdjuster() {
               className={`p-3 rounded-lg border cursor-pointer transition-all flex items-center justify-between ${
                 selectedStyle === key
                   ? 'bg-blue-600/10 border-blue-500 text-blue-700 font-semibold'
-                  : 'bg-slate-50 border-slate-200 text-slate-650 hover:border-slate-350 hover:text-slate-800'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350 hover:text-slate-800'
               }`}
             >
               <div className="flex items-center gap-2">
@@ -270,7 +244,7 @@ export default function VisualAdjuster() {
                 />
                 <div>
                   <div className="text-xs font-bold">{value.label || key}</div>
-                  <div className="text-[10px] text-slate-550 font-mono">{key}</div>
+                  <div className="text-xs text-slate-500 font-mono">{key}</div>
                 </div>
               </div>
               {key !== 'custom-blue' && key !== 'ai-chat' && (
@@ -337,15 +311,17 @@ export default function VisualAdjuster() {
       </div>
 
       {/* Editor & Adjuster Controls Panel */}
-      <div className="lg:col-span-5 bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+      <div className="lg:col-span-5 bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
         <div className="border-b border-slate-200 pb-3">
-          <h3 className="text-sm font-bold text-slate-800">⚙️ HSL 색상 및 폰트 세부 조율</h3>
-          <p className="text-[11px] text-slate-500 mt-0.5">선택된 테마 프리셋의 세부 디자인 토큰 값을 미세 변경합니다.</p>
+          <h3 className="text-sm font-bold text-slate-850 flex items-center gap-1.5">
+            <Settings className="h-4 w-4 text-blue-600" /> HSL 색상 및 폰트 세부 조율
+          </h3>
+          <p className="text-xs text-slate-500 mt-0.5 font-semibold">선택된 테마 프리셋의 세부 디자인 토큰 값을 미세 변경합니다.</p>
         </div>
 
         <div className="space-y-3 text-xs max-h-[380px] overflow-y-auto pr-1">
           <div className="space-y-1 bg-slate-50 border border-slate-100 rounded-lg p-2.5">
-            <label className="text-[10px] text-slate-500 font-bold uppercase block">선택된 테마 영문 키 ID (style 지정용)</label>
+            <label className="text-xs text-slate-500 font-bold uppercase block">선택된 테마 영문 키 ID (style 지정용)</label>
             <span className="font-mono text-sm font-extrabold text-blue-700 select-all block mt-0.5">
               {selectedStyle}
             </span>
@@ -357,7 +333,7 @@ export default function VisualAdjuster() {
               type="text"
               value={themeForm.label}
               onChange={(e) => handleFormChange('label', e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded px-2.5 py-1.5 text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
@@ -494,30 +470,30 @@ export default function VisualAdjuster() {
             <div className="font-semibold text-slate-600">글꼴(Font) 패밀리 매핑</div>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="w-18 text-slate-500 text-[11px] shrink-0 font-medium">웹 타이틀:</span>
+                <span className="w-18 text-slate-500 text-xs shrink-0 font-medium">웹 타이틀:</span>
                 <input
                   type="text"
                   value={themeForm.webFontTitle}
                   onChange={(e) => handleFormChange('webFontTitle', e.target.value)}
-                  className="bg-white border border-slate-200 rounded px-2.5 py-1 text-slate-800 flex-1 font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="bg-white border border-slate-200 rounded px-2.5 py-1 text-slate-850 flex-1 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-18 text-slate-500 text-[11px] shrink-0 font-medium">웹 본문:</span>
+                <span className="w-18 text-slate-500 text-xs shrink-0 font-medium">웹 본문:</span>
                 <input
                   type="text"
                   value={themeForm.webFont}
                   onChange={(e) => handleFormChange('webFont', e.target.value)}
-                  className="bg-white border border-slate-200 rounded px-2.5 py-1 text-slate-800 flex-1 font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="bg-white border border-slate-200 rounded px-2.5 py-1 text-slate-855 flex-1 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-18 text-slate-500 text-[11px] shrink-0 font-medium">PPTX 서체:</span>
+                <span className="w-18 text-slate-500 text-xs shrink-0 font-medium">PPTX 서체:</span>
                 <input
                   type="text"
                   value={themeForm.pptxFont}
                   onChange={(e) => handleFormChange('pptxFont', e.target.value)}
-                  className="bg-white border border-slate-200 rounded px-2.5 py-1 text-slate-800 flex-1 font-mono text-[11px] focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="bg-white border border-slate-200 rounded px-2.5 py-1 text-slate-855 flex-1 font-mono text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -526,26 +502,26 @@ export default function VisualAdjuster() {
 
         <button
           onClick={handleAddOrEditTheme}
-          className="w-full bg-blue-600 hover:bg-blue-550 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-1 transition-colors shadow-sm"
+          className="w-full bg-blue-600 hover:bg-blue-600 text-white text-xs font-semibold py-2.5 rounded-lg flex items-center justify-center gap-1 transition-colors shadow-sm"
         >
           <Check className="h-4 w-4" /> 현재 테마 설정에 임시 저장 (로컬)
         </button>
       </div>
 
       {/* Visual Live Preview Panel */}
-      <div className="lg:col-span-3 bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+      <div className="lg:col-span-3 bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col justify-between">
         <div>
           <h3 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
             <BookOpen className="h-4 w-4 text-emerald-600" /> 실시간 컴포넌트 프리뷰
           </h3>
-          <p className="text-[10px] text-slate-555 mt-0.5">수정된 테마 색상이 시각 컴포넌트에 즉시 적용되어 표시됩니다.</p>
+          <p className="text-xs text-slate-500 mt-0.5 font-semibold">수정된 테마 색상이 시각 컴포넌트에 즉시 적용되어 표시됩니다.</p>
         </div>
 
         {/* Mock Component Preview Box */}
-        <div className="my-6 space-y-4 bg-slate-55 border border-slate-200 p-4 rounded-xl flex-1 flex flex-col justify-center min-h-[300px]">
+        <div className="my-6 space-y-4 bg-slate-50 border border-slate-200 p-4 rounded-xl flex-1 flex flex-col justify-center min-h-[300px]">
           {/* Card Component Preview */}
           <div 
-            className="border rounded-xl p-3.5 space-y-2 shadow-sm transition-all duration-300"
+            className="border rounded-xl p-4 space-y-2 shadow-sm transition-all duration-300"
             style={{ 
               backgroundColor: themeForm.bg || '#F8F9FE', 
               borderColor: themeForm.border || '#D8DCFB',
@@ -564,11 +540,11 @@ export default function VisualAdjuster() {
                 가이드 헤더 컴포넌트
               </strong>
             </div>
-            <p className="text-[10px] text-slate-700 font-medium">
+            <p className="text-xs text-slate-700 font-medium">
               V2 스타일 조율기가 실시간 변수 바인딩을 통제하고 있습니다.
             </p>
             <div 
-              className="text-[9px] px-2 py-1 rounded border inline-block text-white font-bold"
+              className="text-xs px-2 py-1 rounded border inline-block text-white font-bold"
               style={{ backgroundColor: themeForm.brand || '#2563FF', borderColor: themeForm.brandDark }}
             >
               확인 버튼
@@ -585,12 +561,12 @@ export default function VisualAdjuster() {
             }}
           >
             <div 
-              className="text-[9px] font-bold uppercase tracking-wider"
+              className="text-xs font-bold uppercase tracking-wider"
               style={{ color: themeForm.brandDark || '#1E71CE' }}
             >
               Tip Alert Box
             </div>
-            <p className="text-[10px] text-slate-700 leading-normal">
+            <p className="text-xs text-slate-700 leading-normal">
               테마 색상이 변경되는 즉시 CSS 커스텀 속성에 동적 반영됩니다.
             </p>
           </div>
@@ -606,48 +582,48 @@ export default function VisualAdjuster() {
 
           {/* Real-time WCAG contrast check visual report (3-cards comparison) */}
           <div className="border border-slate-200 rounded-xl p-3 bg-slate-50 space-y-2.5">
-            <div className="text-[10px] uppercase font-bold text-slate-500 tracking-wider flex items-center gap-1">
+            <div className="text-xs uppercase font-bold text-slate-500 tracking-wider flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" /> 
               WCAG 명도 가독성 실시간 판정
             </div>
 
-            <div className="grid grid-cols-3 gap-1.5 text-[9px] font-semibold text-slate-800">
+            <div className="grid grid-cols-3 gap-1.5 text-xs font-semibold text-slate-800">
               {/* Card 1: White BG */}
               <div className="bg-white border border-slate-200 p-2 rounded shadow-sm flex flex-col justify-between h-[80px]">
-                <span className="text-[7px] text-slate-400 uppercase tracking-widest block">White BG</span>
+                <span className="text-[10px] text-slate-400 uppercase tracking-widest block">White BG</span>
                 <span style={{ color: themeForm.brand }} className="font-extrabold truncate">가독성 검증</span>
-                <span className={`text-[8px] font-bold ${ratingWhite.color} text-right mt-1`}>
+                <span className={`text-xs font-bold ${ratingWhite.color} text-right mt-1`}>
                   {contrastWithWhite.toFixed(1)}:1 ({contrastWithWhite >= 4.5 ? 'AA통과' : '부적합'})
                 </span>
               </div>
 
               {/* Card 2: Black BG */}
               <div className="bg-black border border-slate-800 p-2 rounded shadow-sm text-white flex flex-col justify-between h-[80px]">
-                <span className="text-[7px] text-slate-650 uppercase tracking-widest block">Black BG</span>
+                <span className="text-[10px] text-slate-500 uppercase tracking-widest block">Black BG</span>
                 <span style={{ color: themeForm.brand }} className="font-extrabold truncate">가독성 검증</span>
-                <span className={`text-[8px] font-bold ${ratingBlack.color} text-right mt-1`}>
+                <span className={`text-xs font-bold ${ratingBlack.color} text-right mt-1`}>
                   {contrastWithBlack.toFixed(1)}:1 ({contrastWithBlack >= 4.5 ? 'AA통과' : '부적합'})
                 </span>
               </div>
 
               {/* Card 3: Color Block BG */}
               <div style={{ backgroundColor: themeForm.brand }} className="border border-slate-200 p-2 rounded shadow-sm flex flex-col justify-between h-[80px] text-white">
-                <span className="text-[7px] text-white/50 uppercase tracking-widest block">Color BG</span>
+                <span className="text-[10px] text-white/50 uppercase tracking-widest block">Color BG</span>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="text-[7px] font-extrabold text-white">White Text</span>
-                  <span className="text-[7px] font-extrabold text-black">Black Text</span>
+                  <span className="text-[10px] font-extrabold text-white">White Text</span>
+                  <span className="text-[10px] font-extrabold text-black">Black Text</span>
                 </div>
-                <span className="text-[6px] text-white/70 text-right mt-1">대조군 대조</span>
+                <span className="text-[9px] text-white/70 text-right mt-1">대조군 대조</span>
               </div>
             </div>
-            <div className="text-[9px] text-slate-500 leading-normal border-t border-slate-200 pt-1.5 space-y-0.5">
+            <div className="text-xs text-slate-500 leading-normal border-t border-slate-200 pt-1.5 space-y-0.5">
               <div>• 흰색 대비: <span className={`font-bold ${ratingWhite.color}`}>{ratingWhite.rating}</span> — {ratingWhite.desc}</div>
               <div>• 검정 대비: <span className={`font-bold ${ratingBlack.color}`}>{ratingBlack.rating}</span> — {ratingBlack.desc}</div>
             </div>
           </div>
         </div>
 
-        <div className="text-[10px] text-slate-500 bg-slate-50 p-2.5 rounded border border-slate-200 text-center leading-relaxed font-semibold">
+        <div className="text-xs text-slate-500 bg-slate-50 p-2.5 rounded border border-slate-200 text-center leading-relaxed font-semibold">
           저장된 테마는 마크다운 컴파일러(Module A) 및 슬라이드 HTML 변환기에서 <code>style: {selectedStyle}</code> 옵션 지정 시 즉시 빌드에 투입됩니다.
         </div>
       </div>

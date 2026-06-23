@@ -20,6 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 
 import { getContrast } from '../lib/wcag';
 import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
+import { exportIframeToPptx } from '../lib/exportGuide';
 
 
 const downloadFile = (content: string, filename: string, contentType: string) => {
@@ -842,25 +843,63 @@ style: custom-blue
             downloadFile(htmlContent, htmlName, "text/html;charset=utf-8");
           }
 
-          // 3. Download Presentation Slides if selected
-          if (hasPresentation) {
-            const presContent = clientCompileMarkdown(markdown, "presentation", selectedStyle, styles);
-            const presName = filename.replace(/\.md$/i, "_presentation.html");
-            downloadFile(presContent, presName, "text/html;charset=utf-8");
+          // 3. Generate presentation HTML once (shared for HTML download + PPTX)
+          let presHtml: string | null = null;
+          if (hasPresentation || hasPptx) {
+            presHtml = clientCompileMarkdown(markdown, "presentation", selectedStyle, styles);
           }
 
-          if (hasPptx) {
-            toast({
-              title: "로컬 파일 다운로드 완료 (PPTX 제외)",
-              description: "서버가 오프라인 상태이므로 PPTX 슬라이드는 생성할 수 없습니다. 대신 마크다운(.md) 및 HTML 문서들을 다운로드했습니다.",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "로컬 파일 다운로드 완료",
-              description: "마크다운(.md) 및 변환된 HTML 파일들을 브라우저 다운로드로 저장했습니다.",
+          if (hasPresentation && presHtml) {
+            const presName = filename.replace(/\.md$/i, "_presentation.html");
+            downloadFile(presHtml, presName, "text/html;charset=utf-8");
+          }
+
+          // 4. Export to PPTX via pptxgenjs (client-side, no server needed)
+          if (hasPptx && presHtml) {
+            const frontmatch = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+            const docTitle = frontmatch
+              ? (frontmatch[1].match(/title:\s*(.*)/)?.[1] || "Guide").replace(/^["']|["']$/g, "")
+              : "Guide";
+            const pptxName = filename.replace(/\.md$/i, ".pptx");
+
+            toast({ title: "PPTX 생성 중...", description: "슬라이드를 브라우저에서 렌더링하고 있습니다." });
+
+            await new Promise<void>((resolve, reject) => {
+              const tempIframe = document.createElement("iframe");
+              tempIframe.style.cssText = "position:fixed;top:-9999px;left:-9999px;width:1280px;height:2000px;visibility:hidden;pointer-events:none;border:none;";
+              document.body.appendChild(tempIframe);
+
+              const cleanup = () => {
+                if (document.body.contains(tempIframe)) document.body.removeChild(tempIframe);
+              };
+
+              tempIframe.onload = async () => {
+                try {
+                  await new Promise(r => setTimeout(r, 600)); // font render buffer
+                  await exportIframeToPptx(tempIframe, docTitle, pptxName);
+                  resolve();
+                } catch (err) {
+                  reject(err);
+                } finally {
+                  cleanup();
+                }
+              };
+
+              tempIframe.srcdoc = presHtml!;
             });
           }
+
+          const downloadedFormats = [
+            "마크다운(.md)",
+            hasHtml ? "HTML 가이드" : null,
+            hasPresentation ? "프레젠테이션 HTML" : null,
+            hasPptx ? "PPTX 슬라이드" : null,
+          ].filter(Boolean).join(", ");
+
+          toast({
+            title: "로컬 다운로드 완료",
+            description: `${downloadedFormats}를 브라우저에서 직접 저장했습니다.`,
+          });
           return;
         } catch (localErr: any) {
           toast({

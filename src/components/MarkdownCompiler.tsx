@@ -20,7 +20,7 @@ import { useToast } from '@/hooks/use-toast';
 
 import { getContrast } from '../lib/wcag';
 import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
-import { exportIframeToPptx } from '../lib/exportGuide';
+import { exportIframeToEditablePptx } from '../lib/exportGuide';
 
 
 const downloadFile = (content: string, filename: string, contentType: string) => {
@@ -876,7 +876,7 @@ style: custom-blue
               tempIframe.onload = async () => {
                 try {
                   await new Promise(r => setTimeout(r, 600)); // font render buffer
-                  await exportIframeToPptx(tempIframe, docTitle, pptxName);
+                  await exportIframeToEditablePptx(tempIframe, docTitle, pptxName);
                   resolve();
                 } catch (err) {
                   reject(err);

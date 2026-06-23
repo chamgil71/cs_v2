@@ -484,7 +484,7 @@ export async function exportIframeToEditablePptx(
 
   let sections = Array.from(
     doc.querySelectorAll<HTMLElement>(
-      "section.hero, section.section, section.done-section",
+      "section.hero, section.section, section.done-section, .slide-page",
     ),
   );
   if (sections.length === 0) sections = [doc.body];

@@ -110,19 +110,13 @@ cs_v2/
 │   └── plan/               # 아키텍처 및 구현 기획 계획서 보관 폴더
 ├── config/
 │   ├── styles.json         # 테마 배색 사전 설정 보관 JSON
-│   └── layout.json         # [NEW] PPTX 분석 가공 오프셋 보관 JSON
+│   ├── layout.json         # [NEW] PPTX 분석 가공 오프셋 보관 JSON
+│   └── v2/                  # V2.0 전용 추가 설정 스키마 보관 영역
 ├── md_src/                 # 마크다운 원천 소스 보관 폴더
 ├── publish/                # [산출물] 컴파일 완료된 가이드북 포털 및 HTML 저장소
 └── storage/                # [산출물] 프레젠테이션/PPTX 파일 독립 보관 저장소
     ├── presentation/       # 변환된 Presentation HTML
     └── pptx/               # 변환된 PPTX 디자인 결과물
-```�─ spec-parser.js     # PPTX 디자인 스펙 데이터 파서
-├── docs/
-│   └── plan/
-│       ├── master_refactoring_and_v2_plan.md    # V2 리팩토링 마스터 계획서
-│       └── project_feasibility_analysis.md      # 아키텍처 실효성 분석 및 가독성/무결성 검증 설계서
-└── config/
-    └── v2/                  # V2.0 전용 추가 설정 스키마 보관 영역
 ```
 
 ---

@@ -5,7 +5,7 @@
 
 ---
 
-## 1. PPTX XML 분석 코어 엔진 (`scripts/v2/pptx-analyzer.js`)
+## 1. PPTX XML 분석 코어 엔진 (`scripts/pptx-analyzer.js`)
 
 브라우저 내에서 PPTX 바이너리(zip) 데이터를 직접 해체하여 OpenXML 스펙에 따라 폰트/색상/레이아웃을 추출하는 코어 모듈입니다.
 

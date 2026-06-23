@@ -21,9 +21,6 @@ import { useToast } from '@/hooks/use-toast';
 import { getContrast } from '../lib/wcag';
 import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
 
-// file:// 로 직접 열린 standalone 환경에서는 백엔드 API가 존재하지 않으므로,
-// 마운트 시 list-styles/list-files 호출을 생략하고 내장 폴백으로 동작한다.
-const IS_STANDALONE = typeof window !== "undefined" && window.location.protocol === "file:";
 
 const downloadFile = (content: string, filename: string, contentType: string) => {
   const blob = new Blob([content], { type: contentType });
@@ -568,6 +565,7 @@ style: custom-blue
     noCover: false,
   });
   const [saving, setSaving] = useState(false);
+  const [hasServer, setHasServer] = useState<boolean | null>(null);
 
   // Bulk Mode Options
   const [isBulkMode, setIsBulkMode] = useState<boolean>(false);
@@ -600,11 +598,6 @@ style: custom-blue
 
   // Load styles and file list on mount
   useEffect(() => {
-    // 서버가 없는 standalone(file://) 환경: API 호출을 생략하고 내장 폴백 스타일 사용
-    if (IS_STANDALONE) {
-      setStyles(FALLBACK_STYLES);
-      return;
-    }
     fetchStyles();
     fetchFiles();
   }, []);
@@ -616,19 +609,22 @@ style: custom-blue
     }
   }, [previewMode]);
 
-  // Fetch styles from backend
+  // Fetch styles from backend; sets hasServer based on API availability
   const fetchStyles = async () => {
     try {
       const res = await fetch("/api/list-styles");
       if (res.ok) {
         const data = await res.json();
         setStyles(data);
+        setHasServer(true);
       } else {
         setStyles(FALLBACK_STYLES);
+        setHasServer(false);
       }
     } catch (err) {
       console.error("Failed to load styles, using fallback:", err);
       setStyles(FALLBACK_STYLES);
+      setHasServer(false);
     }
   };
 
@@ -710,17 +706,6 @@ style: custom-blue
   // Trigger preview compilation
   const triggerPreview = async (mdContent = markdown, mode = previewMode, style = selectedStyle) => {
     setGeneratingPreview(true);
-    // standalone(file://) 환경: API 시도 없이 클라이언트 컴파일러로 바로 미리보기 생성
-    if (IS_STANDALONE) {
-      try {
-        setPreviewHtml(clientCompileMarkdown(mdContent, mode, style, styles));
-      } catch (localErr: any) {
-        toast({ title: "로컬 컴파일 오류", description: localErr.message, variant: "destructive" });
-      } finally {
-        setGeneratingPreview(false);
-      }
-      return;
-    }
     try {
       const res = await fetch("/api/preview", {
         method: "POST",
@@ -944,18 +929,20 @@ style: custom-blue
         {/* Editor Top Toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
           <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
-              <label className="text-sm text-slate-500 font-semibold">문서 열기:</label>
-              <select
-                onChange={(e) => handleLoadFile(e.target.value)}
-                className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              >
-                <option value="">서버 문서 선택...</option>
-                {sourceFiles.map((file) => (
-                  <option key={file} value={file}>{file}</option>
-                ))}
-              </select>
-            </div>
+            {hasServer !== false && (
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-slate-500 font-semibold">문서 열기:</label>
+                <select
+                  onChange={(e) => handleLoadFile(e.target.value)}
+                  className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                >
+                  <option value="">서버 문서 선택...</option>
+                  {sourceFiles.map((file) => (
+                    <option key={file} value={file}>{file}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <div className="flex items-center gap-2">
               <label className="text-sm text-slate-500 font-semibold">숏코드 삽입:</label>
@@ -1084,18 +1071,20 @@ style: custom-blue
           />
         </div>
 
-        {/* Bulk compile switch */}
-        <div className="flex items-center gap-6 border-t border-slate-200 pt-3 text-sm">
-          <label className="flex items-center gap-2 font-semibold text-slate-600 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={isBulkMode}
-              onChange={(e) => setIsBulkMode(e.target.checked)}
-              className="rounded text-blue-600 focus:ring-blue-500 h-4 w-4"
-            />
-            폴더 일괄 변환 (마크다운 폴더 매핑 컴파일)
-          </label>
-        </div>
+        {/* Bulk compile switch — 서버 연결 시에만 노출 */}
+        {hasServer !== false && (
+          <div className="flex items-center gap-6 border-t border-slate-200 pt-3 text-sm">
+            <label className="flex items-center gap-2 font-semibold text-slate-600 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isBulkMode}
+                onChange={(e) => setIsBulkMode(e.target.checked)}
+                className="rounded text-blue-600 focus:ring-blue-500 h-4 w-4"
+              />
+              폴더 일괄 변환 (마크다운 폴더 매핑 컴파일)
+            </label>
+          </div>
+        )}
 
         {/* Compile Settings */}
         <div className="border-t border-slate-200 pt-3 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -1121,80 +1110,82 @@ style: custom-blue
             </div>
           </div>
 
-          <div className="space-y-2">
-            {!isBulkMode ? (
-              <>
-                <div className="font-semibold text-slate-500 flex items-center justify-between">
-                  <span>2. 저장 위치 옵션</span>
-                  <button
-                    type="button"
-                    onClick={() => handleFolderPick("save")}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-bold underline"
-                  >
-                    폴더 선택...
-                  </button>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <select
-                    value={saveOption}
-                    onChange={(e) => setSaveOption(e.target.value as any)}
-                    className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
-                  >
-                    <option value="standalone">독립 파일 단독 생성</option>
-                    <option value="guideHub">가이드 허브 목록 추가 및 전체 빌드</option>
-                  </select>
-                  <input
-                    type="text"
-                    value={outputPath}
-                    onChange={(e) => setOutputPath(e.target.value)}
-                    className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-sm text-slate-800 font-mono w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    placeholder="기본값 (storage/)"
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
+          {hasServer !== false && (
+            <div className="space-y-2">
+              {!isBulkMode ? (
+                <>
                   <div className="font-semibold text-slate-500 flex items-center justify-between">
-                    <span>2. 입력 폴더</span>
+                    <span>2. 저장 위치 옵션</span>
                     <button
                       type="button"
-                      onClick={() => handleFolderPick("input")}
+                      onClick={() => handleFolderPick("save")}
                       className="text-xs text-blue-600 hover:text-blue-800 font-bold underline"
                     >
-                      선택...
+                      폴더 선택...
                     </button>
                   </div>
-                  <input
-                    type="text"
-                    value={bulkInputPath}
-                    onChange={(e) => setBulkInputPath(e.target.value)}
-                    className="w-full bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-800 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    placeholder="md_src"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <div className="font-semibold text-slate-500 flex items-center justify-between">
-                    <span>3. 출력 폴더</span>
-                    <button
-                      type="button"
-                      onClick={() => handleFolderPick("output")}
-                      className="text-xs text-blue-600 hover:text-blue-800 font-bold underline"
+                  <div className="flex flex-col gap-1.5">
+                    <select
+                      value={saveOption}
+                      onChange={(e) => setSaveOption(e.target.value as any)}
+                      className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
                     >
-                      선택...
-                    </button>
+                      <option value="standalone">독립 파일 단독 생성</option>
+                      <option value="guideHub">가이드 허브 목록 추가 및 전체 빌드</option>
+                    </select>
+                    <input
+                      type="text"
+                      value={outputPath}
+                      onChange={(e) => setOutputPath(e.target.value)}
+                      className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-sm text-slate-800 font-mono w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      placeholder="기본값 (storage/)"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    value={bulkOutputPath}
-                    onChange={(e) => setBulkOutputPath(e.target.value)}
-                    className="w-full bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-800 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    placeholder="publish"
-                  />
+                </>
+              ) : (
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <div className="font-semibold text-slate-500 flex items-center justify-between">
+                      <span>2. 입력 폴더</span>
+                      <button
+                        type="button"
+                        onClick={() => handleFolderPick("input")}
+                        className="text-xs text-blue-600 hover:text-blue-800 font-bold underline"
+                      >
+                        선택...
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={bulkInputPath}
+                      onChange={(e) => setBulkInputPath(e.target.value)}
+                      className="w-full bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-800 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      placeholder="md_src"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="font-semibold text-slate-500 flex items-center justify-between">
+                      <span>3. 출력 폴더</span>
+                      <button
+                        type="button"
+                        onClick={() => handleFolderPick("output")}
+                        className="text-xs text-blue-600 hover:text-blue-800 font-bold underline"
+                      >
+                        선택...
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={bulkOutputPath}
+                      onChange={(e) => setBulkOutputPath(e.target.value)}
+                      className="w-full bg-white border border-slate-200 rounded px-2 py-1.5 text-xs text-slate-800 font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      placeholder="publish"
+                    />
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Link to generated portal */}
@@ -1215,7 +1206,13 @@ style: custom-blue
           className="w-full bg-blue-600 hover:bg-blue-600 text-white font-semibold py-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50 shadow-sm text-sm"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          <span>{isBulkMode ? "선택 폴더 일괄 숏코드 컴파일 실행" : "V2 마크다운 컴파일 및 저장"}</span>
+          <span>
+            {isBulkMode
+              ? "선택 폴더 일괄 숏코드 컴파일 실행"
+              : hasServer === false
+                ? "마크다운 컴파일 · 브라우저 다운로드"
+                : "V2 마크다운 컴파일 및 저장"}
+          </span>
         </button>
       </div>
 

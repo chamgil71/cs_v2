@@ -134,9 +134,48 @@ const assertPathUnderDir = (targetPath: string, parentDir: string, paramName: st
 
 ---
 
-## 4. 커밋 이력
+## 4. Standalone 빌드 동작 검증 (`fix` · `db631f0`)
+
+`npm run build:standalone` 실행 후 `dist/standalone.html` (약 544 kB, gzip 148 kB) 생성.  
+두 모듈의 동작 가능 여부를 바이너리 검사 및 코드 분석으로 검증.
+
+### Module 1 — PPTX 디자인 인스펙터
+
+| 항목 | 결과 |
+|---|---|
+| JSZip 번들 포함 여부 | ✅ 포함 |
+| `/api/` 호출 유무 | ✅ 없음 |
+| **종합 판정** | **✅ 서버 없이 100% 동작** |
+
+### Module 2 — 마크다운 가이드북 컴파일러
+
+| 기능 | Standalone 동작 |
+|---|---|
+| 스타일 로드 (`/api/list-styles` 실패) | `FALLBACK_STYLES` 자동 사용 ✅ |
+| 미리보기 (`/api/preview` 실패) | `clientCompileMarkdown` 자동 폴백 ✅ |
+| 단일 파일 저장 — HTML/Presentation | 브라우저 직접 다운로드 폴백 ✅ |
+| 단일 파일 저장 — PPTX | "PPTX 불가" 안내 토스트 후 md/html 다운로드 ✅ |
+| 일괄 변환 (`/api/bulk-convert`) | "백엔드 필요" 안내 토스트 ✅ |
+| 폴더 선택 (`/api/select-folder`) | "경로 직접 입력" 안내 토스트 ✅ |
+| **종합 판정** | **✅ 제한 사항 명시 하에 동작** |
+
+### 발견된 문제 및 수정 내용 (`db631f0`)
+
+**문제 1 — 프로덕션 번들에 디버그 `console.log` 5개 포함**
+- `"Main script loaded"`, `"Root element found"`, `"Mounting React app..."` 등
+- `main.tsx`에서 전부 제거, `mountApp()` 함수 구조 단순화
+
+**문제 2 — "Vite Dev Server" 배지 standalone에서도 고정 출력**
+- `import.meta.env.DEV`로 조건 분기 처리
+- DEV 모드 → 파란색 "Vite Dev Server" / 프로덕션 빌드 → 초록색 "Standalone"
+
+---
+
+## 5. 전체 커밋 이력
 
 ```
+db631f0 fix: standalone 빌드 대응 — 디버그 로그 제거 및 배지 조건 처리
+317acef docs: 패치 결과 보고서 추가 및 docs_index 업데이트 (2026-06-23)
 1333eb0 test: wcag, client-compiler, pptx-analyzer 유닛 테스트 63개 추가
 e6da6a5 docs: 감사 리포트 docs/report/로 이동 및 인덱스 업데이트
 3c6951e feat: 컴포넌트 전면 개선 및 신규 기능 추가
@@ -146,7 +185,7 @@ b60a9cd feat: standalone 빌드 파이프라인 및 클라이언트 사이드 �
 
 ---
 
-## 5. 잔여 과제 (이번 작업 범위 외)
+## 6. 잔여 과제 (이번 작업 범위 외)
 
 이전 감사 보고서에서 식별됐으나 이번 작업에서 다루지 않은 항목입니다.
 

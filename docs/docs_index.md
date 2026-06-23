@@ -15,6 +15,9 @@ V2.0은 기존 V1.0의 파일들과 구조적으로 격리되어 설계되었으
 | **사용자 가이드** | [guide.md](file:///c:/ai/cs_v2/docs/guide.md) | 디자이너, 콘텐츠 작성자 | PPTX 인스펙터 분석/리매퍼 사용법, 마크다운 가독성 린터 가이드 |
 | **개발자 가이드** | [scripts_guide.md](file:///c:/ai/cs_v2/docs/scripts_guide.md) | 엔지니어, 개발자 | PPTX XML 파서 엔진 명세, 백엔드 API 및 무결성 린터 코드 해설 |
 | **실효성 분석** | [project_feasibility_analysis.md](file:///c:/ai/cs_v2/docs/plan/project_feasibility_analysis.md) | 기획자, 의사 결정권자 | 아키텍처 대안(통합 vs 격리) 비교 분석 및 검증 테스트 설계안 |
+| **코드 상태 분석** | [code_analysis_report.md](./code_analysis_report.md) | 개발자, 기술 검토자 | 치명적 버그·하드코딩·정합성·오류 가능성·개선 제안 종합 보고서 (2026-06-22) |
+| **견고성·유연성 점검** | [robustness_flexibility_report.md](./robustness_flexibility_report.md) | 개발자, 기술 검토자 | 타입 안전성·테스트·에러 핸들링·코드 중복·환경 구성·기관 종속 로직 점검 보고서 (2026-06-22) |
+| **전방위 종합 점검** | [comprehensive_audit_report.md](./comprehensive_audit_report.md) | 개발자, 보안 검토자 | 보안·성능·유지보수성·접근성·운영성·데이터무결성·법적준수·문서화 8개 영역 종합 점검 보고서 (2026-06-22) |
 
 ---
 

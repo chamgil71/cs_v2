@@ -120,7 +120,7 @@ function parseShortcodeItems(src: string) {
       const colonIdx = content.indexOf(":");
       if (colonIdx >= 0) {
         const key = content.slice(0, colonIdx).trim();
-        let val = content.slice(colonIdx + 1).trim();
+        const val = content.slice(colonIdx + 1).trim();
         if (val === "|") {
           inLiteralBlock = true;
           currentKey = key;
@@ -135,7 +135,7 @@ function parseShortcodeItems(src: string) {
     if (current && trimmed.includes(":")) {
       const colonIdx = line.indexOf(":");
       const key = line.slice(0, colonIdx).trim();
-      let val = line.slice(colonIdx + 1).trim();
+      const val = line.slice(colonIdx + 1).trim();
       if (val === "|") {
         inLiteralBlock = true;
         currentKey = key;

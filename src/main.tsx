@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { BarChart3, PenTool, Sparkles, Sliders, Settings } from 'lucide-react';
+import { BarChart3, PenTool, Sparkles, Sliders } from 'lucide-react';
 import './index.css'; // V1 CSS 리소스 재활용
 import PptxInspectorSuite from './components/PptxInspectorSuite';
 import VisualAdjuster from './components/VisualAdjuster';
 import MarkdownCompiler from './components/MarkdownCompiler';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function V2App() {
   // Main Top-level Tabs: 'pptx-inspector' (독립 도구) | 'guide-compiler' (연계형 도구)
@@ -75,7 +76,9 @@ function V2App() {
                 <span className="text-blue-600 font-bold ml-1">이 도구는 외부 서버 API 없이 브라우저 내에서 100% 서버리스로 가공·완결되어 독립 동작합니다.</span>
               </p>
             </div>
-            <PptxInspectorSuite />
+            <ErrorBoundary label="PPTX 디자인 인스펙터">
+              <PptxInspectorSuite />
+            </ErrorBoundary>
           </div>
         )}
 
@@ -116,7 +119,9 @@ function V2App() {
                     마크다운 에디터와 split-pane 실시간 프리뷰를 제공합니다. 컴파일 시 `styles.json`에 저장된 테마 규격 색상을 가이드북 및 슬라이드 구조에 주입합니다.
                   </p>
                 </div>
-                <MarkdownCompiler />
+                <ErrorBoundary label="마크다운 가이드북 컴파일러">
+                  <MarkdownCompiler />
+                </ErrorBoundary>
               </div>
             )}
 
@@ -131,7 +136,9 @@ function V2App() {
                     기존 스타일 프리셋의 HSL 색상 변수를 미세 튜닝하거나, 사용자가 직접 메인·서브·강조 배색 조합을 기획하고 WCAG 대비 검증을 마친 후 `styles.json`에 신규 테마로 영구 등록합니다.
                   </p>
                 </div>
-                <VisualAdjuster />
+                <ErrorBoundary label="디자인 시스템 배색 빌더">
+                  <VisualAdjuster />
+                </ErrorBoundary>
               </div>
             )}
           </div>

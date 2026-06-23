@@ -625,7 +625,7 @@ export function viteApiPlugin(): Plugin {
             }
 
             // Ensure filename has .md extension
-            let baseName = filename.replace(/\.[^/.]+$/, "");
+            const baseName = filename.replace(/\.[^/.]+$/, "");
             const mdFilename = baseName + ".md";
 
             const savedFiles: string[] = [];

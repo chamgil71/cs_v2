@@ -197,3 +197,50 @@ b60a9cd feat: standalone 빌드 파이프라인 및 클라이언트 사이드 �
 | 🟠 높음 | `any` 타입 남용 → 엄격 타입 정의 필요 | `robustness_flexibility_report.md §1` |
 | 🟡 중간 | `puppet`er / `playwright` 의존성 정리 (devDep 이동) | `code_analysis_report.md §3` |
 | 🟡 중간 | 통합 테스트(JSZip PPTX 파이프라인) 추가 필요 | — |
+
+---
+
+## 7. 후속 패치 (2차) — 감사 잔여 3건 처리
+
+> 작업일: 2026-06-23 (2차)  
+> 검토 결과 미처리로 확인된 감사 항목 3건을 추가 처리하였습니다.
+
+### 7-1. 🟠 ESLint 설정 파일 생성 (감사 5-4)
+
+`package.json`에 `"lint": "eslint ."` 스크립트는 있었으나 ESLint 9 flat config 파일(`eslint.config.js`)이 없어 `npm run lint` 실행이 불가능했습니다.
+
+- `eslint.config.js` 신규 작성 (이미 설치된 `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh` 활용)
+- 점진적 도입을 위해 `no-explicit-any`/미사용 변수는 경고로 완화, 정리용 빈 `catch`는 허용(`allowEmptyCatch`)
+- shadcn/ui 생성 컴포넌트(`src/components/ui/**`)와 설정 파일은 템플릿 보일러플레이트 규칙 완화
+- `--fix`로 자동 교정 가능한 `let`→`const` 3건 적용 (`client-compiler.ts`, `vite-api-plugin.ts`)
+- **결과:** `npm run lint` → **0 errors** (51 warnings, 점진적 정리 대상), exit 0
+
+### 7-2. 🟠 React ErrorBoundary 추가 (감사 3-3-1)
+
+런타임 예외 발생 시 React가 전체 트리를 언마운트하여 **빈 화면**이 되는 문제를 해소했습니다.
+
+- `src/components/ErrorBoundary.tsx` 신규 작성 — **외부 의존성 없이** React 표준 API(`getDerivedStateFromError`/`componentDidCatch`)로 구현
+- `aria-live="assertive"` + `role="alert"` 복구 UI(다시 시도 / 새로고침) 제공
+- `main.tsx`에서 3개 핵심 도구(인스펙터·컴파일러·배색 빌더)를 **개별 경계로 래핑** → 한 탭이 죽어도 나머지 도구는 정상 동작
+- **결과:** `tsc --noEmit` 통과, 빌드 정상
+
+### 7-3. 🟠 npm 의존성 취약점 (감사 1-9) — 위험 수용 결정
+
+`npm audit fix`(비파괴) 실행 결과 **자동 수정 가능한 항목 없음**. 남은 3건은 모두 `--force`(주요 버전 후퇴)로만 해소됩니다.
+
+| 패키지 | 심각도 | 조치 | 사유 |
+|---|:---:|---|---|
+| `gray-matter` → `js-yaml` | 🟠 MODERATE | **보류** | 유일한 픽스가 `gray-matter@2.0.1`로의 **다운그레이드**. 현재 4.0.3을 4개 빌드 스크립트(`build-guide`, `md-to-pptx`, `build-presentation`, `sync-guides-index`)가 의존 → frontmatter 파싱 파이프라인 파괴. js-yaml DoS는 **악의적으로 조작된 YAML 머지 키**가 필요하나, `.md` 입력은 프로젝트 소유자가 로컬에서 직접 저작 → 실제 악용 가능성 ≈ 0 |
+| `esbuild` | 🟢 LOW | **보류** | "Windows 개발 서버에서 임의 파일 읽기"로 **개발 의존성·개발 서버 한정**. 배포 산출물에 미포함. 픽스는 vite/vitest 메이저 변경 유발 |
+
+**결정:** 스캐너 통과만을 위해 빌드를 깨뜨리는 강제 다운그레이드 대신, 위 사유로 **잔여 위험을 문서화하여 수용**. 향후 `gray-matter` 상위 호환 픽스 릴리스 시 재평가.
+
+### 7-4. 후속 검증 요약
+
+| 검증 | 결과 |
+|---|:---:|
+| `npx vitest run` | ✅ 63/63 통과 |
+| `npm run lint` | ✅ 0 errors |
+| `npx tsc --noEmit` | ✅ 통과 |
+| `vite build` (일반) | ✅ 472 KB (gzip 135 KB) |
+| `vite build` (standalone) | ✅ 단일 파일 빌드 정상 |

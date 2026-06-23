@@ -1,4 +1,3 @@
-console.log("Main script loaded");
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BarChart3, PenTool, Sparkles, Sliders, Settings } from 'lucide-react';
@@ -24,9 +23,15 @@ function V2App() {
             <h1 className="text-sm font-bold tracking-tight text-white">Creative Spark V2.0 Design Suite</h1>
             <div className="text-xs text-slate-400 font-semibold tracking-wider">독립형 PPTX 분석 & 연계형 저작 시스템</div>
           </div>
-          <span className="ml-2 bg-blue-400/25 text-blue-200 border border-blue-400/30 text-xs px-2 py-0.5 rounded-full font-bold">
-            Vite Dev Server
-          </span>
+          {import.meta.env.DEV ? (
+            <span className="ml-2 bg-blue-400/25 text-blue-200 border border-blue-400/30 text-xs px-2 py-0.5 rounded-full font-bold">
+              Vite Dev Server
+            </span>
+          ) : (
+            <span className="ml-2 bg-emerald-400/25 text-emerald-200 border border-emerald-400/30 text-xs px-2 py-0.5 rounded-full font-bold">
+              Standalone
+            </span>
+          )}
         </div>
 
         {/* Main Tab Controls */}
@@ -139,26 +144,17 @@ function V2App() {
 // React Mount
 const mountApp = () => {
   const root = document.getElementById('root');
-  console.log("Root element found:", !!root);
   if (root) {
-    console.log("Mounting React app...");
-    try {
-      ReactDOM.createRoot(root).render(
-        <React.StrictMode>
-          <V2App />
-        </React.StrictMode>
-      );
-      console.log("React render call succeeded");
-    } catch (err) {
-      console.error("React render failed:", err);
-    }
+    ReactDOM.createRoot(root).render(
+      <React.StrictMode>
+        <V2App />
+      </React.StrictMode>
+    );
   }
 };
 
 if (document.readyState === 'loading') {
-  console.log("Document loading, waiting for DOMContentLoaded");
   document.addEventListener('DOMContentLoaded', mountApp);
 } else {
-  console.log("Document already loaded, mounting immediately");
   mountApp();
 }

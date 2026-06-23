@@ -85,6 +85,17 @@ export function viteApiPlugin(): Plugin {
           return next();
         }
 
+        // Set CORS headers for local/cross-origin accessibility
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+        if (req.method === "OPTIONS") {
+          res.statusCode = 204;
+          res.end();
+          return;
+        }
+
         const method = req.method;
         const rootDir = process.cwd();
         const mdSrcDir = path.join(rootDir, "md_src");
@@ -93,6 +104,90 @@ export function viteApiPlugin(): Plugin {
         if (!fs.existsSync(scratchDir)) {
           fs.mkdirSync(scratchDir, { recursive: true });
         }
+
+        // Define helper functions at the top of middlewares to prevent TDZ errors
+        const getBody = (): Promise<any> => {
+          return new Promise((resolve, reject) => {
+            let body = "";
+            req.on("data", (chunk) => { body += chunk; });
+            req.on("end", () => {
+              try {
+                resolve(body ? JSON.parse(body) : {});
+              } catch (e) {
+                reject(new Error("Invalid JSON body"));
+              }
+            });
+          });
+        };
+
+        const validateStylesSchema = (stylesObj: any): string | null => {
+          if (typeof stylesObj !== "object" || stylesObj === null) {
+            return "styles는 반드시 객체 타입이어야 합니다.";
+          }
+          const hexRegex = /^#[0-9A-Fa-f]{6}$/;
+          for (const key of Object.keys(stylesObj)) {
+            const theme = stylesObj[key];
+            if (typeof theme !== "object" || theme === null) {
+              return `테마 '${key}'의 정의가 올바르지 않습니다.`;
+            }
+            if (!theme.label || typeof theme.label !== "string" || theme.label.trim() === "") {
+              return `테마 '${key}'의 한글 명칭(label)이 누락되었거나 유효하지 않습니다.`;
+            }
+            
+            // 필수 색상값 검사 (brand, brandDark, brandLight)
+            const colorsToCheck = ['brand', 'brandDark', 'brandLight'];
+            for (const colKey of colorsToCheck) {
+              const colVal = theme[colKey];
+              if (!colVal || typeof colVal !== "string" || !hexRegex.test(colVal)) {
+                return `테마 '${key}'의 색상 속성 '${colKey}'가 누락되었거나 올바른 HEX 형태(#FFFFFF)가 아닙니다.`;
+              }
+            }
+          }
+          return null;
+        };
+
+        // Path validation helper for Path Traversal protection
+        const assertPathUnderDir = (targetPath: string, parentDir: string, paramName: string) => {
+          const resolvedTarget = path.resolve(targetPath);
+          const resolvedParent = path.resolve(parentDir);
+          if (!resolvedTarget.startsWith(resolvedParent + path.sep) && resolvedTarget !== resolvedParent) {
+            throw new Error(`[보안] ${paramName}: 상위 디렉토리 탈출 거부 → ${resolvedTarget}`);
+          }
+        };
+
+        // Validation helpers for Command Injection protection
+        const validateStyleKeyword = async (style: string): Promise<boolean> => {
+          if (!style) return true; // empty/falsy is allowed
+          const stylesPath = path.join(rootDir, "config", "styles.json");
+          if (fs.existsSync(stylesPath)) {
+            try {
+              const src = fs.readFileSync(stylesPath, "utf8")
+                .replace(/\/\/[^\n]*/g, "")
+                .replace(/\/\*[\s\S]*?\*\//g, "");
+              const parsed = JSON.parse(src);
+              return Object.keys(parsed).includes(style);
+            } catch {
+              return false;
+            }
+          }
+          return false;
+        };
+
+        const SAFE_FILENAME = /^[a-zA-Z0-9가-힣_\-\s.()]{1,100}$/;
+        const validateFilename = (filename: string): boolean => {
+          if (!filename) return true;
+          return SAFE_FILENAME.test(filename);
+        };
+
+        const validateFormat = (format: string): boolean => {
+          if (!format) return false;
+          return ["html", "presentation", "pptx"].includes(format);
+        };
+
+        const escapeHtml = (s: string): string => {
+          return s.replace(/[&<>"']/g, c =>
+            ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+        };
 
         try {
           // 1. GET /api/list-styles
@@ -110,33 +205,6 @@ export function viteApiPlugin(): Plugin {
             }
             return;
           }
-
-          // Helper function to validate styles.json schema integrity
-          const validateStylesSchema = (stylesObj: any): string | null => {
-            if (typeof stylesObj !== "object" || stylesObj === null) {
-              return "styles는 반드시 객체 타입이어야 합니다.";
-            }
-            const hexRegex = /^#[0-9A-Fa-f]{6}$/;
-            for (const key of Object.keys(stylesObj)) {
-              const theme = stylesObj[key];
-              if (typeof theme !== "object" || theme === null) {
-                return `테마 '${key}'의 정의가 올바르지 않습니다.`;
-              }
-              if (!theme.label || typeof theme.label !== "string" || theme.label.trim() === "") {
-                return `테마 '${key}'의 한글 명칭(label)이 누락되었거나 유효하지 않습니다.`;
-              }
-              
-              // 필수 색상값 검사 (brand, brandDark, brandLight)
-              const colorsToCheck = ['brand', 'brandDark', 'brandLight'];
-              for (const colKey of colorsToCheck) {
-                const colVal = theme[colKey];
-                if (!colVal || typeof colVal !== "string" || !hexRegex.test(colVal)) {
-                  return `테마 '${key}'의 색상 속성 '${colKey}'가 누락되었거나 올바른 HEX 형태(#FFFFFF)가 아닙니다.`;
-                }
-              }
-            }
-            return null;
-          };
 
           // 1-2. POST /api/save-styles
           if (url.pathname === "/api/save-styles" && method === "POST") {
@@ -191,27 +259,22 @@ export function viteApiPlugin(): Plugin {
             return;
           }
 
-          // Helper to parse JSON body
-          const getBody = (): Promise<any> => {
-            return new Promise((resolve, reject) => {
-              let body = "";
-              req.on("data", (chunk) => { body += chunk; });
-              req.on("end", () => {
-                try {
-                  resolve(body ? JSON.parse(body) : {});
-                } catch (e) {
-                  reject(new Error("Invalid JSON body"));
-                }
-              });
-            });
-          };
-
           // 4. POST /api/preview
           if (url.pathname === "/api/preview" && method === "POST") {
             const { markdown, mode, style } = await getBody();
             if (!markdown || !mode) {
               res.statusCode = 400;
               res.end(JSON.stringify({ error: "Missing markdown or mode parameter" }));
+              return;
+            }
+            if (style && !(await validateStyleKeyword(style))) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "허용되지 않는 스타일 ID입니다." }));
+              return;
+            }
+            if (mode !== "html" && mode !== "presentation") {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "허용되지 않는 미리보기 모드입니다." }));
               return;
             }
 
@@ -227,8 +290,6 @@ export function viteApiPlugin(): Plugin {
                 cmd = `node scripts/build-guide.mjs "${tempMd}" --out "${tempHtml}"${styleFlag}`;
               } else if (mode === "presentation") {
                 cmd = `node scripts/build-presentation.mjs "${tempMd}" "${tempHtml}"${styleFlag}`;
-              } else {
-                throw new Error("Invalid preview mode");
               }
 
               await execAsync(cmd);
@@ -256,6 +317,21 @@ export function viteApiPlugin(): Plugin {
               res.end(JSON.stringify({ error: "Missing markdown or format parameter" }));
               return;
             }
+            if (!validateFormat(format)) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "허용되지 않는 포맷입니다." }));
+              return;
+            }
+            if (filename && !validateFilename(filename)) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "파일명에 허용되지 않는 문자가 포함되었습니다." }));
+              return;
+            }
+            if (style && !(await validateStyleKeyword(style))) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "허용되지 않는 스타일 ID입니다." }));
+              return;
+            }
 
             // Apply options on markdown text
             let processedMarkdown = markdown;
@@ -280,8 +356,6 @@ export function viteApiPlugin(): Plugin {
               } else if (format === "pptx") {
                 const noCoverFlag = (options && options.noCover) ? " --no-cover" : "";
                 cmd = `node scripts/md-to-pptx.mjs "${tempMd}" --out "${tempOut}"${styleFlag}${noCoverFlag}`;
-              } else {
-                throw new Error("Invalid format");
               }
 
               await execAsync(cmd);
@@ -293,7 +367,12 @@ export function viteApiPlugin(): Plugin {
                   : "text/html; charset=utf-8";
 
                 res.setHeader("Content-Type", contentType);
-                res.setHeader("Content-Disposition", `attachment; filename="${encodeURIComponent(downloadName)}"`);
+                
+                // Sanitize filename for Content-Disposition to prevent header injection
+                const safeDownloadName = downloadName
+                  .replace(/[^\w\s\-\.가-힣]/g, "_")
+                  .slice(0, 200);
+                res.setHeader("Content-Disposition", `attachment; filename*=UTF-8''${encodeURIComponent(safeDownloadName)}`);
                 
                 const fileStream = fs.createReadStream(tempOut);
                 fileStream.pipe(res);
@@ -315,9 +394,26 @@ export function viteApiPlugin(): Plugin {
             const { inputDir, outputDir, style, formats, options } = await getBody();
             const targetFormats = (formats && Array.isArray(formats) && formats.length > 0) ? formats : ["html"];
             
+            for (const fmt of targetFormats) {
+              if (!validateFormat(fmt)) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ error: "허용되지 않는 포맷이 포함되어 있습니다." }));
+                return;
+              }
+            }
+            if (style && !(await validateStyleKeyword(style))) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "허용되지 않는 스타일 ID입니다." }));
+              return;
+            }
+
             const inPath = path.join(rootDir, inputDir || "md_src");
             const outPath = path.join(rootDir, outputDir || "publish");
             
+            // Validate Path Traversal
+            assertPathUnderDir(inPath, rootDir, "inputDir");
+            assertPathUnderDir(outPath, rootDir, "outputDir");
+
             if (!fs.existsSync(inPath)) {
               res.statusCode = 400;
               res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -402,7 +498,7 @@ export function viteApiPlugin(): Plugin {
               <div class="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-md transition-all">
                 <div class="flex items-center gap-3 mb-4">
                   <span class="text-2xl">📄</span>
-                  <h3 class="font-bold text-slate-800 text-base">${f.name}</h3>
+                  <h3 class="font-bold text-slate-800 text-base">${escapeHtml(f.name)}</h3>
                 </div>
                 <div class="flex flex-wrap gap-2">
                   ${linksHtml}
@@ -456,21 +552,43 @@ export function viteApiPlugin(): Plugin {
           // 5-3. POST /api/select-folder
           if (url.pathname === "/api/select-folder" && method === "POST") {
             try {
-              const rootDirEscaped = rootDir.replace(/\\/g, "\\\\");
-              const psCommand = `Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.FolderBrowserDialog; $f.Description = '변환 또는 저장할 폴더를 선택하십시오.'; $f.SelectedPath = '${rootDirEscaped}'; if ($f.ShowDialog() -eq 'OK') { Write-Output $f.SelectedPath }`;
-              const { stdout } = await execAsync(`powershell -NoProfile -Command "${psCommand}"`);
-              const selectedPath = stdout.trim();
-              
-              if (selectedPath) {
-                let resultPath = selectedPath;
-                if (selectedPath.toLowerCase().startsWith(rootDir.toLowerCase())) {
-                  resultPath = path.relative(rootDir, selectedPath).replace(/\\/g, "/");
+              if (process.platform === "win32") {
+                const rootDirEscaped = rootDir.replace(/\\/g, "\\\\");
+                const psCommand = `Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.FolderBrowserDialog; $f.Description = '변환 또는 저장할 폴더를 선택하십시오.'; $f.SelectedPath = '${rootDirEscaped}'; if ($f.ShowDialog() -eq 'OK') { Write-Output $f.SelectedPath }`;
+                const { stdout } = await execAsync(`powershell -NoProfile -Command "${psCommand}"`);
+                const selectedPath = stdout.trim();
+                
+                if (selectedPath) {
+                  let resultPath = selectedPath;
+                  if (selectedPath.toLowerCase().startsWith(rootDir.toLowerCase())) {
+                    resultPath = path.relative(rootDir, selectedPath).replace(/\\/g, "/");
+                  }
+                  res.setHeader("Content-Type", "application/json; charset=utf-8");
+                  res.end(JSON.stringify({ selectedPath: resultPath }));
+                } else {
+                  res.setHeader("Content-Type", "application/json; charset=utf-8");
+                  res.end(JSON.stringify({ selectedPath: null }));
                 }
-                res.setHeader("Content-Type", "application/json; charset=utf-8");
-                res.end(JSON.stringify({ selectedPath: resultPath }));
+              } else if (process.platform === "darwin") {
+                const appleScript = `osascript -e 'tell application "System Events" to activate' -e 'POSIX path of (choose folder with prompt "변환 또는 저장할 폴더를 선택하십시오." default location "${rootDir}")'`;
+                const { stdout } = await execAsync(appleScript);
+                const selectedPath = stdout.trim();
+                
+                if (selectedPath) {
+                  let resultPath = selectedPath;
+                  if (selectedPath.toLowerCase().startsWith(rootDir.toLowerCase())) {
+                    resultPath = path.relative(rootDir, selectedPath).replace(/\\/g, "/");
+                  }
+                  res.setHeader("Content-Type", "application/json; charset=utf-8");
+                  res.end(JSON.stringify({ selectedPath: resultPath }));
+                } else {
+                  res.setHeader("Content-Type", "application/json; charset=utf-8");
+                  res.end(JSON.stringify({ selectedPath: null }));
+                }
               } else {
+                res.statusCode = 400;
                 res.setHeader("Content-Type", "application/json; charset=utf-8");
-                res.end(JSON.stringify({ selectedPath: null }));
+                res.end(JSON.stringify({ error: "이 운영체제에서는 폴더 다이얼로그를 지원하지 않습니다. 경로를 수동으로 입력해 주세요." }));
               }
             } catch (err: any) {
               res.statusCode = 500;
@@ -486,6 +604,23 @@ export function viteApiPlugin(): Plugin {
             if (!markdown || !filename || !formats || !Array.isArray(formats)) {
               res.statusCode = 400;
               res.end(JSON.stringify({ error: "Missing required parameters: markdown, filename, formats" }));
+              return;
+            }
+            if (filename && !validateFilename(filename)) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "파일명에 허용되지 않는 문자가 포함되었습니다." }));
+              return;
+            }
+            for (const fmt of formats) {
+              if (!validateFormat(fmt)) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ error: "허용되지 않는 포맷이 포함되어 있습니다." }));
+                return;
+              }
+            }
+            if (style && !(await validateStyleKeyword(style))) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "허용되지 않는 스타일 ID입니다." }));
               return;
             }
 
@@ -543,6 +678,9 @@ export function viteApiPlugin(): Plugin {
                   }
                 }
                 
+                // Validate Path Traversal
+                assertPathUnderDir(formatOutDir, rootDir, "outputPath");
+
                 if (!fs.existsSync(formatOutDir)) {
                   fs.mkdirSync(formatOutDir, { recursive: true });
                 }
@@ -589,7 +727,7 @@ export function viteApiPlugin(): Plugin {
           console.error("API error:", e);
           res.statusCode = 500;
           res.setHeader("Content-Type", "application/json; charset=utf-8");
-          res.end(JSON.stringify({ error: e.message || "Internal Server Error" }));
+          res.end(JSON.stringify({ error: "요청 처리 중 오류가 발생했습니다." }));
         }
       });
     }

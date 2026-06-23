@@ -104,7 +104,7 @@ export async function exportIframeToPptx(
   // 분할 단위: hero / section / done-section. 없으면 body 전체.
   let sections = Array.from(
     doc.querySelectorAll<HTMLElement>(
-      "section.hero, section.section, section.done-section",
+      "section.hero, section.section, section.done-section, .slide-page",
     ),
   );
   if (sections.length === 0) sections = [body];
@@ -484,7 +484,7 @@ export async function exportIframeToEditablePptx(
 
   let sections = Array.from(
     doc.querySelectorAll<HTMLElement>(
-      "section.hero, section.section, section.done-section",
+      "section.hero, section.section, section.done-section, .slide-page",
     ),
   );
   if (sections.length === 0) sections = [doc.body];

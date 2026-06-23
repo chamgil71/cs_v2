@@ -9,20 +9,38 @@ const removeModuleScript = () => {
     name: "remove-module-script",
     enforce: "post" as const,
     generateBundle(options: any, bundle: any) {
-      const htmlFile = Object.values(bundle).find(
-        (file: any) => file.fileName && file.fileName.endsWith("standalone.html")
-      ) as any;
-      if (htmlFile && typeof htmlFile.source === "string") {
-        htmlFile.source = htmlFile.source
-          .replace(/<script type="module" crossorigin>/g, "<script defer>")
-          .replace(/<script type="module">/g, "<script defer>");
+      // 인라인된 모든 .html 산출물에서 type="module" 스크립트를 defer로 전환하여
+      // file:// 프로토콜(서버 없이 브라우저 직접 오픈)에서도 동작하도록 한다.
+      for (const file of Object.values(bundle) as any[]) {
+        if (file.fileName && file.fileName.endsWith(".html") && typeof file.source === "string") {
+          file.source = file.source
+            .replace(/<script type="module" crossorigin>/g, "<script defer>")
+            .replace(/<script type="module">/g, "<script defer>");
+        }
       }
     },
   };
 };
 
+// vite-plugin-singlefile은 코드 스플리팅을 비활성화하므로 다중 입력을 지원하지 않는다.
+// 따라서 엔트리를 환경변수(SA_ENTRY)로 선택해 한 번에 하나씩 빌드하고, dist에 누적한다.
+//   - main    : standalone.html (모듈 1 + 2 통합, 탭 전환) — 기본값
+//   - module1 : module1.html    (PPTX 디자인 인스펙터 단독, 서버리스)
+//   - module2 : module2.html    (가이드북 컴파일러 & 배색 빌더 단독, 클라이언트 컴파일 폴백)
+const ENTRY_MAP: Record<string, string> = {
+  main: "standalone.html",
+  module1: "module1.html",
+  module2: "module2.html",
+};
+
+const saEntry = process.env.SA_ENTRY && ENTRY_MAP[process.env.SA_ENTRY] ? process.env.SA_ENTRY : "main";
+const entryHtml = ENTRY_MAP[saEntry];
+
+// 기본(main) 빌드만 dist를 비우고, 모듈 빌드는 산출물을 누적한다.
+const shouldEmptyOutDir = saEntry === "main";
+
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(() => ({
   base: "./",
   plugins: [
     react(),
@@ -37,10 +55,9 @@ export default defineConfig(({ mode }) => ({
     dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime", "@tanstack/react-query", "@tanstack/query-core"],
   },
   build: {
+    emptyOutDir: shouldEmptyOutDir,
     rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, "standalone.html"),
-      },
+      input: path.resolve(__dirname, entryHtml),
     },
   },
 }));

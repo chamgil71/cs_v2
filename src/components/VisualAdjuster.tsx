@@ -10,6 +10,8 @@ import {
   Settings
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { FALLBACK_STYLES } from '../lib/client-compiler';
+
 
 interface ThemeDetails {
   label: string;
@@ -38,6 +40,7 @@ export default function VisualAdjuster() {
   const [editingThemeKey, setEditingThemeKey] = useState<string | null>(null);
   const [newThemeKey, setNewThemeKey] = useState('');
   const [loading, setLoading] = useState(false);
+  const [hasServer, setHasServer] = useState<boolean | null>(null);
 
   // Styling Form State
   const [themeForm, setThemeForm] = useState<ThemeDetails>({
@@ -61,7 +64,7 @@ export default function VisualAdjuster() {
   const ratingWhite = getWCAGRating(contrastWithWhite);
   const ratingBlack = getWCAGRating(contrastWithBlack);
 
-  // Fetch styles from backend
+  // Fetch styles from backend; sets hasServer based on API availability
   const fetchStyles = async () => {
     setLoading(true);
     try {
@@ -69,7 +72,7 @@ export default function VisualAdjuster() {
       if (res.ok) {
         const data = await res.json();
         setStyles(data);
-        // Set selected style values in form
+        setHasServer(true);
         if (data[selectedStyle]) {
           setThemeForm({ ...data[selectedStyle] });
           setEditingThemeKey(selectedStyle);
@@ -79,9 +82,20 @@ export default function VisualAdjuster() {
           setThemeForm({ ...data[firstKey] });
           setEditingThemeKey(firstKey);
         }
+      } else {
+        throw new Error("API unavailable");
       }
     } catch (err) {
-      console.error("Failed to load styles:", err);
+      console.error("Failed to load styles, using fallback:", err);
+      const data = FALLBACK_STYLES as Record<string, any>;
+      setStyles(data);
+      setHasServer(false);
+      const firstKey = data[selectedStyle] ? selectedStyle : Object.keys(data)[0];
+      if (firstKey) {
+        setSelectedStyle(firstKey);
+        setThemeForm({ ...data[firstKey] });
+        setEditingThemeKey(firstKey);
+      }
     } finally {
       setLoading(false);
     }
@@ -183,6 +197,14 @@ export default function VisualAdjuster() {
 
   // Save styles to backend
   const handleSaveStylesToServer = async () => {
+    if (hasServer === false) {
+      toast({
+        title: "서버 미연결",
+        description: "styles.json 서버 저장은 로컬 개발 서버(npm run dev)가 실행 중일 때만 사용할 수 있습니다.",
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       const res = await fetch("/api/save-styles", {
         method: "POST",
@@ -303,9 +325,12 @@ export default function VisualAdjuster() {
         <div className="border-t border-slate-200 pt-3 flex gap-2">
           <button
             onClick={handleSaveStylesToServer}
-            className="flex-1 bg-blue-600 hover:bg-blue-550 text-white font-semibold py-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+            disabled={hasServer === false}
+            title={hasServer === false ? "로컬 개발 서버(npm run dev) 연결 시에만 사용 가능합니다" : undefined}
+            className="flex-1 bg-blue-600 hover:bg-blue-550 text-white font-semibold py-2 rounded-lg text-xs flex items-center justify-center gap-1.5 transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <Save className="h-3.5 w-3.5" /> 서버에 최종 저장하기
+            <Save className="h-3.5 w-3.5" />
+            {hasServer === false ? "서버 미연결 (저장 불가)" : "서버에 최종 저장하기"}
           </button>
         </div>
       </div>

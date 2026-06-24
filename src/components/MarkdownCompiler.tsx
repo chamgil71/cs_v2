@@ -405,6 +405,8 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
 export default function MarkdownCompiler() {
   const { toast } = useToast();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const previewWrapRef = useRef<HTMLDivElement>(null);
+  const [previewScale, setPreviewScale] = useState(1);
 
   // Markdown editor states
   const [markdown, setMarkdown] = useState<string>(`---
@@ -600,6 +602,18 @@ style: custom-blue
       triggerPreview(markdown, previewMode, selectedStyle);
     }
   }, [previewMode]);
+
+  // Scale preview iframe to fit container
+  useEffect(() => {
+    const el = previewWrapRef.current;
+    if (!el) return;
+    const VIRTUAL_W = previewDevice === "mobile" ? 375 : previewDevice === "tablet" ? 768 : 1200;
+    const calc = (w: number) => setPreviewScale(w > 0 ? Math.min(1, w / VIRTUAL_W) : 1);
+    calc(el.getBoundingClientRect().width);
+    const ro = new ResizeObserver(([entry]) => calc(entry.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [previewDevice]);
 
   // Fetch styles from backend; sets hasServer based on API availability
   const fetchStyles = async () => {
@@ -1310,34 +1324,53 @@ style: custom-blue
           </div>
         )}
 
-        {/* Live Preview Iframe Frame */}
-        <div className="flex-1 min-h-[300px] bg-slate-50 border border-slate-200 rounded-xl overflow-hidden flex flex-col p-2 justify-center">
-          <div
-            className={`bg-white rounded-lg overflow-hidden border border-slate-200/60 shadow-sm ${previewMode === "html" ? "flex-1 w-full" : "w-full"}`}
-            style={{
-              width: previewDevice === "desktop" ? "100%" : previewDevice === "tablet" ? "768px" : "375px",
-              maxWidth: "100%",
-              aspectRatio: previewMode === "presentation" ? "16 / 9" : undefined,
-              margin: "0 auto"
-            }}
-          >
-            {generatingPreview && !previewHtml ? (
-              <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-2 bg-slate-50">
-                <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-                <span className="text-xs">Generating preview...</span>
-              </div>
-            ) : previewHtml ? (
-              <iframe
-                title="Markdown Compiler Preview Frame"
-                srcDoc={previewHtml}
-                className="w-full h-full border-0"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-slate-500 text-xs bg-slate-50 font-semibold">
-                [미리보기 반영] 버튼을 눌러 컴파일 결과물을 표시합니다.
-              </div>
-            )}
-          </div>
+        {/* Live Preview Iframe Frame — scaled to fit */}
+        <div
+          ref={previewWrapRef}
+          className="flex-1 min-h-[300px] bg-slate-100 border border-slate-200 rounded-xl overflow-hidden relative"
+        >
+          {generatingPreview && !previewHtml ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-2 bg-slate-50">
+              <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
+              <span className="text-xs">Generating preview...</span>
+            </div>
+          ) : previewHtml ? (
+            (() => {
+              const VIRTUAL_W = previewDevice === "mobile" ? 375 : previewDevice === "tablet" ? 768 : 1200;
+              const VIRTUAL_H = previewMode === "presentation" ? Math.round(VIRTUAL_W * 9 / 16) : 900;
+              const scale = previewScale;
+              return (
+                <div
+                  style={{
+                    width: VIRTUAL_W,
+                    height: VIRTUAL_H,
+                    transform: `scale(${scale})`,
+                    transformOrigin: "top left",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                  }}
+                >
+                  <iframe
+                    title="Markdown Compiler Preview Frame"
+                    srcDoc={previewHtml}
+                    style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+                    scrolling={previewMode === "presentation" ? "no" : "yes"}
+                  />
+                </div>
+              );
+            })()
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-slate-500 text-xs bg-slate-50 font-semibold">
+              [미리보기 반영] 버튼을 눌러 컴파일 결과물을 표시합니다.
+            </div>
+          )}
+          {/* Scale indicator */}
+          {previewHtml && (
+            <div className="absolute bottom-2 right-2 bg-slate-800/70 text-white text-[10px] px-1.5 py-0.5 rounded pointer-events-none select-none">
+              {Math.round(previewScale * 100)}%
+            </div>
+          )}
         </div>
       </div>
       

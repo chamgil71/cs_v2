@@ -236,6 +236,31 @@ function renderNote(text) {
   return escapeHtml(String(text).split(/\n/).map(s => s.trim()).filter(Boolean).join(" · "));
 }
 
+// ── 숏코드별 폰트 크기 오버라이드 헬퍼 ──────────────────────────────
+// title-size / desc-size arg 값 처리
+//   순수 숫자(0.9)   → 기본값 대비 비율: 0.9 × 기본rem
+//   단위 포함(1rem)  → 그대로 절대값으로 사용
+const DEFAULT_TITLE_REM = 1.15;
+const DEFAULT_P_REM     = 0.92;
+
+function resolveSizeArg(val, defaultRem) {
+  if (!val) return null;
+  const s = String(val).trim();
+  if (/^\d+(\.\d+)?$/.test(s)) return `${(parseFloat(s) * defaultRem).toFixed(3)}rem`;
+  return s;
+}
+
+function buildSizeOverrideStyle(argsStr) {
+  if (!argsStr) return "";
+  const tm = argsStr.match(/title-size=(\S+)/);
+  const dm = argsStr.match(/desc-size=(\S+)/);
+  const parts = [];
+  if (tm) { const v = resolveSizeArg(tm[1], DEFAULT_TITLE_REM); if (v) parts.push(`--size-card-title:${v}`); }
+  if (dm) { const v = resolveSizeArg(dm[1], DEFAULT_P_REM);     if (v) parts.push(`--size-card-p:${v}`); }
+  return parts.join(';');
+}
+// ─────────────────────────────────────────────────────────────────
+
 function renderShortcode(type, body, args) {
   const items = parseShortcodeItems(body);
   if (!items.length) return "";
@@ -844,10 +869,14 @@ export function buildHtml(inputPath, opts = {}) {
   const radiusVal = CONFIG?.slide?.globalRadius || 0.08;
   const cssRadius = radiusVal > 0 ? `${Math.round(radiusVal * 150)}px` : "0px";
 
-  let processedContent = content.replace(/^:::\s*([A-Za-z0-9_-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$/gm, (_, type, args, body) => {
-    const html = renderShortcode(type, body, args);
+  let processedContent = content.replace(/^:::\s*([A-Za-z0-9_-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$/gm, (_, type, rawArgs, body) => {
+    let html = renderShortcode(type, body, rawArgs);
+    if (!html) return "";
+    // title-size / desc-size arg가 있으면 해당 숏코드에만 CSS 변수 오버라이드
+    const sizeStyle = buildSizeOverrideStyle(rawArgs || "");
+    if (sizeStyle) html = `<div style="${sizeStyle}">${html}</div>`;
     // 💡 핵심: \n 뒤의 모든 공백(들여쓰기)을 제거하여 코드 블록으로 인식되는 것을 방지합니다.
-    return html ? `\n${html.replace(/\n\s+/g, '\n')}\n` : "";
+    return `\n${html.replace(/\n\s+/g, '\n')}\n`;
   });
 
   // Replace literal '\n' and '/n' with <br>, but NOT inside fenced code blocks or inline code spans

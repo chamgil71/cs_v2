@@ -1,0 +1,226 @@
+# 숏코드 시스템 변경 이력
+
+> cs_v2 프로젝트의 숏코드 명칭·구조·기능 변경 내역을 기록합니다.  
+> 원본 프로젝트: `c:\ai\creative-spark`
+
+---
+
+## Phase 2 — 디자인 독창성 검토 및 통합 정리 (2026-06-24)
+
+### 배경
+
+cs_v2 이식 완료 후 29종 숏코드 전체를 렌더링 코드 수준에서 분석한 결과, 시각적 구조가 실질적으로 동일하거나 포함 관계에 있는 숏코드를 확인하였다. 기존 md_src 파일의 하위 호환을 유지하면서 UI 문서 및 코드를 통합 정리하였다.
+
+---
+
+### 변경 1: `compare-grid` → `columns-grid` 흡수 (alias)
+
+| 항목 | 내용 |
+|------|------|
+| **변경 전** | `compare-grid`와 `columns-grid` 두 개의 독립 숏코드 존재 |
+| **변경 후** | `columns-grid` 가 정식 명칭. `compare-grid` 는 동작 호환 alias |
+| **이유** | 렌더링 코드가 동일 구조(`compare-card` vs `column-card` 클래스명만 다름). `renderCompareNote()` 공유. 독립 유지 가치 없음 |
+| **md_src 영향** | 없음. `compare-grid` 는 alias 로 계속 동작 (사용 건수: 18건) |
+| **변경 파일** | `build-guide.mjs`, `pptx-renderers/columns.mjs`, `MarkdownCompiler.tsx` |
+
+**코드 변경 요약:**
+```js
+// build-guide.mjs
+if (type === "columns-grid" || type === "compare-grid") { ... }
+
+// pptx-renderers/columns.mjs
+export const type = ["columns-grid", "columns", "compare-grid"];
+```
+
+---
+
+### 변경 2: `workflow-flow` → `step-flow` 흡수 (alias)
+
+| 항목 | 내용 |
+|------|------|
+| **변경 전** | `workflow-flow`와 `step-flow` 두 개의 독립 가로 흐름 숏코드 존재 |
+| **변경 후** | `step-flow` 가 정식 명칭. `workflow-flow` 는 동작 호환 alias (시각적 wf-* CSS 클래스 유지) |
+| **이유** | 둘 다 가로 방향 단계 흐름. `step-flow` 가 더 범용적이며 `tag:active` 강조 기능 포함. `workflow-flow` 의 meta(도구/코멘트) 필드를 `step-flow` 에 추가하여 완전 흡수 |
+| **기능 추가** | `step-flow` 에 `meta` 필드 추가 (도구/코멘트 표시 가능) |
+| **md_src 영향** | 없음. `workflow-flow` 는 alias 로 계속 동작 (사용 건수: 8건) |
+| **변경 파일** | `build-guide.mjs`, `pptx-renderers/flow.mjs`, `pptx-renderers/registry.mjs`, `MarkdownCompiler.tsx` |
+
+**코드 변경 요약:**
+```js
+// build-guide.mjs — step-flow 에 meta 필드 추가
+if (type === "step-flow" || type === "flow") {
+  // ... fs-meta 렌더링 추가
+}
+
+// pptx-renderers/flow.mjs
+export const type = ["step-flow", "flow", "workflow-flow", "workflow-strip"];
+
+// pptx-renderers/registry.mjs — workflow.mjs import 제거
+```
+
+---
+
+### 변경 3: `icon-grid` — `align` 파라미터 추가 (skill-list / checkpoint-grid 흡수)
+
+| 항목 | 내용 |
+|------|------|
+| **변경 전** | `icon-grid`, `skill-list`, `checkpoint-grid` 세 개의 독립 숏코드 |
+| **변경 후** | `icon-grid align=center\|left\|row` 로 통합. 구 이름은 alias |
+| **이유** | 세 가지 모두 icon + title + desc 구조. 차이는 정렬 방향뿐 |
+| **align 옵션** | |
+| `align=center` (기본값) | 아이콘 중앙, 카드형 — 기존 `icon-grid` 동일 |
+| `align=left` | 아이콘 좌측 작은 배경박스 — 기존 `skill-list` 동일 |
+| `align=row` | 아이콘 좌, 텍스트 우 수평 — 기존 `checkpoint-grid` 동일 |
+| **md_src 영향** | 없음. `skill-list`(2건), `checkpoint-grid`(1건) alias 로 계속 동작 |
+| **변경 파일** | `build-guide.mjs`, `MarkdownCompiler.tsx` |
+
+**사용 예시:**
+```markdown
+::: icon-grid align=left
+- icon: "⚡"
+  title: "스킬명"
+  desc: "설명"
+:::
+
+::: icon-grid align=row
+- icon: "📐"
+  title: "항목명"
+  desc: "세부 설명"
+:::
+```
+
+---
+
+### 변경 4: `compare-diff` → `before-after` 개명 (alias 유지)
+
+| 항목 | 내용 |
+|------|------|
+| **변경 전** | `compare-diff` |
+| **변경 후** | `before-after` (정식 명칭). `compare-diff` / `compare-before-after` 는 alias |
+| **이유** | "diff"는 코드 diff를 연상시켜 ❌/✅ 전후 대조 의도가 불명확. `before-after` 가 사용 목적을 직접 표현 |
+| **md_src 영향** | 없음. `compare-diff`(1건) alias 로 계속 동작 |
+| **변경 파일** | `build-guide.mjs`, `MarkdownCompiler.tsx` |
+
+---
+
+### 변경 5: `step-flow` — `meta` 필드 추가 (기능 확장)
+
+| 항목 | 내용 |
+|------|------|
+| **변경 전** | `step-flow` 는 icon, title, desc, tag 만 지원 |
+| **변경 후** | `meta` 필드 추가 — 각 단계에 도구/코멘트 텍스트 표시 가능 |
+| **이유** | `workflow-flow` 흡수 시 meta(도구 코멘트) 기능을 보존하기 위함 |
+| **변경 파일** | `build-guide.mjs` |
+
+---
+
+### 검토 결과: 유지 결정 항목
+
+| 항목 | 결론 | 이유 |
+|------|------|------|
+| `step-list` vs `step-flow` 네이밍 | **유지** | 접미사 규칙(-list=수직목록, -flow=가로흐름)으로 명확히 구분됨 |
+| `compare-split` 독립 유지 | **유지** | meta(체크리스트) 지원, 좌/우 균형 2분할 구조 — before-after 와 의도 다름 |
+| V1 별칭 코드 유지 | **유지** | md_src 사용 건수가 다수(bottom-list, flow 등)여서 코드 alias 필수 |
+
+---
+
+## Phase 1 — creative-spark → cs_v2 이식 (이전 작업)
+
+### 숏코드 네이밍 변경 (creative-spark 기준)
+
+| creative-spark 원본명 | cs_v2 변경명 | 변경 이유 |
+|-----------------------|------------|---------|
+| `steps` | `step-list` | `-list` 접미사 일관성 |
+| `compare-2col` | `compare-split` | 기능 설명적 이름 |
+| `tool-card` | `tool-list` | `-list` 접미사 일관성 |
+| `workflow` | `workflow-flow` | HTML 클래스명 정합 → Phase 2에서 step-flow alias로 추가 정리 |
+| `prompt-example` | `console-box` | 기능 설명적 이름 |
+| `stat-highlight` | `stat-grid` | `-grid` 접미사 일관성 |
+| `command-block` | `cmd-box` | `-box` 접미사 일관성 |
+| `tabs` | `os-tabs` | 플랫폼 명시 |
+| `faq-accordion` | `faq-list` | `-list` 접미사 일관성 |
+| `columns` | `columns-grid` | `-grid` 접미사 일관성 |
+
+### V1 하위 호환 별칭 (creative-spark 구형 이름)
+
+| 구형 이름 | 현행 이름 |
+|-----------|---------|
+| `bottom-list` | `summary-box` |
+| `compare-before-after` | `before-after` (구 `compare-diff`) |
+| `flow` | `step-flow` |
+| `git-flow-strip` | `git-flow` |
+| `part-deck` | `part-banner` |
+| `takeaway` | `takeaway-banner` |
+| `tool-box` | `tool-list` |
+| `workflow-strip` | `workflow-flow` → (Phase 2) `step-flow` |
+
+---
+
+## 네이밍 규칙 (접미사 체계)
+
+cs_v2에서 확립된 숏코드 네이밍 원칙:
+
+| 접미사 | 의미 | 예시 |
+|--------|------|------|
+| `-grid` | 격자 레이아웃 | `icon-grid`, `feature-grid`, `plan-grid` |
+| `-list` | 수직 목록 | `step-list`, `tool-list`, `faq-list` |
+| `-flow` | 가로 흐름/연결 | `step-flow`, `git-flow` |
+| `-box` | 단일 박스 컨테이너 | `alert-box`, `summary-box`, `editor-box` |
+| `-banner` | 와이드 전체폭 배너 | `part-banner`, `takeaway-banner` |
+| `-bar` | 가로 띠 | `summary-bar` |
+| `-tabs` | 탭 전환 UI | `os-tabs` |
+| `-split` | 2분할 비교 | `compare-split` |
+
+**명칭 선정 원칙**: 이름만 보고 해당 컴포넌트의 시각적 형태(모양, 방향, 레이아웃)를 즉시 연상할 수 있도록 Prefix(내용/용도) + Suffix(형태/레이아웃) 조합으로 구성.
+
+---
+
+## 현재 숏코드 목록 (Phase 2 이후)
+
+### 정식 명칭 25종
+
+| # | 숏코드명 | 카테고리 |
+|---|---------|---------|
+| 1 | `compare-split` | 비교 & 대조 |
+| 2 | `before-after` | 비교 & 대조 |
+| 3 | `columns-grid` | 비교 & 대조 |
+| 4 | `editor-box` | 코드 & 터미널 |
+| 5 | `console-box` | 코드 & 터미널 |
+| 6 | `cmd-box` | 코드 & 터미널 |
+| 7 | `network-box` | 시각 자료 & 흐름 |
+| 8 | `git-flow` | 시각 자료 & 흐름 |
+| 9 | `step-flow` | 시각 자료 & 흐름 |
+| 10 | `icon-grid` | 콘텐츠 그리드 |
+| 11 | `feature-grid` | 콘텐츠 그리드 |
+| 12 | `tool-list` | 콘텐츠 그리드 |
+| 13 | `plan-grid` | 콘텐츠 그리드 |
+| 14 | `badge-grid` | 콘텐츠 그리드 |
+| 15 | `stat-grid` | 콘텐츠 그리드 |
+| 16 | `alert-box` | 정보 & 알림 |
+| 17 | `summary-box` | 정보 & 알림 |
+| 18 | `takeaway-banner` | 정보 & 알림 |
+| 19 | `part-banner` | 정보 & 알림 |
+| 20 | `summary-bar` | 정보 & 알림 |
+| 21 | `step-list` | 구조 & 내비게이션 |
+| 22 | `faq-list` | 구조 & 내비게이션 |
+| 23 | `os-tabs` | 구조 & 내비게이션 |
+| 24 | `chapter-list` | 구조 & 내비게이션 |
+| 25 | `level-grid` | 구조 & 내비게이션 |
+
+### 동작 호환 alias (하위 호환 — 신규 문서 사용 비권장)
+
+| alias | 정식 명칭 |
+|-------|---------|
+| `compare-grid` | `columns-grid` |
+| `workflow-flow` | `step-flow` |
+| `workflow-strip` | `step-flow` |
+| `skill-list` | `icon-grid align=left` |
+| `checkpoint-grid` | `icon-grid align=row` |
+| `compare-diff` | `before-after` |
+| `bottom-list` | `summary-box` |
+| `compare-before-after` | `before-after` |
+| `flow` | `step-flow` |
+| `git-flow-strip` | `git-flow` |
+| `part-deck` | `part-banner` |
+| `takeaway` | `takeaway-banner` |
+| `tool-box` | `tool-list` |

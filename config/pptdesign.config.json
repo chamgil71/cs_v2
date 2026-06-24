@@ -10,10 +10,10 @@
     "layout":      "LAYOUT_WIDE", // 16:9 와이드 스크린 레이아웃
     "widthIn":     13.333,
     "heightIn":    7.5,
-    "font":        "Malgun Gothic",      // 본문 기본 폰트 (예: Paperlogy 4)
-    "fontTitle":   "Malgun Gothic",      // 대제목 기본 폰트 (예: Paperlogy 8)
-    "fontSubTitle":"Malgun Gothic",      // 중간제목 기본 폰트 (예: Paperlogy 6)
-    "fontMono":    "Consolas",      // 코드용 고정폭 폰트
+    "font":        "malgun",             // 본문 기본 폰트. font-aliases.json 의 alias 사용 가능
+    "fontTitle":   "malgun",             // 대제목 기본 폰트. 예: paperlogy-extrabold
+    "fontSubTitle":"malgun",             // 중간제목 기본 폰트. 예: paperlogy-semibold
+    "fontMono":    "consolas",           // 코드용 고정폭 폰트
     "marginX":     0.5,             // 좌우 기본 여백
     
     // [중요] 모든 카드/도형의 모서리 둥글기 (0이면 직각, 0.1~0.2면 둥근 사각형)

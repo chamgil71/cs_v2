@@ -11,11 +11,14 @@ const removeModuleScript = () => {
     generateBundle(options: any, bundle: any) {
       // 인라인된 모든 .html 산출물에서 type="module" 스크립트를 defer로 전환하여
       // file:// 프로토콜(서버 없이 브라우저 직접 오픈)에서도 동작하도록 한다.
+      // 또한 번들에 남아 있는 import.meta.url을 location.href로 교체한다.
+      // (일반 스크립트에서 import.meta는 사용 불가 → "Cannot use 'import.meta' outside a module" 오류 방지)
       for (const file of Object.values(bundle) as any[]) {
         if (file.fileName && file.fileName.endsWith(".html") && typeof file.source === "string") {
           file.source = file.source
             .replace(/<script type="module" crossorigin>/g, "<script defer>")
-            .replace(/<script type="module">/g, "<script defer>");
+            .replace(/<script type="module">/g, "<script defer>")
+            .replace(/\bimport\.meta\.url\b/g, "(document.currentScript?.src||location.href)");
         }
       }
     },

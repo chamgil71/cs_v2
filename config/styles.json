@@ -1,7 +1,7 @@
 {
   "$comment": "카테고리별 스타일 프리셋. md 파일에서 'style: <키>'로 선택. 색상은 src/data/guides.ts의 5개 카테고리와 매칭.",
   "custom-blue": {
-    "label": "페이퍼로지 커스텀 블루 (테스트 테마)",
+    "label": "페이퍼로지 커스텀 블루",
     "brand": "#2789F5",
     "brandDark": "#1E71CE",
     "brandDeep": "#0F478F",
@@ -9,11 +9,11 @@
     "border": "#D2E5FA",
     "bg": "#FAFBFD",
     "bgDark": "#2789F5",
-    "webFont": "Malgun Gothic, sans-serif",
-    "webFontTitle": "Malgun Gothic, sans-serif",
-    "pptxFont": "Paperlogy 4",
-    "pptxFontTitle": "Paperlogy 8",
-    "pptxFontSubTitle": "Paperlogy 6",
+    "webFont": "Pretendard, sans-serif",
+    "webFontTitle": "Pretendard, sans-serif",
+    "pptxFont": "paperlogy-regular",
+    "pptxFontTitle": "paperlogy-extrabold",
+    "pptxFontSubTitle": "paperlogy-semibold",
     "titleSize": 14,
     "bodySize": 11
   },
@@ -31,9 +31,9 @@
     "doneSubtitleColor": "rgba(255,255,255,0.92)",
     "webFont": "Pretendard, 'Noto Sans KR', sans-serif",
     "webFontTitle": "Pretendard-Bold, sans-serif",
-    "pptxFont": "Pretendard",
-    "pptxFontTitle": "Pretendard",
-    "pptxFontSubTitle": "Pretendard"
+    "pptxFont": "pretendard",
+    "pptxFontTitle": "pretendard",
+    "pptxFontSubTitle": "pretendard"
   },
   "ai-dev": {
     "label": "AI 개발 도구 (오렌지)",
@@ -67,9 +67,9 @@
     "doneSubtitleColor": "rgba(255,255,255,0.92)",
     "webFont": "'Noto Serif KR', serif",
     "webFontTitle": "'Noto Serif KR', serif",
-    "pptxFont": "KoPubWorldBatang",
-    "pptxFontTitle": "KoPubWorldBatang",
-    "pptxFontSubTitle": "KoPubWorldDotum"
+    "pptxFont": "noto-serif",
+    "pptxFontTitle": "noto-serif",
+    "pptxFontSubTitle": "noto-sans"
   },
   "productivity": {
     "label": "생산성 유틸 (블루)",
@@ -85,9 +85,9 @@
     "doneSubtitleColor": "rgba(255,255,255,0.92)",
     "webFont": "Pretendard, 'Noto Sans KR', sans-serif",
     "webFontTitle": "Pretendard-Bold, sans-serif",
-    "pptxFont": "Pretendard",
-    "pptxFontTitle": "Pretendard",
-    "pptxFontSubTitle": "Pretendard"
+    "pptxFont": "pretendard",
+    "pptxFontTitle": "pretendard",
+    "pptxFontSubTitle": "pretendard"
   },
   "creative": {
     "label": "크리에이티브 AI (마젠타)",
@@ -101,11 +101,11 @@
     "heroGradient": "linear-gradient(135deg, #0A0F1E 0%, #2A1A3E 40%, #5B2C6F 70%, #9B59B6 100%)",
     "subtitleColor": "rgba(255,255,255,0.92)",
     "doneSubtitleColor": "rgba(255,255,255,0.92)",
-    "webFont": "Paperlogy, sans-serif",
-    "webFontTitle": "Paperlogy, sans-serif",
-    "pptxFont": "Paperlogy 4",
-    "pptxFontTitle": "Paperlogy 8",
-    "pptxFontSubTitle": "Paperlogy 6"
+    "webFont": "Pretendard, sans-serif",
+    "webFontTitle": "Pretendard, sans-serif",
+    "pptxFont": "paperlogy-regular",
+    "pptxFontTitle": "paperlogy-extrabold",
+    "pptxFontSubTitle": "paperlogy-semibold"
   },
   "security": {
     "label": "보안 & 인프라 (사이언)",
@@ -121,9 +121,9 @@
     "doneSubtitleColor": "rgba(255,255,255,0.92)",
     "webFont": "Pretendard, 'Noto Sans KR', sans-serif",
     "webFontTitle": "Pretendard-Bold, sans-serif",
-    "pptxFont": "Pretendard",
-    "pptxFontTitle": "Pretendard",
-    "pptxFontSubTitle": "Pretendard"
+    "pptxFont": "pretendard",
+    "pptxFontTitle": "pretendard",
+    "pptxFontSubTitle": "pretendard"
   },
   "finance": {
     "label": "재테크 & 금융 (골드)",
@@ -139,9 +139,9 @@
     "doneSubtitleColor": "rgba(255,255,255,0.92)",
     "webFont": "'Noto Serif KR', serif",
     "webFontTitle": "'Noto Serif KR', serif",
-    "pptxFont": "KoPubWorldBatang",
-    "pptxFontTitle": "KoPubWorldBatang",
-    "pptxFontSubTitle": "KoPubWorldDotum"
+    "pptxFont": "noto-serif",
+    "pptxFontTitle": "noto-serif",
+    "pptxFontSubTitle": "noto-sans"
   },
   "future": {
     "label": "퓨처 AI (네온 라임)",
@@ -157,9 +157,9 @@
     "doneSubtitleColor": "rgba(255,255,255,0.92)",
     "webFont": "Pretendard, 'Noto Sans KR', sans-serif",
     "webFontTitle": "Pretendard-Bold, sans-serif",
-    "pptxFont": "Pretendard",
-    "pptxFontTitle": "Pretendard",
-    "pptxFontSubTitle": "Pretendard"
+    "pptxFont": "pretendard",
+    "pptxFontTitle": "pretendard",
+    "pptxFontSubTitle": "pretendard"
   },
   "enterprise": {
     "label": "엔터프라이즈 (슬레이트)",
@@ -175,9 +175,9 @@
     "doneSubtitleColor": "rgba(255,255,255,0.92)",
     "webFont": "Pretendard, 'Noto Sans KR', sans-serif",
     "webFontTitle": "Pretendard-Bold, sans-serif",
-    "pptxFont": "Pretendard",
-    "pptxFontTitle": "Pretendard",
-    "pptxFontSubTitle": "Pretendard"
+    "pptxFont": "pretendard",
+    "pptxFontTitle": "pretendard",
+    "pptxFontSubTitle": "pretendard"
   },
   "media": {
     "label": "미디어 & 콘텐츠 (로즈)",
@@ -193,8 +193,8 @@
     "doneSubtitleColor": "rgba(255,255,255,0.92)",
     "webFont": "Pretendard, 'Noto Sans KR', sans-serif",
     "webFontTitle": "Pretendard-Bold, sans-serif",
-    "pptxFont": "Pretendard",
-    "pptxFontTitle": "Pretendard",
-    "pptxFontSubTitle": "Pretendard"
+    "pptxFont": "pretendard",
+    "pptxFontTitle": "pretendard",
+    "pptxFontSubTitle": "pretendard"
   }
 }

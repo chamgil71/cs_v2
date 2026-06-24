@@ -277,13 +277,15 @@ function renderShortcode(type, body, args) {
   }
 
   if (type === "workflow-flow" || type === "workflow-strip") {
-    return `<div class="workflow-flow">${items.map((it, idx) => `
-      <div class="wf-step" ${renderAccent(it.color)}>
+    return `<div class="workflow-flow">${items.map((it, idx) => {
+      const card = `<div class="wf-step" ${renderAccent(it.color)}>
         <div class="wf-icon" ${it.color ? `style="background:${it.color}; color:#fff;"` : ""}>${escapeHtml(it.icon)}</div>
         <div class="wf-name" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
         <div class="wf-tool">${escapeHtml(it.meta)}</div>
-        ${idx < items.length - 1 ? `<div class="wf-arrow">→</div>` : ""}
-      </div>`).join("")}</div>`;
+      </div>`;
+      const arrow = idx < items.length - 1 ? `<div class="wf-arrow">→</div>` : "";
+      return card + arrow;
+    }).join("")}</div>`;
   }
 
   if (type === "step-list") {
@@ -1446,12 +1448,12 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
   }
 
   /* Workflow */
-  .workflow-flow { display: flex; gap: 15px; margin: 12px 0; overflow-x: auto; padding-bottom: 8px; width: 100%; justify-content: center; }
-  .wf-step { flex: 0 1 auto; min-width: 130px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; position: relative; }
-  .wf-icon { width: 38px; height: 38px; margin: 0 auto 8px; background: var(--brand-light); color: var(--brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; }
-  .wf-name { font-weight: 800; font-size: 0.95rem; margin-bottom: 3px; color: var(--text); }
-  .wf-tool { font-size: 0.75rem; color: var(--text-muted); }
-  .wf-arrow { position: absolute; right: -15px; top: 50%; transform: translateY(-50%); font-weight: 900; color: var(--text-muted); opacity: 0.5; z-index: 1; font-size: 1.1rem; }
+  .workflow-flow { display: flex; align-items: stretch; gap: 15px; margin: 20px 0; width: 100%; }
+  .wf-step { flex: 1; min-width: 130px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 14px; text-align: center; position: relative; display: flex; flex-direction: column; align-items: center; }
+  .wf-icon { width: 45px; height: 45px; margin: 0 auto 10px; background: var(--brand-light); color: var(--brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+  .wf-name { font-weight: 800; font-size: 1rem; margin-bottom: 4px; color: var(--text); }
+  .wf-tool { font-size: 0.8rem; color: var(--text-muted); }
+  .wf-arrow { display: flex; align-items: center; justify-content: center; font-weight: 900; color: var(--text-muted); opacity: 0.5; z-index: 1; font-size: 1.4rem; flex-shrink: 0; }
 
   /* Steps */
   .step-list { display: flex; flex-direction: column; gap: 15px; margin: 25px 0; width: 100%; }

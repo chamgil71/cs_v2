@@ -61,44 +61,31 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
 :::`
   },
   {
-    key: "compare-diff",
-    name: "🔍 Before/After 대조 (compare-diff)",
+    key: "before-after",
+    name: "🔍 Before/After 전후 대조 (before-after)",
     category: "비교 & 대조",
-    desc: "구 버전 코드나 방법(AS-IS)과 신규 버전(TO-BE)을 단순 명확하게 선형 대조합니다.",
+    desc: "AS-IS(구형)와 TO-BE(신형)를 ❌/✅ 레이블로 단순 명확하게 전후 대조합니다. (compare-diff 는 호환 별칭)",
     fields: "title, desc",
-    snippet: `::: compare-diff
-- title: "AS-IS 구형 코드"
-  desc: "legacyCode()"
-- title: "TO-BE 신규 코드"
-  desc: "modernCode()"
-:::`
-  },
-  {
-    key: "compare-grid",
-    name: "📋 비교 그리드 (compare-grid)",
-    category: "비교 & 대조",
-    desc: "여러 항목의 구분값과 설명을 격자(Grid) 카드로 나열하여 비교합니다.",
-    fields: "title, desc, color (선택)",
-    snippet: `::: compare-grid
-- title: "구분 1"
-  desc: "설명 1"
-- title: "구분 2"
-  desc: "설명 2"
+    snippet: `::: before-after
+- title: "AS-IS 구형 방식"
+  desc: "수동으로 서버에 SSH 접속하여 파일을 업로드했습니다."
+- title: "TO-BE 개선 방식"
+  desc: "커밋 하나로 CI/CD 자동 빌드·배포가 실행됩니다."
 :::`
   },
   {
     key: "columns-grid",
     name: "🗂️ 다단 정보 카드 그리드 (columns-grid)",
     category: "비교 & 대조",
-    desc: "가로 다단 형태의 깔끔한 다용도 가이드북 레이아웃 카드를 배치합니다.",
-    fields: "cols (속성: cols=2), title, desc, meta (선택), color (선택)",
+    desc: "가로 다단 카드 격자. 일반 다단 정보 배치뿐 아니라 compare-grid 대체 비교 용도로도 사용합니다.",
+    fields: "cols (속성: cols=2), title, desc, note (팁박스), color (선택)",
     snippet: `::: columns-grid cols=2
-- title: "HTML Guide"
-  desc: "가로 다단 형태의 깔끔한 가이드 북 레이아웃"
-  meta: "독립 실행 HTML 파일"
-- title: "16:9 Slides"
-  desc: "발표 및 스크린 공유를 위한 와이드 슬라이드 레이아웃"
-  meta: "프레젠테이션 최적화"
+- title: "ORM 사용"
+  desc: "빠른 개발 속도와 타입 안정성을 제공합니다."
+  note: "복잡한 쿼리에서는 Raw SQL 병행 권장"
+  color: "#3b82f6"
+- title: "Raw SQL"
+  desc: "세밀한 쿼리 최적화가 가능합니다."
 :::`
   },
   {
@@ -173,43 +160,30 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
 :::`
   },
   {
-    key: "workflow-flow",
-    name: "🔄 가로 워크플로우 (workflow-flow)",
-    category: "시각 자료 & 흐름",
-    desc: "진행되는 단계나 워크플로우 순서를 가로 방향 화살표로 연결해 노출합니다.",
-    fields: "icon, title, meta, color (선택)",
-    snippet: `::: workflow-flow
-- icon: "✏️"
-  title: "마크다운 작성"
-  meta: "에디터 사용"
-- icon: "⚙️"
-  title: "V2 컴파일"
-  meta: "백엔드 변환"
-:::`
-  },
-  {
     key: "step-flow",
     name: "➡️ 가로 이정표 흐름도 (step-flow)",
     category: "시각 자료 & 흐름",
-    desc: "프로젝트 단계 및 활성화 상태(tag: active)를 보여주는 가로형 마일스톤입니다.",
-    fields: "icon, title, desc, tag (active 설정 시 강조)",
+    desc: "단계별 흐름을 가로로 표현. tag:active 로 현재 단계 강조. meta 필드로 도구/코멘트 추가 가능. (workflow-flow 는 호환 별칭)",
+    fields: "icon, title, desc, meta (도구/코멘트), tag (active 시 강조), color (선택)",
     snippet: `::: step-flow
 - icon: "👨"
   title: "요구사항 정의"
   desc: "기능 정의 및 범위 확정"
+  meta: "회의록 작성"
   tag: "active"
 - icon: "💻"
   title: "시나리오 설계"
   desc: "동선 및 와이어프레임 설계"
+  meta: "Figma"
 :::`
   },
   {
     key: "icon-grid",
     name: "🧩 아이콘 카드 그리드 (icon-grid)",
     category: "콘텐츠 그리드",
-    desc: "이모지 아이콘과 제목, 본문 리스트를 동반하는 심플 그리드 영역입니다.",
-    fields: "cols (속성: cols=3), bullet (속성: bullet=✔️), icon, title, desc",
-    snippet: `::: icon-grid cols=3 bullet=✔️
+    desc: "아이콘+제목+설명 카드 격자. align 옵션으로 레이아웃 변형: center(기본) / left(좌측 아이콘, 구 skill-list) / row(수평 배열, 구 checkpoint-grid).",
+    fields: "cols (속성), bullet (속성), align=center|left|row (속성), icon, title, desc, color (선택)",
+    snippet: `::: icon-grid cols=3
 - icon: "🚀"
   title: "빠른 퍼포먼스"
   desc: "최적화된 빌드와 빌트인 파서 탑재"
@@ -296,19 +270,6 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
 :::`
   },
   {
-    key: "skill-list",
-    name: "🎯 스킬 리스트 (skill-list)",
-    category: "콘텐츠 그리드",
-    desc: "가로 배열 형태로 역량이나 기술 상세 정보를 행 목록으로 배열합니다.",
-    fields: "icon, title, desc, bullet (목록 기호), color (선택)",
-    snippet: `::: skill-list
-- icon: "⚡"
-  title: "초고속 로딩"
-  desc: "Vite 기반 빌드로 브라우저 첫 렌더링 최적화"
-  bullet: "HMR 지원"
-:::`
-  },
-  {
     key: "alert-box",
     name: "⚠️ 경고/알림 박스 (alert-box)",
     category: "정보 & 알림",
@@ -328,7 +289,7 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
     snippet: `::: summary-box
 - title: "요약정리"
   desc: "시각화 숏코드를 활용하면 핵심 개념을 직관적으로 전달할 수 있습니다."
-  meta: "21종 숏코드 | HTML 연동 | PPTX 연동"
+  meta: "29종 숏코드 | HTML 연동 | PPTX 연동"
 :::`
   },
   {
@@ -363,9 +324,9 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
     desc: "수치 통계나 단위 성과들을 가로형 바 형태로 간결하게 나열합니다.",
     fields: "icon, title",
     snippet: `::: summary-bar
-- icon: "21종"
-  title: "핵심 숏코드"
 - icon: "29종"
+  title: "핵심 숏코드"
+- icon: "39종"
   title: "별칭 포함 지원 규격"
 :::`
   },
@@ -404,6 +365,39 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
   desc: "Windows OS의 설정 가이드 내용을 마크다운으로 기술합니다."
 - title: "macOS"
   desc: "macOS용 단축키 및 실행 명령어 가이드를 작성합니다."
+:::`
+  },
+  {
+    key: "chapter-list",
+    name: "📚 챕터 목록 (chapter-list)",
+    category: "구조 & 내비게이션",
+    desc: "시리즈 부(Part) 하위에 속한 세부 챕터를 번호·제목·설명·구분 배지로 목록화합니다.",
+    fields: "icon (챕터번호), title, desc, tag (개념/도구/사례/가이드/실습/주의/핵심)",
+    snippet: `::: chapter-list
+- icon: "01"
+  title: "시스템 개요"
+  desc: "전체 아키텍처와 핵심 구성 요소를 소개합니다."
+  tag: "개념"
+- icon: "02"
+  title: "빠른 시작 가이드"
+  desc: "설치부터 첫 빌드까지 단계별로 안내합니다."
+  tag: "실습"
+:::`
+  },
+  {
+    key: "level-grid",
+    name: "📶 레벨 스펙트럼 (level-grid)",
+    category: "구조 & 내비게이션",
+    desc: "난이도·성숙도·역량 구간을 카드 격자로 비교. tag:highlight 로 강조 카드 지정.",
+    fields: "title (레벨명), desc, color (선택), tag (highlight 시 강조)",
+    snippet: `::: level-grid
+- title: "입문"
+  desc: "기본 문법과 핵심 개념 이해"
+- title: "중급"
+  desc: "실무 프로젝트 적용 가능"
+  tag: "highlight"
+- title: "고급"
+  desc: "아키텍처 설계 및 최적화 수행"
 :::`
   }
 ];
@@ -451,11 +445,8 @@ style: custom-blue
       case "compare-split":
         snippet = `\n::: compare-split\n- title: "Before"\n  desc: "기존 수동 렌더링"\n  meta: "수동 HTML 태그 관리 | 스타일 일관성 부족"\n- title: "After"\n  desc: "V2 자동 숏코드"\n  meta: "마크다운 기반 시각화 | 동적 높이 및 일관성"\n:::\n`;
         break;
-      case "compare-diff":
-        snippet = `\n::: compare-diff\n- title: "AS-IS 구형 코드"\n  desc: "legacyCode()"\n- title: "TO-BE 신규 코드"\n  desc: "modernCode()"\n:::\n`;
-        break;
-      case "compare-grid":
-        snippet = `\n::: compare-grid\n- title: "구분 1"\n  desc: "설명 1"\n- title: "구분 2"\n  desc: "설명 2"\n:::\n`;
+      case "before-after":
+        snippet = `\n::: before-after\n- title: "AS-IS 구형 방식"\n  desc: "수동으로 서버에 SSH 접속하여 파일을 업로드했습니다."\n- title: "TO-BE 개선 방식"\n  desc: "커밋 하나로 CI/CD 자동 빌드·배포가 실행됩니다."\n:::\n`;
         break;
       case "network-box":
         snippet = `\n::: network-box\n- title: "중앙 핵심 개념"\n  color: "#EC4899"\n- title: "연결 개념 A"\n  meta: "세부 관계"\n- title: "연결 개념 B"\n  meta: "세부 관계"\n:::\n`;
@@ -485,13 +476,10 @@ style: custom-blue
         snippet = `\n::: step-list\n- title: "문서 선택"\n  desc: "가이드 문서를 로드하거나 새로 작성합니다."\n- title: "숏코드 편집"\n  desc: "필요한 시각화 숏코드를 삽입하고 옵션을 조절합니다."\n:::\n`;
         break;
       case "columns-grid":
-        snippet = `\n::: columns-grid cols=2\n- title: "HTML Guide"\n  desc: "가로 다단 형태의 깔끔한 가이드 북 레이아웃"\n  meta: "독립 실행 HTML 파일"\n- title: "16:9 Slides"\n  desc: "발표 및 스크린 공유를 위한 와이드 슬라이드 레이아웃"\n  meta: "프레젠테이션 최적화"\n:::\n`;
-        break;
-      case "workflow-flow":
-        snippet = `\n::: workflow-flow\n- icon: "✏️"\n  title: "마크다운 작성"\n  meta: "에디터 사용"\n- icon: "⚙️"\n  title: "V2 컴파일"\n  meta: "백엔드 변환"\n:::\n`;
+        snippet = `\n::: columns-grid cols=2\n- title: "ORM 사용"\n  desc: "빠른 개발 속도와 타입 안정성을 제공합니다."\n  note: "복잡한 쿼리에서는 Raw SQL 병행 권장"\n  color: "#3b82f6"\n- title: "Raw SQL"\n  desc: "세밀한 쿼리 최적화가 가능합니다."\n:::\n`;
         break;
       case "summary-box":
-        snippet = `\n::: summary-box\n- title: "요약정리"\n  desc: "시각화 숏코드를 활용하면 핵심 개념을 직관적으로 전달할 수 있습니다."\n  meta: "21종 숏코드 | HTML 연동 | PPTX 연동"\n:::\n`;
+        snippet = `\n::: summary-box\n- title: "요약정리"\n  desc: "시각화 숏코드를 활용하면 핵심 개념을 직관적으로 전달할 수 있습니다."\n  meta: "29종 숏코드 | HTML 연동 | PPTX 연동"\n:::\n`;
         break;
       case "faq-list":
         snippet = `\n::: faq-list\n- title: "Q. 숏코드가 정상적으로 렌더링되지 않아요."\n  desc: "A. 숏코드 내부 인덴트(여백)나 문법이 V2 규격(::: 숏코드명)과 일치하는지 확인하십시오."\n:::\n`;
@@ -509,19 +497,22 @@ style: custom-blue
         snippet = `\n::: takeaway-banner\n- icon: "💡"\n  title: "Key Takeaway"\n  desc: "숏코드의 진정한 가치는 텍스트 정보의 시각적 컴포넌트 자동화에 있습니다."\n:::\n`;
         break;
       case "step-flow":
-        snippet = `\n::: step-flow\n- icon: "👨"\n  title: "요구사항 정의"\n  desc: "기능 정의 및 범위 확정"\n  tag: "active"\n- icon: "💻"\n  title: "시나리오 설계"\n  desc: "동선 및 와이어프레임 설계"\n:::\n`;
+        snippet = `\n::: step-flow\n- icon: "👨"\n  title: "요구사항 정의"\n  desc: "기능 정의 및 범위 확정"\n  meta: "회의록 작성"\n  tag: "active"\n- icon: "💻"\n  title: "시나리오 설계"\n  desc: "동선 및 와이어프레임 설계"\n  meta: "Figma"\n:::\n`;
         break;
       case "part-banner":
         snippet = `\n::: part-banner\n- icon: "2부"\n  title: "핵심 가이드 마스터"\n  desc: "V2.0에서 강화된 숏코드로 다양한 웹/PPTX 변환 실무 적용하기"\n  tag: "Ch.10 - 20"\n:::\n`;
         break;
       case "summary-bar":
-        snippet = `\n::: summary-bar\n- icon: "21종"\n  title: "핵심 숏코드"\n- icon: "29종"\n  title: "별칭 포함 지원 규격"\n:::\n`;
+        snippet = `\n::: summary-bar\n- icon: "29종"\n  title: "핵심 숏코드"\n- icon: "39종"\n  title: "별칭 포함 지원 규격"\n:::\n`;
         break;
       case "badge-grid":
         snippet = `\n::: badge-grid\n- icon: "🌟"\n  title: "신속성"\n  tag: "Fast"\n- icon: "🔒"\n  title: "보안성"\n  tag: "Secure"\n:::\n`;
         break;
-      case "skill-list":
-        snippet = `\n::: skill-list\n- icon: "⚡"\n  title: "초고속 로딩"\n  desc: "Vite 기반 빌드로 브라우저 첫 렌더링 최적화"\n  bullet: "HMR 지원"\n:::\n`;
+      case "chapter-list":
+        snippet = `\n::: chapter-list\n- icon: "01"\n  title: "시스템 개요"\n  desc: "전체 아키텍처와 핵심 구성 요소를 소개합니다."\n  tag: "개념"\n- icon: "02"\n  title: "빠른 시작 가이드"\n  desc: "설치부터 첫 빌드까지 단계별로 안내합니다."\n  tag: "실습"\n:::\n`;
+        break;
+      case "level-grid":
+        snippet = `\n::: level-grid\n- title: "입문"\n  desc: "기본 문법과 핵심 개념 이해"\n- title: "중급"\n  desc: "실무 프로젝트 적용 가능"\n  tag: "highlight"\n- title: "고급"\n  desc: "아키텍처 설계 및 최적화 수행"\n:::\n`;
         break;
       default:
         return;

@@ -3,7 +3,7 @@
  * 가로 순서 흐름 및 이정표 시각화 숏코드
  */
 
-export const type = ["step-flow", "flow"];
+export const type = ["step-flow", "flow", "workflow-flow", "workflow-strip"];
 
 export function estimateHeight(item, w, D, helpers) {
   const c = D.card;

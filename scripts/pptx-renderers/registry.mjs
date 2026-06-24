@@ -51,13 +51,13 @@ export const helpers = {
   }
 };
 
-// 2. 개별 렌더러 모듈 정적 import (21개 핵심 모듈)
+// 2. 개별 렌더러 모듈 정적 import
+//    - workflow.mjs 제거: flow.mjs 가 workflow-flow/workflow-strip 타입도 처리
+//    - compare-grid.mjs: compare-grid 타입은 columns.mjs로 이전. level-grid/part-banner/part-deck 담당
 import * as iconGrid from "./icon-grid.mjs";
 import * as featureGrid from "./feature-grid.mjs";
 import * as steps from "./steps.mjs";
-import * as compareGrid from "./compare-grid.mjs";
 import * as columns from "./columns.mjs";
-import * as workflow from "./workflow.mjs";
 import * as toolList from "./tool-list.mjs";
 import * as planGrid from "./plan-grid.mjs";
 import * as summaryBox from "./summary-box.mjs";
@@ -73,14 +73,13 @@ import * as editorBox from "./editor-box.mjs";
 import * as networkBox from "./network-box.mjs";
 import * as flow from "./flow.mjs";
 import * as takeaway from "./takeaway.mjs";
+import * as compareGrid from "./compare-grid.mjs";
 
 const renderers = [
   iconGrid,
   featureGrid,
   steps,
-  compareGrid,
   columns,
-  workflow,
   toolList,
   planGrid,
   summaryBox,
@@ -95,7 +94,8 @@ const renderers = [
   editorBox,
   networkBox,
   flow,
-  takeaway
+  takeaway,
+  compareGrid
 ];
 
 // 3. 타입 맵핑 테이블 생성

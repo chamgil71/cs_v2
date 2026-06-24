@@ -3,7 +3,7 @@
  * 다단 정보 카드 격자 숏코드 (가로 분할 안분 및 세로 높이 동적 확장 지원)
  */
 
-export const type = ["columns-grid", "columns"];
+export const type = ["columns-grid", "columns", "compare-grid"];
 
 function getCardHeight(it, cardW, c, helpers) {
   let h = 0.52; // 기본 상단 패딩 및 타이틀 영역 높이

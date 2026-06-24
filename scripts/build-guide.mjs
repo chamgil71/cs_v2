@@ -275,24 +275,43 @@ function renderShortcode(type, body, args) {
     return `<div class="compare-note" ${style}>${escapeHtml(activeNote)}</div>`;
   };
 
-  // cols=N, bullet=X 파싱
-  const colsMatch  = (args || "").match(/cols=(\d+)/);
+  // cols=N, bullet=X, align=center|left|row 파싱
+  const colsMatch   = (args || "").match(/cols=(\d+)/);
   const bulletMatch = (args || "").match(/bullet=(\S+)/);
-  const cols = colsMatch ? colsMatch[1] : null;
+  const alignMatch  = (args || "").match(/align=(\S+)/);
+  const cols        = colsMatch  ? colsMatch[1]  : null;
   const blockBullet = bulletMatch ? bulletMatch[1] : null;
-  const gridStyle = cols ? `style="grid-template-columns: repeat(${cols}, 1fr);"` : "";
+  const layoutAlign = alignMatch  ? alignMatch[1]  : "center";
+  const gridStyle   = cols ? `style="grid-template-columns: repeat(${cols}, 1fr);"` : "";
 
   // 아이템 bullet 필드가 없으면 블록 레벨 bullet 사용
   const itemBullet = (it) => it.bullet || blockBullet || null;
 
-  // 1. icon-grid, feature-grid, badge-grid
-  if (["icon-grid", "feature-grid", "badge-grid", "stat-grid"].includes(type)) {
+  // 1. icon-grid (align=center|left|row) + feature-grid + badge-grid + stat-grid
+  //    align=left  → skill-list 느낌 (좌측 아이콘 배경박스)
+  //    align=row   → checkpoint-grid 느낌 (아이콘 좌, 텍스트 우 수평)
+  //    구 이름 skill-list / checkpoint-grid 는 alias 로 동작
+  if (["icon-grid", "feature-grid", "badge-grid", "stat-grid", "skill-list", "checkpoint-grid"].includes(type)) {
     const isBadge = type === "badge-grid";
-    const isFeat = type === "feature-grid";
-    const isStat = type === "stat-grid";
-    const clsName = isBadge ? "badge-grid" : (isFeat ? "feature-grid" : (isStat ? "stat-grid" : "icon-grid"));
+    const isFeat  = type === "feature-grid";
+    const isStat  = type === "stat-grid";
 
-    return `<div class="${clsName}" ${gridStyle}>${items.map(it => {
+    // alias → effective layout
+    const effectiveAlign = type === "skill-list"      ? "left"
+                         : type === "checkpoint-grid"  ? "row"
+                         : layoutAlign;
+
+    const isSkillLayout = !isBadge && !isFeat && !isStat && effectiveAlign === "left";
+    const isRowLayout   = !isBadge && !isFeat && !isStat && effectiveAlign === "row";
+
+    const wrapClass = isBadge      ? "badge-grid"
+                    : isFeat       ? "feature-grid"
+                    : isStat       ? "stat-grid"
+                    : isSkillLayout ? "skill-list"
+                    : isRowLayout   ? "checkpoint-grid"
+                    : "icon-grid";
+
+    return `<div class="${wrapClass}" ${gridStyle}>${items.map(it => {
       if (isBadge) {
         return `<div class="badge-item" ${renderAccent(it.color)}>
           <div class="badge-icon">${escapeHtml(it.icon)}</div>
@@ -307,6 +326,22 @@ function renderShortcode(type, body, args) {
           ${it.desc ? `<div class="stat-note">${renderDesc(it.desc, itemBullet(it), it.color)}</div>` : ""}
         </div>`;
       }
+      if (isSkillLayout) {
+        // align=left : 작은 아이콘 좌측 배경박스, 제목+설명 우측
+        return `<div class="skill-item" ${renderAccent(it.color)}>
+          <div class="skill-icon" ${it.color ? `style="background:${it.color}22; color:${it.color};"` : ""}>${escapeHtml(it.icon)}</div>
+          <div class="skill-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
+          <div class="skill-desc">${renderDesc(it.desc, itemBullet(it), it.color)}</div>
+        </div>`;
+      }
+      if (isRowLayout) {
+        // align=row : 아이콘 좌 + 텍스트 우 수평 배열
+        return `<div class="checkpoint-item">
+          <div class="ci-icon">${escapeHtml(it.icon || "📐")}</div>
+          <div class="ci-text"><strong>${escapeHtml(it.title || "")}</strong>${it.desc ? `<br>${escapeHtml(it.desc)}` : ""}</div>
+        </div>`;
+      }
+      // 기본(center): icon-grid 또는 feature-grid
       return `<div class="${isFeat ? 'feature-card' : 'icon-card'}" ${renderAccent(it.color)}>
         ${isFeat && it.color ? `<div class="card-top-bar" style="background-color:${resolveColorKeyword(it.color)}"></div>` : ''}
         ${it.tag ? `<span class="feature-tag" ${it.color ? `style="background:${resolveColorKeyword(it.color)}; color:#fff;"` : ""}>${escapeHtml(it.tag)}</span>` : ""}
@@ -342,7 +377,7 @@ function renderShortcode(type, body, args) {
     }).join("");
   }
 
-  // 3. workflow-flow (구 workflow-strip 호환)
+  // 3. workflow-flow (alias → step-flow 스타일로 렌더, 시각적 wf-* 클래스 유지)
   if (type === "workflow-flow" || type === "workflow-strip") {
     return `<div class="workflow-flow">${items.map((it, idx) => `
       <div class="wf-step" ${renderAccent(it.color)}>
@@ -410,8 +445,8 @@ function renderShortcode(type, body, args) {
       </div>`).join("")}</div>`;
   }
 
-  // 8. columns-grid (구 columns)
-  if (type === "columns-grid") {
+  // 8. columns-grid (compare-grid 는 alias — 동일 구조, 용도 컨텍스트만 다름)
+  if (type === "columns-grid" || type === "compare-grid") {
     return `<div class="columns-grid" ${gridStyle}>${items.map(it => {
       const activeNote = it.note || it.meta;
       return `
@@ -648,7 +683,8 @@ function renderShortcode(type, body, args) {
     }).join("")}</div>`;
   }
 
-  // 22. [NEW] step-flow (구 flow 호환)
+  // 22. step-flow (구 flow 호환 + meta 필드 지원)
+  //     meta 필드를 사용하면 workflow-flow 스타일처럼 도구/코멘트를 표시할 수 있음
   if (type === "step-flow" || type === "flow") {
     return `<div class="step-flow">${items.map(it => {
       if (it.type === "arrow" || it.title === "→" || it.icon === "→") {
@@ -658,6 +694,7 @@ function renderShortcode(type, body, args) {
       return `<div class="step-flow-step ${activeClass}">
         <div class="fs-icon">${escapeHtml(it.icon)}</div>
         <div class="fs-title">${escapeHtml(it.title)}</div>
+        ${it.meta ? `<div class="fs-meta" style="font-size:0.75rem;color:var(--text-3);margin-top:4px;">${escapeHtml(it.meta)}</div>` : ""}
         <div class="fs-sub">${renderDesc(it.desc, itemBullet(it), it.color)}</div>
       </div>`;
     }).join("")}</div>`;
@@ -685,8 +722,8 @@ function renderShortcode(type, body, args) {
       </div>`).join("")}</div>`;
   }
 
-  // 25. [NEW] compare-diff (구 compare-before-after) (좌우 1:1 전후 대조)
-  if (type === "compare-diff" || type === "compare-before-after") {
+  // 25. before-after (전후 대조) — compare-diff / compare-before-after 는 alias
+  if (type === "before-after" || type === "compare-diff" || type === "compare-before-after") {
     const bad = items[0] || {};
     const good = items[1] || {};
     return `<div class="compare-diff">

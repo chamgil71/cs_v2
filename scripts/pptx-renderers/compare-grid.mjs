@@ -3,7 +3,7 @@
  * 비교 카드 격자 및 파트 배너 숏코드 (동적 높이 및 순차 텍스트 누적 배치 적용)
  */
 
-export const type = ["compare-grid", "level-grid", "part-banner", "part-deck"];
+export const type = ["level-grid", "part-banner", "part-deck"];
 
 function getCardHeight(it, cardW, c, helpers) {
   let h = c.padY * 2;

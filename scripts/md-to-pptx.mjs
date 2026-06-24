@@ -141,8 +141,27 @@ function loadJsonWithComments(filePath) {
 }
 
 const CONFIG_DIR = resolve(__dirname, "../config");
-const STYLES = loadJsonWithComments(resolve(CONFIG_DIR, "styles.json"));
-let D      = loadJsonWithComments(resolve(CONFIG_DIR, "pptdesign.config.json"));
+const STYLES       = loadJsonWithComments(resolve(CONFIG_DIR, "styles.json"));
+const FONT_ALIASES = loadJsonWithComments(resolve(CONFIG_DIR, "font-aliases.json"));
+let D              = loadJsonWithComments(resolve(CONFIG_DIR, "pptdesign.config.json"));
+
+// alias → 실제 폰트명 resolve (alias 맵에 없으면 원본 그대로 반환)
+function resolveFont(name) {
+  if (!name) return name;
+  return FONT_ALIASES[String(name).trim()] || name;
+}
+
+// D.slide 의 모든 폰트 필드를 한번에 resolve
+function resolveDFonts() {
+  const s = D.slide;
+  if (s.font)        s.font        = resolveFont(s.font);
+  if (s.fontTitle)   s.fontTitle   = resolveFont(s.fontTitle);
+  if (s.fontSubTitle)s.fontSubTitle= resolveFont(s.fontSubTitle);
+  if (s.fontMono)    s.fontMono    = resolveFont(s.fontMono);
+}
+
+// 초기 D 로딩 시 resolve 적용
+resolveDFonts();
 
 // ════════════════════════════════════════════════════════════════
 //  3. CLI 파서
@@ -775,17 +794,17 @@ export async function convertMdToPptx(mdPath, opts = {}) {
     styleKey = data.styleKey;
     style = data.style;
     
-    // Style 오버라이드 지원 (styles.json 정의 우선 적용)
-    if (style.pptxFont) D.slide.font = style.pptxFont;
-    if (style.pptxFontTitle) D.slide.fontTitle = style.pptxFontTitle;
-    if (style.pptxFontSubTitle) D.slide.fontSubTitle = style.pptxFontSubTitle;
+    // Style 오버라이드 지원 (styles.json 정의 우선 적용) — alias resolve 포함
+    if (style.pptxFont)       D.slide.font        = resolveFont(style.pptxFont);
+    if (style.pptxFontTitle)  D.slide.fontTitle   = resolveFont(style.pptxFontTitle);
+    if (style.pptxFontSubTitle) D.slide.fontSubTitle = resolveFont(style.pptxFontSubTitle);
     if (style.titleSize) D.card.titleSize = Number(style.titleSize);
     if (style.bodySize) D.card.bodySize = Number(style.bodySize);
-    
-    // Frontmatter 오버라이드 지원 (제목/본문/중간제목 폰트 세분화 - 최종 덮어쓰기)
-    if (fm.fontFace) D.slide.font = fm.fontFace;
-    if (fm.fontTitle) D.slide.fontTitle = fm.fontTitle;
-    if (fm.fontSubTitle) D.slide.fontSubTitle = fm.fontSubTitle;
+
+    // Frontmatter 오버라이드 지원 (제목/본문/중간제목 폰트 세분화 - 최종 덮어쓰기) — alias resolve 포함
+    if (fm.fontFace)    D.slide.font        = resolveFont(fm.fontFace);
+    if (fm.fontTitle)   D.slide.fontTitle   = resolveFont(fm.fontTitle);
+    if (fm.fontSubTitle)D.slide.fontSubTitle= resolveFont(fm.fontSubTitle);
     if (fm.titleSize) D.card.titleSize = Number(fm.titleSize);
     if (fm.bodySize) D.card.bodySize = Number(fm.bodySize);
   } catch (err) {

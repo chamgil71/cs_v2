@@ -4,8 +4,8 @@ subtitle: "현재 등록된 숏코드의 입력 문법과 HTML 구현 결과를 
 badge: "Shortcode Reference · v2.0"
 style: "ai-chat"
 stats:
-  - value: "29종"
-    label: "지원 숏코드"
+  - value: "25종"
+    label: "정식 숏코드"
   - value: "8개"
     label: "표준 입력 키"
   - value: "HTML/PPTX"
@@ -16,15 +16,17 @@ stats:
 
 # 현재 지원 숏코드 목록
 
-| 분류 | 숏코드 |
+| 분류 | 정식 숏코드 (25종) |
 | --- | --- |
-| **Group A: Grid** | `icon-grid`, `feature-grid`, `badge-grid`, `stat-grid`, `columns-grid`, `compare-grid`, `plan-grid`, `level-grid`, `checkpoint-grid` |
-| **Group B: List** | `step-list`, `skill-list`, `chapter-list`, `faq-list`, `tool-list` |
-| **Group C: Flow** | `workflow-flow`, `git-flow`, `step-flow` |
+| **Group A: Grid** | `icon-grid` *(align=center\|left\|row)*, `feature-grid`, `badge-grid`, `stat-grid`, `columns-grid`, `plan-grid`, `level-grid` |
+| **Group B: List** | `step-list`, `chapter-list`, `faq-list`, `tool-list` |
+| **Group C: Flow** | `step-flow`, `git-flow` |
 | **Group D: Box** | `alert-box`, `cmd-box`, `console-box`, `editor-box`, `network-box`, `summary-box` |
-| **Group E: Split** | `compare-split`, `compare-diff` |
+| **Group E: Split** | `compare-split`, `before-after` |
 | **Group F: Banner & Bar** | `part-banner`, `takeaway-banner`, `summary-bar` |
 | **Group G: Interactive** | `os-tabs` |
+
+> **하위 호환 alias** (기존 문서에서 계속 동작): `compare-grid`→columns-grid, `workflow-flow`→step-flow, `skill-list`→icon-grid align=left, `checkpoint-grid`→icon-grid align=row, `compare-diff`→before-after
 
 # 숏코드 표준 입력 키
 
@@ -249,17 +251,17 @@ stats:
   note: "npm run build:standalone"
 :::
 
-# 6. compare-grid
+# 6. columns-grid *(구: compare-grid)*
 
 | 항목 | 내용 |
 | --- | --- |
-| 숏코드 명 | `compare-grid` |
-| 구현내용 | 여러 선택지를 카드로 비교합니다. `note`가 있으면 하단 노트로 우선 표시하고, 없으면 `meta`를 노트처럼 표시합니다. |
+| 숏코드 명 | `columns-grid` |
+| 구현내용 | 가로 다단 카드 격자. 비교 용도에도 활용합니다. `note`가 있으면 하단 노트로 우선 표시하고, 없으면 `meta`를 노트처럼 표시합니다. `compare-grid`는 동작 호환 alias입니다. |
 
 숏코드 입력내용
 
 ```md
-\::: compare-grid cols=2
+\::: columns-grid cols=2
 - title: "수동 HTML"
   desc: "표현 자유도는 높지만 유지보수와 PPTX 변환이 어렵습니다."
   note: "디자인 고정이 필요한 특수 페이지에 적합"
@@ -271,7 +273,7 @@ stats:
 \:::
 ```
 
-::: compare-grid cols=2
+::: columns-grid cols=2
 - title: "수동 HTML"
   desc: "표현 자유도는 높지만 유지보수와 PPTX 변환이 어렵습니다."
   note: "디자인 고정이 필요한 특수 페이지에 적합"
@@ -362,17 +364,17 @@ stats:
   tag: "highlight"
 :::
 
-# 9. checkpoint-grid
+# 9. icon-grid align=row *(구: checkpoint-grid)*
 
 | 항목 | 내용 |
 | --- | --- |
-| 숏코드 명 | `checkpoint-grid` |
-| 구현내용 | 중간 검수 타이밍, 주요 체크포인트를 이모지와 가로 뱃지 형식으로 나열해 줍니다. |
+| 숏코드 명 | `icon-grid align=row` |
+| 구현내용 | 아이콘 좌측 + 텍스트 우측 수평 배열. 체크포인트·검수 항목 나열에 적합합니다. `checkpoint-grid`는 동작 호환 alias입니다. |
 
 숏코드 입력내용
 
 ```md
-\::: checkpoint-grid
+\::: icon-grid align=row
 - icon: "📐"
   title: "계획 수립 후"
   desc: "방향이 맞는지 확인"
@@ -382,7 +384,7 @@ stats:
 \:::
 ```
 
-::: checkpoint-grid
+::: icon-grid align=row
 - icon: "📐"
   title: "계획 수립 후"
   desc: "방향이 맞는지 확인"
@@ -420,17 +422,17 @@ stats:
   desc: "md-to-pptx.mjs로 발표 자료를 생성합니다."
 :::
 
-# 11. skill-list
+# 11. icon-grid align=left *(구: skill-list)*
 
 | 항목 | 내용 |
 | --- | --- |
-| 숏코드 명 | `skill-list` |
-| 구현내용 | 기능이나 역량을 행 형태로 나열합니다. |
+| 숏코드 명 | `icon-grid align=left` |
+| 구현내용 | 아이콘 좌측 작은 배경박스 + 텍스트 좌측 정렬. 기능·역량 목록에 적합합니다. `skill-list`는 동작 호환 alias입니다. |
 
 숏코드 입력내용
 
 ```md
-\::: skill-list
+\::: icon-grid align=left
 - icon: "📄"
   title: "문서 자동화"
   desc: "보고서와 제안서를 빠르게 생성합니다."
@@ -443,7 +445,7 @@ stats:
 \:::
 ```
 
-::: skill-list
+::: icon-grid align=left
 - icon: "📄"
   title: "문서 자동화"
   desc: "보고서와 제안서를 빠르게 생성합니다."

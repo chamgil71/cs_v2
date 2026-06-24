@@ -1,0 +1,36 @@
+{
+  "$comment": "PPTX 폰트 alias 맵. styles.json / pptdesign.config.json / frontmatter 에서 alias 명을 쓰면 이 파일에서 실제 폰트명으로 resolve됩니다. alias 에 없는 이름은 그대로 폰트명으로 사용됩니다.",
+
+  "paperlogy-thin":        "페이퍼로지 1 Thin",
+  "paperlogy-extralight":  "페이퍼로지 2 ExtraLight",
+  "paperlogy-light":       "페이퍼로지 3 Light",
+  "paperlogy-regular":     "페이퍼로지 4 Regular",
+  "paperlogy-medium":      "페이퍼로지 5 Medium",
+  "paperlogy-semibold":    "페이퍼로지 6 SemiBold",
+  "paperlogy-bold":        "페이퍼로지 7 Bold",
+  "paperlogy-extrabold":   "페이퍼로지 8 ExtraBold",
+  "paperlogy-black":       "페이퍼로지 9 Black",
+  "paperlogy":             "페이퍼로지 4 Regular",
+
+  "pretendard":            "Pretendard",
+  "pretendard-thin":       "Pretendard Thin",
+  "pretendard-light":      "Pretendard Light",
+  "pretendard-regular":    "Pretendard",
+  "pretendard-medium":     "Pretendard Medium",
+  "pretendard-semibold":   "Pretendard SemiBold",
+  "pretendard-extrabold":  "Pretendard ExtraBold",
+  "pretendard-black":      "Pretendard Black",
+
+  "noto-sans":             "Noto Sans KR",
+  "noto-serif":            "Noto Serif KR",
+
+  "malgun":                "맑은 고딕",
+  "malgun-gothic":         "맑은 고딕",
+  "gulim":                 "굴림",
+  "dotum":                 "돋움",
+  "batang":                "바탕",
+
+  "consolas":              "Consolas",
+  "courier":               "Courier New",
+  "jetbrains-mono":        "JetBrains Mono"
+}

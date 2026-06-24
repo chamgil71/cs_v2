@@ -5,6 +5,89 @@
 
 ---
 
+## Phase 3 — 폰트 크기 통일 및 유지보수 기능 추가 (2026-06-24)
+
+### 배경
+
+Phase 2 통합 이후 숏코드별 카드 제목/설명 폰트 크기가 제각각이었음을 확인하였다 (0.82rem ~ 1.3rem 혼재). 일관된 타이포그래피 규격 적용 및 문서 단위 오버라이드 기능을 추가하였다. 아울러 `\n` 치환 버그를 수정하고 미리보기 축소 기능을 개선하였다.
+
+---
+
+### 변경 1: 숏코드 카드 폰트 크기 전면 통일 — CSS 변수 시스템
+
+| 항목 | 내용 |
+|------|------|
+| **변경 전** | 숏코드별 하드코딩된 rem 값 혼재 (0.82rem ~ 1.3rem) |
+| **변경 후** | 전체 카드 title → `var(--size-card-title)`, desc → `var(--size-card-p)` |
+| **기본값** | `--size-card-title: 1.15rem`, `--size-card-p: 0.92rem` |
+| **변경 파일** | `scripts/build-guide.mjs` (CSS 변수 `:root` 블록 및 각 CSS 클래스) |
+
+**통일 적용 대상 CSS 클래스 (전체):**
+
+| 클래스 | 적용 변수 |
+|--------|---------|
+| `.step-title`, `.plan-title`, `.skill-title` | `--size-card-title` |
+| `.badge-title`, `.c2-title`, `.tc-name` | `--size-card-title` |
+| `.wf-name`, `.faq-q`, `.ba-label` | `--size-card-title` |
+| `.alert-body strong`, `.level-name`, `.ci-text strong` | `--size-card-title` |
+| `.fs-title`, `.ta-label` | `--size-card-title` |
+| `.skill-desc`, `.c2-list li`, `.tc-sub`, `.tc-list` | `--size-card-p` |
+| `.wf-tool`, `.faq-a p`, `.ba-content` | `--size-card-p` |
+| `.level-tool`, `.ci-text`, `.fs-sub`, `.ta-text` | `--size-card-p` |
+| `multiline-item` 인라인 스타일 | `--size-card-p` |
+
+**수정 방법 (전역 크기 변경)**: `scripts/build-guide.mjs` 약 984번째 줄 수정
+
+```css
+--size-card-title: 1.15rem;   /* 변경 가능 */
+--size-card-p:     0.92rem;   /* 변경 가능 */
+```
+
+---
+
+### 변경 2: 숏코드별 폰트 크기 오버라이드 인수 추가 — `title-size` / `desc-size`
+
+| 항목 | 내용 |
+|------|------|
+| **새 기능** | 모든 숏코드 선언부에 `title-size=<값>` / `desc-size=<값>` 인수 지원 |
+| **비율 입력** | 순수 숫자(예: `0.9`) → 기본값 × 배율 (`0.9 × 1.15rem = 1.035rem`) |
+| **절대값 입력** | 단위 포함(예: `1.0rem`, `14px`) → 해당 값 그대로 |
+| **적용 범위** | 해당 블록에만 CSS 변수 스코프 — 다른 블록 영향 없음 |
+| **변경 파일** | `scripts/build-guide.mjs` (헬퍼 함수 `resolveSizeArg`, `buildSizeOverrideStyle` 추가) |
+
+```markdown
+::: icon-grid title-size=0.9 desc-size=0.85rem
+- icon: 🔵
+  title: 이 블록만 작은 제목
+  desc: 이 블록만 작은 설명
+:::
+```
+
+---
+
+### 변경 3: `\n` → `<br>` 치환 시 코드 블록 보호 (버그 수정)
+
+| 항목 | 내용 |
+|------|------|
+| **버그** | `\n` → `<br>` 전역 정규식이 펜스 코드 블록(` ``` `)과 인라인 코드(`` ` ``)까지 오염 |
+| **현상** | 코드 블록 내 `\n` 문자열이 `<br>`로 치환되어 렌더링 깨짐 |
+| **수정** | 치환 전 코드 블록/인라인 코드를 null-byte 플레이스홀더로 보호, 치환 후 복원 |
+| **변경 파일** | `scripts/build-guide.mjs` (약 854번째 줄 구간) |
+
+---
+
+### 변경 4: MarkdownCompiler 미리보기 축소 렌더링 개선
+
+| 항목 | 내용 |
+|------|------|
+| **변경 전** | 미리보기 iframe이 원본 크기(1:1)로 표시되어 좁은 패널에서 글자가 비정상적으로 크게 보임 |
+| **변경 후** | `ResizeObserver` + `transform: scale()` 으로 컨테이너 너비에 맞게 축소 렌더링 |
+| **가상 기준 너비** | Desktop = 1200px, Tablet = 768px, Mobile = 375px |
+| **스케일 표시** | 우측 상단 오버레이 배지로 현재 축소 비율(%) 표시 |
+| **변경 파일** | `src/components/MarkdownCompiler.tsx` |
+
+---
+
 ## Phase 2 — 디자인 독창성 검토 및 통합 정리 (2026-06-24)
 
 ### 배경

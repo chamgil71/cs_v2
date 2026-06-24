@@ -64,3 +64,173 @@
 * **일괄 변환 방식**: 대시보드 중단 `📁 폴더 일괄 변환` 체크박스를 활성화하면 개별 파일이 아닌 폴더 내 마크다운 파일들의 통치 컴파일 파이프라인으로 작동합니다.
 * **네이티브 폴더 선택**: 입력 폴더, 출력 폴더 및 개별 저장 위치 텍스트박스 우측 상단의 `선택...`을 클릭하면, 윈도우 OS의 네이티브 폴더 선택 탐색기 창이 나타나 수동 경로 텍스트 입력의 불편함을 덜어주고 최적화된 상대 경로를 자동 기입해 줍니다.
 * **다중 포맷 출력**: 일괄 변환 시 `html` (가이드북), `presentation` (웹 슬라이드), `pptx` (파워포인트) 중 여러 포맷을 동시에 체크하여 한 번에 변환할 수 있습니다. 변환이 완료되면 출력 폴더 하위에 포털 인덱스 목차 페이지(`index.html`)가 동적 빌드되어, 각 파일별로 생성된 다양한 포맷 결과물의 새 창 보기 및 다운로드 바로가기 링크 버튼들을 카드 리스트 형태로 제공합니다.
+
+---
+
+## 3. 설정 파일 유지보수 가이드
+
+이 섹션은 실무 유지보수 담당자가 폰트·색상·레이아웃 등 각 설정값을 직접 수정하는 방법을 정확히 설명합니다.
+
+---
+
+### 3-1. 전역 폰트 패밀리 변경 — `config/htmldesign.config.json`
+
+HTML 가이드 출력 전체에 적용되는 **웹폰트 패밀리**를 지정합니다.
+
+```json
+// config/htmldesign.config.json
+{
+  "htmlFont": {
+    "title": "'Noto Serif KR', serif",    // 제목 영역 폰트
+    "desc":  "'Noto Sans KR', sans-serif", // 본문/설명 폰트
+    "note":  "'JetBrains Mono', monospace",// 노트/보조 폰트
+    "code":  "'JetBrains Mono', monospace",// 코드 블록 폰트
+    "tag":   "'Noto Sans KR', sans-serif", // 배지/태그 폰트
+    "scale": 1.0                           // 전역 폰트 크기 배율 (기본 1.0)
+  }
+}
+```
+
+**`scale` 필드 활용법**: `0.9` → 전체 10% 축소, `1.1` → 전체 10% 확대.  
+이 배율은 빌드 시 CSS 변수 `--font-scale`로 삽입되어 모든 크기 계산에 곱해집니다.  
+숏코드 카드 제목·설명 폰트는 별도 변수로 관리됩니다(아래 3-2 참고).
+
+**수정 후**: `node scripts/build-guide.mjs <파일>.md --out <출력>.html` 로 재빌드하면 반영됩니다.
+
+---
+
+### 3-2. 전역 숏코드 카드 폰트 크기 변경 — `scripts/build-guide.mjs`
+
+모든 숏코드의 **카드 제목(title)과 카드 설명(desc) 크기**는 `build-guide.mjs` 내부 CSS 변수 두 개로 통일 관리됩니다.
+
+**위치**: `scripts/build-guide.mjs` 약 984~985번째 줄, `:root { }` 블록 안
+
+```css
+/* scripts/build-guide.mjs — :root CSS 변수 블록 */
+--size-card-title: 1.15rem;   /* 모든 숏코드 카드 제목 크기 */
+--size-card-p:     0.92rem;   /* 모든 숏코드 카드 설명/본문 크기 */
+
+/* 특수 목적 별도 변수 (stat-grid, plan-grid 전용) */
+--size-stat-val:      2.4rem;
+--size-stat-name:     1.1rem;
+--size-stat-note:     0.8rem;
+--size-plan-badge:    0.75rem;
+--size-plan-features: 0.95rem;
+```
+
+**수정 방법**: 해당 줄의 숫자(rem 값)를 직접 변경합니다.  
+예) 카드 제목을 더 크게: `--size-card-title: 1.25rem;`
+
+**수정 후**: 재빌드 필요 (`node scripts/build-guide.mjs ...`).
+
+---
+
+### 3-3. 특정 숏코드만 폰트 크기 변경 — `title-size` / `desc-size` 인수
+
+전역 기본값을 유지하면서 **특정 숏코드 블록만** 크기를 다르게 지정할 수 있습니다.  
+숏코드 선언 줄에 `title-size` 또는 `desc-size` 인수를 추가합니다.
+
+#### 비율 지정 (숫자만 입력 → 기본값 대비 배율)
+
+```markdown
+::: icon-grid title-size=0.9 desc-size=0.85
+- icon: 🔵
+  title: 작은 타이틀 (기본의 90%)
+  desc: 작은 설명 (기본의 85%)
+:::
+```
+
+- `title-size=0.9` → `0.9 × 1.15rem = 1.035rem`
+- `desc-size=0.85` → `0.85 × 0.92rem = 0.782rem`
+
+#### 절대값 지정 (단위 포함 → 그대로 적용)
+
+```markdown
+::: faq-list title-size=1.0rem desc-size=0.8rem
+- title: 질문
+  desc: 답변
+:::
+```
+
+#### 하나만 변경도 가능
+
+```markdown
+::: step-flow title-size=1.3rem
+- icon: 📥
+  title: 큰 단계 제목
+  desc: 설명은 기본 크기
+:::
+```
+
+**적용 범위**: 해당 숏코드 블록 내부에만 적용되며 다른 블록에 영향을 주지 않습니다.  
+**모든 25종 숏코드**에서 사용 가능합니다.
+
+---
+
+### 3-4. 테마 색상 변경 — `config/styles.json`
+
+HTML/PPTX 양쪽에 적용되는 테마 팔레트를 정의합니다.
+
+```jsonc
+// config/styles.json (예시 — custom-blue 테마)
+{
+  "custom-blue": {
+    "label": "커스텀 블루",
+    "brand":      "#3b82f6",   // 주 강조색 (버튼, 아이콘, 링크)
+    "brandDark":  "#1d4ed8",   // 어두운 강조색 (호버, 헤더 배경)
+    "brandLight": "#eff6ff",   // 밝은 강조색 (카드 배경, 하이라이트)
+    "bg":         "#ffffff",   // 페이지 배경
+    "text":       "#1e293b",   // 기본 텍스트
+    "text2":      "#64748b",   // 보조 텍스트
+    "pptxFont":   "paperlogy-regular"  // PPTX 폰트 alias
+  }
+}
+```
+
+**수정 방법**:
+- React UI 개발 서버(`npm run dev`) 실행 중 → 디자인 시스템 탭의 테마 빌더에서 색상 피커로 직접 수정 후 **[서버에 최종 저장하기]** 클릭
+- 직접 편집 → `config/styles.json` 파일을 텍스트 에디터로 열어 HEX 코드 수정
+
+**반영**: 재빌드 없이 `node scripts/build-guide.mjs ...` 실행 시 자동 적용됩니다.
+
+---
+
+### 3-5. PPTX 레이아웃 기본값 변경 — `config/pptdesign.config.json`
+
+PPTX 출력의 슬라이드 크기, 여백, 기본 폰트, 둥글기 등을 설정합니다.
+
+```jsonc
+// config/pptdesign.config.json (주요 키)
+{
+  "slide": {
+    "width": 13.33,           // 슬라이드 너비 (인치, 16:9 기준)
+    "height": 7.5,            // 슬라이드 높이 (인치)
+    "globalRadius": 0.08      // 도형 둥글기 (인치, 0 = 각진 형태)
+  },
+  "font": {
+    "body": "malgun",         // 본문 폰트 alias
+    "title": "malgun",        // 제목 폰트 alias
+    "subtitle": "malgun"      // 부제목 폰트 alias
+  }
+}
+```
+
+폰트 alias 전체 목록은 `config/font-aliases.json` 참고 (예: `paperlogy-regular` → `페이퍼로지 4 Regular`).
+
+---
+
+### 3-6. 독립형 HTML 파일 빌드 — `npm run build:standalone`
+
+서버 없이 브라우저에서 직접 열 수 있는 자체 완결 HTML 3종을 빌드합니다.
+
+```bash
+npm run build:standalone
+# 출력물:
+#   dist/standalone.html  — 모듈1 + 모듈2 통합 (탭 전환)
+#   dist/module1.html     — PPTX 인스펙터 단독
+#   dist/module2.html     — 가이드북 컴파일러 단독 (클라이언트 컴파일 포함)
+```
+
+- 외부 CDN/서버 의존성 없음 — 오프라인 환경에서도 동작
+- 모듈2는 클라이언트 사이드 컴파일 폴백 내장 → 브라우저에서 MD → HTML/PPTX 변환 가능
+- 빌드 후 파일 크기: module1 ≈ 405KB, module2 ≈ 912KB, standalone ≈ 1005KB

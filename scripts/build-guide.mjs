@@ -205,7 +205,7 @@ function renderMultiLineText(text, defaultTag = "p", customBullet = null, bullet
     }
     if (!content.trim()) continue;
 
-    listHtml += `<div class="multiline-item" style="display:flex;gap:8px;align-items:flex-start;font-size:0.9rem;color:var(--text-2);line-height:1.5;">
+    listHtml += `<div class="multiline-item" style="display:flex;gap:8px;align-items:flex-start;font-size:var(--size-card-p);color:var(--text-2);line-height:1.5;">
       <span class="bullet" style="${bulletColorStyle}flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;min-width:16px;">${bulletHtml}</span>
       <span class="content" style="text-align:left;">${escapeHtml(content)}</span>
     </div>`;
@@ -235,6 +235,31 @@ function renderNote(text) {
   if (!text) return "";
   return escapeHtml(String(text).split(/\n/).map(s => s.trim()).filter(Boolean).join(" · "));
 }
+
+// ── 숏코드별 폰트 크기 오버라이드 헬퍼 ──────────────────────────────
+// title-size / desc-size arg 값 처리
+//   순수 숫자(0.9)   → 기본값 대비 비율: 0.9 × 기본rem
+//   단위 포함(1rem)  → 그대로 절대값으로 사용
+const DEFAULT_TITLE_REM = 1.15;
+const DEFAULT_P_REM     = 0.92;
+
+function resolveSizeArg(val, defaultRem) {
+  if (!val) return null;
+  const s = String(val).trim();
+  if (/^\d+(\.\d+)?$/.test(s)) return `${(parseFloat(s) * defaultRem).toFixed(3)}rem`;
+  return s;
+}
+
+function buildSizeOverrideStyle(argsStr) {
+  if (!argsStr) return "";
+  const tm = argsStr.match(/title-size=(\S+)/);
+  const dm = argsStr.match(/desc-size=(\S+)/);
+  const parts = [];
+  if (tm) { const v = resolveSizeArg(tm[1], DEFAULT_TITLE_REM); if (v) parts.push(`--size-card-title:${v}`); }
+  if (dm) { const v = resolveSizeArg(dm[1], DEFAULT_P_REM);     if (v) parts.push(`--size-card-p:${v}`); }
+  return parts.join(';');
+}
+// ─────────────────────────────────────────────────────────────────
 
 function renderShortcode(type, body, args) {
   const items = parseShortcodeItems(body);
@@ -844,14 +869,26 @@ export function buildHtml(inputPath, opts = {}) {
   const radiusVal = CONFIG?.slide?.globalRadius || 0.08;
   const cssRadius = radiusVal > 0 ? `${Math.round(radiusVal * 150)}px` : "0px";
 
-  let processedContent = content.replace(/^:::\s*([A-Za-z0-9_-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$/gm, (_, type, args, body) => {
-    const html = renderShortcode(type, body, args);
+  let processedContent = content.replace(/^:::\s*([A-Za-z0-9_-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$/gm, (_, type, rawArgs, body) => {
+    let html = renderShortcode(type, body, rawArgs);
+    if (!html) return "";
+    // title-size / desc-size arg가 있으면 해당 숏코드에만 CSS 변수 오버라이드
+    const sizeStyle = buildSizeOverrideStyle(rawArgs || "");
+    if (sizeStyle) html = `<div style="${sizeStyle}">${html}</div>`;
     // 💡 핵심: \n 뒤의 모든 공백(들여쓰기)을 제거하여 코드 블록으로 인식되는 것을 방지합니다.
-    return html ? `\n${html.replace(/\n\s+/g, '\n')}\n` : "";
+    return `\n${html.replace(/\n\s+/g, '\n')}\n`;
   });
 
-  // Replace literal '\n' and '/n' (not part of URLs) with <br> inside general markdown text
-  processedContent = processedContent.replace(/(?<!https?:|[a-zA-Z0-9.\-_]+)(?:\\n|\/n)(?!\w)/g, "<br>");
+  // Replace literal '\n' and '/n' with <br>, but NOT inside fenced code blocks or inline code spans
+  {
+    const protected_ = [];
+    const protect = (m) => { protected_.push(m); return `\x00P${protected_.length - 1}\x00`; };
+    processedContent = processedContent
+      .replace(/```[\s\S]*?```/g, protect)
+      .replace(/`[^`\n]+`/g, protect)
+      .replace(/(?<!https?:|[a-zA-Z0-9.\-_]+)(?:\\n|\/n)(?!\w)/g, "<br>")
+      .replace(/\x00P(\d+)\x00/g, (_, i) => protected_[Number(i)]);
+  }
 
   // 💡 단독 화살표 줄(↓, →, ↑, ←)을 중앙 정렬 세퍼레이터 div로 치환
   processedContent = processedContent.replace(/^\s*(↓|→|↑|←)\s*$/gm, '<div class="flow-arrow-separator">$1</div>');
@@ -951,8 +988,6 @@ export function buildHtml(inputPath, opts = {}) {
     --size-stat-note: 0.8rem;
     --size-plan-badge: 0.75rem;
     --size-plan-features: 0.95rem;
-    --size-workflow-name: 1.0rem;
-    --size-workflow-tool: 0.8rem;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: var(--font-desc), sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
@@ -1027,30 +1062,30 @@ export function buildHtml(inputPath, opts = {}) {
   .tool-card { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); margin: 25px 0; }
   .tc-header { padding: 25px; display: flex; align-items: center; gap: 20px; }
   .tc-icon { width: 55px; height: 55px; border-radius: calc(var(--radius) / 2); background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: calc(1.8rem * var(--font-scale)); }
-  .tc-name { font-size: calc(1.3rem * var(--font-scale)); font-weight: 800; }
-  .tc-sub { font-size: calc(0.9rem * var(--font-scale)); opacity: 0.9; }
+  .tc-name { font-size: calc(var(--size-card-title) * var(--font-scale)); font-weight: 800; }
+  .tc-sub { font-size: calc(var(--size-card-p) * var(--font-scale)); opacity: 0.9; }
   .tc-badge { margin-left: auto; font-size: calc(0.8rem * var(--font-scale)); font-weight: 800; padding: 5px 15px; border-radius: 100px; background: rgba(255,255,255,0.25); }
-  .tc-list { padding: 12px 25px 14px 40px; font-size: calc(0.88rem * var(--font-scale)); background: var(--bg); border-top: 1px solid var(--border); color: var(--text-2); margin: 0; line-height: 1.9; }
+  .tc-list { padding: 12px 25px 14px 40px; font-size: calc(var(--size-card-p) * var(--font-scale)); background: var(--bg); border-top: 1px solid var(--border); color: var(--text-2); margin: 0; line-height: 1.9; }
 
   /* Workflow */
   .workflow-flow { display: flex; gap: 15px; margin: 25px 0; overflow-x: auto; padding-bottom: 10px; }
   .wf-step { flex: 1; min-width: 140px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; position: relative; }
   .wf-icon { width: 45px; height: 45px; margin: 0 auto 10px; background: var(--brand-light); color: var(--brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: calc(1.3rem * var(--font-scale)); }
-  .wf-name { font-weight: 800; font-size: calc(var(--size-workflow-name) * var(--font-scale)); margin-bottom: 5px; }
-  .wf-tool { font-size: calc(var(--size-workflow-tool) * var(--font-scale)); color: var(--text-2); }
+  .wf-name { font-weight: 800; font-size: calc(var(--size-card-title) * var(--font-scale)); margin-bottom: 5px; }
+  .wf-tool { font-size: calc(var(--size-card-p) * var(--font-scale)); color: var(--text-2); }
   .wf-arrow { position: absolute; right: -15px; top: 50%; transform: translateY(-50%); font-weight: 900; color: #cbd5e1; z-index: 1; font-size: calc(1.2rem * var(--font-scale)); }
 
   /* Steps */
   .step-list { display: flex; flex-direction: column; gap: 15px; margin: 25px 0; }
   .step-item { display: flex; gap: 20px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
   .step-num { width: 35px; height: 35px; background: var(--brand); color: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
-  .step-title { font-weight: 800; font-size: calc(1.1rem * var(--font-scale)); margin-bottom: 5px; }
+  .step-title { font-weight: 800; font-size: calc(var(--size-card-title) * var(--font-scale)); margin-bottom: 5px; }
 
   /* Plan Grid */
   .plan-card { text-align: center; padding-top: 35px; }
   .plan-featured { border-color: var(--brand); box-shadow: 0 8px 30px rgba(99,102,241,0.15); transform: translateY(-5px); }
   .plan-badge { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: var(--brand); color: #fff; font-size: calc(var(--size-plan-badge) * var(--font-scale)); font-weight: 900; padding: 4px 15px; border-radius: 100px; }
-  .plan-title { font-size: calc(1.3rem * var(--font-scale)); margin-bottom: 20px; }
+  .plan-title { margin-bottom: 20px; }
   .plan-features { list-style: none; margin: 0 0 20px 0; padding: 0; text-align: left; }
   .plan-features li { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: calc(var(--size-plan-features) * var(--font-scale)); color: var(--text-2); }
   .plan-features li:before { content: '✓'; color: var(--brand); margin-right: 8px; font-weight: bold; }
@@ -1060,13 +1095,13 @@ export function buildHtml(inputPath, opts = {}) {
   .skill-list { display: flex; flex-direction: column; gap: 15px; margin: 25px 0; }
   .skill-item { display: flex; align-items: center; gap: 20px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 15px 25px; }
   .skill-icon { width: 40px; height: 40px; background: var(--brand-light); color: var(--brand); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: calc(1.2rem * var(--font-scale)); flex-shrink: 0; }
-  .skill-title { font-weight: 800; font-size: calc(1.05rem * var(--font-scale)); width: 30%; }
-  .skill-desc { font-size: calc(0.95rem * var(--font-scale)); color: var(--text-2); flex: 1; margin: 0; }
+  .skill-title { font-weight: 800; font-size: calc(var(--size-card-title) * var(--font-scale)); width: 30%; }
+  .skill-desc { font-size: calc(var(--size-card-p) * var(--font-scale)); color: var(--text-2); flex: 1; margin: 0; }
 
   /* Badge Grid */
   .badge-item { text-align: center; padding: 20px 15px; }
   .badge-icon { font-size: calc(2rem * var(--font-scale)); margin-bottom: 10px; }
-  .badge-title { font-weight: 800; font-size: calc(1rem * var(--font-scale)); margin-bottom: 5px; }
+  .badge-title { font-weight: 800; font-size: calc(var(--size-card-title) * var(--font-scale)); margin-bottom: 5px; }
   .badge-tag { font-size: calc(0.8rem * var(--font-scale)); color: var(--text-2); }
 
   /* Bottom List */
@@ -1079,10 +1114,10 @@ export function buildHtml(inputPath, opts = {}) {
   .c2-left { background: var(--brand-light); border-color: var(--brand); border-width: 2px; }
   .c2-left .card-top-bar { background: var(--brand); }
   .c2-right .card-top-bar { background: var(--text-2); }
-  .c2-title { font-size: calc(1.3rem * var(--font-scale)); font-weight: 800; margin-bottom: 20px; color: var(--brand-dark); }
+  .c2-title { font-size: calc(var(--size-card-title) * var(--font-scale)); font-weight: 800; margin-bottom: 20px; color: var(--brand-dark); }
   .c2-right .c2-title { color: var(--text); }
   .c2-list { list-style: none; margin: 0; padding: 0; }
-  .c2-list li { padding: 8px 0; font-size: calc(1rem * var(--font-scale)); color: var(--text-2); display: flex; gap: 10px; }
+  .c2-list li { padding: 8px 0; font-size: calc(var(--size-card-p) * var(--font-scale)); color: var(--text-2); display: flex; gap: 10px; }
   .c2-left .c2-list li { color: var(--brand-dark); }
   .c2-list li:before { content: '•'; font-weight: bold; }
   .c2-note { margin-top: 20px; padding: 10px; background: var(--brand); color: #fff; font-size: calc(0.85rem * var(--font-scale)); font-weight: bold; text-align: center; border-radius: 8px; }
@@ -1166,12 +1201,12 @@ export function buildHtml(inputPath, opts = {}) {
   .ba-label {
     font-family: var(--font-desc);
     font-weight: 800;
-    font-size: calc(1.15rem * var(--font-scale));
+    font-size: var(--size-card-title);
     color: var(--text);
   }
   .ba-content {
     font-family: var(--font-desc);
-    font-size: calc(0.95rem * var(--font-scale));
+    font-size: var(--size-card-p);
     color: var(--text-2);
     line-height: 1.6;
   }
@@ -1183,7 +1218,7 @@ export function buildHtml(inputPath, opts = {}) {
   .alert-success { --alert-color: #22C55E; }
   .alert-danger { --alert-color: #EF4444; }
   .alert-icon { font-size: calc(1.3rem * var(--font-scale)); flex-shrink: 0; line-height: 1.5; }
-  .alert-body strong { display: block; font-size: calc(0.95rem * var(--font-scale)); font-weight: 800; color: var(--alert-color, var(--brand)); margin-bottom: 4px; }
+  .alert-body strong { display: block; font-size: var(--size-card-title); font-weight: 800; color: var(--alert-color, var(--brand)); margin-bottom: 4px; }
   .alert-body p { margin: 0; font-size: calc(0.92rem * var(--font-scale)); color: var(--text-2); }
 
   /* Command Block */
@@ -1210,14 +1245,14 @@ export function buildHtml(inputPath, opts = {}) {
   .faq-list { display: flex; flex-direction: column; gap: 8px; margin: 25px 0; }
   .faq-item { background: white; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color 0.15s; }
   .faq-item.open { border-color: var(--brand); }
-  .faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: transparent; border: none; cursor: pointer; font-size: calc(0.97rem * var(--font-scale)); font-weight: 700; color: var(--text); text-align: left; gap: 12px; font-family: inherit; transition: background 0.15s; }
+  .faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: transparent; border: none; cursor: pointer; font-size: var(--size-card-title); font-weight: 700; color: var(--text); text-align: left; gap: 12px; font-family: inherit; transition: background 0.15s; }
   .faq-q:hover { background: var(--brand-light); }
   .faq-item.open .faq-q { color: var(--brand-dark); background: var(--brand-light); }
   .faq-arrow { transition: transform 0.2s; font-size: calc(0.7rem * var(--font-scale)); opacity: 0.5; flex-shrink: 0; }
   .faq-item.open .faq-arrow { transform: rotate(180deg); opacity: 1; }
   .faq-a { display: none; padding: 0 20px 16px; }
   .faq-item.open .faq-a { display: block; }
-  .faq-a p { margin: 0; font-size: calc(0.93rem * var(--font-scale)); color: var(--text-2); }
+  .faq-a p { margin: 0; font-size: var(--size-card-p); color: var(--text-2); }
 
   /* Prompt Example */
   .prompt-box { background: #0F172A; border-radius: var(--radius); overflow: hidden; margin: 20px 0; }
@@ -1343,9 +1378,9 @@ export function buildHtml(inputPath, opts = {}) {
   .level-card.highlight { border-color: var(--brand); box-shadow: var(--shadow-lg); background: var(--brand-light); }
   .level-num { font-size: calc(1.25rem * var(--font-scale)); font-weight: 900; color: var(--brand); margin-bottom: 8px; }
   .level-card.highlight .level-num { color: var(--brand-dark); }
-  .level-name { font-size: calc(0.95rem * var(--font-scale)); font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .level-name { font-size: var(--size-card-title); font-weight: 700; color: var(--text); margin-bottom: 4px; }
   .level-name p { margin: 0; }
-  .level-tool { font-size: calc(0.82rem * var(--font-scale)); color: var(--text-2); font-weight: 500; margin-bottom: 8px; }
+  .level-tool { font-size: var(--size-card-p); color: var(--text-2); font-weight: 500; margin-bottom: 8px; }
   .level-desc { font-size: calc(0.78rem * var(--font-scale)); color: var(--text-3); font-style: italic; margin-top: auto; border-top: 1px dashed var(--border); padding-top: 8px; }
   .level-desc p { margin: 0; }
 
@@ -1353,16 +1388,16 @@ export function buildHtml(inputPath, opts = {}) {
   .checkpoint-item { display: flex; align-items: center; gap: 16px; background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); transition: all 0.2s ease; }
   .checkpoint-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
   .ci-icon { font-size: calc(1.6rem * var(--font-scale)); display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 42px; height: 42px; background: var(--brand-light); border-radius: 50%; color: var(--brand); }
-  .ci-text { font-size: calc(0.9rem * var(--font-scale)); color: var(--text); line-height: 1.4; text-align: left; }
-  .ci-text strong { font-weight: 700; color: var(--brand-dark); }
+  .ci-text { font-size: var(--size-card-p); color: var(--text); line-height: 1.4; text-align: left; }
+  .ci-text strong { font-size: var(--size-card-title); font-weight: 700; color: var(--brand-dark); }
 
   .step-flow { display: flex; align-items: stretch; gap: 15px; margin: 25px 0; overflow-x: auto; padding-bottom: 10px; }
   .step-flow-step { flex: 1; min-width: 140px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; position: relative; display: flex; flex-direction: column; align-items: center; box-shadow: var(--shadow); }
   .step-flow-step.active { border-color: var(--brand); box-shadow: var(--shadow-lg); }
   .step-flow-step.active .fs-icon { background: var(--brand); color: #fff; }
   .fs-icon { width: 45px; height: 45px; margin: 0 auto 10px; background: var(--brand-light); color: var(--brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: calc(1.3rem * var(--font-scale)); }
-  .fs-title { font-weight: 800; font-size: calc(1rem * var(--font-scale)); margin-bottom: 5px; color: var(--text); }
-  .fs-sub { font-size: calc(0.82rem * var(--font-scale)); color: var(--text-2); margin: 0; }
+  .fs-title { font-weight: 800; font-size: var(--size-card-title); margin-bottom: 5px; color: var(--text); }
+  .fs-sub { font-size: var(--size-card-p); color: var(--text-2); margin: 0; }
   .fs-sub p { margin: 0; }
   .step-flow-arrow { display: flex; align-items: center; justify-content: center; font-weight: 900; color: #cbd5e1; font-size: calc(1.5rem * var(--font-scale)); flex-shrink: 0; user-select: none; }
 
@@ -1383,14 +1418,14 @@ export function buildHtml(inputPath, opts = {}) {
     flex-shrink: 0;
   }
   .ta-label {
-    font-size: calc(1.1rem * var(--font-scale));
+    font-size: var(--size-card-title);
     font-weight: 800;
     color: var(--brand-dark);
     margin-bottom: 6px;
     text-align: left;
   }
   .ta-text {
-    font-size: calc(0.95rem * var(--font-scale));
+    font-size: var(--size-card-p);
     color: var(--text-2);
     line-height: 1.6;
     text-align: left;

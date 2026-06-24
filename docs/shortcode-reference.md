@@ -3,14 +3,14 @@
 > **Phase 2 정리 기준 (2026-06-24)**: 25종 정식 명칭 + 13종 하위 호환 alias  
 > 변경 이력 상세: [shortcode-changelog.md](./shortcode-changelog.md)
 
-Creative Spark V2가 지원하는 **29종 표준 숏코드**의 문법, 사용 필드, 사용처, V1 호환 별칭을 정리한 참조 문서입니다.
+Creative Spark V2가 지원하는 **25종 정식 숏코드 + 13종 alias**의 문법, 사용 필드, 사용처, V1 호환 별칭을 정리한 참조 문서입니다.
 
 ---
 
 ## 숏코드 문법 기본 규칙
 
 ```markdown
-::: 숏코드명
+::: 숏코드명 [인수...]
 - field1: "값"
   field2: "값"
 - field1: "다음 항목"
@@ -22,6 +22,25 @@ Creative Spark V2가 지원하는 **29종 표준 숏코드**의 문법, 사용 �
 - 문자열 값은 큰따옴표(`"`)로 감쌉니다.
 - `desc` 필드는 마크다운 파이프 구분(`|`)을 사용하여 내부 마크다운을 허용합니다.
 - `color` 필드는 CSS 색상값 (HEX: `"#3b82f6"`, CSS 변수: `"var(--brand)"`) 형식을 사용합니다.
+
+### 공통 선택 인수 (모든 숏코드에서 사용 가능)
+
+| 인수 | 형식 | 예시 | 설명 |
+|------|------|------|------|
+| `title-size` | 숫자(비율) 또는 CSS값 | `0.9` / `1.2rem` | 해당 블록 카드 제목 크기 오버라이드 |
+| `desc-size` | 숫자(비율) 또는 CSS값 | `0.85` / `14px` | 해당 블록 카드 설명 크기 오버라이드 |
+
+**비율 입력** (단위 없이 숫자만): 전역 기본값 대비 배율 (`0.9` = 기본의 90%)  
+**절대값 입력** (단위 포함): 해당 값 그대로 적용 (`1.2rem`, `14px` 등)  
+전역 기본값: `title-size` 기본 = `1.15rem`, `desc-size` 기본 = `0.92rem`
+
+```markdown
+# 예시: 이 faq-list 블록만 제목을 작게
+::: faq-list title-size=0.95 desc-size=0.85rem
+- title: "질문"
+  desc: "답변"
+:::
+```
 
 ---
 
@@ -223,15 +242,15 @@ Creative Spark V2가 지원하는 **29종 표준 숏코드**의 문법, 사용 �
 
 ---
 
-### [9] compare-diff — Before / After 비교
+### [9] before-after — Before / After 비교
 
 기존 방식과 개선 후 방식의 전후 차이 강조.  
-**V1 별칭**: `compare-before-after`
+**alias**: `compare-diff`, `compare-before-after`
 
 **지원 필드**: `title`, `desc`, `tag`, `color`
 
 ```markdown
-::: compare-diff
+::: before-after
 - title: "기존 배포"
   desc: "수동으로 서버에 SSH 접속하여 파일을 업로드했습니다."
   tag: "BEFORE"
@@ -535,10 +554,10 @@ Git 브랜치 전략, 브랜치 흐름을 시각화.
 
 ```markdown
 ::: summary-bar
-- icon: "29종"
-  title: "핵심 숏코드"
-- icon: "39종"
-  title: "별칭 포함 지원 규격"
+- icon: "25종"
+  title: "정식 숏코드"
+- icon: "38종"
+  title: "alias 포함 지원 규격"
 - icon: "3종"
   title: "출력 포맷"
 :::

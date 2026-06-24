@@ -289,7 +289,7 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
     snippet: `::: summary-box
 - title: "요약정리"
   desc: "시각화 숏코드를 활용하면 핵심 개념을 직관적으로 전달할 수 있습니다."
-  meta: "29종 숏코드 | HTML 연동 | PPTX 연동"
+  meta: "25종 숏코드 | HTML 연동 | PPTX 연동"
 :::`
   },
   {
@@ -324,10 +324,10 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
     desc: "수치 통계나 단위 성과들을 가로형 바 형태로 간결하게 나열합니다.",
     fields: "icon, title",
     snippet: `::: summary-bar
-- icon: "29종"
+- icon: "25종"
   title: "핵심 숏코드"
-- icon: "39종"
-  title: "별칭 포함 지원 규격"
+- icon: "38종"
+  title: "alias 포함 지원 규격"
 :::`
   },
   {
@@ -405,6 +405,8 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
 export default function MarkdownCompiler() {
   const { toast } = useToast();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const previewWrapRef = useRef<HTMLDivElement>(null);
+  const [previewScale, setPreviewScale] = useState(1);
 
   // Markdown editor states
   const [markdown, setMarkdown] = useState<string>(`---
@@ -479,7 +481,7 @@ style: custom-blue
         snippet = `\n::: columns-grid cols=2\n- title: "ORM 사용"\n  desc: "빠른 개발 속도와 타입 안정성을 제공합니다."\n  note: "복잡한 쿼리에서는 Raw SQL 병행 권장"\n  color: "#3b82f6"\n- title: "Raw SQL"\n  desc: "세밀한 쿼리 최적화가 가능합니다."\n:::\n`;
         break;
       case "summary-box":
-        snippet = `\n::: summary-box\n- title: "요약정리"\n  desc: "시각화 숏코드를 활용하면 핵심 개념을 직관적으로 전달할 수 있습니다."\n  meta: "29종 숏코드 | HTML 연동 | PPTX 연동"\n:::\n`;
+        snippet = `\n::: summary-box\n- title: "요약정리"\n  desc: "시각화 숏코드를 활용하면 핵심 개념을 직관적으로 전달할 수 있습니다."\n  meta: "25종 숏코드 | HTML 연동 | PPTX 연동"\n:::\n`;
         break;
       case "faq-list":
         snippet = `\n::: faq-list\n- title: "Q. 숏코드가 정상적으로 렌더링되지 않아요."\n  desc: "A. 숏코드 내부 인덴트(여백)나 문법이 V2 규격(::: 숏코드명)과 일치하는지 확인하십시오."\n:::\n`;
@@ -503,7 +505,7 @@ style: custom-blue
         snippet = `\n::: part-banner\n- icon: "2부"\n  title: "핵심 가이드 마스터"\n  desc: "V2.0에서 강화된 숏코드로 다양한 웹/PPTX 변환 실무 적용하기"\n  tag: "Ch.10 - 20"\n:::\n`;
         break;
       case "summary-bar":
-        snippet = `\n::: summary-bar\n- icon: "29종"\n  title: "핵심 숏코드"\n- icon: "39종"\n  title: "별칭 포함 지원 규격"\n:::\n`;
+        snippet = `\n::: summary-bar\n- icon: "25종"\n  title: "핵심 숏코드"\n- icon: "38종"\n  title: "alias 포함 지원 규격"\n:::\n`;
         break;
       case "badge-grid":
         snippet = `\n::: badge-grid\n- icon: "🌟"\n  title: "신속성"\n  tag: "Fast"\n- icon: "🔒"\n  title: "보안성"\n  tag: "Secure"\n:::\n`;
@@ -600,6 +602,18 @@ style: custom-blue
       triggerPreview(markdown, previewMode, selectedStyle);
     }
   }, [previewMode]);
+
+  // Scale preview iframe to fit container
+  useEffect(() => {
+    const el = previewWrapRef.current;
+    if (!el) return;
+    const VIRTUAL_W = previewDevice === "mobile" ? 375 : previewDevice === "tablet" ? 768 : 1200;
+    const calc = (w: number) => setPreviewScale(w > 0 ? Math.min(1, w / VIRTUAL_W) : 1);
+    calc(el.getBoundingClientRect().width);
+    const ro = new ResizeObserver(([entry]) => calc(entry.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [previewDevice]);
 
   // Fetch styles from backend; sets hasServer based on API availability
   const fetchStyles = async () => {
@@ -1310,34 +1324,53 @@ style: custom-blue
           </div>
         )}
 
-        {/* Live Preview Iframe Frame */}
-        <div className="flex-1 min-h-[300px] bg-slate-50 border border-slate-200 rounded-xl overflow-hidden flex flex-col p-2 justify-center">
-          <div
-            className={`bg-white rounded-lg overflow-hidden border border-slate-200/60 shadow-sm ${previewMode === "html" ? "flex-1 w-full" : "w-full"}`}
-            style={{
-              width: previewDevice === "desktop" ? "100%" : previewDevice === "tablet" ? "768px" : "375px",
-              maxWidth: "100%",
-              aspectRatio: previewMode === "presentation" ? "16 / 9" : undefined,
-              margin: "0 auto"
-            }}
-          >
-            {generatingPreview && !previewHtml ? (
-              <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-2 bg-slate-50">
-                <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-                <span className="text-xs">Generating preview...</span>
-              </div>
-            ) : previewHtml ? (
-              <iframe
-                title="Markdown Compiler Preview Frame"
-                srcDoc={previewHtml}
-                className="w-full h-full border-0"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-slate-500 text-xs bg-slate-50 font-semibold">
-                [미리보기 반영] 버튼을 눌러 컴파일 결과물을 표시합니다.
-              </div>
-            )}
-          </div>
+        {/* Live Preview Iframe Frame — scaled to fit */}
+        <div
+          ref={previewWrapRef}
+          className="flex-1 min-h-[300px] bg-slate-100 border border-slate-200 rounded-xl overflow-hidden relative"
+        >
+          {generatingPreview && !previewHtml ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-2 bg-slate-50">
+              <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
+              <span className="text-xs">Generating preview...</span>
+            </div>
+          ) : previewHtml ? (
+            (() => {
+              const VIRTUAL_W = previewDevice === "mobile" ? 375 : previewDevice === "tablet" ? 768 : 1200;
+              const VIRTUAL_H = previewMode === "presentation" ? Math.round(VIRTUAL_W * 9 / 16) : 900;
+              const scale = previewScale;
+              return (
+                <div
+                  style={{
+                    width: VIRTUAL_W,
+                    height: VIRTUAL_H,
+                    transform: `scale(${scale})`,
+                    transformOrigin: "top left",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                  }}
+                >
+                  <iframe
+                    title="Markdown Compiler Preview Frame"
+                    srcDoc={previewHtml}
+                    style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+                    scrolling={previewMode === "presentation" ? "no" : "yes"}
+                  />
+                </div>
+              );
+            })()
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-slate-500 text-xs bg-slate-50 font-semibold">
+              [미리보기 반영] 버튼을 눌러 컴파일 결과물을 표시합니다.
+            </div>
+          )}
+          {/* Scale indicator */}
+          {previewHtml && (
+            <div className="absolute bottom-2 right-2 bg-slate-800/70 text-white text-[10px] px-1.5 py-0.5 rounded pointer-events-none select-none">
+              {Math.round(previewScale * 100)}%
+            </div>
+          )}
         </div>
       </div>
       
@@ -1349,7 +1382,7 @@ style: custom-blue
               <div className="flex items-center gap-2">
                 <BookOpen className="h-5 w-5 text-blue-600" />
                 <h3 className="text-lg font-bold text-slate-800">🧩 V2.0 숏코드 레퍼런스 설명서</h3>
-                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-semibold">총 26종</span>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-semibold">총 25종</span>
               </div>
               <button
                 onClick={() => setShowGuide(false)}
@@ -1446,7 +1479,7 @@ style: custom-blue
 
             {/* Modal Footer */}
             <div className="border-t border-slate-200 px-6 py-3 bg-slate-50 flex justify-between items-center text-xs text-slate-500 font-semibold">
-              <span>💡 각 숏코드 템플릿을 에디터의 적절한 위치에 복사해서 붙여넣으세요.</span>
+              <span>💡 모든 숏코드에 <code className="bg-slate-200 px-1 rounded font-mono text-slate-700">title-size=0.9</code> / <code className="bg-slate-200 px-1 rounded font-mono text-slate-700">desc-size=1rem</code> 인수로 블록별 폰트 크기 조정 가능</span>
               <button
                 onClick={() => setShowGuide(false)}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-1.5 rounded-md transition-colors text-xs"

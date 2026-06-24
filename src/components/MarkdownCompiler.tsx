@@ -289,7 +289,7 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
     snippet: `::: summary-box
 - title: "요약정리"
   desc: "시각화 숏코드를 활용하면 핵심 개념을 직관적으로 전달할 수 있습니다."
-  meta: "29종 숏코드 | HTML 연동 | PPTX 연동"
+  meta: "25종 숏코드 | HTML 연동 | PPTX 연동"
 :::`
   },
   {
@@ -324,10 +324,10 @@ const SHORTCODE_DOCS: ShortcodeDoc[] = [
     desc: "수치 통계나 단위 성과들을 가로형 바 형태로 간결하게 나열합니다.",
     fields: "icon, title",
     snippet: `::: summary-bar
-- icon: "29종"
+- icon: "25종"
   title: "핵심 숏코드"
-- icon: "39종"
-  title: "별칭 포함 지원 규격"
+- icon: "38종"
+  title: "alias 포함 지원 규격"
 :::`
   },
   {
@@ -481,7 +481,7 @@ style: custom-blue
         snippet = `\n::: columns-grid cols=2\n- title: "ORM 사용"\n  desc: "빠른 개발 속도와 타입 안정성을 제공합니다."\n  note: "복잡한 쿼리에서는 Raw SQL 병행 권장"\n  color: "#3b82f6"\n- title: "Raw SQL"\n  desc: "세밀한 쿼리 최적화가 가능합니다."\n:::\n`;
         break;
       case "summary-box":
-        snippet = `\n::: summary-box\n- title: "요약정리"\n  desc: "시각화 숏코드를 활용하면 핵심 개념을 직관적으로 전달할 수 있습니다."\n  meta: "29종 숏코드 | HTML 연동 | PPTX 연동"\n:::\n`;
+        snippet = `\n::: summary-box\n- title: "요약정리"\n  desc: "시각화 숏코드를 활용하면 핵심 개념을 직관적으로 전달할 수 있습니다."\n  meta: "25종 숏코드 | HTML 연동 | PPTX 연동"\n:::\n`;
         break;
       case "faq-list":
         snippet = `\n::: faq-list\n- title: "Q. 숏코드가 정상적으로 렌더링되지 않아요."\n  desc: "A. 숏코드 내부 인덴트(여백)나 문법이 V2 규격(::: 숏코드명)과 일치하는지 확인하십시오."\n:::\n`;
@@ -505,7 +505,7 @@ style: custom-blue
         snippet = `\n::: part-banner\n- icon: "2부"\n  title: "핵심 가이드 마스터"\n  desc: "V2.0에서 강화된 숏코드로 다양한 웹/PPTX 변환 실무 적용하기"\n  tag: "Ch.10 - 20"\n:::\n`;
         break;
       case "summary-bar":
-        snippet = `\n::: summary-bar\n- icon: "29종"\n  title: "핵심 숏코드"\n- icon: "39종"\n  title: "별칭 포함 지원 규격"\n:::\n`;
+        snippet = `\n::: summary-bar\n- icon: "25종"\n  title: "핵심 숏코드"\n- icon: "38종"\n  title: "alias 포함 지원 규격"\n:::\n`;
         break;
       case "badge-grid":
         snippet = `\n::: badge-grid\n- icon: "🌟"\n  title: "신속성"\n  tag: "Fast"\n- icon: "🔒"\n  title: "보안성"\n  tag: "Secure"\n:::\n`;
@@ -1382,7 +1382,7 @@ style: custom-blue
               <div className="flex items-center gap-2">
                 <BookOpen className="h-5 w-5 text-blue-600" />
                 <h3 className="text-lg font-bold text-slate-800">🧩 V2.0 숏코드 레퍼런스 설명서</h3>
-                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-semibold">총 26종</span>
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-semibold">총 25종</span>
               </div>
               <button
                 onClick={() => setShowGuide(false)}
@@ -1479,7 +1479,7 @@ style: custom-blue
 
             {/* Modal Footer */}
             <div className="border-t border-slate-200 px-6 py-3 bg-slate-50 flex justify-between items-center text-xs text-slate-500 font-semibold">
-              <span>💡 각 숏코드 템플릿을 에디터의 적절한 위치에 복사해서 붙여넣으세요.</span>
+              <span>💡 모든 숏코드에 <code className="bg-slate-200 px-1 rounded font-mono text-slate-700">title-size=0.9</code> / <code className="bg-slate-200 px-1 rounded font-mono text-slate-700">desc-size=1rem</code> 인수로 블록별 폰트 크기 조정 가능</span>
               <button
                 onClick={() => setShowGuide(false)}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-1.5 rounded-md transition-colors text-xs"

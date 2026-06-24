@@ -850,8 +850,16 @@ export function buildHtml(inputPath, opts = {}) {
     return html ? `\n${html.replace(/\n\s+/g, '\n')}\n` : "";
   });
 
-  // Replace literal '\n' and '/n' (not part of URLs) with <br> inside general markdown text
-  processedContent = processedContent.replace(/(?<!https?:|[a-zA-Z0-9.\-_]+)(?:\\n|\/n)(?!\w)/g, "<br>");
+  // Replace literal '\n' and '/n' with <br>, but NOT inside fenced code blocks or inline code spans
+  {
+    const protected_ = [];
+    const protect = (m) => { protected_.push(m); return `\x00P${protected_.length - 1}\x00`; };
+    processedContent = processedContent
+      .replace(/```[\s\S]*?```/g, protect)
+      .replace(/`[^`\n]+`/g, protect)
+      .replace(/(?<!https?:|[a-zA-Z0-9.\-_]+)(?:\\n|\/n)(?!\w)/g, "<br>")
+      .replace(/\x00P(\d+)\x00/g, (_, i) => protected_[Number(i)]);
+  }
 
   // 💡 단독 화살표 줄(↓, →, ↑, ←)을 중앙 정렬 세퍼레이터 div로 치환
   processedContent = processedContent.replace(/^\s*(↓|→|↑|←)\s*$/gm, '<div class="flow-arrow-separator">$1</div>');

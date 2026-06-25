@@ -395,6 +395,27 @@ function cardH(card, w) {
   return Math.max(0.45, h);
 }
 
+// 숏코드 블록 인자 title-size= / desc-size= → card 폰트 크기 오버라이드
+// (HTML buildSizeOverrideStyle 와 대칭. 평문 숫자는 config 기본값의 배수, "18pt" 형식은 절대 pt)
+function applyShortcodeSizeArgs(baseD, args) {
+  if (!args) return baseD;
+  const s = String(args);
+  const tm = s.match(/title-size=(\S+)/);
+  const dm = s.match(/desc-size=(\S+)/);
+  if (!tm && !dm) return baseD;
+  const resolve = (raw, base) => {
+    const v = String(raw).trim();
+    if (/^\d+(\.\d+)?$/.test(v)) return parseFloat(v) * base;   // 배수
+    const pt = v.match(/^(\d+(\.\d+)?)pt$/i);
+    if (pt) return parseFloat(pt[1]);                          // 절대 pt
+    return null;
+  };
+  const out = { ...baseD, card: { ...baseD.card } };
+  if (tm) { const v = resolve(tm[1], baseD.card.titleSize); if (v) out.card.titleSize = v; }
+  if (dm) { const v = resolve(dm[1], baseD.card.bodySize);  if (v) out.card.bodySize = v; }
+  return out;
+}
+
 function itemH(item, w, pal) {
   if (item.type === "card") return cardH(item, w);
   
@@ -407,7 +428,7 @@ function itemH(item, w, pal) {
           return helpers.hexClean(hex, pal);
         }
       };
-      return renderer.estimateHeight(item, w, D, boundHelpers);
+      return renderer.estimateHeight(item, w, applyShortcodeSizeArgs(D, item.args), boundHelpers);
     } catch (err) {
       console.error(`  ⚠️  숏코드 높이 추정 오류 (${item.type}): ${err.message}`);
       return 1.0;
@@ -544,7 +565,7 @@ function renderBlock(slide, block, x, y, w, pal) {
       });
     } catch (err) {
       slide.addShape("rect", { x, y, w, h, fill: { color: "F1F5F9" }, line: { color: pal.border, width: 0.75 } });
-      slide.addText(`[이미지 표시 실패: ${block.alt || 'No Alt'} (${block.src})]`, { x, y, w, h, fontSize: 10, align: "center", valign: "middle", color: pal.text2, fontFace: font });
+      slide.addText(`[이미지 표시 실패: ${block.alt || 'No Alt'} (${block.src})]`, { x, y, w, h, fontSize: D.system.imageErrorSize, align: "center", valign: "middle", color: pal.text2, fontFace: font });
     }
     return h + c.gap;
   }
@@ -584,11 +605,11 @@ function renderItem(slide, item, x, y, w, pal) {
           return helpers.hexClean(hex, pal);
         }
       };
-      return renderer.render(slide, item, x, y, w, pal, D, boundHelpers);
+      return renderer.render(slide, item, x, y, w, pal, applyShortcodeSizeArgs(D, item.args), boundHelpers);
     } catch (err) {
       console.error(`  ❌ 숏코드 렌더링 실패 (${item.type}):`, err);
       slide.addShape("roundRect", { x, y, w, h: 0.5, fill: { color: "FFF1F2" }, line: { color: "EF4444", width: 1.0 } });
-      slide.addText(`[숏코드 렌더링 에러: ${item.type} (${err.message})]`, { x: x + 0.1, y, w: w - 0.2, h: 0.5, fontSize: 9.5, color: "B91C1C", valign: "middle" });
+      slide.addText(`[숏코드 렌더링 에러: ${item.type} (${err.message})]`, { x: x + 0.1, y, w: w - 0.2, h: 0.5, fontSize: D.system.errorSize, color: "B91C1C", valign: "middle" });
       return 0.5;
     }
   }
@@ -686,8 +707,8 @@ function renderCover(prs, fm, pal) {
     const statW = 1.6;
     fm.stats.forEach((stat, i) => {
       const sx = (layout === "accent-bar" ? dc.titleX : 1.0) + i * (statW + 0.3);
-      slide.addText(stat.value || "", { x: sx, y: statsY, w: statW, h: 0.38, fontSize: 19, bold: true, color: accent, fontFace: fontTitle });
-      slide.addText(stat.label || "", { x: sx, y: statsY + 0.38, w: statW, h: 0.24, fontSize: 9.5, color: pal.muted, fontFace: font });
+      slide.addText(stat.value || "", { x: sx, y: statsY, w: statW, h: 0.38, fontSize: D.cover.statValueSize, bold: true, color: accent, fontFace: fontTitle });
+      slide.addText(stat.label || "", { x: sx, y: statsY + 0.38, w: statW, h: 0.24, fontSize: D.cover.statLabelSize, color: pal.muted, fontFace: font });
     });
   }
 }
@@ -775,9 +796,9 @@ function renderDoneSlide(prs, fm, pal) {
   const font = D.slide.font;
   const fontTitle = D.slide.fontTitle || font;
   slide.background = { color: pal.brandDeep || pal.brandDark };
-  slide.addText(fm.done.title, { x: 1, y: 2.5, w: sw - 2, h: 0.8, fontSize: 36, bold: true, color: D.palette.white, fontFace: fontTitle, align: "center" });
-  if (fm.done.subtitle) slide.addText(fm.done.subtitle, { x: 1.5, y: 3.5, w: sw - 3, h: 0.6, fontSize: 16, color: pal.mutedLight, fontFace: font, align: "center", wrap: true });
-  if (fm.done.ctaLabel) slide.addText(fm.done.ctaLabel + " →", { x: (sw - 3) / 2, y: 4.3, w: 3, h: 0.5, fontSize: 14, bold: true, color: pal.brand, fontFace: fontTitle, align: "center" });
+  slide.addText(fm.done.title, { x: 1, y: 2.5, w: sw - 2, h: 0.8, fontSize: D.done.titleSize, bold: true, color: D.palette.white, fontFace: fontTitle, align: "center" });
+  if (fm.done.subtitle) slide.addText(fm.done.subtitle, { x: 1.5, y: 3.5, w: sw - 3, h: 0.6, fontSize: D.done.subtitleSize, color: pal.mutedLight, fontFace: font, align: "center", wrap: true });
+  if (fm.done.ctaLabel) slide.addText(fm.done.ctaLabel + " →", { x: (sw - 3) / 2, y: 4.3, w: 3, h: 0.5, fontSize: D.done.ctaSize, bold: true, color: pal.brand, fontFace: fontTitle, align: "center" });
 }
 
 // ════════════════════════════════════════════════════════════════

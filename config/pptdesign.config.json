@@ -34,7 +34,22 @@
     "titleY":           2.4,    // 메인 제목 시작 Y
     "titleFontSize":    40,
     "subtitleFontSize": 16,
-    "logoFontSize":     46      // 중앙 이모지 로고 크기
+    "logoFontSize":     46,     // 중앙 이모지 로고 크기
+    "statValueSize":    19,     // 표지 하단 통계 수치 폰트
+    "statLabelSize":    9.5     // 표지 하단 통계 레이블 폰트
+  },
+
+  // ── 마무리 슬라이드 (Done / Closing) ─────────────────────────────
+  "done": {
+    "titleSize":    36,         // 마무리 제목 폰트
+    "subtitleSize": 16,         // 마무리 부제목 폰트
+    "ctaSize":      14          // CTA 라벨 폰트
+  },
+
+  // ── 시스템/예외 메시지 (이미지 실패·숏코드 에러 placeholder) ──────
+  "system": {
+    "imageErrorSize": 10,       // 이미지 표시 실패 메시지 폰트
+    "errorSize":      9.5       // 숏코드 렌더링 에러 메시지 폰트
   },
 
   // ── 상단 헤더 (Header / Navigation) ───────────────────────────
@@ -52,10 +67,10 @@
     "padX":          0.25,      // 카드 내부 좌우 패딩
     "padY":          0.2,       // 카드 내부 상하 패딩
     "gap":           0.15,      // 요소 간 간격
-    "titleSize":     14,        // 표준 키 'title'의 폰트 크기
-    "bodySize":      11,        // 표준 키 'desc'의 폰트 크기
-    "h3Size":        13,        // 소제목 폰트 크기
-    "codeSize":      10,        // 코드 블록 폰트 크기
+    "titleSize":     16,        // 표준 키 'title'의 폰트 크기 (슬라이드용 pt — HTML px 값 아님)
+    "bodySize":      13,        // 표준 키 'desc'의 폰트 크기 (슬라이드용 pt)
+    "h3Size":        15,        // 소제목 폰트 크기
+    "codeSize":      11,        // 코드 블록 폰트 크기
     "quoteBarW":     0.07       // 인용문 좌측 라인 두께
   },
 
@@ -64,21 +79,66 @@
     "gap":                0.15, // 카드 사이의 간격
     "iconCardMinW":       1.8,  // icon-grid 카드의 최소 너비 (열 수 계산 기준)
     "featureCardMinW":    2.6,  // feature-grid 카드의 최소 너비
-    "stepItemH":          0.72  // steps 리스트 항목 하나의 높이
+    "stepItemH":          0.72, // steps 리스트 항목 하나의 높이
+    "iconFontSize":       20,   // icon-grid 아이콘(이모지) 폰트
+    "statValueSize":      24,   // stat-grid 수치 폰트
+    "featureTagSize":     7.5   // feature-grid 태그 폰트
   },
 
   // ── 개별 숏코드 컴포넌트 미세 조정 ──────────────────────────────
   
-  // workflow: 업무 흐름도 (icon, title, meta)
+  // workflow / flow: 업무 흐름도 (icon, title, meta) — flow.mjs·workflow.mjs 공용
   "workflow": {
-    "stepH":    0.95,           // 각 단계 박스 높이
-    "iconSize": 0.45,           // 아이콘 크기
-    "arrowW":   0.25            // 화살표(→) 영역 너비
+    "stepH":         0.95,      // 각 단계 박스 높이
+    "iconSize":      0.45,      // 아이콘 도형 크기 (inch)
+    "arrowW":        0.25,      // 화살표(→) 영역 너비
+    "iconFontSize":  16,        // 단계 아이콘(이모지) 폰트
+    "arrowFontSize": 14         // 화살표(→) 글자 폰트
   },
 
   // tool-card: 강조형 도구 배너 (color 키로 배경색 제어)
   "toolCard": {
-    "h": 0.8                    // 배너 한 줄의 높이
+    "h":            0.8,        // 배너 한 줄의 높이
+    "iconFontSize": 20,         // 도구 아이콘(이모지) 폰트
+    "nameSize":     10.5,       // 도구 이름 폰트
+    "tagSize":      7.5         // 도구 태그/피처 폰트
+  },
+
+  // network-box: 지식 그래프 노드
+  "network": {
+    "nodeFontSize": 13          // 노드 라벨 폰트
+  },
+
+  // alert-box: 알림 박스
+  "alert": {
+    "iconFontSize": 14          // 알림 아이콘 폰트
+  },
+
+  // os-tabs: 탭 전환
+  "tabs": {
+    "tabFontSize": 10           // 탭 버튼 라벨 폰트
+  },
+
+  // cmd-box: 터미널 헤더 라벨 (코드 본문은 card.codeSize 사용)
+  "cmdBox": {
+    "labelSize": 9              // 헤더 라벨/언어 폰트
+  },
+
+  // columns-grid / compare-grid: 다단 카드 타이틀
+  "columns": {
+    "titleFontSize": 9.5        // 카드 타이틀(문법·키워드) 폰트
+  },
+
+  // takeaway-banner: 핵심 메시지 배너
+  "takeaway": {
+    "iconFontSize": 20          // 배너 아이콘 폰트
+  },
+
+  // editor-box: VS Code 모양 코드 에디터 (코드 본문 포함 자체 폰트 체계)
+  "editorBox": {
+    "tabSize":     9.5,         // 상단 탭 파일명 폰트
+    "lineNumSize": 8.5,         // 좌측 라인 번호 폰트
+    "codeSize":    8.5          // 소스코드 본문 폰트
   },
 
   // plan-grid: 요금제/플랜 비교 (meta의 리스트 항목 제어)

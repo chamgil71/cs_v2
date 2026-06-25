@@ -57,14 +57,14 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 헤더 라벨 텍스트 (예: Terminal)
     slide.addText(label, {
       x: x + 0.15, y: curY, w: w * 0.7, h: headerH,
-      fontSize: 9, bold: true, color: pal.muted || "8892B0",
+      fontSize: D.cmdBox.labelSize, bold: true, color: pal.muted || "8892B0",
       fontFace: mono, valign: "middle"
     });
     
     // 언어 정보 텍스트 (예: bash)
     slide.addText(lang, {
       x: x + w - 1.2, y: curY, w: 1.0, h: headerH,
-      fontSize: 9, color: pal.brand,
+      fontSize: D.cmdBox.labelSize, color: pal.brand,
       fontFace: mono, align: "right", valign: "middle"
     });
     

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:standalone": "node scripts/build-standalone.mjs",
+    "build:standalone": "vitest run src/__tests__/shortcode-conformance.test.ts && node scripts/build-standalone.mjs",
+    "build:standalone:fast": "node scripts/build-standalone.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",

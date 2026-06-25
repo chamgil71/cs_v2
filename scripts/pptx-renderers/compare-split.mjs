@@ -3,7 +3,7 @@
  * 2단 대조 및 Before/After 비교 카드 숏코드
  */
 
-export const type = ["compare-split", "compare-2col", "compare-before-after", "compare-diff"];
+export const type = ["compare-split", "compare-2col", "compare-before-after", "compare-diff", "before-after"];
 
 export function estimateHeight(item, w, D, helpers) {
   const c = D.card;

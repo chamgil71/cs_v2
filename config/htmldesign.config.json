@@ -1,6 +1,7 @@
 {
   // ════════════════════════════════════════════════════════════════
   //  HTML 가이드 및 프레젠테이션 공통 웹폰트 및 크기 배율 설정
+  //  (pptdesign.config.json 의 PPTX 짝 — 단위는 rem)
   // ════════════════════════════════════════════════════════════════
   "htmlFont": {
     "title":      "'Noto Serif KR', serif",
@@ -9,5 +10,40 @@
     "code":       "'JetBrains Mono', monospace",
     "tag":        "'Noto Sans KR', sans-serif",
     "scale":      1.0
+  },
+
+  // ── 요소별 크기 토큰 (CSS :root --size-* 주입원) ─────────────────
+  //  guide   : 가이드 HTML(build-guide) 및 클라이언트 html 모드
+  //  presentation : 횡슬라이드 HTML(build-presentation) 및 클라이언트 presentation 모드
+  //  렌더러는 이 값을 읽어 :root 변수로 주입한다. 하드코딩 금지.
+  "htmlSize": {
+    "guide": {
+      "h1":            "2.2rem",
+      "h2":            "1.8rem",
+      "h3":            "1.4rem",
+      "body-p":        "0.95rem",
+      "card-title":    "1.15rem",
+      "card-p":        "0.92rem",
+      "stat-val":      "2.4rem",
+      "stat-name":     "1.1rem",
+      "stat-note":     "0.8rem",
+      "plan-badge":    "0.75rem",
+      "plan-features": "0.95rem"
+    },
+    "presentation": {
+      "h1":            "3rem",
+      "h2":            "2.6rem",
+      "h3":            "1.8rem",
+      "body-p":        "1.3rem",
+      "card-title":    "1.45rem",
+      "card-p":        "1.2rem",
+      "stat-val":      "2.6rem",
+      "stat-name":     "1.2rem",
+      "stat-note":     "1.1rem",
+      "plan-badge":    "0.8rem",
+      "plan-features": "1.1rem",
+      "workflow-name": "1.15rem",
+      "workflow-tool": "0.95rem"
+    }
   }
 }

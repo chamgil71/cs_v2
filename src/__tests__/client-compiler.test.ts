@@ -83,9 +83,9 @@ describe('clientCompileMarkdown — presentation 모드', () => {
     expect(html).toContain('slides-container');
   });
 
-  it('slide-page 클래스 존재', () => {
+  it('slide 클래스 존재 (cover/content 슬라이드)', () => {
     const html = compile('# 슬라이드 1\n\n---\n\n# 슬라이드 2', 'presentation');
-    expect(html).toContain('slide-page');
+    expect(html).toContain('class="slide');
   });
 
   it('container 클래스 없음 (presentation은 풀스크린 레이아웃)', () => {
@@ -124,17 +124,22 @@ describe('clientCompileMarkdown — 숏코드 처리', () => {
     expect(html).toContain('compare-2col');
   });
 
-  it('console-box 숏코드 → 다크 배경 pre 블록', () => {
+  it('console-box 숏코드 → 다크 콘솔 블록(정본 prompt-content 클래스)', () => {
     const md = `:::console-box\n- title: Terminal\n  desc: npm install\n:::`;
     const html = compile(md);
-    expect(html).toContain('0F172A');
+    // 정본 공유 렌더러는 클래스 기반(.prompt-content) — 다크색은 공유 CSS 에서 적용
+    expect(html).toContain('prompt-content');
     expect(html).toContain('npm install');
   });
 
-  it('미등록 숏코드 타입 → Fallback 카드 렌더링', () => {
+  it('미등록 숏코드 타입 → 조용히 무시(정본 동작, 원문 ::: 잔존 없음)', () => {
     const md = `:::unknown-type\n- title: 항목\n  desc: 내용\n:::`;
     const html = compile(md);
-    expect(html).toContain('[Shortcode: unknown-type]');
+    // 정본 공유 렌더러는 미등록 타입에 빈 문자열을 반환(guide/presentation 와 동일).
+    // 크래시 없이 컴파일되고, 원문 델리미터가 본문에 남지 않아야 한다.
+    expect(html).toContain('<!DOCTYPE html>');
+    const bodyPart = html.split('<body')[1] || html;
+    expect(bodyPart).not.toContain(':::unknown-type');
   });
 
   it('숏코드 XSS: desc에 스크립트 삽입 시 이스케이프', () => {

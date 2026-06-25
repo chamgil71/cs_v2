@@ -91,7 +91,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     
     slide.addText(it.title || "", {
       x: cx + 0.12, y: cy + 0.12, w: cardW - 0.24, h: 0.32,
-      fontSize: 9.5, bold: true, color: color,
+      fontSize: D.columns.titleFontSize, bold: true, color: color,
       fontFace: font, align: "center", valign: "middle"
     });
     

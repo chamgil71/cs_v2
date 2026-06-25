@@ -78,7 +78,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     if (hasIcon) {
       slide.addText(it.icon, {
         x: tx - 0.38, y: textY, w: 0.35, h: 0.35,
-        fontSize: 14, valign: "middle"
+        fontSize: D.alert.iconFontSize, valign: "middle"
       });
     }
     

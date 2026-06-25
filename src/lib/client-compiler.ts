@@ -1,4 +1,17 @@
 import { marked } from 'marked';
+// @ts-ignore — 순수 JS 공유 모듈 (정본 숏코드 렌더러 + CSS). build-guide 와 동일 출력 보장.
+import { renderShortcode } from '../../scripts/shortcode-render.mjs';
+// @ts-ignore
+import { SHORTCODE_CSS } from '../../scripts/shortcode-styles.mjs';
+// 크기 토큰 단일 출처: config/htmldesign.config.json (Node 의 loadJsonWithComments 와 동일하게 주석 제거 후 파싱)
+// @ts-ignore — Vite ?raw 로 원문 문자열 import
+import htmlDesignRaw from '../../config/htmldesign.config.json?raw';
+const HTML_DESIGN: any = (() => {
+  try { return JSON.parse(String(htmlDesignRaw).replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '')); }
+  catch { return {}; }
+})();
+const HSZ_GUIDE = HTML_DESIGN?.htmlSize?.guide || {};
+const HSZ_PRES = HTML_DESIGN?.htmlSize?.presentation || {};
 
 // Fallback styles for offline mode
 export const FALLBACK_STYLES: Record<string, any> = {
@@ -215,17 +228,22 @@ function renderClientShortcode(type: string, body: string, args: string, style: 
 
   const colsMatch = (args || "").match(/cols=(\d+)/);
   const bulletMatch = (args || "").match(/bullet=(\S+)/);
+  const alignMatch = (args || "").match(/align=(\S+)/);
   const cols = colsMatch ? colsMatch[1] : null;
   const blockBullet = bulletMatch ? bulletMatch[1] : null;
+  const layoutAlign = alignMatch ? alignMatch[1] : "center";
   const gridStyle = cols ? `style="grid-template-columns: repeat(${cols}, 1fr);"` : "";
   const itemBullet = (it: any) => it.bullet || blockBullet || null;
 
-  // 1. Grids: icon-grid, feature-grid, badge-grid, stat-grid
-  if (["icon-grid", "feature-grid", "badge-grid", "stat-grid"].includes(type)) {
+  // 1. Grids: icon-grid (+ align variants), feature-grid, badge-grid, stat-grid, skill-list, checkpoint-grid
+  if (["icon-grid", "feature-grid", "badge-grid", "stat-grid", "skill-list", "checkpoint-grid"].includes(type)) {
     const isBadge = type === "badge-grid";
     const isFeat = type === "feature-grid";
     const isStat = type === "stat-grid";
-    const clsName = isBadge ? "badge-grid" : (isFeat ? "feature-grid" : (isStat ? "stat-grid" : "icon-grid"));
+    const effectiveAlign = type === "skill-list" ? "left" : type === "checkpoint-grid" ? "row" : layoutAlign;
+    const isSkillLayout = !isBadge && !isFeat && !isStat && effectiveAlign === "left";
+    const isRowLayout   = !isBadge && !isFeat && !isStat && effectiveAlign === "row";
+    const clsName = isBadge ? "badge-grid" : isFeat ? "feature-grid" : isStat ? "stat-grid" : isSkillLayout ? "skill-list" : isRowLayout ? "checkpoint-grid" : "icon-grid";
 
     return `<div class="${clsName}" ${gridStyle}>${items.map(it => {
       if (isBadge) {
@@ -241,6 +259,20 @@ function renderClientShortcode(type: string, body: string, args: string, style: 
           <div class="stat-val" style="color: ${borderClr}; font-weight: 800; font-size: 2rem; margin-bottom: 5px;">${escapeHtml(it.icon || it.title)}</div>
           ${it.icon ? `<div class="stat-name" style="font-weight: bold; font-size: 0.9rem;">${escapeHtml(it.title)}</div>` : ""}
           ${it.desc ? `<div class="stat-note">${renderDesc(it.desc, itemBullet(it), it.color, style)}</div>` : ""}
+        </div>`;
+      }
+      if (isSkillLayout) {
+        const resColor = resolveColorKeyword(it.color, style);
+        return `<div class="skill-item" ${renderAccent(it.color)}>
+          <div class="skill-icon" ${resColor ? `style="background:${resColor}22; color:${resColor};"` : ""}>${escapeHtml(it.icon)}</div>
+          <div class="skill-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
+          <div class="skill-desc">${renderDesc(it.desc, itemBullet(it), it.color, style)}</div>
+        </div>`;
+      }
+      if (isRowLayout) {
+        return `<div class="checkpoint-item">
+          <div class="ci-icon">${escapeHtml(it.icon || "📐")}</div>
+          <div class="ci-text"><strong>${escapeHtml(it.title)}</strong>${it.desc ? `<br><span style="color:var(--text-2)">${escapeHtml(it.desc)}</span>` : ""}</div>
         </div>`;
       }
       return `<div class="${isFeat ? 'feature-card' : 'icon-card'}" ${renderAccent(it.color)}>
@@ -400,12 +432,25 @@ function renderClientShortcode(type: string, body: string, args: string, style: 
 
   // 12. console-box & cmd-box & editor-box
   if (["console-box", "cmd-box", "editor-box"].includes(type)) {
-    const it = items[0];
+    const it = items[0] || {};
     const bg = "#0F172A";
     const clr = "#F1F5F9";
     const headerBg = "#1E293B";
-    const title = it.title || (type === "console-box" ? "Console" : (type === "cmd-box" ? "Terminal" : "Editor"));
 
+    // Fallback: if no structured YAML content (desc is empty), use raw body as code content
+    // and parse title/lang from args  e.g. "dev_env (javascript)" → title="dev_env", tag="javascript"
+    let titleText = it.title || "";
+    let tagText = it.tag || "";
+    let descText = it.desc || "";
+    if (!descText) {
+      const argStr = (args || "").trim();
+      const langMatch = argStr.match(/\((\w+)\)/);
+      titleText = titleText || argStr.replace(/\(.*?\)/g, "").trim();
+      tagText = tagText || (langMatch ? langMatch[1] : "");
+      descText = body.trim();
+    }
+
+    const title = titleText || (type === "console-box" ? "Console" : type === "cmd-box" ? "Terminal" : "Editor");
     return `<div style="border-radius: var(--radius); overflow: hidden; margin: 20px 0; border: 1px solid var(--border); box-shadow: var(--shadow);">
       <div style="background: ${headerBg}; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; font-family: var(--font-code); color: #94A3B8;">
         <div style="display: flex; gap: 6px;">
@@ -414,9 +459,9 @@ function renderClientShortcode(type: string, body: string, args: string, style: 
           <span style="width: 10px; height: 10px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
         </div>
         <div style="font-weight: bold;">${escapeHtml(title)}</div>
-        <div>${escapeHtml(it.tag || "")}</div>
+        <div>${escapeHtml(tagText)}</div>
       </div>
-      <pre style="background: ${bg}; color: ${clr}; padding: 20px; font-family: var(--font-code); font-size: 0.85rem; margin: 0; overflow-x: auto; white-space: pre-wrap; word-break: break-all; text-align: left;"><code>${escapeHtml(it.desc)}</code></pre>
+      <pre style="background: ${bg}; color: ${clr}; padding: 20px; font-family: var(--font-code); font-size: 0.85rem; margin: 0; overflow-x: auto; white-space: pre-wrap; word-break: break-all; text-align: left;"><code>${escapeHtml(descText)}</code></pre>
     </div>`;
   }
 
@@ -491,6 +536,107 @@ function renderClientShortcode(type: string, body: string, args: string, style: 
     }).join("")}</div></div>`;
   }
 
+  // 17. before-after / compare-diff
+  if (type === "before-after" || type === "compare-diff" || type === "compare-before-after") {
+    const bad = items[0] || {};
+    const good = items[1] || {};
+    return `<div class="compare-diff">
+      <div class="before-box">
+        <div class="ba-label">❌ ${escapeHtml(bad.title)}</div>
+        <div class="ba-content">${escapeHtml(bad.desc).replace(/\n/g, "<br>")}</div>
+      </div>
+      <div class="after-box">
+        <div class="ba-label">✅ ${escapeHtml(good.title)}</div>
+        <div class="ba-content">${escapeHtml(good.desc).replace(/\n/g, "<br>")}</div>
+      </div>
+    </div>`;
+  }
+
+  // 18. network-box
+  if (type === "network-box") {
+    const mainNode = items[0] || {};
+    const subNodes = items.slice(1);
+    const color = resolveColorKeyword(mainNode.color, style) || "var(--brand)";
+    return `<div class="graph-visual">
+      <div class="graph-nodes">
+        <div class="node node-main" style="background: ${color}; box-shadow: 0 0 24px ${color}88;">${escapeHtml(mainNode.title)}</div>
+        ${subNodes.map((n: any, i: number) => {
+          const subColor = resolveColorKeyword(n.color, style) || "var(--brand-dark)";
+          return `<div class="node node-${i + 1}" style="border: 2px solid ${subColor}; color: ${subColor};">
+            ${escapeHtml(n.title)}${n.meta ? `<span style="font-size:0.7rem;opacity:0.6;display:block;">${escapeHtml(n.meta)}</span>` : ""}
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`;
+  }
+
+  // 19. faq-list
+  if (type === "faq-list") {
+    return `<div class="faq-list">${items.map((it: any) => `
+      <div class="faq-item">
+        <button class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">
+          <span>${escapeHtml(it.title)}</span>
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a"><p style="margin:0;font-size:0.9rem;color:var(--text-2);">${escapeHtml(it.desc)}</p></div>
+      </div>`).join("")}</div>`;
+  }
+
+  // 20. os-tabs
+  if (type === "os-tabs") {
+    const uid = "t" + Math.random().toString(36).slice(2, 7);
+    const switchFn = `(function(btn,id){var w=btn.closest('.tabs-wrap');w.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});w.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});btn.classList.add('active');var panel=document.getElementById(id);if(panel)panel.classList.add('active');})`;
+    return `<div class="tabs-wrap">
+      <div class="tabs-nav">
+        ${items.map((it: any, i: number) => `<button class="tab-btn${i === 0 ? " active" : ""}" onclick="${switchFn}(this,'${uid}-${i}')">${escapeHtml(it.title || it.tag || `탭 ${i+1}`)}</button>`).join("")}
+      </div>
+      ${items.map((it: any, i: number) => `<div class="tab-panel${i === 0 ? " active" : ""}" id="${uid}-${i}">${it.desc ? `<p style="margin:0;font-size:0.9rem;color:var(--text-2);">${escapeHtml(it.desc).replace(/\n/g, "<br>")}</p>` : ""}</div>`).join("")}
+    </div>`;
+  }
+
+  // 21. takeaway-banner
+  if (type === "takeaway-banner" || type === "takeaway") {
+    const it = items[0] || {};
+    return `<div class="takeaway-banner">
+      <div class="ta-icon">${escapeHtml(it.icon || "💡")}</div>
+      <div>
+        <div class="ta-label">${escapeHtml(it.title || "Key Takeaway")}</div>
+        <div class="ta-text">${escapeHtml(it.desc).replace(/\n/g, "<br>")}</div>
+      </div>
+    </div>`;
+  }
+
+  // 22. summary-bar
+  if (type === "summary-bar") {
+    return `<div class="summary-bar">${items.map((it: any) => {
+      const rawNum = it.icon || "";
+      const numMatch = rawNum.match(/^(\d+(?:\.\d+)?(?:[Kk]\+?|\+)?)\s*(.*)$/);
+      const val = numMatch ? numMatch[1] : rawNum;
+      const unit = numMatch ? numMatch[2] : "";
+      return `<div class="summary-item">
+        <span class="summary-num">${escapeHtml(val)}${unit ? `<span class="summary-unit">${escapeHtml(unit)}</span>` : ""}</span>
+        <span class="summary-label">${escapeHtml(it.title)}</span>
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  // 23. part-banner / part-deck
+  if (type === "part-banner" || type === "part-deck") {
+    return items.map((it: any) => {
+      const color = resolveColorKeyword(it.color, style) || "var(--brand)";
+      return `<div class="part-banner">
+        <div class="part-banner-header" style="background: ${color};">
+          <div class="part-banner-num-block">${escapeHtml(it.icon || "부")}</div>
+          <div class="part-banner-title-block">
+            <span class="part-banner-title-text">${escapeHtml(it.title)}</span>
+            ${it.desc ? `<span class="part-banner-tagline">${escapeHtml(it.desc)}</span>` : ""}
+            ${it.tag ? `<span class="part-banner-chapter-range">${escapeHtml(it.tag)}</span>` : ""}
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
   // Fallback for unrecognised shortcodes
   return `<div class="card" style="padding:20px; margin:15px 0; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);">
     <div style="font-weight:bold; color:var(--brand); margin-bottom:10px;">[Shortcode: ${type}]</div>
@@ -515,7 +661,7 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
   const subtitle = match ? (match[1].match(/subtitle:\s*(.*)/)?.[1] || "").replace(/^["']|["']$/g, "") : "";
 
   const shortcodeCompiled = body.replace(/:::\s*([a-zA-Z0-9_-]+)(.*?)\r?\n([\s\S]*?)\r?\n:::/g, (match, type, args, content) => {
-    const html = renderClientShortcode(type.trim(), content, args.trim(), style);
+    const html = renderShortcode(type.trim(), content, args.trim());
     // CommonMark: HTML block terminates at first blank line (whitespace-only line).
     // Remove whitespace-only lines and collapse multi-newlines to prevent premature termination.
     const cleanHtml = html.replace(/^[ \t]+$/gm, "").replace(/\n{2,}/g, "\n");
@@ -567,8 +713,10 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
     --font-desc:  ${style.webFont || "'Noto Sans KR', sans-serif"};
     --font-note:  'JetBrains Mono', monospace; --font-code: 'JetBrains Mono', monospace;
     --font-scale: 1.0;
-    --size-h1: 3rem; --size-h2: 2.6rem; --size-h3: 1.8rem;
-    --size-body-p: 1.3rem; --size-card-title: 1.45rem; --size-card-p: 1.2rem;
+    --size-h1: ${HSZ_PRES['h1'] || '3rem'}; --size-h2: ${HSZ_PRES['h2'] || '2.6rem'}; --size-h3: ${HSZ_PRES['h3'] || '1.8rem'};
+    --size-body-p: ${HSZ_PRES['body-p'] || '1.3rem'}; --size-card-title: ${HSZ_PRES['card-title'] || '1.45rem'}; --size-card-p: ${HSZ_PRES['card-p'] || '1.2rem'};
+    --size-stat-val: ${HSZ_PRES['stat-val'] || '2.6rem'}; --size-stat-name: ${HSZ_PRES['stat-name'] || '1.2rem'}; --size-stat-note: ${HSZ_PRES['stat-note'] || '1.1rem'};
+    --size-plan-badge: ${HSZ_PRES['plan-badge'] || '0.8rem'}; --size-plan-features: ${HSZ_PRES['plan-features'] || '1.1rem'}; --font-tag: 'Noto Sans KR', sans-serif;
     --shadow: 0 4px 24px rgba(0,0,0,0.25); --shadow-lg: 0 8px 40px rgba(0,0,0,0.3);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -627,15 +775,72 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
   .summary-box { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:20px; }
   .summary-box p { color:var(--text-muted); }
   /* takeaway-banner */
-  .takeaway-banner { background:linear-gradient(135deg,var(--brand-deep),var(--brand-dark)); border-radius:var(--radius); padding:24px 32px; margin:20px 0; color:#fff; }
+  .takeaway-banner { display:flex; gap:16px; align-items:flex-start; background:linear-gradient(135deg,var(--brand-deep),var(--brand-dark)); border-radius:var(--radius); padding:24px 32px; margin:20px 0; color:#fff; }
+  .ta-icon { font-size:1.8rem; line-height:1.2; flex-shrink:0; }
+  .ta-label { font-size:1rem; font-weight:800; color:#fff; margin-bottom:6px; }
+  .ta-text { font-size:0.92rem; color:rgba(255,255,255,0.8); line-height:1.6; }
   /* badge-grid */
   .badge-grid { display:flex; flex-wrap:wrap; gap:10px; margin:16px 0; }
   .badge-item { padding:6px 16px; border-radius:100px; font-size:0.85rem; font-weight:600; background:rgba(255,255,255,0.08); color:var(--text); border:none; }
   /* faq-list, step-list */
-  .faq-list,.step-list { margin:16px 0; }
-  .faq-item,.step-item { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:16px 20px; margin-bottom:10px; }
-  .faq-q,.step-title { font-weight:700; color:var(--text); margin-bottom:6px; }
-  .faq-a,.step-desc { color:var(--text-muted); font-size:0.95rem; }
+  .faq-list { margin:16px 0; }
+  .step-list { margin:16px 0; }
+  .faq-item { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); margin-bottom:10px; overflow:hidden; }
+  .step-item { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:16px 20px; margin-bottom:10px; }
+  .faq-q { width:100%; display:flex; justify-content:space-between; align-items:center; padding:16px 20px; background:transparent; border:none; cursor:pointer; font-size:0.95rem; font-weight:700; color:var(--text); text-align:left; gap:12px; font-family:inherit; }
+  .faq-q:hover { background:rgba(255,255,255,0.05); }
+  .faq-item.open .faq-q { color:var(--brand); }
+  .faq-arrow { transition:transform 0.2s; font-size:0.7rem; opacity:0.5; flex-shrink:0; }
+  .faq-item.open .faq-arrow { transform:rotate(180deg); opacity:1; }
+  .faq-a { display:none; padding:0 20px 16px; color:var(--text-muted); font-size:0.95rem; }
+  .faq-item.open .faq-a { display:block; }
+  .step-title { font-weight:700; color:var(--text); margin-bottom:6px; }
+  .step-desc { color:var(--text-muted); font-size:0.95rem; }
+  /* os-tabs */
+  .tabs-wrap { margin:16px 0; border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); overflow:hidden; }
+  .tabs-nav { display:flex; background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08); overflow-x:auto; }
+  .tab-btn { padding:11px 20px; background:transparent; border:none; border-bottom:2px solid transparent; cursor:pointer; font-size:0.9rem; font-weight:600; color:var(--text-muted); white-space:nowrap; transition:0.15s; font-family:inherit; margin-bottom:-1px; }
+  .tab-btn.active { color:var(--brand); border-bottom-color:var(--brand); }
+  .tab-btn:hover:not(.active) { color:var(--text); }
+  .tab-panel { display:none; padding:24px; }
+  .tab-panel.active { display:block; }
+  /* skill-list (align=left) */
+  .skill-list { display:flex; flex-direction:column; gap:15px; margin:20px 0; }
+  .skill-item { display:flex; align-items:center; gap:20px; background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:15px 25px; }
+  .skill-icon { width:40px; height:40px; background:rgba(255,255,255,0.08); color:var(--brand); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+  .skill-title { font-weight:800; font-size:1rem; width:30%; color:var(--text); }
+  .skill-desc { font-size:0.9rem; color:var(--text-muted); flex:1; }
+  /* checkpoint-grid (align=row) */
+  .checkpoint-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:20px 0; }
+  .checkpoint-item { display:flex; align-items:center; gap:16px; background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:18px; }
+  .ci-icon { font-size:1.6rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; width:42px; height:42px; background:rgba(255,255,255,0.08); border-radius:50%; color:var(--brand); }
+  .ci-text { font-size:0.9rem; color:var(--text); line-height:1.4; }
+  .ci-text strong { font-size:1rem; font-weight:700; color:var(--brand-light); }
+  /* compare-diff */
+  .compare-diff { display:flex; flex-direction:column; gap:20px; margin:20px 0; }
+  .before-box,.after-box { display:flex; flex-direction:column; gap:8px; }
+  .before-box { border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:20px; }
+  .ba-label { font-weight:800; font-size:1rem; color:var(--text); }
+  .ba-content { font-size:0.92rem; color:var(--text-muted); line-height:1.6; }
+  /* network-box */
+  .graph-visual { background:#0A0F1E; border-radius:var(--radius); height:280px; position:relative; margin:20px 0; overflow:hidden; }
+  .graph-nodes { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:20px; flex-wrap:wrap; padding:20px; }
+  .node { border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:0.85rem; font-weight:700; text-align:center; padding:10px; }
+  .node-main { width:90px; height:90px; color:#fff; font-size:0.95rem; }
+  /* summary-bar */
+  .summary-bar { margin:20px 0; padding:24px; background:rgba(255,255,255,0.05); border-radius:var(--radius); border:1px solid rgba(255,255,255,0.08); display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:20px; }
+  .summary-item { display:flex; flex-direction:column; gap:4px; }
+  .summary-num { font-family:var(--font-note); font-size:1.8rem; font-weight:700; color:var(--brand); line-height:1; }
+  .summary-unit { font-size:0.75rem; font-weight:300; color:var(--text-muted); margin-left:2px; }
+  .summary-label { font-size:0.8rem; color:var(--text-muted); }
+  /* part-banner */
+  .part-banner { margin-bottom:20px; }
+  .part-banner-header { display:flex; align-items:center; border-radius:var(--radius); overflow:hidden; }
+  .part-banner-num-block { width:52px; height:52px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:0.85rem; font-weight:500; color:white; }
+  .part-banner-title-block { flex:1; height:52px; display:flex; align-items:center; padding:0 20px; gap:12px; }
+  .part-banner-title-text { font-size:0.95rem; font-weight:600; color:white; }
+  .part-banner-tagline { font-size:0.8rem; color:rgba(255,255,255,0.7); font-weight:300; }
+  .part-banner-chapter-range { font-size:0.75rem; color:rgba(255,255,255,0.5); margin-left:auto; letter-spacing:0.05em; }
   /* level-grid */
   .level-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin:20px 0; }
   .level-card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:20px; text-align:center; }
@@ -656,6 +861,8 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
   .nav-btn { position:fixed; bottom:40px; z-index:1000; width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:1.4rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; backdrop-filter:blur(8px); }
   .nav-btn:hover { background:rgba(255,255,255,0.16); }
   .prev-btn { left:40px; } .next-btn { right:40px; }
+  /* ── 공유 숏코드 컴포넌트 CSS (정본 — build-guide 와 동일) ── */
+  ${SHORTCODE_CSS}
 </style>
 </head>
 <body>
@@ -697,7 +904,7 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
 </html>`;
   }
 
-  let bodyHtml = marked.parse(shortcodeCompiled) as string;
+  const bodyHtml = marked.parse(shortcodeCompiled) as string;
 
   const html = `<!DOCTYPE html>
 <html lang="ko">
@@ -728,18 +935,23 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
     --font-tag:   ${style.webFont || "'Noto Sans KR', sans-serif"};
     --font-scale: 1.0;
 
-    --size-h1: 2.2rem;
-    --size-h2: 1.8rem;
-    --size-h3: 1.4rem;
-    --size-body-p: 0.95rem;
-    --size-card-title: 1.15rem;
-    --size-card-p: 0.92rem;
+    --size-h1: ${HSZ_GUIDE['h1'] || '2.2rem'};
+    --size-h2: ${HSZ_GUIDE['h2'] || '1.8rem'};
+    --size-h3: ${HSZ_GUIDE['h3'] || '1.4rem'};
+    --size-body-p: ${HSZ_GUIDE['body-p'] || '0.95rem'};
+    --size-card-title: ${HSZ_GUIDE['card-title'] || '1.15rem'};
+    --size-card-p: ${HSZ_GUIDE['card-p'] || '0.92rem'};
+    --size-stat-val: ${HSZ_GUIDE['stat-val'] || '2.4rem'};
+    --size-stat-name: ${HSZ_GUIDE['stat-name'] || '1.1rem'};
+    --size-stat-note: ${HSZ_GUIDE['stat-note'] || '0.8rem'};
+    --size-plan-badge: ${HSZ_GUIDE['plan-badge'] || '0.75rem'};
+    --size-plan-features: ${HSZ_GUIDE['plan-features'] || '0.95rem'};
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-desc), sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; padding: 40px 20px; }
-  
+  body { font-family: var(--font-desc), sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; padding: 30px 20px; }
+
   /* Container layout */
-  .container { max-width: 900px; margin: 0 auto; background: #fff; padding: 40px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
+  .container { max-width: 1100px; margin: 0 auto; background: #fff; padding: 40px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
   
   h1 { font-family: var(--font-title); font-size: var(--size-h1); color: var(--brand-dark); margin-bottom: 20px; border-bottom: 2px solid var(--brand-light); padding-bottom: 8px; }
   h2 { font-family: var(--font-title); font-size: var(--size-h2); color: var(--text); margin-top: 30px; margin-bottom: 15px; }
@@ -812,12 +1024,83 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
   code { font-family: var(--font-code); font-size: 0.9em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: var(--brand-deep); }
   pre code { background: none; padding: 0; color: inherit; }
   
+  /* Skill List (icon-grid align=left) */
+  .skill-list { display: flex; flex-direction: column; gap: 15px; margin: 25px 0; }
+  .skill-item { display: flex; align-items: center; gap: 20px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 15px 25px; box-shadow: var(--shadow); }
+  .skill-icon { width: 40px; height: 40px; background: var(--brand-light); color: var(--brand); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+  .skill-title { font-weight: 800; font-size: 1rem; width: 30%; }
+  .skill-desc { font-size: 0.9rem; color: var(--text-2); flex: 1; margin: 0; }
+
+  /* Checkpoint Grid (icon-grid align=row) */
+  .checkpoint-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 25px 0; }
+  .checkpoint-item { display: flex; align-items: center; gap: 16px; background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+  .ci-icon { font-size: 1.6rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 42px; height: 42px; background: var(--brand-light); border-radius: 50%; color: var(--brand); }
+  .ci-text { font-size: 0.9rem; color: var(--text); line-height: 1.4; text-align: left; }
+  .ci-text strong { font-size: 1rem; font-weight: 700; color: var(--brand-dark); }
+
+  /* Before-After / Compare-Diff */
+  .compare-diff { display: flex; flex-direction: column; gap: 20px; width: 100%; margin: 25px 0; }
+  .before-box, .after-box { display: flex; flex-direction: column; gap: 8px; text-align: left; }
+  .before-box { border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+  .ba-label { font-weight: 800; font-size: 1rem; color: var(--text); }
+  .ba-content { font-size: 0.92rem; color: var(--text-2); line-height: 1.6; }
+
+  /* Network Box */
+  .graph-visual { background: #0A0F1E; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.06); height: 280px; position: relative; margin: 25px 0; overflow: hidden; }
+  .graph-nodes { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 20px; }
+  .node { border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; text-align: center; padding: 10px; cursor: default; }
+  .node-main { width: 90px; height: 90px; color: #fff; font-size: 0.95rem; }
+
+  /* FAQ List */
+  .faq-list { display: flex; flex-direction: column; gap: 8px; margin: 25px 0; }
+  .faq-item { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: #fff; }
+  .faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: transparent; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 700; color: var(--text); text-align: left; gap: 12px; font-family: inherit; }
+  .faq-q:hover { background: var(--brand-light); }
+  .faq-item.open .faq-q { color: var(--brand-dark); background: var(--brand-light); }
+  .faq-arrow { transition: transform 0.2s; font-size: 0.7rem; opacity: 0.5; flex-shrink: 0; }
+  .faq-item.open .faq-arrow { transform: rotate(180deg); opacity: 1; }
+  .faq-a { display: none; padding: 0 20px 16px; }
+  .faq-item.open .faq-a { display: block; }
+
+  /* OS Tabs */
+  .tabs-wrap { margin: 25px 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .tabs-nav { display: flex; background: var(--bg); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  .tab-btn { padding: 11px 20px; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--text-2); white-space: nowrap; transition: 0.15s; font-family: inherit; margin-bottom: -1px; }
+  .tab-btn.active { color: var(--brand); border-bottom-color: var(--brand); background: white; }
+  .tab-btn:hover:not(.active) { color: var(--text); background: rgba(0,0,0,0.03); }
+  .tab-panel { display: none; padding: 24px; background: white; }
+  .tab-panel.active { display: block; }
+
+  /* Takeaway Banner */
+  .takeaway-banner { display: flex; gap: 16px; align-items: flex-start; padding: 24px; background: linear-gradient(135deg, var(--brand-light) 0%, rgba(255,255,255,0.9) 100%); border-left: 5px solid var(--brand); border-radius: var(--radius); box-shadow: var(--shadow); margin: 25px 0; }
+  .ta-icon { font-size: 1.8rem; line-height: 1.2; flex-shrink: 0; }
+  .ta-label { font-size: 1rem; font-weight: 800; color: var(--brand-dark); margin-bottom: 6px; }
+  .ta-text { font-size: 0.92rem; color: var(--text-2); line-height: 1.6; }
+
+  /* Summary Bar */
+  .summary-bar { margin: 25px 0; padding: 24px; background: var(--text); border-radius: var(--radius); display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 20px; box-shadow: var(--shadow); }
+  .summary-item { display: flex; flex-direction: column; gap: 4px; }
+  .summary-num { font-family: var(--font-note); font-size: 1.8rem; font-weight: 700; color: var(--bg); line-height: 1; }
+  .summary-unit { font-size: 0.75rem; font-weight: 300; color: rgba(255,255,255,0.6); margin-left: 2px; }
+  .summary-label { font-size: 0.8rem; color: rgba(255,255,255,0.6); }
+
+  /* Part Banner */
+  .part-banner { margin-bottom: 20px; }
+  .part-banner-header { display: flex; align-items: center; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .part-banner-num-block { width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.85rem; font-weight: 500; color: white; }
+  .part-banner-title-block { flex: 1; height: 52px; display: flex; align-items: center; padding: 0 20px; gap: 12px; }
+  .part-banner-title-text { font-size: 0.95rem; font-weight: 600; color: white; }
+  .part-banner-tagline { font-size: 0.8rem; color: rgba(255,255,255,0.7); font-weight: 300; }
+  .part-banner-chapter-range { font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-left: auto; letter-spacing: 0.05em; }
+
   /* Header banner for standalone mode */
   .standalone-banner {
     background: #fff7ed; border: 1px solid #ffedd5; color: #c2410c;
     padding: 12px 20px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 25px;
     display: flex; align-items: center; gap: 10px; font-weight: 500;
   }
+  /* ── 공유 숏코드 컴포넌트 CSS (정본 — build-guide 와 동일) ── */
+  ${SHORTCODE_CSS}
 </style>
 </head>
 <body>

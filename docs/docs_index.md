@@ -21,6 +21,7 @@ V2.0은 기존 V1.0의 파일들과 구조적으로 격리되어 설계되었으
 | **디자인 피드백 검토** | [design_redesign_review.md](./report/design_redesign_review.md) | 디자이너, UI 개발자 | 타이포그래피 스케일 상향, 하드코딩 토큰 정리, 이모지 아이콘 정비 검토서 |
 | **운영 점검 지침서** | [project_operation_prompt.md](./report/project_operation_prompt.md) | 전체 개발진, AI 에이전트 | 취약점 스캔 및 코드 정밀 점검을 위한 운영용 체크리스트 & 프롬프트 지침 |
 | **패치 결과 보고서** | [patch_report_2026-06-23.md](./report/patch_report_2026-06-23.md) | 개발자, 보안 검토자 | 1차: 보안 취약점 3종 수정·standalone 빌드·클라이언트 컴파일러·유닛 테스트 63개 / 2차(§7): ESLint 설정·ErrorBoundary·npm audit 위험 수용 (2026-06-23) |
+| **파이프라인 분기 분석** | [pipeline_divergence_analysis_2026-06-25.md](./report/pipeline_divergence_analysis_2026-06-25.md) | 개발자, 기술 검토자 | 숏코드 렌더러 4벌 중복 drift, standalone 번들 박제, PPTX 폰트 오버라이드 체인(custom-blue 하드코딩·editor-box 고정) 진단 및 해결방안 검토 (2026-06-25) |
 
 
 ---

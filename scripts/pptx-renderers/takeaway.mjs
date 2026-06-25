@@ -46,7 +46,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     if (it.icon) {
       slide.addText(it.icon, {
         x: tx, y: textY, w: 0.4, h: boxH - c.padY * 2,
-        fontSize: 20, valign: "middle"
+        fontSize: D.takeaway.iconFontSize, valign: "middle"
       });
       tx += 0.48;
       tw -= 0.48;

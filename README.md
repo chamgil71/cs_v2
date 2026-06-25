@@ -69,9 +69,11 @@ sequenceDiagram
 * **역할**: 웹 화면의 변환/저장 요청을 받아 Node.js 환경에서 **실제 파일 IO 및 마크다운 파싱, PPTX 셰이프 드로잉을 전담하는 변환 코어 엔진**입니다.
 * **주요 구성**:
   - `scripts/vite-api-plugin.ts`: 리액트 UI 화면(TSX)이 내보내는 API 요청을 받아 Node.js 프로세스로 엔진 코어를 호출해주는 브리지 미들웨어.
-  - `scripts/build-guide.mjs`: 마크다운 ➡️ 가이드 HTML 숏코드 컴파일. (스타일 인라인화를 통한 standalone HTML 생성 전담)
-  - `scripts/build-presentation.mjs`: 마크다운 ➡️ 웹 슬라이드 컴파일. (aspect-ratio 16:9 뷰 템플릿 렌더링)
-  - `scripts/md-to-pptx.mjs`: 마크다운 ➡️ PowerPoint PPTX 파일 빌드.
+  - `scripts/shortcode-render.mjs` **(정본 공유 렌더러)**: 숏코드 → HTML 변환 단일 모듈. 순수 함수(marked만 의존)로, 가이드·슬라이드·미리보기(client) 세 HTML 출력이 **모두 이 모듈을 공유**한다. (한 곳 수정 = 3개 출력 동시 반영, 드리프트 차단)
+  - `scripts/shortcode-styles.mjs` **(정본 공유 CSS)**: 숏코드 컴포넌트 CSS. `var(--*)` 기반 테마 독립 → 각 셸은 `:root` 변수만 자기 테마로 정의.
+  - `scripts/build-guide.mjs`: 마크다운 ➡️ 가이드 HTML 컴파일. (공유 렌더러+CSS 사용, standalone HTML 생성 전담)
+  - `scripts/build-presentation.mjs`: 마크다운 ➡️ 웹 슬라이드 컴파일. (공유 렌더러+CSS 사용, aspect-ratio 16:9 뷰)
+  - `scripts/md-to-pptx.mjs`: 마크다운 ➡️ PowerPoint PPTX 파일 빌드. (폰트·크기 수치는 `config/pptdesign.config.json` 에서 로드 — 하드코딩 없음)
   - `scripts/pptx-analyzer.js` & `spec-parser.js`: PPTX XML 구조 압축 해제 및 디자인 사양 데이터 추출/치환 코어.
   - `scripts/pptx-renderers/`: 각 개별 숏코드(git-flow, editor-box 등)의 PPTX 네이티브 드로잉 코어 렌더러 모듈들.
 
@@ -100,18 +102,29 @@ cs_v2/
 │   ├── vite-api-plugin.ts  # Vite 개발 서버 API 미들웨어 (Bridge)
 │   ├── pptx-analyzer.js    # PPTX XML 구조 파싱 코어 엔진
 │   ├── spec-parser.js      # PPTX 디자인 스펙 데이터 파서
-│   ├── build-guide.mjs     # 마크다운 ➡️ 가이드 HTML 숏코드 컴파일 엔진
-│   ├── build-presentation.mjs # 마크다운 ➡️ 웹 슬라이드 컴파일 엔진
-│   └── md-to-pptx.mjs      # 마크다운 ➡️ PPTX 컴파일 엔진
+│   ├── shortcode-render.mjs   # [정본] 숏코드 → HTML 공유 렌더러 (3개 HTML 출력 공용)
+│   ├── shortcode-styles.mjs   # [정본] 숏코드 컴포넌트 CSS (var(--*) 테마 독립)
+│   ├── build-guide.mjs     # 마크다운 ➡️ 가이드 HTML 컴파일 엔진 (공유 모듈 사용)
+│   ├── build-presentation.mjs # 마크다운 ➡️ 웹 슬라이드 컴파일 엔진 (공유 모듈 사용)
+│   ├── build-standalone.mjs   # standalone 단일 HTML 빌드 (정합성 테스트 게이트)
+│   ├── md-to-pptx.mjs      # 마크다운 ➡️ PPTX 컴파일 엔진 (config 폰트 로드)
+│   └── pptx-renderers/     # 숏코드별 PPTX 드로잉 렌더러 모듈 + registry.mjs
 ├── docs/                   # V2.0 공식 마스터 문서 보관 공간
-│   ├── docs_index.md       # 문서 시스템 종합 안내 홈 (README.md에서 명칭 변경)
+│   ├── docs_index.md       # 문서 시스템 종합 안내 홈
 │   ├── guide.md            # 사용자 기능 설명서
 │   ├── scripts_guide.md    # 개발자 변환 코어 엔진 설명서
+│   ├── shortcode-reference.md # 숏코드 레퍼런스 (25 정식 + 13 alias)
+│   ├── shortcode-changelog.md # 숏코드 변경 이력
+│   ├── report/             # 코드 점검·분석 보고서 (시점 기록)
 │   └── plan/               # 아키텍처 및 구현 기획 계획서 보관 폴더
 ├── config/
-│   ├── styles.json         # 테마 배색 사전 설정 보관 JSON
-│   ├── layout.json         # [NEW] PPTX 분석 가공 오프셋 보관 JSON
-│   └── v2/                  # V2.0 전용 추가 설정 스키마 보관 영역
+│   ├── styles.json         # 테마 배색 프리셋 (스타일별 폰트·색상, 선택적 크기 오버라이드)
+│   ├── pptdesign.config.json  # PPTX 레이아웃·폰트 크기 기본값 (수치 단일 출처)
+│   ├── htmldesign.config.json # HTML 폰트·크기 토큰 (guide/presentation 프로파일)
+│   ├── font-aliases.json   # 폰트 alias → 실제 폰트명 매핑
+│   ├── shortcode-guide.ts  # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처)
+│   └── layout.json         # PPTX 분석 가공 오프셋 보관 JSON
+├── src/__tests__/          # Vitest — shortcode-conformance(정합성) 등 148건
 ├── md_src/                 # 마크다운 원천 소스 보관 폴더
 ├── publish/                # [산출물] 컴파일 완료된 가이드북 포털 및 HTML 저장소
 └── storage/                # [산출물] 프레젠테이션/PPTX 파일 독립 보관 저장소
@@ -141,9 +154,10 @@ cs_v2/
   - **디자인 시스템 자동 등록**: 조율이 완료된 나만의 커스텀 배색 테마를 원하는 영문 ID로 지정하여 `config/styles.json`에 원클릭으로 신규 등록(추가)할 수 있습니다.
   - **프리셋 복원**: 페이퍼로지 오리지널(블루), AI 챗봇(그린) 등 누락된 대표 배색 프리셋을 목록에 추가하여 즉시 불러와 커스텀 시작점으로 활용할 수 있도록 보강했습니다.
 
-### 3. 🧩 26종 전체 숏코드 선택 삽입 에디터 툴바
-* **개선**: 기존의 일부 숏코드만 들어있던 드롭다운 선택 툴바를 V2 컴파일러와 PPTX 변환기에서 지원하는 21종의 핵심 숏코드 및 8종의 별칭(총 26가지 옵션) 전체 목록으로 확장했습니다.
-* **용도별 카테고리 구성**: 사용의 편의를 위해 비교/대조, 코드/터미널, 흐름도 등 6가지 카테고리로 드롭다운을 정리(optgroup 적용)하여 더욱 완성도 높은 사용자 경험을 제공합니다. 선택 삽입 시 V2 스펙에 알맞은 YAML 규격 템플릿 코드가 현재 마우스 커서의 위치에 맞게 자동으로 자동 삽입됩니다.
+### 3. 🧩 전체 숏코드 선택 삽입 에디터 툴바 (25 정식 + 13 alias = 38 규격)
+* **개선**: V2 컴파일러와 PPTX 변환기가 지원하는 **25종 정식 숏코드 + 13종 별칭** 전체를 드롭다운으로 제공합니다.
+* **단일 출처 데이터**: 가이드 패널 설명과 삽입 스니펫은 `config/shortcode-guide.ts` **한 파일**에서 관리됩니다(중복 제거). 숏코드 설명/예시 수정 시 이 파일만 고치면 가이드 패널·삽입 버튼에 동시 반영됩니다.
+* **용도별 카테고리 구성**: 비교/대조, 코드/터미널, 흐름도 등 6가지 카테고리로 정리되며, 선택 삽입 시 YAML 규격 템플릿이 커서 위치에 자동 삽입됩니다.
 
 ### 4. 네이티브 폴더 선택기 & 멀티포맷 일괄 폴더 변환
 * **개선**: 웹 브라우저 보안 제약으로 발생하던 로컬 절대 경로 입력의 불편을 제거하기 위해 백엔드와 연동된 **윈도우 네이티브 폴더 선택 탐색기(PowerShell FolderBrowserDialog)**를 도입하여 원클릭으로 경로를 자동 완성 및 바인딩할 수 있습니다.

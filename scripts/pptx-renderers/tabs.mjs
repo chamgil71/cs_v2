@@ -52,7 +52,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 탭 라벨 텍스트
     slide.addText(tabTitle, {
       x: x + 0.15, y: curY, w: w - 0.3, h: 0.31,
-      fontSize: 10, bold: true, color: pal.brandDark,
+      fontSize: D.tabs.tabFontSize, bold: true, color: pal.brandDark,
       fontFace: font, valign: "middle"
     });
     

@@ -59,7 +59,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     if (it.icon && it.icon !== "•") {
       slide.addText(it.icon, {
         x: cx, y: y + 0.08, w: stepW, h: 0.3,
-        fontSize: 16, align: "center", valign: "middle"
+        fontSize: wf.iconFontSize, align: "center", valign: "middle"
       });
     }
     
@@ -83,7 +83,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     if (idx < steps.length - 1) {
       slide.addText("→", {
         x: cx + stepW, y: y + (stepH - 0.22) / 2, w: arrowW, h: 0.22,
-        fontSize: 14, color: D.palette?.workflowArrow || "6366F1",
+        fontSize: wf.arrowFontSize, color: D.palette?.workflowArrow || "6366F1",
         align: "center", valign: "middle"
       });
     }

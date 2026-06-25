@@ -80,7 +80,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
   
   slide.addText(mainNode.title || "Main", {
     x: mainX + 0.1, y: mainY, w: mainW - 0.2, h: mainH,
-    fontSize: 13, bold: true, color: pal.white,
+    fontSize: D.network.nodeFontSize, bold: true, color: pal.white,
     fontFace: fontTitle, align: "center", valign: "middle"
   });
   

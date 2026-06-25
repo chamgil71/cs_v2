@@ -89,7 +89,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     if (it.icon && it.icon !== "•") {
       slide.addText(it.icon, {
         x: cx + 0.1, y: curY, w: cardW - 0.2, h: 0.42,
-        fontSize: 20, align: "center", valign: "middle"
+        fontSize: g.iconFontSize, align: "center", valign: "middle"
       });
       curY += 0.45;
     }

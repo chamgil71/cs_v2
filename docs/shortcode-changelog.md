@@ -5,6 +5,36 @@
 
 ---
 
+## Phase 5 — 렌더링 단일화 · 수치 config 구동 · 정합성 테스트 (2026-06-25)
+
+### 배경
+HTML 숏코드 렌더러가 `build-guide.mjs`·`build-presentation.mjs`·`client-compiler.ts` **3벌로 중복**되어 출력이 어긋나고(번갈아 깨짐), PPTX 폰트 크기를 config에서 바꿔도 반영되지 않는 문제(스타일 오버라이드·렌더러 하드코딩)를 해소.
+
+### 변경 1 — HTML 숏코드 렌더링 정본 단일화
+- 정본 파서+렌더러 → **`scripts/shortcode-render.mjs`** (순수 함수, marked만 의존) 추출.
+- 컴포넌트 CSS → **`scripts/shortcode-styles.mjs`** (`var(--*)` 테마 독립, 카드배경 `var(--card-bg, #fff)`).
+- `build-guide`·`build-presentation`·`client-compiler` **3개 HTML 출력이 모두 공유 모듈 사용** → 한 곳 수정 시 동시 반영(드리프트 차단). presentation은 `before-after`·`os-tabs`를 새로 획득.
+
+### 변경 2 — 수치 전면 config 구동 (하드코딩 제거)
+- PPTX 렌더러의 폰트 크기 하드코딩 **28곳 → `config/pptdesign.config.json` 참조**로 전환(컴포넌트별 키 신설).
+- HTML `:root` 크기 토큰 → **`config/htmldesign.config.json`의 `htmlSize.guide/presentation`** 에서 로드(3개 셸 모두).
+- `config/styles.json` custom-blue 의 우발적 `titleSize/bodySize` 제거 → config 기본값 폴백. 스타일별 크기는 **선택적 오버라이드**로만 유지.
+- 크기 캐스케이드: `config → styles.json → frontmatter → 숏코드 블록 인자`.
+
+### 변경 3 — 숏코드 블록 크기 인자 PPTX 대칭
+- `title-size=` / `desc-size=` 인자를 **PPTX(`md-to-pptx.mjs`)에도 추가**(배수/절대 pt). 기존 HTML 전용 → HTML·PPTX 양쪽 동작.
+
+### 변경 4 — 가이드 데이터 단일 출처
+- `MarkdownCompiler.tsx`의 숏코드 가이드 패널 데이터 + `insertShortcode` 삽입 스니펫 중복 → **`config/shortcode-guide.ts` 단일 출처**로 통합.
+
+### 변경 5 — 정합성 테스트 & 빌드 게이트
+- `src/__tests__/shortcode-conformance.test.ts` 신설(85 케이스): 공유 HTML 렌더러 + PPTX 레지스트리 커버리지 + standalone `:::` 잔존 검사. **드리프트 1건 발견·수정**(PPTX `before-after` 레지스트리 누락).
+- `npm run build:standalone` 이 정합성 테스트 통과를 **게이트**로 선행 실행.
+
+> 상세 분석·의사결정: `docs/report/pipeline_divergence_analysis_2026-06-25.md`
+
+---
+
 ## Phase 3 — 폰트 크기 통일 및 유지보수 기능 추가 (2026-06-24)
 
 ### 배경

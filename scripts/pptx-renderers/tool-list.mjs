@@ -56,7 +56,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     if (it.icon && it.icon !== "•") {
       slide.addText(it.icon, {
         x: cx, y: curY, w: 0.45, h: baseTcH,
-        fontSize: 20, align: "center", valign: "middle"
+        fontSize: D.toolCard.iconFontSize, align: "center", valign: "middle"
       });
       cx += 0.52;
     }
@@ -64,7 +64,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     const titleW = sideW - (cx - x) - 0.1;
     slide.addText(it.title || "Tool", {
       x: cx, y: curY + 0.12, w: titleW, h: 0.35,
-      fontSize: 10.5, bold: true, color: pal.white,
+      fontSize: D.toolCard.nameSize, bold: true, color: pal.white,
       fontFace: fontSubTitle, valign: "middle"
     });
     
@@ -77,7 +77,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
       });
       slide.addText(it.tag, {
         x: x + 0.15, y: curY + baseTcH - 0.38, w: sideW - 0.3, h: 0.2,
-        fontSize: 7.5, bold: true, color: color,
+        fontSize: D.toolCard.tagSize, bold: true, color: color,
         fontFace: font, align: "center", valign: "middle"
       });
     }

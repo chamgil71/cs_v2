@@ -49,7 +49,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     const val = it.icon || it.title || "0";
     slide.addText(val, {
       x: cx + 0.1, y: cy + 0.12, w: cardW - 0.2, h: 0.45,
-      fontSize: 24, bold: true, color: color,
+      fontSize: g.statValueSize, bold: true, color: color,
       fontFace: fontTitle, align: "center", valign: "middle"
     });
     

@@ -88,28 +88,50 @@ vite-api-plugin.ts (API Router)
 
 ---
 
-## 4. 숏코드 카드 폰트 크기 시스템 (`scripts/build-guide.mjs`)
+## 4. 숏코드 렌더링 & 폰트 크기 시스템 (2026-06-25 단일화)
 
-### 4-1. CSS 변수 기반 통일 관리
+> **HTML 숏코드 렌더링은 정본 공유 모듈로 통합됨.** `scripts/shortcode-render.mjs`(파서+렌더러) + `scripts/shortcode-styles.mjs`(컴포넌트 CSS, `var(--*)`)를 **`build-guide.mjs` · `build-presentation.mjs` · `src/lib/client-compiler.ts` 세 출력이 모두 import** 한다. 숏코드 동작/스타일 수정 시 이 두 모듈만 고치면 3개 HTML 출력에 동시 반영된다. (PPTX는 매체가 달라 `scripts/pptx-renderers/`로 별도 — 단, 같은 입력 파서를 공유)
 
-`build-guide.mjs`가 생성하는 HTML의 `:root` 블록에는 모든 숏코드 카드 크기를 제어하는 전용 CSS 변수가 선언됩니다.
+### 4-1. CSS 크기 토큰 — config 단일 출처 (하드코딩 아님)
 
-```css
-/* build-guide.mjs — buildHtml() 내부 :root 블록 (약 984번째 줄) */
-:root {
-  --font-scale: 1.0;            /* config/htmldesign.config.json scale 값 */
-  --size-card-title: 1.15rem;   /* 모든 숏코드 카드 제목 */
-  --size-card-p:     0.92rem;   /* 모든 숏코드 카드 설명/본문 */
-  --size-stat-val:   2.4rem;    /* stat-grid 수치 */
-  --size-stat-name:  1.1rem;    /* stat-grid 라벨 */
-  --size-stat-note:  0.8rem;    /* stat-grid 노트 */
-  --size-plan-badge: 0.75rem;   /* plan-grid 뱃지 */
-  --size-plan-features: 0.95rem;/* plan-grid 기능 목록 */
+각 셸이 생성하는 HTML `:root` 블록의 `--size-*` 변수는 **`config/htmldesign.config.json`의 `htmlSize` 에서 로드**된다. 코드에는 폴백만 둔다(하드코딩 금지 규칙).
+
+```jsonc
+// config/htmldesign.config.json
+"htmlSize": {
+  "guide":        { "h1": "2.2rem", "card-title": "1.15rem", "card-p": "0.92rem", ... },
+  "presentation": { "h1": "3rem",   "card-title": "1.45rem", "card-p": "1.2rem",  ... }
 }
 ```
 
-`--font-scale`은 `config/htmldesign.config.json`의 `htmlFont.scale` 값을 런타임에 주입합니다.  
-나머지 `--size-*` 변수는 `build-guide.mjs`에 하드코딩되어 있으며, 전역 변경 시 직접 편집합니다.
+| 출력 | 사용 프로파일 | 주입 코드 |
+|------|--------------|----------|
+| 가이드 HTML (build-guide) | `htmlSize.guide` | `const sz = HTML_CONFIG?.htmlSize?.guide \|\| {}` → `--size-h1: ${sz['h1'] \|\| '2.2rem'}` |
+| 슬라이드 HTML (build-presentation) | `htmlSize.presentation` | 동일 패턴 (presentation 프로파일) |
+| 미리보기/standalone (client-compiler) | html=guide / presentation=presentation | `?raw` import + 주석제거 파싱 → `HSZ_GUIDE`/`HSZ_PRES` |
+
+전역 크기 변경 시 **`config/htmldesign.config.json` 한 곳만 수정**하면 3개 출력에 반영된다. `--font-scale`은 `htmlFont.scale` 값을 주입한다.
+
+### 4-2. 숏코드별 오버라이드 헬퍼 함수 (`scripts/shortcode-render.mjs`)
+
+숏코드 선언부에 `title-size` / `desc-size` 인수가 있으면 해당 블록 컨테이너에  
+`style="--size-card-title:X; --size-card-p:Y"` 인라인으로 CSS 변수를 오버라이드합니다. (PPTX도 `md-to-pptx.mjs`가 동일 인자를 지원 — 배수/절대 pt)
+
+```js
+// shortcode-render.mjs (build-guide 에서 추출된 정본 모듈)
+
+const DEFAULT_TITLE_REM = 1.15;
+const DEFAULT_P_REM     = 0.92;
+
+function resolveSizeArg(val, defaultRem) {
+  // 순수 숫자 → 비율 계산
+  if (/^\d+(\.\d+)?$/.test(val)) return `${(parseFloat(val) * defaultRem).toFixed(3)}rem`;
+  // 단위 포함 → 절대값 그대로
+  return val;
+}
+
+function buildSizeOverrideStyle(argsStr) {
+  const tm = argsStr.match(/title-size=(\S+)/);
 
 ### 4-2. 숏코드별 오버라이드 헬퍼 함수
 

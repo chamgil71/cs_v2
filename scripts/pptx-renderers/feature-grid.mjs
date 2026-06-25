@@ -94,7 +94,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
       });
       slide.addText(it.tag, {
         x: cx + 0.12, y: ty, w: badgeW, h: badgeH,
-        fontSize: 7.5, bold: true, color: pal.brandDark,
+        fontSize: g.featureTagSize, bold: true, color: pal.brandDark,
         fontFace: font, align: "center", valign: "middle"
       });
       ty += 0.24;

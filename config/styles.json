@@ -13,9 +13,7 @@
     "webFontTitle": "Pretendard, sans-serif",
     "pptxFont": "paperlogy-regular",
     "pptxFontTitle": "paperlogy-extrabold",
-    "pptxFontSubTitle": "paperlogy-semibold",
-    "titleSize": 14,
-    "bodySize": 11
+    "pptxFontSubTitle": "paperlogy-semibold"
   },
   "ai-chat": {
     "label": "AI 챗봇 (그린)",

@@ -18,9 +18,9 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-import { getContrast } from '../lib/wcag';
+import { getContrast, getLuminance } from '../lib/wcag';
 import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
-import { exportIframeToEditablePptx } from '../lib/exportGuide';
+import { convertMdToPptxBrowser } from '../lib/pptx-browser';
 
 
 const downloadFile = (content: string, filename: string, contentType: string) => {
@@ -549,6 +549,8 @@ style: custom-blue
   const [previewHtml, setPreviewHtml] = useState<string>("");
   const [generatingPreview, setGeneratingPreview] = useState(false);
   const [previewDevice, setPreviewDevice] = useState<"desktop" | "tablet" | "mobile">("desktop");
+  const [iframeContentHeight, setIframeContentHeight] = useState(0);
+  const [previewContainerHeight, setPreviewContainerHeight] = useState(600);
   
   // Final Save Options
   const [outputPath, setOutputPath] = useState("");
@@ -586,8 +588,10 @@ style: custom-blue
   // Compute contrast ratio for selected style
   const currentStyle = styles[selectedStyle];
   let contrastRatio = 4.5;
+  let bgIsLight = true;
   if (currentStyle && currentStyle.brand && currentStyle.bg) {
     contrastRatio = getContrast(currentStyle.brand, currentStyle.bg);
+    bgIsLight = getLuminance(currentStyle.bg) > 0.5;
   }
 
   // Load styles and file list on mount
@@ -608,9 +612,13 @@ style: custom-blue
     const el = previewWrapRef.current;
     if (!el) return;
     const VIRTUAL_W = previewDevice === "mobile" ? 375 : previewDevice === "tablet" ? 768 : 1200;
-    const calc = (w: number) => setPreviewScale(w > 0 ? Math.min(1, w / VIRTUAL_W) : 1);
-    calc(el.getBoundingClientRect().width);
-    const ro = new ResizeObserver(([entry]) => calc(entry.contentRect.width));
+    const calc = (w: number, h: number) => {
+      setPreviewScale(w > 0 ? Math.min(1, w / VIRTUAL_W) : 1);
+      if (h > 0) setPreviewContainerHeight(h);
+    };
+    const rect = el.getBoundingClientRect();
+    calc(rect.width, rect.height);
+    const ro = new ResizeObserver(([entry]) => calc(entry.contentRect.width, entry.contentRect.height));
     ro.observe(el);
     return () => ro.disconnect();
   }, [previewDevice]);
@@ -712,13 +720,28 @@ style: custom-blue
   // Trigger preview compilation
   const triggerPreview = async (mdContent = markdown, mode = previewMode, style = selectedStyle) => {
     setGeneratingPreview(true);
+    setIframeContentHeight(0);
+
+    // Presentation mode: show actual presentation HTML (dark, horizontal slides)
+    // 컨테이너가 aspect-ratio:16/9 이므로 1280×720 iframe이 너비 기준으로 축소되어 잘리지 않음
+    if (mode === "presentation") {
+      try {
+        const localHtml = clientCompileMarkdown(mdContent, "presentation", style, styles);
+        setPreviewHtml(localHtml);
+      } catch (localErr: any) {
+        toast({ title: "로컬 컴파일 오류", description: (localErr as Error).message, variant: "destructive" });
+      }
+      setGeneratingPreview(false);
+      return;
+    }
+
     try {
       const res = await fetch("/api/preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ markdown: mdContent, mode, style })
       });
-      
+
       if (res.ok) {
         const html = await res.text();
         setPreviewHtml(html);
@@ -848,50 +871,18 @@ style: custom-blue
             downloadFile(htmlContent, htmlName, "text/html;charset=utf-8");
           }
 
-          // 3. Generate presentation HTML once (shared for HTML download + PPTX)
-          let presHtml: string | null = null;
-          if (hasPresentation || hasPptx) {
-            presHtml = clientCompileMarkdown(markdown, "presentation", selectedStyle, styles);
-          }
-
-          if (hasPresentation && presHtml) {
+          // 3. Generate and download presentation HTML
+          if (hasPresentation) {
+            const presHtml = clientCompileMarkdown(markdown, "presentation", selectedStyle, styles);
             const presName = filename.replace(/\.md$/i, "_presentation.html");
             downloadFile(presHtml, presName, "text/html;charset=utf-8");
           }
 
-          // 4. Export to PPTX via pptxgenjs (client-side, no server needed)
-          if (hasPptx && presHtml) {
-            const frontmatch = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-            const docTitle = frontmatch
-              ? (frontmatch[1].match(/title:\s*(.*)/)?.[1] || "Guide").replace(/^["']|["']$/g, "")
-              : "Guide";
+          // 4. Export to PPTX via pptx-browser (server-side 로직과 동일한 렌더링)
+          if (hasPptx) {
             const pptxName = filename.replace(/\.md$/i, ".pptx");
-
             toast({ title: "PPTX 생성 중...", description: "슬라이드를 브라우저에서 렌더링하고 있습니다." });
-
-            await new Promise<void>((resolve, reject) => {
-              const tempIframe = document.createElement("iframe");
-              tempIframe.style.cssText = "position:fixed;top:-9999px;left:-9999px;width:1280px;height:2000px;visibility:hidden;pointer-events:none;border:none;";
-              document.body.appendChild(tempIframe);
-
-              const cleanup = () => {
-                if (document.body.contains(tempIframe)) document.body.removeChild(tempIframe);
-              };
-
-              tempIframe.onload = async () => {
-                try {
-                  await new Promise(r => setTimeout(r, 600)); // font render buffer
-                  await exportIframeToEditablePptx(tempIframe, docTitle, pptxName);
-                  resolve();
-                } catch (err) {
-                  reject(err);
-                } finally {
-                  cleanup();
-                }
-              };
-
-              tempIframe.srcdoc = presHtml!;
-            });
+            await convertMdToPptxBrowser(markdown, pptxName, { styleOverride: selectedStyle });
           }
 
           const downloadedFormats = [
@@ -1312,22 +1303,15 @@ style: custom-blue
           </div>
         </div>
 
-        {/* Live Contrast Linter Warning Banner */}
-        {contrastRatio < 4.5 && currentStyle && (
-          <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-lg p-4 text-sm flex items-start gap-2.5 shadow-sm leading-relaxed">
-            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <strong>가독성 대비 경고 (WCAG AA 미달)</strong><br />
-              선택한 테마 <code>{currentStyle?.label || selectedStyle}</code>의 주컬러와 배경색 간의 명도 대비도가 <strong>{contrastRatio.toFixed(2)}:1</strong>로 WCAG AA 가이드라인 기준(4.5:1)에 미달합니다. 
-              가독성 확보를 위해 <span className="underline font-bold text-amber-900">디자인 시스템 조율</span> 탭에서 해당 테마의 브랜드 색상 명도(L값)를 조절할 것을 권장합니다.
-            </div>
-          </div>
-        )}
-
-        {/* Live Preview Iframe Frame — scaled to fit */}
+        {/* Live Preview Iframe Frame
+            - presentation: 컨테이너 자체를 aspect-ratio:16/9 로 고정 → iframe 1280×720을 너비 기준으로 scale하면 높이도 항상 정확히 맞음
+            - html: 기존 flex-1 방식 유지 (긴 문서 스크롤) */}
         <div
           ref={previewWrapRef}
-          className="flex-1 min-h-[300px] bg-slate-100 border border-slate-200 rounded-xl overflow-hidden relative"
+          className={`bg-slate-100 border border-slate-200 rounded-xl relative overflow-hidden ${
+            previewMode === "presentation" ? "w-full" : "flex-1 min-h-[300px]"
+          }`}
+          style={previewMode === "presentation" ? { aspectRatio: "16 / 9" } : undefined}
         >
           {generatingPreview && !previewHtml ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-2 bg-slate-50">
@@ -1336,26 +1320,33 @@ style: custom-blue
             </div>
           ) : previewHtml ? (
             (() => {
+              if (previewMode === "presentation") {
+                // 컨테이너가 16:9이므로 너비 기준 scale만 계산하면 높이도 자동으로 맞음
+                const cw = previewWrapRef.current?.clientWidth ?? 800;
+                const scale = Math.min(1, cw / 1280);
+                return (
+                  <div style={{ width: 1280, height: 720, transform: `scale(${scale})`, transformOrigin: "top left", position: "absolute", top: 0, left: 0 }}>
+                    <iframe
+                      title="Markdown Compiler Preview Frame"
+                      srcDoc={previewHtml}
+                      style={{ width: "100%", height: "100%", border: "none", display: "block" }}
+                      scrolling="no"
+                    />
+                  </div>
+                );
+              }
+              // HTML 가이드 모드 (기존 방식)
               const VIRTUAL_W = previewDevice === "mobile" ? 375 : previewDevice === "tablet" ? 768 : 1200;
-              const VIRTUAL_H = previewMode === "presentation" ? Math.round(VIRTUAL_W * 9 / 16) : 900;
-              const scale = previewScale;
+              const VIRTUAL_H = previewScale > 0 && previewContainerHeight > 0
+                ? Math.round(previewContainerHeight / previewScale)
+                : 900;
               return (
-                <div
-                  style={{
-                    width: VIRTUAL_W,
-                    height: VIRTUAL_H,
-                    transform: `scale(${scale})`,
-                    transformOrigin: "top left",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                  }}
-                >
+                <div style={{ width: VIRTUAL_W, height: VIRTUAL_H, transform: `scale(${previewScale})`, transformOrigin: "top left", position: "absolute", top: 0, left: 0 }}>
                   <iframe
                     title="Markdown Compiler Preview Frame"
                     srcDoc={previewHtml}
                     style={{ width: "100%", height: "100%", border: "none", display: "block" }}
-                    scrolling={previewMode === "presentation" ? "no" : "yes"}
+                    scrolling="yes"
                   />
                 </div>
               );
@@ -1368,10 +1359,24 @@ style: custom-blue
           {/* Scale indicator */}
           {previewHtml && (
             <div className="absolute bottom-2 right-2 bg-slate-800/70 text-white text-[10px] px-1.5 py-0.5 rounded pointer-events-none select-none">
-              {Math.round(previewScale * 100)}%
+              {previewMode === "presentation"
+                ? `${Math.round(Math.min(1, (previewWrapRef.current?.clientWidth ?? 800) / 1280) * 100)}% · 16:9`
+                : `${Math.round(previewScale * 100)}%`}
             </div>
           )}
         </div>
+
+        {/* Live Contrast Linter Warning Banner — 미리보기 하단 */}
+        {contrastRatio < 4.5 && currentStyle && (
+          <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-lg p-3 text-xs flex items-start gap-2 shadow-sm leading-relaxed">
+            <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <strong>가독성 대비 경고 (WCAG AA 미달)</strong>{" "}
+              선택한 테마 <code>{currentStyle?.label || selectedStyle}</code>의 주컬러 대비도가 <strong>{contrastRatio.toFixed(2)}:1</strong>로 기준(4.5:1)에 미달합니다.{" "}
+              <span className="underline font-bold text-amber-900">디자인 시스템 조율</span> 탭에서 브랜드 주컬러를 {bgIsLight ? "더 어두운" : "더 밝은"} 계열로 조정하세요.
+            </div>
+          </div>
+        )}
       </div>
       
       {showGuide && (

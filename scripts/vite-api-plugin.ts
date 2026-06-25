@@ -292,7 +292,7 @@ export function viteApiPlugin(): Plugin {
                 cmd = `node scripts/build-presentation.mjs "${tempMd}" "${tempHtml}"${styleFlag}`;
               }
 
-              await execAsync(cmd);
+              await execAsync(cmd, { timeout: 60_000 });
 
               if (fs.existsSync(tempHtml)) {
                 const htmlContent = fs.readFileSync(tempHtml, "utf8");
@@ -554,8 +554,8 @@ export function viteApiPlugin(): Plugin {
             try {
               if (process.platform === "win32") {
                 const rootDirEscaped = rootDir.replace(/\\/g, "\\\\");
-                const psCommand = `Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.FolderBrowserDialog; $f.Description = '변환 또는 저장할 폴더를 선택하십시오.'; $f.SelectedPath = '${rootDirEscaped}'; if ($f.ShowDialog() -eq 'OK') { Write-Output $f.SelectedPath }`;
-                const { stdout } = await execAsync(`powershell -NoProfile -Command "${psCommand}"`);
+                const psCommand = `Add-Type -AssemblyName System.Windows.Forms; $owner = New-Object System.Windows.Forms.Form; $owner.TopMost = $true; $f = New-Object System.Windows.Forms.FolderBrowserDialog; $f.Description = '변환 또는 저장할 폴더를 선택하십시오.'; $f.SelectedPath = '${rootDirEscaped}'; if ($f.ShowDialog($owner) -eq [System.Windows.Forms.DialogResult]::OK) { Write-Output $f.SelectedPath }`;
+                const { stdout } = await execAsync(`powershell -NoProfile -Command "${psCommand}"`, { timeout: 120000 });
                 const selectedPath = stdout.trim();
                 
                 if (selectedPath) {
@@ -640,7 +640,7 @@ export function viteApiPlugin(): Plugin {
               // Run build-publish to compile guide hub & update standalone.html
               try {
                 console.log(`[API] Rebuilding guide hub for ${mdFilename}...`);
-                await execAsync("node scripts/build-publish.mjs");
+                await execAsync("node scripts/build-publish.mjs", { timeout: 180_000 });
               } catch (buildErr: any) {
                 console.error("Error building guides:", buildErr);
                 // Continue despite build error so files are still created in output directory
@@ -685,24 +685,25 @@ export function viteApiPlugin(): Plugin {
                   fs.mkdirSync(formatOutDir, { recursive: true });
                 }
                 
+                const EXEC_TIMEOUT = { timeout: 120_000 }; // 120초 타임아웃
                 if (format === "html") {
                   outFilename = `${baseName}.html`;
                   const outPath = path.join(formatOutDir, outFilename);
                   cmd = `node scripts/build-guide.mjs "${tempMd}" --out "${outPath}"${styleFlag}`;
-                  await execAsync(cmd);
+                  await execAsync(cmd, EXEC_TIMEOUT);
                   savedFiles.push(outPath);
                 } else if (format === "presentation") {
                   outFilename = `${baseName}_presentation.html`;
                   const outPath = path.join(formatOutDir, outFilename);
                   cmd = `node scripts/build-presentation.mjs "${tempMd}" "${outPath}"${styleFlag}`;
-                  await execAsync(cmd);
+                  await execAsync(cmd, EXEC_TIMEOUT);
                   savedFiles.push(outPath);
                 } else if (format === "pptx") {
                   outFilename = `${baseName}.pptx`;
                   const outPath = path.join(formatOutDir, outFilename);
                   const noCoverFlag = (options && options.noCover) ? " --no-cover" : "";
                   cmd = `node scripts/md-to-pptx.mjs "${tempMd}" --out "${outPath}"${styleFlag}${noCoverFlag}`;
-                  await execAsync(cmd);
+                  await execAsync(cmd, EXEC_TIMEOUT);
                   savedFiles.push(outPath);
                 }
               }

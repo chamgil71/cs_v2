@@ -179,7 +179,7 @@ const E = {
   white: "FFFFFF",
 };
 
-const FONT = "Malgun Gothic";
+let FONT = "Malgun Gothic";
 const FONT_MONO = "Consolas";
 
 const MARGIN_X = 0.5;
@@ -482,6 +482,24 @@ export async function exportIframeToEditablePptx(
   const doc = iframe.contentDocument;
   if (!doc) throw new Error("가이드 문서를 불러오지 못했습니다.");
 
+  // Read style-specific colors and fonts from CSS variables set by the renderer
+  const origE = { ...E };
+  const origFONT = FONT;
+  try {
+    const rootCS = iframe.contentWindow?.getComputedStyle(doc.documentElement);
+    if (rootCS) {
+      const cssVar = (n: string) => (rootCS.getPropertyValue(n) ?? "").trim();
+      const toHex = (v: string) => v.replace(/^#/, "").toUpperCase();
+      const extractFont = (f: string) => f.split(",")[0].replace(/['"]/g, "").trim();
+
+      const brandHex = toHex(cssVar("--brand"));
+      if (/^[0-9A-F]{6}$/.test(brandHex)) E.accent = brandHex;
+
+      const fontDesc = extractFont(cssVar("--font-desc"));
+      if (fontDesc) FONT = fontDesc;
+    }
+  } catch (_) { /* keep defaults on any error */ }
+
   let sections = Array.from(
     doc.querySelectorAll<HTMLElement>(
       "section.hero, section.section, section.done-section, .slide-page",
@@ -551,7 +569,13 @@ export async function exportIframeToEditablePptx(
   const total = slidesMeta.length;
   slidesMeta.forEach(({ slide }, i) => drawPageNumber(slide, i + 1, total));
 
-  await pres.writeFile({ fileName });
+  try {
+    await pres.writeFile({ fileName });
+  } finally {
+    // Restore module-level style state
+    Object.assign(E, origE);
+    FONT = origFONT;
+  }
 }
 
 /* ========== 레거시 호환 (다른 곳에서 import해도 빌드되도록) ========== */

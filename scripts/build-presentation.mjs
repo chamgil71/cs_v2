@@ -872,9 +872,9 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
     --card-bg:    #11141b; /* 💡 다크모드 카드 배경색을 변경하려면 이 값을 수정하세요! */
     --radius:     ${cssRadius};
 
-    /* 💡 중앙통제 역할별 폰트 (설정 파일 config/htmldesign.config.json 에서 관리) */
-    --font-title: ${fontTitle};
-    --font-desc:  ${fontDesc};
+    /* 💡 역할별 폰트 — 스타일별 webFont/webFontTitle 우선, 없으면 htmldesign.config.json 기본값 */
+    --font-title: ${mainStyle.webFontTitle || fontTitle};
+    --font-desc:  ${mainStyle.webFont || fontDesc};
     --font-note:  ${fontNote};
     --font-code:  ${fontCode};
     --font-tag:   ${fontTag};

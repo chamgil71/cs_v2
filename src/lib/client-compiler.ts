@@ -420,7 +420,78 @@ function renderClientShortcode(type: string, body: string, args: string, style: 
     </div>`;
   }
 
-  // Fallback for list-like shortcodes: os-tabs, faq-list, step-flow, summary-bar, workflow-strip, skill-list etc.
+  // 13. step-flow
+  if (type === "step-flow" || type === "flow") {
+    return `<div class="step-flow">${items.map(it => {
+      if (it.title === "→" || it.icon === "→") {
+        return `<div class="step-flow-arrow">→</div>`;
+      }
+      const activeClass = it.tag === "active" ? "active" : "";
+      return `<div class="step-flow-step ${activeClass}">
+        <div class="fs-icon">${escapeHtml(it.icon)}</div>
+        <div class="fs-title">${escapeHtml(it.title)}</div>
+        ${it.meta ? `<div class="fs-meta">${escapeHtml(it.meta)}</div>` : ""}
+        ${it.desc ? `<div class="fs-sub">${renderDesc(it.desc, itemBullet(it), it.color, style)}</div>` : ""}
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  // 14. chapter-list
+  if (type === "chapter-list") {
+    const getBadgeClass = (tag: string) => {
+      const map: Record<string, string> = { "개념": "badge-concept", "도구": "badge-tool", "사례": "badge-case", "가이드": "badge-guide", "실습": "badge-practice", "주의": "badge-warn", "핵심": "badge-practice" };
+      return map[tag.trim()] || "badge-concept";
+    };
+    return `<div class="chapter-list">${items.map(it => `
+      <div class="chapter-item">
+        <span class="chapter-num">${escapeHtml(it.icon)}</span>
+        <div class="chapter-title">
+          <strong>${escapeHtml(it.title)}</strong>
+          ${it.desc ? `<span class="chapter-desc">${escapeHtml(it.desc)}</span>` : ""}
+        </div>
+        ${it.tag && it.tag.trim() !== "" ? `<span class="chapter-badge ${getBadgeClass(it.tag)}">${escapeHtml(it.tag)}</span>` : ""}
+      </div>`).join("")}</div>`;
+  }
+
+  // 15. level-grid
+  if (type === "level-grid") {
+    return `<div class="level-grid">${items.map(it => {
+      const activeClass = it.tag === "highlight" || it.featured === "true" ? "highlight" : "";
+      return `<div class="level-card ${activeClass}">
+        <div class="level-num">${escapeHtml(it.title)}</div>
+        <div class="level-name">${it.desc ? renderDesc(it.desc, itemBullet(it), it.color, style) : ""}</div>
+        ${it.meta ? `<div class="level-tool">${escapeHtml(it.meta)}</div>` : ""}
+        ${it.note ? `<div class="level-desc">${escapeHtml(it.note)}</div>` : ""}
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  // 16. git-flow
+  if (type === "git-flow" || type === "git-flow-strip") {
+    return `<div class="git-flow-container"><div class="flow-branches">${items.map(it => {
+      const color = it.color || "var(--brand)";
+      const tags = it.tag ? it.tag.split("|").map((t: string) => t.trim()) : [];
+      const metas = it.meta ? it.meta.split("|").map((m: string) => m.trim()) : [];
+      const count = Math.max(tags.length, metas.length, 1);
+      const commitsHtml = Array.from({ length: count }).map((_, idx) => {
+        const tag = tags[idx] || "";
+        const meta = metas[idx] || "";
+        return `
+          <div class="commit" style="border-color:${color};">
+            ${tag ? `<span class="commit-label" style="background:${color};">${escapeHtml(tag)}</span>` : ""}
+            ${meta ? `<span class="commit-desc">${escapeHtml(meta)}</span>` : ""}
+          </div>
+          ${idx < count - 1 ? `<div class="commit-line-segment" style="background:${color};"></div>` : ""}
+        `;
+      }).join("");
+      return `<div class="branch-row">
+        <div class="branch-label" style="background:${color}12; border-left:4px solid ${color}; color:${color}; font-weight:800;">${escapeHtml(it.title)}</div>
+        <div class="branch-line">${commitsHtml}</div>
+      </div>`;
+    }).join("")}</div></div>`;
+  }
+
+  // Fallback for unrecognised shortcodes
   return `<div class="card" style="padding:20px; margin:15px 0; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);">
     <div style="font-weight:bold; color:var(--brand); margin-bottom:10px;">[Shortcode: ${type}]</div>
     <ul style="list-style:none; padding:0; margin:0;">
@@ -444,24 +515,189 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
   const subtitle = match ? (match[1].match(/subtitle:\s*(.*)/)?.[1] || "").replace(/^["']|["']$/g, "") : "";
 
   const shortcodeCompiled = body.replace(/:::\s*([a-zA-Z0-9_-]+)(.*?)\r?\n([\s\S]*?)\r?\n:::/g, (match, type, args, content) => {
-    return renderClientShortcode(type.trim(), content, args.trim(), style);
+    const html = renderClientShortcode(type.trim(), content, args.trim(), style);
+    // CommonMark: HTML block terminates at first blank line (whitespace-only line).
+    // Remove whitespace-only lines and collapse multi-newlines to prevent premature termination.
+    const cleanHtml = html.replace(/^[ \t]+$/gm, "").replace(/\n{2,}/g, "\n");
+    return `\n\n${cleanHtml}\n\n`;
   });
 
-  let bodyHtml = "";
   if (mode === "presentation") {
-    const slides = shortcodeCompiled.split(/---\r?\n/);
-    bodyHtml = `<div class="slides-container" style="display:flex; flex-direction:column; gap:40px; max-width:960px; margin:0 auto; padding:40px 20px;">
-      ${slides.map((s, idx) => {
-        const slideHtml = marked.parse(s);
-        return `<div class="slide-page" style="background:#fff; border: 1px solid var(--border); border-radius: var(--radius); padding:40px; box-shadow: var(--shadow); aspect-ratio:16/9; position:relative; display:flex; flex-direction:column; justify-content:center; overflow:hidden; box-sizing: border-box;">
-          <div style="position:absolute; top:20px; right:20px; font-size:0.8rem; color:var(--text-3); font-weight:bold;">${idx + 1}</div>
-          ${slideHtml}
-        </div>`;
-      }).join("")}
-    </div>`;
-  } else {
-    bodyHtml = marked.parse(shortcodeCompiled) as string;
+    // Build slide list: frontmatter cover → h1(cover) / h2(content) / ---( break)
+    const slideList: Array<{type: 'cover'|'content', title: string, body: string}> = [];
+    slideList.push({ type: 'cover', title, body: subtitle });
+    const tokens = (marked as any).lexer(shortcodeCompiled);
+    let curSlide: {type: 'cover'|'content', title: string, body: string} | null = null;
+    const flush = () => { if (curSlide && (curSlide.body.trim() || curSlide.title.trim())) { slideList.push(curSlide); } curSlide = null; };
+    for (const tok of tokens) {
+      if (tok.type === 'heading' && (tok as any).depth === 1) { flush(); curSlide = { type: 'cover', title: tok.text || '', body: '' }; }
+      else if (tok.type === 'heading' && (tok as any).depth === 2) { flush(); curSlide = { type: 'content', title: tok.text || '', body: '' }; }
+      else if (tok.type === 'hr') { flush(); }
+      else if (tok.type !== 'space') { if (!curSlide) curSlide = { type: 'content', title: '', body: '' }; curSlide.body += (marked as any).parser([tok]); }
+    }
+    flush();
+    const total = slideList.length;
+    const slidesHtml = slideList.map((s, idx) => {
+      if (s.type === 'cover') {
+        return `<div class="slide cover"><h1>${renderInline(s.title)}</h1>${s.body ? `<div class="cover-body">${s.body}</div>` : ''}</div>`;
+      }
+      return `<div class="slide content"><header class="slide-header"><h2>${renderInline(s.title)}</h2><span class="slide-num">${idx + 1} / ${total}</span></header><div class="slide-body">${s.body}</div></div>`;
+    }).join('\n');
+
+    return `<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${escapeHtml(title)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand:       ${style.brand || '#6366F1'};
+    --brand-dark:  ${style.brandDark || '#4F46E5'};
+    --brand-deep:  ${style.brandDeep || '#3730A3'};
+    --brand-light: ${style.brandLight || '#EEF0FE'};
+    --brand-mid:   ${style.brandMid || '#D8DCFB'};
+    --brand-gradient: linear-gradient(135deg, ${style.brandDeep || '#3730A3'}, ${style.brandDark || '#4F46E5'});
+    --bg: #0b0d12; --card-bg: #11141b;
+    --text: #f8fafc; --text-2: rgba(255,255,255,0.78); --text-3: #94a3b8; --text-muted: #94a3b8;
+    --border: rgba(255,255,255,0.08);
+    --radius: 12px;
+    --font-title: ${style.webFontTitle || "'Noto Serif KR', serif"};
+    --font-desc:  ${style.webFont || "'Noto Sans KR', sans-serif"};
+    --font-note:  'JetBrains Mono', monospace; --font-code: 'JetBrains Mono', monospace;
+    --font-scale: 1.0;
+    --size-h1: 3rem; --size-h2: 2.6rem; --size-h3: 1.8rem;
+    --size-body-p: 1.3rem; --size-card-title: 1.45rem; --size-card-p: 1.2rem;
+    --shadow: 0 4px 24px rgba(0,0,0,0.25); --shadow-lg: 0 8px 40px rgba(0,0,0,0.3);
   }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-desc), sans-serif; background: var(--bg); color: var(--text); overflow: hidden; width: 100vw; height: 100vh; }
+  .slides-container { display: flex; width: 100vw; height: 100vh; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none; }
+  .slides-container::-webkit-scrollbar { display: none; }
+  .slide { flex: 0 0 100vw; width: 100vw; height: 100vh; scroll-snap-align: start; display: flex; flex-direction: column; padding: 80px 100px; box-sizing: border-box; overflow-y: auto; background: var(--bg); }
+  .slide.cover { justify-content: center; align-items: center; background: linear-gradient(135deg, var(--brand-deep), var(--brand-dark)); text-align: center; }
+  .slide.cover h1 { font-family: var(--font-title); font-size: calc(var(--size-h1)*var(--font-scale)); font-weight: 900; color: #fff; margin-bottom: 24px; text-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+  .cover-body { max-width: 900px; margin: 20px auto 0; color: var(--brand-light); }
+  .cover-body p { font-size: calc(1.4rem*var(--font-scale)); line-height: 1.8; margin-bottom: 16px; color: var(--brand-light); }
+  .slide.content { justify-content: flex-start; align-items: flex-start; }
+  .slide-header { width: 100%; border-bottom: 2px solid var(--brand); padding-bottom: 20px; margin-bottom: 40px; display: flex; align-items: center; justify-content: space-between; }
+  .slide-header h2 { font-family: var(--font-title); font-size: calc(var(--size-h2)*var(--font-scale)); color: rgba(255,255,255,0.95); font-weight: 700; }
+  .slide-num { font-family: var(--font-note); font-size: 1.1rem; color: var(--text-muted); }
+  .slide-body { width: 100%; flex: 1; font-size: calc(1.3rem*var(--font-scale)); line-height: 1.8; }
+  .slide-body h3 { font-family: var(--font-title); font-size: calc(var(--size-h3)*var(--font-scale)); color: var(--brand-light); margin: 20px 0 12px; }
+  .slide-body p { color: var(--text-2); margin-bottom: 14px; }
+  .slide-body ul,.slide-body ol { padding-left: 24px; margin-bottom: 14px; }
+  .slide-body li { margin-bottom: 8px; color: var(--text-2); }
+  .slide-body strong { color: #fff; font-weight: 700; }
+  .slide-body pre { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; padding: 16px; border-radius: 8px; font-family: var(--font-code); font-size: 0.9rem; overflow-x: auto; margin: 14px 0; }
+  .slide-body code { background: rgba(255,255,255,0.1); color: var(--brand-light); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; font-family: var(--font-code); }
+  .slide-body pre code { background: none; }
+  .slide-body table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  .slide-body th { background: var(--brand); color: #fff; padding: 10px 14px; text-align: center; font-size: 0.9rem; font-weight: 700; }
+  .slide-body td { padding: 8px 14px; border-bottom: 1px solid rgba(255,255,255,0.07); color: var(--text-2); text-align: center; }
+  /* ── shortcode card shared CSS (same as guide HTML, dark overrides below) ── */
+  .icon-grid,.feature-grid,.compare-grid,.plan-grid,.columns-grid,.badge-grid { display:grid; gap:20px; margin:20px 0; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); }
+  .icon-card,.feature-card,.compare-card,.column-card,.plan-card,.summary-box,.badge-item { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:20px; position:relative; overflow:hidden; }
+  .card-top-bar { height:4px; background:var(--brand); position:absolute; top:0; left:0; right:0; }
+  .feature-tag { position:absolute; top:10px; right:10px; font-size:0.7rem; font-weight:bold; padding:2px 8px; border-radius:100px; background:rgba(255,255,255,0.1); color:var(--brand-light); }
+  .icon-wrap { font-size:2rem; margin-bottom:12px; }
+  .icon-card-title,.feature-card-title,.compare-card-title,.col-title { font-family:var(--font-title); font-size:var(--size-card-title); font-weight:700; color:var(--text); margin-bottom:8px; }
+  .icon-card p,.feature-card p,.compare-card p,.column-card p { font-size:var(--size-card-p); color:var(--text-muted); margin:0; line-height:1.55; }
+  /* step-flow */
+  .step-flow { display:flex; align-items:stretch; gap:15px; overflow-x:auto; padding-bottom:8px; }
+  .step-flow-step { flex:1; min-width:130px; background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:18px; text-align:center; display:flex; flex-direction:column; align-items:center; }
+  .step-flow-step.active { border-color:var(--brand); }
+  .fs-icon { width:45px; height:45px; margin:0 auto 10px; background:rgba(255,255,255,0.06); color:var(--brand); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3rem; }
+  .step-flow-step.active .fs-icon { background:var(--brand); color:#fff; }
+  .fs-title { font-weight:800; font-size:1rem; margin-bottom:5px; color:var(--text); }
+  .fs-meta { font-size:0.75rem; color:var(--text-muted); margin-top:4px; }
+  .fs-sub { font-size:0.9rem; color:var(--text-muted); margin:0; }
+  .step-flow-arrow { display:flex; align-items:center; justify-content:center; font-weight:900; color:rgba(255,255,255,0.2); font-size:1.5rem; flex-shrink:0; }
+  /* stat-grid */
+  .stat-grid { display:grid; gap:20px; margin:20px 0; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
+  .stat-card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:24px; text-align:center; }
+  .stat-val { font-family:var(--font-title); font-size:2.4rem; font-weight:900; color:var(--brand); }
+  .stat-name { font-size:1rem; font-weight:600; color:var(--text); margin:6px 0 4px; }
+  .stat-note { font-size:0.85rem; color:var(--text-muted); }
+  /* alert-box */
+  .alert-box { border-left:4px solid var(--brand); background:rgba(255,255,255,0.04); padding:16px 20px; border-radius:var(--radius); margin:14px 0; }
+  .alert-body p { color:var(--text-2); }
+  /* summary-box */
+  .summary-box { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:20px; }
+  .summary-box p { color:var(--text-muted); }
+  /* takeaway-banner */
+  .takeaway-banner { background:linear-gradient(135deg,var(--brand-deep),var(--brand-dark)); border-radius:var(--radius); padding:24px 32px; margin:20px 0; color:#fff; }
+  /* badge-grid */
+  .badge-grid { display:flex; flex-wrap:wrap; gap:10px; margin:16px 0; }
+  .badge-item { padding:6px 16px; border-radius:100px; font-size:0.85rem; font-weight:600; background:rgba(255,255,255,0.08); color:var(--text); border:none; }
+  /* faq-list, step-list */
+  .faq-list,.step-list { margin:16px 0; }
+  .faq-item,.step-item { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:16px 20px; margin-bottom:10px; }
+  .faq-q,.step-title { font-weight:700; color:var(--text); margin-bottom:6px; }
+  .faq-a,.step-desc { color:var(--text-muted); font-size:0.95rem; }
+  /* level-grid */
+  .level-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin:20px 0; }
+  .level-card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:20px; text-align:center; }
+  .level-num { font-size:1.25rem; font-weight:900; color:var(--brand); margin-bottom:8px; }
+  .level-name { font-size:0.95rem; font-weight:700; color:var(--text); }
+  .level-desc { font-size:0.78rem; color:var(--text-muted); font-style:italic; margin-top:8px; }
+  /* git-flow */
+  .git-flow-container { background:#0F172A; padding:28px; border-radius:var(--radius); border:1px solid rgba(255,255,255,0.08); overflow-x:auto; }
+  .flow-branches { display:flex; flex-direction:column; gap:20px; min-width:600px; }
+  .branch-row { display:grid; grid-template-columns:140px 1fr; gap:20px; align-items:center; min-height:80px; }
+  .branch-label { padding:8px 16px; border-radius:8px; font-size:0.9rem; text-align:center; }
+  .branch-line { display:flex; align-items:center; flex:1; height:32px; position:relative; padding:0 10%; }
+  .commit { width:18px; height:18px; background:#0F172A; border:3px solid var(--brand); border-radius:50%; position:relative; flex-shrink:0; }
+  .commit-label { position:absolute; bottom:24px; left:50%; transform:translateX(-50%); color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:100px; white-space:nowrap; }
+  .commit-desc { position:absolute; top:24px; left:50%; transform:translateX(-50%); color:#94A3B8; font-size:0.72rem; white-space:nowrap; }
+  .commit-line-segment { flex:1; height:3px; min-width:30px; }
+  /* nav buttons */
+  .nav-btn { position:fixed; bottom:40px; z-index:1000; width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:1.4rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; backdrop-filter:blur(8px); }
+  .nav-btn:hover { background:rgba(255,255,255,0.16); }
+  .prev-btn { left:40px; } .next-btn { right:40px; }
+</style>
+</head>
+<body>
+<div class="slides-container" id="slidesContainer">${slidesHtml}</div>
+<button class="nav-btn prev-btn" id="btnPrev">&#8592;</button>
+<button class="nav-btn next-btn" id="btnNext">&#8594;</button>
+<script>
+  var currentIdx = 0;
+  var container = document.getElementById('slidesContainer');
+  var slides = container.querySelectorAll('.slide');
+  var btnPrev = document.getElementById('btnPrev');
+  var btnNext = document.getElementById('btnNext');
+  function scrollToSlide(idx) {
+    if (idx < 0 || idx >= slides.length) return;
+    currentIdx = idx;
+    container.scrollTo({ left: idx * window.innerWidth, behavior: 'smooth' });
+    btnPrev.style.opacity = idx === 0 ? '0.3' : '1';
+    btnNext.style.opacity = idx === slides.length - 1 ? '0.3' : '1';
+  }
+  btnPrev.addEventListener('click', function() { scrollToSlide(currentIdx - 1); });
+  btnNext.addEventListener('click', function() { scrollToSlide(currentIdx + 1); });
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); scrollToSlide(currentIdx + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); scrollToSlide(currentIdx - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); scrollToSlide(0); }
+    else if (e.key === 'End') { e.preventDefault(); scrollToSlide(slides.length - 1); }
+  });
+  var scrollTimer;
+  container.addEventListener('scroll', function() {
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(function() {
+      var idx = Math.round(container.scrollLeft / window.innerWidth);
+      if (idx !== currentIdx) { currentIdx = idx; }
+    }, 100);
+  });
+  scrollToSlide(0);
+</script>
+</body>
+</html>`;
+  }
+
+  let bodyHtml = marked.parse(shortcodeCompiled) as string;
 
   const html = `<!DOCTYPE html>
 <html lang="ko">
@@ -485,11 +721,11 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
     --shadow-lg: 0 8px 40px rgba(0,0,0,0.10);
     --radius: 12px;
 
-    --font-title: 'Noto Serif KR', serif;
-    --font-desc:  'Noto Sans KR', sans-serif;
+    --font-title: ${style.webFontTitle || "'Noto Serif KR', serif"};
+    --font-desc:  ${style.webFont || "'Noto Sans KR', sans-serif"};
     --font-note:  'JetBrains Mono', monospace;
     --font-code:  'JetBrains Mono', monospace;
-    --font-tag:   'Noto Sans KR', sans-serif;
+    --font-tag:   ${style.webFont || "'Noto Sans KR', sans-serif"};
     --font-scale: 1.0;
 
     --size-h1: 2.2rem;
@@ -522,6 +758,55 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
   .card-top-bar { height: 4px; background: var(--brand); position: absolute; top: 0; left: 0; right: 0; }
   .feature-tag { position: absolute; top: 10px; right: 10px; font-size: 0.7rem; font-weight: bold; padding: 2px 8px; border-radius: 100px; background: var(--brand-light); color: var(--brand-dark); }
   
+  /* step-flow */
+  .step-flow { display: flex; align-items: stretch; gap: 15px; margin: 25px 0; overflow-x: auto; padding-bottom: 10px; }
+  .step-flow-step { flex: 1; min-width: 140px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; box-shadow: var(--shadow); }
+  .step-flow-step.active { border-color: var(--brand); }
+  .fs-icon { width: 45px; height: 45px; margin: 0 auto 10px; background: var(--brand-light); color: var(--brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+  .step-flow-step.active .fs-icon { background: var(--brand); color: #fff; }
+  .fs-title { font-weight: 800; font-size: 1rem; margin-bottom: 5px; color: var(--text); }
+  .fs-meta { font-size: 0.75rem; color: var(--text-3); margin-top: 4px; }
+  .fs-sub { font-size: 0.9rem; color: var(--text-2); margin: 0; }
+  .step-flow-arrow { display: flex; align-items: center; justify-content: center; font-weight: 900; color: #cbd5e1; font-size: 1.5rem; flex-shrink: 0; }
+
+  /* chapter-list */
+  .chapter-list { margin-top: 0; border-left: 2px solid var(--border); margin-left: 26px; padding-left: 15px; }
+  .chapter-item { display: flex; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .chapter-item:last-child { border-bottom: none; }
+  .chapter-num { font-size: 11px; color: var(--text-3); min-width: 38px; flex-shrink: 0; }
+  .chapter-title { font-size: 14px; color: var(--text-2); flex: 1; line-height: 1.45; }
+  .chapter-title strong { font-weight: 600; color: var(--text); }
+  .chapter-desc { font-size: 11px; color: var(--text-3); margin-top: 2px; display: block; }
+  .chapter-badge { font-size: 10px; padding: 2px 8px; border-radius: 100px; flex-shrink: 0; font-weight: 500; }
+  .badge-concept { background: #e8f0fe; color: #1a3a8c; }
+  .badge-tool { background: #f0fce8; color: #1a5c20; }
+  .badge-case { background: #fef3e8; color: #7c3a00; }
+  .badge-guide { background: #f8e8fe; color: #5c007c; }
+  .badge-practice { background: #e8fef3; color: #007c3a; }
+  .badge-warn { background: #fee8e8; color: #7c0000; }
+
+  /* level-grid */
+  .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 25px 0; }
+  .level-card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .level-card.highlight { border-color: var(--brand); background: var(--brand-light); }
+  .level-num { font-size: 1.25rem; font-weight: 900; color: var(--brand); margin-bottom: 8px; }
+  .level-card.highlight .level-num { color: var(--brand-dark); }
+  .level-name { font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .level-name p { margin: 0; }
+  .level-tool { font-size: 0.85rem; color: var(--text-2); font-weight: 500; margin-bottom: 8px; }
+  .level-desc { font-size: 0.78rem; color: var(--text-3); font-style: italic; margin-top: auto; border-top: 1px dashed var(--border); padding-top: 8px; }
+
+  /* git-flow */
+  .git-flow-container { background: #0F172A; padding: 28px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.08); margin: 25px 0; overflow-x: auto; }
+  .flow-branches { display: flex; flex-direction: column; gap: 20px; min-width: 600px; }
+  .branch-row { display: grid; grid-template-columns: 140px 1fr; gap: 20px; align-items: center; min-height: 80px; }
+  .branch-label { padding: 8px 16px; border-radius: 8px; font-size: 0.9rem; text-align: center; }
+  .branch-line { display: flex; align-items: center; flex: 1; height: 32px; position: relative; padding: 0 10%; }
+  .commit { width: 18px; height: 18px; background: #0F172A; border: 3px solid var(--brand); border-radius: 50%; position: relative; flex-shrink: 0; }
+  .commit-label { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 0.72rem; font-weight: 800; padding: 2px 8px; border-radius: 100px; white-space: nowrap; }
+  .commit-desc { position: absolute; top: 24px; left: 50%; transform: translateX(-50%); color: #94A3B8; font-size: 0.72rem; white-space: nowrap; }
+  .commit-line-segment { flex: 1; height: 3px; min-width: 30px; }
+
   /* Pre and code */
   pre { background: #0F172A; color: #F1F5F9; padding: 15px; border-radius: 8px; font-family: var(--font-code); font-size: 0.85rem; overflow-x: auto; margin: 15px 0; }
   code { font-family: var(--font-code); font-size: 0.9em; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: var(--brand-deep); }
@@ -536,25 +821,17 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
 </style>
 </head>
 <body>
-  ${mode !== "presentation" ? `
-    <div class="container">
-      <div class="standalone-banner">
-        <span>💡</span>
-        <span>이 미리보기는 백엔드 서버 없이 브라우저 내에서 직접 변환(Serverless)되었습니다.</span>
-      </div>
-      <div style="margin-bottom: 30px; border-bottom: 1px dashed var(--border); padding-bottom: 20px;">
-        <h1 style="border:none; margin:0 0 5px 0;">${escapeHtml(title)}</h1>
-        ${subtitle ? `<div style="color:var(--text-3); font-size:1.1rem; font-family:var(--font-title);">${escapeHtml(subtitle)}</div>` : ""}
-      </div>
-      ${bodyHtml}
-    </div>
-  ` : `
-    <div class="standalone-banner" style="max-width:960px; margin: 0 auto 20px auto;">
+  <div class="container">
+    <div class="standalone-banner">
       <span>💡</span>
-      <span>이 프레젠테이션 미리보기는 브라우저 내에서 직접 변환(Serverless)되었습니다.</span>
+      <span>이 미리보기는 백엔드 서버 없이 브라우저 내에서 직접 변환(Serverless)되었습니다.</span>
+    </div>
+    <div style="margin-bottom: 30px; border-bottom: 1px dashed var(--border); padding-bottom: 20px;">
+      <h1 style="border:none; margin:0 0 5px 0;">${escapeHtml(title)}</h1>
+      ${subtitle ? `<div style="color:var(--text-3); font-size:1.1rem; font-family:var(--font-title);">${escapeHtml(subtitle)}</div>` : ""}
     </div>
     ${bodyHtml}
-  `}
+  </div>
 </body>
 </html>`;
 

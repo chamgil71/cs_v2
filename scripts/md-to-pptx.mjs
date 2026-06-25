@@ -338,7 +338,9 @@ function buildSlideData(mdPath, styleOverride) {
         sectionNum++;
         const raw2 = stripMd(extractText(tok));
         const m = raw2.match(/^\s*(\d+)\.\s*(.+)$/);
-        currentSection = { num: m ? parseInt(m[1]) : sectionNum, title: m ? m[2] : raw2, items: [] };
+        // Use sequential sectionNum (not the heading number) to avoid numbering conflicts
+        // when TOC sections (목차 = 1,2) and chapter sections (# 1., # 2., ...) collide.
+        currentSection = { num: sectionNum, title: m ? m[2] : raw2, items: [] };
       } else if (tok.type === "heading" && tok.depth === 2) {
         closeCard();
         const h2Title = stripMd(extractText(tok));
@@ -853,8 +855,16 @@ export async function convertMdToPptx(mdPath, opts = {}) {
     const name = basename(mdPath, extname(mdPath));
     const outPath = out || join(D.output.dir, `${name}${D.output.suffix || ""}.pptx`);
     if (err.code === "EBUSY" || err.code === "EPERM") {
-      console.warn(`⚠️  PPTX 쓰기 실패 (${outPath}): 파일이 PowerPoint 등 다른 프로그램에서 열려 있어 잠겨 있습니다. 파일을 닫고 다시 시도해 주세요.`);
-      return outPath;
+      const ts = new Date().toISOString().replace(/[-:T]/g, "").slice(0, 14);
+      const altPath = outPath.replace(/\.pptx$/i, `_${ts}.pptx`);
+      try {
+        await prs.writeFile({ fileName: altPath });
+        console.warn(`⚠️  원본 파일 잠김 → 대체 저장: ${basename(altPath)}`);
+        return altPath;
+      } catch {
+        console.error(`❌ 대체 저장도 실패 (${altPath}): 파일을 닫고 다시 시도해 주세요.`);
+        throw err;
+      }
     } else {
       console.error(`❌ PPTX 쓰기 실패 (${outPath}): ${err.message}`);
       throw err;

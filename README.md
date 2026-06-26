@@ -69,10 +69,10 @@ sequenceDiagram
 * **역할**: 웹 화면의 변환/저장 요청을 받아 Node.js 환경에서 **실제 파일 IO 및 마크다운 파싱, PPTX 셰이프 드로잉을 전담하는 변환 코어 엔진**입니다.
 * **주요 구성**:
   - `scripts/vite-api-plugin.ts`: 리액트 UI 화면(TSX)이 내보내는 API 요청을 받아 Node.js 프로세스로 엔진 코어를 호출해주는 브리지 미들웨어.
-  - `scripts/shortcode-render.mjs` **(정본 공유 렌더러)**: 숏코드 → HTML 변환 단일 모듈. 순수 함수(marked만 의존)로, 가이드·슬라이드·미리보기(client) 세 HTML 출력이 **모두 이 모듈을 공유**한다. (한 곳 수정 = 3개 출력 동시 반영, 드리프트 차단)
-  - `scripts/shortcode-styles.mjs` **(정본 공유 CSS)**: 숏코드 컴포넌트 CSS. `var(--*)` 기반 테마 독립 → 각 셸은 `:root` 변수만 자기 테마로 정의.
-  - `scripts/build-guide.mjs`: 마크다운 ➡️ 가이드 HTML 컴파일. (공유 렌더러+CSS 사용, standalone HTML 생성 전담)
-  - `scripts/build-presentation.mjs`: 마크다운 ➡️ 웹 슬라이드 컴파일. (공유 렌더러+CSS 사용, aspect-ratio 16:9 뷰)
+  - `scripts/guide-core.mjs` **(정본 코어)** / `scripts/presentation-core.mjs` **(정본 코어)**: 페이지 생성 전체(슬라이드 분할·템플릿·CSS·숏코드 렌더)를 담는 **환경 비의존**(fs/path 없음) 코어. CLI(build-guide/build-presentation)와 브라우저(client-compiler) 가 **동일 코어를 호출** → `standalone == server` 출력 보장.
+  - `scripts/shortcode-render.mjs` **(공유 숏코드 렌더러)**: 숏코드 → HTML 변환 순수 함수. **guide-core** 가 사용(슬라이드는 presentation-core 자체 렌더러).
+  - `scripts/shortcode-styles.mjs` **(공유 숏코드 CSS)**: 숏코드 컴포넌트 CSS. `var(--*)` 기반 테마 독립.
+  - `scripts/build-guide.mjs` / `scripts/build-presentation.mjs`: 위 코어를 호출하는 **얇은 CLI 래퍼**(파일읽기+config로드+출력경로). 가이드 HTML / 16:9 웹 슬라이드.
   - `scripts/md-to-pptx.mjs`: 마크다운 ➡️ PowerPoint PPTX 파일 빌드. (폰트·크기 수치는 `config/pptdesign.config.json` 에서 로드 — 하드코딩 없음)
   - `scripts/pptx-analyzer.js` & `spec-parser.js`: PPTX XML 구조 압축 해제 및 디자인 사양 데이터 추출/치환 코어.
   - `scripts/pptx-renderers/`: 각 개별 숏코드(git-flow, editor-box 등)의 PPTX 네이티브 드로잉 코어 렌더러 모듈들.
@@ -104,8 +104,10 @@ cs_v2/
 │   ├── spec-parser.js      # PPTX 디자인 스펙 데이터 파서
 │   ├── shortcode-render.mjs   # [정본] 숏코드 → HTML 공유 렌더러 (3개 HTML 출력 공용)
 │   ├── shortcode-styles.mjs   # [정본] 숏코드 컴포넌트 CSS (var(--*) 테마 독립)
-│   ├── build-guide.mjs     # 마크다운 ➡️ 가이드 HTML 컴파일 엔진 (공유 모듈 사용)
-│   ├── build-presentation.mjs # 마크다운 ➡️ 웹 슬라이드 컴파일 엔진 (공유 모듈 사용)
+│   ├── guide-core.mjs      # 정본 코어: MD → 가이드 HTML (fs/path 비의존, CLI+client 공유)
+│   ├── presentation-core.mjs # 정본 코어: MD → 16:9 슬라이드 HTML (fs/path 비의존, CLI+client 공유)
+│   ├── build-guide.mjs     # guide-core 호출 CLI 래퍼
+│   ├── build-presentation.mjs # presentation-core 호출 CLI 래퍼
 │   ├── build-standalone.mjs   # standalone 단일 HTML 빌드 (정합성 테스트 게이트)
 │   ├── md-to-pptx.mjs      # 마크다운 ➡️ PPTX 컴파일 엔진 (config 폰트 로드)
 │   └── pptx-renderers/     # 숏코드별 PPTX 드로잉 렌더러 모듈 + registry.mjs

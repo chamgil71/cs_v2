@@ -37,7 +37,12 @@ Phase 3(숏코드 단일화)에서 `build-presentation.mjs`와 `client-compiler.
 
 ## 3. 이후 일관 작업 (안정화 후 재추진)
 
-**목표: 프레젠테이션·client 도 공유 렌더러+공유 CSS 로 완전 통합 — 단, 옛 CSS를 제거하는 방식으로.**
+> ✅ **완료 (2026-06-26)** — 아래 §3·§5 가 지목한 "페이지 생성 파이프라인 자체의 단일화"를 **코어 추출 방식**으로 완결.
+> `scripts/guide-core.mjs`·`scripts/presentation-core.mjs` 두 환경 비의존 코어를 추출하고, CLI 래퍼(build-guide/build-presentation)와 브라우저(client-compiler)가 동일 코어를 호출하도록 전환.
+> 단, **공유 CSS 강제 통합(§3 원안)이 아니라** presentation 은 자체 렌더러+CSS(슬라이드 튜닝·light-mode 오버라이드)를 코어 안에 **그대로 보존**해 회귀를 원천 차단(가이드만 `shortcode-render.mjs` 공유).
+> 검증: 각 단계 byte-identical 게이트(showcase·terminal-ai-tools) + `standalone==server` 출력 동치 잠금 테스트(shortcode-conformance, html·presentation). 결과: 동일 showcase.md 가 client/server 양쪽 **40슬라이드 byte-identical**(기존 4 vs 40 해소). 커밋: step1~step7.
+
+**원안 목표(참고): 프레젠테이션·client 도 공유 렌더러+공유 CSS 로 완전 통합 — 단, 옛 CSS를 제거하는 방식으로.**
 
 1. 프레젠테이션/client 의 **기존 컴포넌트 CSS를 제거**하고 `SHORTCODE_CSS` 만 사용(append 가 아니라 대체).
 2. `SHORTCODE_CSS`(가이드 출신, 라이트 기준)를 **다크/라이트 양 테마에서 검증** — 카드 배경 `var(--card-bg)`, 텍스트 `var(--text)` 가 양 테마에서 올바른지.

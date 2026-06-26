@@ -31,7 +31,7 @@
 - [ ] **CLAUDE.md** — 아키텍처/규칙/이슈 이력에 영향이 있으면 갱신 (특히 「주요 이슈 이력」 표)
 - [ ] **README.md** — 폴더 구조·스크립트·기능 설명에 변경이 있으면 갱신 (숏코드 개수 등 수치 표기 포함)
 - [ ] **docs/** — `scripts_guide.md`(개발자), `guide.md`(사용자), `shortcode-reference.md`, `shortcode-changelog.md`(변경이력 **추가**) 중 해당 문서 갱신
-- [ ] **정합성 테스트** — 숏코드/렌더러 변경 시 `npm test` (정합성 85건 포함) 통과 확인
+- [ ] **정합성 테스트** — 숏코드/렌더러 변경 시 `npm test` (정합성 87건 포함) 통과 확인
 - [ ] 시점 기록 문서(`docs/report/*_YYYY-MM-DD.md`)는 **수정하지 말고 새 항목/새 파일로 추가** (역사 보존)
 
 > 문서화는 작업의 일부다. "코드만 고치고 문서는 나중에"는 이 프로젝트의 반복 이슈(드리프트)의 원인이므로 금지.
@@ -54,22 +54,21 @@ cs_v2/
 ├── src/
 │   ├── components/
 │   │   ├── MarkdownCompiler.tsx   # 메인 에디터 UI (숏코드 툴바 포함, 브라우저 내 컴파일)
-│   │   ├── PptxAnalyzer.tsx       # PPTX 분석기 (폰트·색상 추출)
-│   │   ├── PptxInspectorSuite.tsx # PPTX 인스펙터 & 리매퍼
+│   │   ├── PptxInspectorSuite.tsx # PPTX 인스펙터 & 리매퍼 (구 PptxAnalyzer.tsx 후속본)
 │   │   ├── VisualAdjuster.tsx     # 테마 빌더 (styles.json 실시간 편집)
 │   │   ├── SubUtilities.tsx       # 보조 유틸 (파일 변환 도구 모음)
 │   │   └── ErrorBoundary.tsx      # React 에러 경계
 │   ├── lib/
-│   │   ├── client-compiler.ts     # 브라우저 전용 MD→HTML 컴파일러 (pptx-browser와 쌍)
+│   │   ├── client-compiler.ts     # 브라우저 컴파일러 — guide-core/presentation-core 에 위임(자체 렌더러 없음, standalone==server)
 │   │   ├── pptx-browser.ts        # 브라우저 전용 MD→PPTX (md-to-pptx.mjs 포트)
 │   │   ├── exportGuide.ts         # 가이드 HTML 내보내기 헬퍼
 │   │   ├── wcag.ts                # WCAG 색상 대비 계산 유틸
 │   │   └── utils.ts               # clsx/tailwind 유틸
 │   ├── __tests__/
 │   │   ├── client-compiler.test.ts # 브라우저 컴파일러 유닛 테스트
-│   │   ├── shortcode-conformance.test.ts # 정합성(드리프트 가드) 85개 — 공유 렌더러+PPTX 레지스트리
+│   │   ├── shortcode-conformance.test.ts # 정합성 87개 — 공유 렌더러+PPTX 커버리지 + standalone==server 동치 잠금
 │   │   ├── pptx-analyzer.test.ts  # PPTX 분석기 테스트
-│   │   └── wcag.test.ts           # WCAG 유틸 테스트 (전체 148개)
+│   │   └── wcag.test.ts           # WCAG 유틸 테스트 (전체 160개)
 │   ├── standalone/
 │   │   ├── module1-main.tsx       # 스탠드얼론 모듈1 진입점
 │   │   └── module2-main.tsx       # 스탠드얼론 모듈2 진입점
@@ -80,10 +79,12 @@ cs_v2/
 │   ├── main.tsx
 │   └── index.css
 ├── scripts/
-│   ├── shortcode-render.mjs       # [정본] 숏코드 → HTML 파서+렌더러 (3개 HTML 출력 공유, 순수 함수)
+│   ├── shortcode-render.mjs       # [정본] 숏코드 → HTML 파서+렌더러 (guide-core 공유, 순수 함수)
 │   ├── shortcode-styles.mjs       # [정본] 숏코드 컴포넌트 CSS (var(--*) 테마 독립)
-│   ├── build-guide.mjs            # MD → 가이드 HTML 변환 (공유 모듈 import)
-│   ├── build-presentation.mjs     # MD → 횡슬라이드 HTML 변환 (공유 모듈 import)
+│   ├── guide-core.mjs             # [정본 코어] MD 문서 → 가이드 HTML (fs/path 비의존). build-guide CLI + client html 모드 공유
+│   ├── presentation-core.mjs      # [정본 코어] MD 문서 → 횡슬라이드 HTML (fs/path 비의존, 자체 렌더러+CSS). build-presentation CLI + client presentation 모드 공유
+│   ├── build-guide.mjs            # MD → 가이드 HTML (얇은 CLI 래퍼: 파일읽기+config로드+코어호출)
+│   ├── build-presentation.mjs     # MD → 횡슬라이드 HTML (얇은 CLI 래퍼: 파일읽기+config로드+코어호출)
 │   ├── md-to-pptx.mjs             # MD → PPTX 변환 CLI (Universal Schema 기반)
 │   ├── build-publish.mjs          # 배포용 빌드
 │   ├── build-standalone.mjs       # 스탠드얼론 빌드 (npm run build:standalone)
@@ -161,7 +162,7 @@ npm run build
 npm run build:standalone
 
 # 테스트 실행
-npm test             # vitest run (148개 — 정합성 85개 포함)
+npm test             # vitest run (160개 — 정합성 87개 포함)
 npm run test:watch   # watch 모드
 
 # PPTX CLI 단축키
@@ -308,13 +309,21 @@ icon | title | desc | tag | meta | color
 
 공유 모듈 `scripts/shortcode-render.mjs`의 `standardizeItem()`(HTML)과 `md-to-pptx.mjs`의 동명 함수(PPTX)가 이 변환을 담당합니다. 구형 키명(`name`, `description`, `tagline`, `features` 등)도 자동 매핑됩니다.
 
-### HTML 렌더링 (2026-06-25 단일화 — Phase 5)
-- **정본 공유 모듈**: `scripts/shortcode-render.mjs` (파서+렌더러, 순수 함수·marked만 의존) + `scripts/shortcode-styles.mjs` (컴포넌트 CSS, `var(--*)` 기반 테마 독립). ※ 과거의 "build-guide.mjs 단일 파일" 구조는 이 모듈로 추출됨.
-- **세 HTML 출력이 모두 이 공유 모듈을 사용**: `build-guide.mjs`(가이드)·`build-presentation.mjs`(슬라이드)·`src/lib/client-compiler.ts`(미리보기/standalone). 한 곳을 고치면 3개 출력에 동시 반영 → 드리프트 차단.
-- 함수 `renderShortcode(type, body, args)` — 색상은 `var(--brand)` 등 CSS 변수로 반환하므로 스타일 객체 불필요.
-- 각 셸(shell)은 페이지 골격 CSS + `:root` 테마 변수(`--card-bg`, `--text-2/3`, `--size-*` 등)만 자기 테마/프로파일로 정의하고 `${SHORTCODE_CSS}`를 포함한다. 카드 배경은 `var(--card-bg, #fff)` — guide=라이트, presentation/client=다크.
-- **수정 시 규칙**: `shortcode-render.mjs`/`shortcode-styles.mjs`/`client-compiler.ts` 변경 후 → `npm run build:standalone` (정합성 테스트 게이트 후 standalone 재빌드). 빠른 재빌드만 필요하면 `build:standalone:fast`.
-- **정합성 테스트**: `src/__tests__/shortcode-conformance.test.ts` — showcase 숏코드가 공유 HTML 렌더러 + PPTX 레지스트리 양쪽에서 누락·에러 없이 처리되는지 검증(드리프트 가드). `build:standalone`이 이 테스트를 먼저 실행.
+### HTML 렌더링 — 코어 단일화 (페이지 생성 파이프라인 통합)
+
+**구조: 환경 비의존 "코어" 2개가 페이지 생성 전체(슬라이드 분할·페이지 템플릿·CSS·숏코드 렌더)를 소유하고, CLI 래퍼와 브라우저 클라이언트가 그 코어를 그대로 호출한다 → `standalone(브라우저) == server(CLI)` 를 코드 레벨에서 보장.**
+
+| 코어 (정본) | 렌더러 | 호출처 |
+|------------|-------|-------|
+| `scripts/guide-core.mjs` | `shortcode-render.mjs` + `shortcode-styles.mjs`(공유, `var(--*)`) | `build-guide.mjs`(CLI) + `client-compiler.ts` **html 모드** |
+| `scripts/presentation-core.mjs` | **자체 렌더러 + 자체 CSS**(슬라이드 튜닝·light-mode 오버라이드 내장) | `build-presentation.mjs`(CLI) + `client-compiler.ts` **presentation 모드** |
+
+- 코어 시그니처(환경 비의존, fs/path 없음): `buildHtml(doc{raw}, {styles,config,htmlConfig,style})` / `buildPresentationHtml(docs[{raw,basename}], {styles,config,htmlConfig,style})`. 프론트매터는 gray-matter(브라우저 안전), 토큰화는 marked.
+- **CLI 래퍼**(`build-guide.mjs`·`build-presentation.mjs`)는 파일읽기 + `loadJsonWithComments` config 로드 + 코어 호출만 담당(각 ~140·160행).
+- **클라이언트**(`client-compiler.ts`, ~90행)는 자체 렌더러를 두지 않고 `?raw`로 config를 주입해 코어를 호출. 과거 `renderClientShortcode`·자체 템플릿·자체 CSS·standalone 배너는 전부 제거됨.
+- ⚠️ **주의**: presentation 은 가이드의 공유 `renderShortcode`/`SHORTCODE_CSS` 를 쓰지 **않는다**(presentation-core 자체 렌더러 사용 — 슬라이드 회귀 방지를 위한 안정화 결정, `docs/plan/presentation-stabilization.md`). 가이드 렌더러만 `shortcode-render.mjs` 공유.
+- **수정 시 규칙**: 코어/렌더러/`client-compiler.ts` 변경 후 → `npm run build:standalone` (정합성 게이트 후 standalone 재빌드). 빠른 재빌드만 필요하면 `build:standalone:fast`.
+- **정합성 테스트**: `src/__tests__/shortcode-conformance.test.ts`(87건) — ① 공유 HTML 렌더러+PPTX 레지스트리 커버리지 ② **`standalone==server` 출력 동치 잠금**(html=guide-core, presentation=presentation-core). `build:standalone`이 먼저 실행.
 
 ### 폰트 크기 — config 단일 출처 (Phase 5)
 
@@ -379,9 +388,9 @@ npm run test:watch
 ```
 
 - `client-compiler.test.ts`: `clientCompileMarkdown()` HTML 출력 구조, 숏코드 렌더링, FALLBACK_STYLES 유효성
-- `shortcode-conformance.test.ts`: 정합성 가드 85개 — 공유 HTML 렌더러 + PPTX 레지스트리 커버리지 + standalone `:::` 잔존 검사
+- `shortcode-conformance.test.ts`: 정합성 가드 87개 — 공유 HTML 렌더러 + PPTX 레지스트리 커버리지 + standalone `:::` 잔존 + **standalone==server 출력 동치 잠금**(html/presentation)
 - `pptx-analyzer.test.ts`: PPTX XML 분석기 유닛 테스트
-- `wcag.test.ts`: `getContrast()`, `getLuminance()` 계산 검증 (전체 148개)
+- `wcag.test.ts`: `getContrast()`, `getLuminance()` 계산 검증 (전체 160개)
 
 ---
 
@@ -401,6 +410,8 @@ npm run test:watch
 | MarkdownCompiler 초기 MD → showcase.md 교체 (2026-06-25) | 하드코딩 템플릿 → `showcaseMd` import | 재빌드로 해결. showcase.md = 25종 전체 레퍼런스 |
 | PPTX 폰트 크기 config 수정 미반영 (2026-06-25) | ① styles.json custom-blue가 pptdesign 덮어씀 ② 렌더러 28곳 하드코딩 | custom-blue 오버라이드 제거 / 28곳 config 참조 / 숏코드 `title-size=`·`desc-size=` PPTX 추가. 상세: docs/report/pipeline_divergence_analysis_2026-06-25.md |
 | HTML 렌더러 3벌 드리프트 (2026-06-25, Phase 5) | build-guide/presentation/client 렌더러·CSS 중복 | `shortcode-render.mjs`/`shortcode-styles.mjs` 공유 모듈로 통합 + 정합성 테스트 게이트 |
+| standalone(브라우저) vs server(CLI) 프레젠테이션 분기 — 동일 MD에 슬라이드 4 vs 40 (2026-06-26) | 숏코드 렌더러만 공유했을 뿐 **슬라이드 분할·페이지 생성·CSS는 client/server 별도 구현** | 페이지 생성 전체를 환경 비의존 코어(`guide-core.mjs`·`presentation-core.mjs`)로 추출 → CLI 래퍼+client 가 동일 코어 호출. 각 단계 byte-identical 게이트 + `standalone==server` 동치 잠금 테스트. (docs/plan/presentation-stabilization.md §3 완료) |
+| 가이드 `<title>`·nav title 미escape XSS (2026-06-26) | build-guide buildHtml 이 frontmatter title 을 `<title>`/nav-logo 에 raw 삽입 | guide-core 에서 `escapeHtml(fm.title)` 적용(양성 title 출력 동일 → byte-identical 유지) |
 
 ### 크기 수치 설정 규칙 (P2 — 상세, 규칙 1 보충)
 - **모든 폰트/크기 수치는 매체별 config json에 둔다**: PPTX=`pptdesign.config.json`, HTML=`htmldesign.config.json`. 렌더러 코드에 폰트 크기 리터럴 금지.

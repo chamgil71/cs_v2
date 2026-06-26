@@ -19,6 +19,8 @@ import { buildPresentationHtml } from '../../scripts/presentation-core.mjs';
 import { buildHtml as buildGuideHtml } from '../../scripts/guide-core.mjs';
 // @ts-ignore — pptdesign config(globalRadius 등) 주입용 원문 import
 import pptDesignRaw from '../../config/pptdesign.config.json?raw';
+// @ts-ignore — 전체 styles.json 번들 (스탠드얼론도 서버와 동일한 폰트/색 사용 — FALLBACK_STYLES 의 폰트 키 누락으로 serif 폴백되던 문제 해소)
+import stylesRaw from '../../config/styles.json?raw';
 const PPT_DESIGN: any = (() => {
   try { return JSON.parse(String(pptDesignRaw).replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '')); }
   catch { return {}; }
@@ -72,6 +74,16 @@ export const FALLBACK_STYLES: Record<string, any> = {
     "bg": "#FAFBFD"
   }
 };
+
+// 번들된 전체 styles.json (11개 테마, webFont/webFontTitle/pptxFont 포함).
+// 스탠드얼론은 이걸 기본 스타일 소스로 써서 서버(styles.json)와 폰트·색이 동일하게 나온다.
+// FALLBACK_STYLES 는 파싱 실패 시 최후 폴백.
+export const BUNDLED_STYLES: Record<string, any> = (() => {
+  try {
+    const parsed = JSON.parse(String(stylesRaw));
+    return parsed && Object.keys(parsed).length > 0 ? parsed : FALLBACK_STYLES;
+  } catch { return FALLBACK_STYLES; }
+})();
 
 export function clientCompileMarkdown(md: string, mode: "html" | "presentation", styleName: string, stylesList: any) {
   const resolvedStyles = (stylesList && Object.keys(stylesList).length > 0) ? stylesList : FALLBACK_STYLES;

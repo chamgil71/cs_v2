@@ -19,7 +19,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 
 import { getContrast, getLuminance } from '../lib/wcag';
-import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
+import { clientCompileMarkdown, BUNDLED_STYLES } from '../lib/client-compiler';
 import { convertMdToPptxBrowser } from '../lib/pptx-browser';
 import showcaseMd from '../../md_src/showcase/showcase.md?raw';
 
@@ -75,7 +75,7 @@ ${doc.snippet}
   };
   
   // Style and Server files
-  const [styles, setStyles] = useState<Record<string, any>>(FALLBACK_STYLES);
+  const [styles, setStyles] = useState<Record<string, any>>(BUNDLED_STYLES);
   const [selectedStyle, setSelectedStyle] = useState("custom-blue");
   const [sourceFiles, setSourceFiles] = useState<string[]>([]);
   const [loadingFiles, setLoadingFiles] = useState(false);
@@ -168,12 +168,12 @@ ${doc.snippet}
         setStyles(data);
         setHasServer(true);
       } else {
-        setStyles(FALLBACK_STYLES);
+        setStyles(BUNDLED_STYLES);
         setHasServer(false);
       }
     } catch (err) {
       console.error("Failed to load styles, using fallback:", err);
-      setStyles(FALLBACK_STYLES);
+      setStyles(BUNDLED_STYLES);
       setHasServer(false);
     }
   };

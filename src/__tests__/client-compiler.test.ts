@@ -1,8 +1,34 @@
 import { describe, it, expect } from 'vitest';
-import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
+import { clientCompileMarkdown, FALLBACK_STYLES, BUNDLED_STYLES } from '../lib/client-compiler';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const STYLE = FALLBACK_STYLES['custom-blue'];
 const STYLES = FALLBACK_STYLES;
+
+// ── BUNDLED_STYLES = 스탠드얼론이 실제 쓰는 스타일 소스 (번들된 전체 styles.json) ──
+// [왜] 과거 스탠드얼론은 5개·폰트키 없는 FALLBACK_STYLES 를 써서 제목이 serif 로 폴백됐다.
+//   이제 styles.json 전체를 번들(BUNDLED_STYLES)로 쓴다 → styles.json 편집이 재빌드로 반영.
+//   이 가드: 번들이 전체 테마를 담고, 각 테마에 webFont/webFontTitle 이 있어 serif 폴백이 없어야 한다.
+describe('BUNDLED_STYLES — 스탠드얼론 스타일 소스 완전성', () => {
+  const real = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, '../../config/styles.json'), 'utf8')
+  );
+  const themeKeys = Object.keys(real).filter(k => real[k] && real[k].brand);
+
+  it('번들 테마 수 = styles.json 테마 수 (하드코딩 5개가 아님)', () => {
+    const bundled = Object.keys(BUNDLED_STYLES).filter(k => BUNDLED_STYLES[k] && BUNDLED_STYLES[k].brand);
+    expect(bundled.length).toBe(themeKeys.length);
+    expect(bundled.length).toBeGreaterThan(FALLBACK_STYLES ? 5 : 0); // FALLBACK_STYLES(5개) 초과 확인
+  });
+
+  it('각 테마에 webFont/webFontTitle 존재 (serif 폴백 방지)', () => {
+    for (const t of themeKeys) {
+      expect(BUNDLED_STYLES[t]?.webFont, `${t}: webFont 누락 → 본문 폴백`).toBeTruthy();
+      expect(BUNDLED_STYLES[t]?.webFontTitle, `${t}: webFontTitle 누락 → 제목 serif 폴백`).toBeTruthy();
+    }
+  });
+});
 
 // ── 헬퍼 ──────────────────────────────────────────────────────────────
 function compile(md: string, mode: 'html' | 'presentation' = 'html') {

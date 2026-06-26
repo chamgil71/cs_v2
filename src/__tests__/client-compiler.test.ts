@@ -124,11 +124,11 @@ describe('clientCompileMarkdown — 숏코드 처리', () => {
     expect(html).toContain('compare-2col');
   });
 
-  it('console-box 숏코드 → 다크 콘솔 블록(정본 prompt-content 클래스)', () => {
+  it('console-box 숏코드 → 다크 콘솔 블록', () => {
     const md = `:::console-box\n- title: Terminal\n  desc: npm install\n:::`;
     const html = compile(md);
-    // 정본 공유 렌더러는 클래스 기반(.prompt-content) — 다크색은 공유 CSS 에서 적용
-    expect(html).toContain('prompt-content');
+    // client 자체 렌더러: 다크 배경(#0F172A) 인라인 + 내용
+    expect(html).toContain('0F172A');
     expect(html).toContain('npm install');
   });
 

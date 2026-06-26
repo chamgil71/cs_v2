@@ -376,6 +376,20 @@ export function applyShapeOps(txt, ops) {
       return m;
     });
   }
+  if (ops.removeOutline) {
+    // 도형 윤곽선(<a:ln>) 일괄 제거 → 명시적 <a:ln><a:noFill/></a:ln> 로 치환하여
+    // 테마 상속 윤곽선까지 무력화. spPr 내 위치(순서)는 그대로 유지된다.
+    // 주의: a:ln 만 매칭 — a:lnRef / a:lnL/R/T/B(표 테두리)는 \b 경계로 제외됨.
+    txt = txt.replace(/<a:ln\b([^>]*)>[\s\S]*?<\/a:ln>/g, (m, attrs) => {
+      if (/<a:noFill\s*\/>\s*<\/a:ln>$/.test(m)) return m; // 이미 noFill 이면 스킵
+      count++;
+      return '<a:ln' + attrs + '><a:noFill/></a:ln>';
+    });
+    txt = txt.replace(/<a:ln\b([^>]*)\/>/g, (m, attrs) => {
+      count++;
+      return '<a:ln' + attrs + '><a:noFill/></a:ln>';
+    });
+  }
   return { txt, count };
 }
 

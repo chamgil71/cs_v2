@@ -27,11 +27,656 @@ const CONFIG = loadJsonWithComments(path.join(CONFIG_DIR, "pptdesign.config.json
 const HTML_CONFIG = loadJsonWithComments(path.join(CONFIG_DIR, "htmldesign.config.json"));
 
 // Helpers
-import {
-  escapeHtml,
-  renderShortcode,
-} from "./shortcode-render.mjs";
-import { SHORTCODE_CSS } from "./shortcode-styles.mjs";
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function renderInline(s) {
+  return escapeHtml(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/\*(.+?)\*/g, "<em>$1</em>");
+}
+
+function cleanValue(v) {
+  return String(v ?? "").trim().replace(/^["']|["']$/g, "");
+}
+
+function splitMeta(meta) {
+  if (!meta) return [];
+  return String(meta).split(/[|\n]/).map(s => s.trim().replace(/^["']|["']$/g, "").trim()).filter(Boolean);
+}
+
+function standardizeItem(item) {
+  const rawName = item.name || item.title || "";
+  const iconMatch = rawName.match(/^([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])\s*(.*)$/);
+  const icon =     item.icon || (iconMatch ? iconMatch[1] : "") || "";
+  const title =    item.title || (iconMatch ? iconMatch[2] : item.name) || item.col || "";
+  const desc =     String(item.desc || item.description || item.tagline || item.body || "").replace(/\\n/g, "\n").replace(/\/n/g, "\n");
+  const tag =      item.tag || item.badge || item.type || "";
+  const color =    item.color || "";
+  const featured = String(item.featured || "").trim().toLowerCase() === "true" ? "true" : "";
+  const meta =     String(item.meta || item.tool || item.features || item.items || item.points || "").replace(/\\n/g, "\n").replace(/\/n/g, "\n");
+  const note =     String(item.note || "").replace(/\\n/g, "\n").replace(/\/n/g, "\n");
+
+  return { ...item, icon, title, desc, tag, meta, note, color, featured };
+}
+
+function parseShortcodeItems(src) {
+  const items = [];
+  let current = null;
+  let currentKey = null;
+  let inLiteralBlock = false;
+
+  for (const line of src.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+
+    if (inLiteralBlock && line.startsWith("    ")) {
+      const val = line.slice(4);
+      const sep = currentKey === 'meta' ? ' | ' : '\n';
+      const existing = current[currentKey];
+      current[currentKey] = (!existing || existing === '|') ? val : existing + sep + val;
+      continue;
+    } else {
+      inLiteralBlock = false;
+    }
+
+    const firstMatch = line.match(/^\s*-\s*([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
+    if (firstMatch) {
+      currentKey = firstMatch[1];
+      let val = cleanValue(firstMatch[2]);
+      if (val === "|") {
+        inLiteralBlock = true;
+        current = { [currentKey]: "" };
+      } else {
+        current = { [currentKey]: val };
+      }
+      items.push(current);
+      continue;
+    }
+
+    const nextMatch = line.match(/^\s+([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
+    if (nextMatch && current) {
+      currentKey = nextMatch[1];
+      let val = cleanValue(nextMatch[2]);
+      if (val === "|") {
+        inLiteralBlock = true;
+        current[currentKey] = "";
+      } else {
+        current[currentKey] = val;
+      }
+      continue;
+    }
+
+    const listMatch = line.match(/^\s+-\s+(.+)$/);
+    if (listMatch && current && currentKey) {
+      const val = listMatch[1].trim();
+      const existing = current[currentKey];
+      const sep = currentKey === 'meta' ? ' | ' : '\n';
+      current[currentKey] = (!existing || existing === '|') ? val : existing + sep + val;
+      continue;
+    }
+
+    if (line.match(/^\s+\S/) && current && currentKey) {
+      const val = line.trim();
+      if (val === '|') {
+        inLiteralBlock = true;
+        continue;
+      }
+      const existing = current[currentKey];
+      const sep = currentKey === 'meta' ? ' | ' : '\n';
+      current[currentKey] = (!existing || existing === '|') ? val : existing + sep + val;
+    }
+  }
+
+  return items.map(standardizeItem);
+}
+
+// Render shortcode (same visual blocks as build-guide)
+function renderMultiLineText(text, defaultTag = "p", customBullet = null) {
+  if (!text) return "";
+  const cleanText = String(text).replace(/\\n/g, "\n").replace(/\/n/g, "\n");
+  const lines = cleanText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  
+  if (lines.length <= 1 && !lines[0]?.match(/^[-*+•✅✔️]/) && !customBullet) {
+    return defaultTag ? `<${defaultTag}>${escapeHtml(cleanText)}</${defaultTag}>` : escapeHtml(cleanText);
+  }
+
+  // 이모지 "✔️"의 색상을 완벽히 제어하기 위해 인라인 SVG 체크 기호를 기본값으로 탑재 (stroke="currentColor"로 color에 반응)
+  const svgBullet = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-top: 4px; display: inline-block; vertical-align: middle;"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+  const activeBullet = customBullet || null;
+  const makeBulletHtml = (sym) =>
+    sym ? `<span style="font-size:1.1rem;line-height:1;">${sym}</span>` : svgBullet;
+
+  let listHtml = '<div class="multiline-list" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px; text-align: left; width: 100%;">';
+  for (const line of lines) {
+    const match = line.match(/^[-*+•✅✔️]\s*(.*)$/);
+    let content = match ? match[1] : line;
+    if (!content.trim()) continue;
+
+    listHtml += `<div class="multiline-item" style="display: flex; gap: 8px; align-items: flex-start; font-size: 1.1rem; color: var(--text-muted); line-height: 1.5;">
+      <span class="bullet" style="color: var(--brand); flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; min-width: 16px;">${makeBulletHtml(activeBullet)}</span>
+      <span class="content" style="text-align: left;">${escapeHtml(content)}</span>
+    </div>`;
+  }
+  listHtml += '</div>';
+  return listHtml;
+}
+
+function resolveColorKeyword(color) {
+  if (!color) return "";
+  const lower = String(color).trim().toLowerCase();
+  if (lower === "main" || lower === "brand") return "var(--brand)";
+  if (lower === "sub" || lower === "branddark" || lower === "brand-dark") return "var(--brand-dark)";
+  if (lower === "deep" || lower === "branddeep" || lower === "brand-deep") return "var(--brand-deep)";
+  if (lower === "mid" || lower === "brandmid" || lower === "brand-mid") return "var(--brand-mid)";
+  if (lower === "light" || lower === "brandlight" || lower === "brand-light") return "var(--brand-light)";
+  return color;
+}
+
+function renderShortcode(type, body, args) {
+  const items = parseShortcodeItems(body);
+  if (!items.length) return "";
+
+  const renderAccent = (color) => {
+    if (!color) return "";
+    const res = resolveColorKeyword(color);
+    if (res.startsWith("var(")) {
+      return `style="border-color: ${res}; background-color: color-mix(in srgb, ${res} 8%, transparent);"`;
+    }
+    return `style="border-color: ${res}; background-color: ${res}08;"`;
+  };
+  const renderTextColor = (color) => {
+    if (!color) return "";
+    const res = resolveColorKeyword(color);
+    return `style="color: ${res};"`;
+  };
+  const renderCompareNote = (activeNote, color) => {
+    if (!activeNote) return "";
+    const metaItems = splitMeta(activeNote);
+    const res = resolveColorKeyword(color);
+    let style = "";
+    if (res) {
+      if (res.startsWith("var(")) {
+        style = `style="background:color-mix(in srgb, ${res} 8%, transparent); color:${res}"`;
+      } else {
+        style = `style="background:${res}15; color:${res}"`;
+      }
+    }
+    if (metaItems.length > 1) {
+      return `<div class="compare-note" ${style}>
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; text-align: left;">
+          ${metaItems.map(f => `<li style="display: flex; gap: 8px; align-items: flex-start; font-size: 0.85rem;"><span style="color: ${res || 'var(--brand)'}; flex-shrink: 0; margin-top: 2px;">•</span><span>${escapeHtml(f)}</span></li>`).join("")}
+        </ul>
+      </div>`;
+    }
+    return `<div class="compare-note" ${style}>${escapeHtml(activeNote)}</div>`;
+  };
+
+  const colsMatch = (args || "").match(/cols=(\d+)/);
+  const bulletMatch = (args || "").match(/bullet=(\S+)/);
+  const cols = colsMatch ? colsMatch[1] : null;
+  const blockBullet = bulletMatch ? bulletMatch[1] : null;
+  const gridStyle = cols ? `style="grid-template-columns: repeat(${cols}, 1fr);"` : "";
+
+  // 아이템 bullet 필드가 없으면 블록 레벨 bullet 사용
+  const itemBullet = (it) => it.bullet || blockBullet || null;
+
+  if (["icon-grid", "feature-grid", "badge-grid", "stat-grid"].includes(type)) {
+    const isBadge = type === "badge-grid";
+    const isFeat = type === "feature-grid";
+    const isStat = type === "stat-grid";
+    const clsName = isBadge ? "badge-grid" : (isFeat ? "feature-grid" : (isStat ? "stat-grid" : "icon-grid"));
+
+    return `<div class="${clsName}" ${gridStyle}>${items.map(it => {
+      if (isBadge) {
+        return `<div class="badge-item" ${renderAccent(it.color)}>
+          <div class="badge-icon">${escapeHtml(it.icon)}</div>
+          <div class="badge-title" style="color: var(--text);">${escapeHtml(it.title)}</div>
+          <div class="badge-tag">${escapeHtml(it.tag)}</div>
+        </div>`;
+      }
+      if (isStat) {
+        const resColor = resolveColorKeyword(it.color);
+        return `<div class="stat-card" ${resColor ? `style="border-top: 3px solid ${resColor};"` : `style="border-top: 3px solid var(--brand);"`}>
+          <div class="stat-val" ${resColor ? `style="color:${resColor}"` : ""}>${escapeHtml(it.icon || it.title)}</div>
+          ${it.icon ? `<div class="stat-name">${escapeHtml(it.title)}</div>` : ""}
+          ${it.desc ? `<div class="stat-note">${renderMultiLineText(it.desc, "div")}</div>` : ""}
+        </div>`;
+      }
+      return `<div class="${isFeat ? 'feature-card' : 'icon-card'}" ${renderAccent(it.color)}>
+        ${isFeat && it.color ? `<div class="card-top-bar" style="background-color:${resolveColorKeyword(it.color)}"></div>` : ''}
+        ${it.tag ? `<span class="feature-tag" ${it.color ? `style="background:${resolveColorKeyword(it.color)}; color:#fff;"` : ""}>${escapeHtml(it.tag)}</span>` : ""}
+        ${isFeat ? `
+          <div class="feature-card-title" style="color: var(--text);">
+            ${it.icon ? `<span class="fc-icon">${escapeHtml(it.icon)}</span>` : ""}${renderMultiLineText(it.title, "")}
+          </div>
+        ` : `
+          <div class="icon-card-icon" style="color: var(--brand);">${escapeHtml(it.icon)}</div>
+          <div class="icon-card-title" style="color: var(--text);">${renderMultiLineText(it.title, "")}</div>
+        `}
+        ${renderMultiLineText(it.desc, "p")}
+      </div>`;
+    }).join("")}</div>`;
+  }
+  if (type === "tool-list" || type === "tool-box") {
+    return items.map(it => {
+      const resColor = resolveColorKeyword(it.color);
+      const grad = resColor ? (resColor.startsWith("var(") ? `linear-gradient(135deg, ${resColor}, color-mix(in srgb, ${resColor} 80%, black))` : `linear-gradient(135deg, ${resColor}, ${resColor}CC)`) : `linear-gradient(135deg, var(--brand), var(--brand-deep))`;
+      const metaItems = splitMeta(it.meta);
+      return `<div class="tool-card">
+        <div class="tc-side" style="background: ${grad};">
+          <div class="tc-icon">${escapeHtml(it.icon)}</div>
+          <div class="tc-name">${escapeHtml(it.title)}</div>
+          ${it.tag ? `<div class="tc-badge">${escapeHtml(it.tag)}</div>` : ""}
+        </div>
+        <div class="tc-body">
+          ${it.desc ? `<div class="tc-sub">${escapeHtml(it.desc)}</div>` : ""}
+          ${metaItems.length ? `<ul class="tc-list">${metaItems.map(f => `<li>${escapeHtml(f)}</li>`).join("")}</ul>` : ""}
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  if (type === "workflow-flow" || type === "workflow-strip") {
+    return `<div class="workflow-flow">${items.map((it, idx) => {
+      const card = `<div class="wf-step" ${renderAccent(it.color)}>
+        <div class="wf-icon" ${it.color ? `style="background:${it.color}; color:#fff;"` : ""}>${escapeHtml(it.icon)}</div>
+        <div class="wf-name" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
+        <div class="wf-tool">${escapeHtml(it.meta)}</div>
+      </div>`;
+      const arrow = idx < items.length - 1 ? `<div class="wf-arrow">→</div>` : "";
+      return card + arrow;
+    }).join("")}</div>`;
+  }
+
+  if (type === "step-list") {
+    return `<div class="step-list">${items.map((it, idx) => `
+      <div class="step-item" ${renderAccent(it.color)}>
+        <div class="step-num" ${it.color ? `style="background:${it.color}"` : ""}>${idx + 1}</div>
+        <div class="step-content">
+          <div class="step-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
+          <p>${escapeHtml(it.desc)}</p>
+        </div>
+      </div>`).join("")}</div>`;
+  }
+
+  if (type === "compare-grid") {
+    return `<div class="compare-grid" ${gridStyle}>${items.map(it => {
+      const activeNote = it.note || it.meta;
+      return `
+      <div class="compare-card" ${renderAccent(it.color)}>
+        <div class="compare-card-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
+        ${renderMultiLineText(it.desc, "p")}
+        ${activeNote ? renderCompareNote(activeNote, it.color) : ""}
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  if (type === "plan-grid") {
+    return `<div class="plan-grid" ${gridStyle}>${items.map(it => {
+      const isFeat = it.featured === "true" || it.tag === "Best" || it.color;
+      const highlight = isFeat ? "plan-featured" : "";
+      const style = it.color ? `style="border-color:${it.color}; box-shadow: 0 8px 24px ${it.color}33;"` : "";
+      const topBarStyle = it.color ? `style="background:${it.color};"` : "";
+      const metaItems = splitMeta(it.meta);
+
+      return `<div class="plan-card ${highlight}" ${style}>
+        <div class="card-top-bar" ${topBarStyle}></div>
+        ${it.tag ? `<div class="plan-badge" ${topBarStyle}>${escapeHtml(it.tag)}</div>` : ""}
+        <div class="plan-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
+        <ul class="plan-features">
+          ${metaItems.map(f => `<li>${escapeHtml(f)}</li>`).join('')}
+        </ul>
+        ${it.desc ? `<div class="plan-note" ${topBarStyle}>${escapeHtml(it.desc)}</div>` : ""}
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  if (type === "skill-list") {
+    return `<div class="skill-list">${items.map(it => `
+      <div class="skill-item" ${renderAccent(it.color)}>
+        <div class="skill-icon" ${it.color ? `style="background:${it.color}22; color:${it.color};"` : ""}>${escapeHtml(it.icon)}</div>
+        <div class="skill-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
+        <div class="skill-desc">${renderMultiLineText(it.desc, "p", itemBullet(it))}</div>
+      </div>`).join("")}</div>`;
+  }
+
+  if (type === "columns-grid") {
+    return `<div class="columns-grid" ${gridStyle}>${items.map(it => {
+      const activeNote = it.note || it.meta;
+      return `
+      <div class="column-card" ${renderAccent(it.color)}>
+        <div class="card-top-bar" ${it.color ? `style="background:${it.color}"` : ""}></div>
+        <div class="col-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
+        ${renderMultiLineText(it.desc, "p")}
+        ${activeNote ? renderCompareNote(activeNote, it.color) : ""}
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  if (type === "summary-box" || type === "bottom-list") {
+    const it = items[0];
+    const chips = splitMeta(it.meta);
+    return `<div class="summary-box" ${renderAccent(it.color)}>
+      <div class="bl-title" ${renderTextColor(it.color)}>${renderInline(it.title)}</div>
+      <p class="bl-desc">${escapeHtml(it.desc)}</p>
+      ${chips.length ? `<div class="bl-chips">${chips.map(c => `<span class="bl-chip" ${it.color ? `style="background:${it.color}15; color:${it.color}"` : ""}>${escapeHtml(c)}</span>`).join('')}</div>` : ""}
+    </div>`;
+  }
+
+  if (type === "compare-split") {
+    if (items.length < 2) return renderShortcode("compare-grid", body, args);
+    return `<div class="compare-2col">${items.slice(0, 2).map((it, idx) => {
+      const isLeft = idx === 0;
+      const classes = isLeft ? "c2-card c2-left" : "c2-card c2-right";
+      const metaItems = splitMeta(it.meta);
+      const metaHtml = metaItems.length ? `<ul class="c2-list">${metaItems.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>` : "";
+      const descHtml = it.desc ? `<p class="c2-desc" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px; white-space: pre-line;">${escapeHtml(it.desc)}</p>` : "";
+      return `<div class="${classes}">
+        <div class="card-top-bar"></div>
+        <div class="c2-title">${escapeHtml(it.title)}</div>
+        ${metaHtml}
+        ${descHtml}
+        ${it.note ? `<div class="c2-note">${escapeHtml(it.note)}</div>` : ""}
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  if (type === "alert-box") {
+    const typeColors = { tip: "var(--brand)", warn: "#F59E0B", success: "#22C55E", danger: "#EF4444" };
+    return items.map(it => {
+      const t = (args || it.type || it.tag || "tip").trim().toLowerCase();
+      const color = typeColors[t] || "var(--brand)";
+      return `<div class="alert-box alert-${t}" style="--alert-color:${color}">
+        ${it.icon ? `<div class="alert-icon">${escapeHtml(it.icon)}</div>` : ""}
+        <div class="alert-body">
+          ${it.title ? `<strong>${escapeHtml(it.title)}</strong>` : ""}
+          ${it.desc ? `<p>${escapeHtml(it.desc)}</p>` : ""}
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  if (type === "cmd-box") {
+    return items.map(it => {
+      const label = it.title || it.tag || "Terminal";
+      const lang  = it.meta || "bash";
+      return `<div class="cmd-block">
+        <div class="cmd-header">
+          <span class="cmd-label">${escapeHtml(label)}</span>
+          <span class="cmd-lang">${escapeHtml(lang)}</span>
+          <button class="cmd-copy" onclick="(function(b){var p=b.closest('.cmd-block').querySelector('.cmd-pre');navigator.clipboard.writeText(p.textContent.trim()).then(()=>{b.textContent='복사됨';setTimeout(()=>b.textContent='복사',1500)})})(this)">복사</button>
+        </div>
+        <pre class="cmd-pre"><code>${escapeHtml(it.desc)}</code></pre>
+      </div>`;
+    }).join("");
+  }
+
+  if (type === "faq-list") {
+    return `<div class="faq-list">${items.map(it => `
+      <div class="faq-item">
+        <button class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">
+          <span>${escapeHtml(it.title)}</span>
+          <span class="faq-arrow">▼</span>
+        </button>
+        <div class="faq-a">${it.desc ? `<p>${escapeHtml(it.desc)}</p>` : ""}</div>
+      </div>`).join("")}</div>`;
+  }
+
+  if (type === "console-box") {
+    return items.map(it => `
+      <div class="prompt-box">
+        ${it.title ? `<div class="prompt-label">${escapeHtml(it.title)}</div>` : ""}
+        <pre class="prompt-content">${escapeHtml(it.desc)}</pre>
+      </div>`).join("");
+  }
+
+  if (type === "git-flow" || type === "git-flow-strip") {
+    return `<div class="git-flow-container"><div class="flow-branches">${items.map(it => {
+      const color = it.color || "var(--brand)";
+      const tags = it.tag ? it.tag.split("|").map(t => t.trim()) : [];
+      const metas = it.meta ? it.meta.split("|").map(m => m.trim()) : [];
+      const count = Math.max(tags.length, metas.length, 1);
+      
+      const commitsHtml = Array.from({ length: count }).map((_, idx) => {
+        const tag = tags[idx] || "";
+        const meta = metas[idx] || "";
+        
+        const labelHtml = tag ? `<span class="commit-label" style="background:${color};">${escapeHtml(tag)}</span>` : "";
+        const descHtml = meta ? `<span class="commit-desc">${escapeHtml(meta)}</span>` : "";
+        const lineHtml = idx < count - 1 ? `<div class="commit-line-segment" style="background:${color};"></div>` : "";
+        
+        return `
+          <div class="commit" style="border-color:${color};">
+            ${labelHtml}
+            ${descHtml}
+          </div>
+          ${lineHtml}
+        `;
+      }).join("");
+
+      return `<div class="branch-row">
+        <div class="branch-label" style="background: ${color}12; border-left: 4px solid ${color}; color: ${color}; font-weight: 800;">
+          ${escapeHtml(it.title)}
+        </div>
+        <div class="branch-line">
+          ${commitsHtml}
+        </div>
+      </div>`;
+    }).join("")}</div></div>`;
+  }
+
+  if (type === "editor-box") {
+    return items.map(it => {
+      const codeLines = (it.desc || "").split('\n');
+      const filename = it.title || "untitled";
+      const lang = it.tag || "javascript";
+      return `<div class="editor-sim">
+        <div class="editor-titlebar">
+          <div class="editor-dot red"></div>
+          <div class="editor-dot yellow"></div>
+          <div class="editor-dot green"></div>
+          <div class="editor-tab active">${escapeHtml(filename)} <span style="font-size:0.75rem;opacity:0.5;">(${escapeHtml(lang)})</span></div>
+        </div>
+        <div class="editor-body">
+          <div class="line-nums">
+            ${codeLines.map((_, i) => `<span>${i + 1}</span>`).join('')}
+          </div>
+          <div class="code-area"><pre><code>${escapeHtml(it.desc)}</code></pre></div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  if (type === "network-box") {
+    const mainNode = items[0];
+    const subNodes = items.slice(1);
+    const color = mainNode.color || "var(--brand)";
+    return `<div class="graph-visual">
+      <div class="graph-nodes">
+        <div class="node node-main" style="background: ${color}; box-shadow: 0 0 24px ${color}88;">
+          ${escapeHtml(mainNode.title)}
+        </div>
+        ${subNodes.map((n, i) => {
+          const subColor = n.color || "var(--brand-dark)";
+          return `<div class="node node-${i + 1}" style="border: 2px solid ${subColor}; color: ${subColor};">
+            ${escapeHtml(n.title)}
+            ${n.meta ? `<span style="font-size:0.7rem; opacity:0.6; display:block;">${escapeHtml(n.meta)}</span>` : ""}
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`;
+  }
+
+  // 19. part-banner (구 part-banner) (시리즈 목차용 부(Part) 헤더)
+  if (type === "part-banner" || type === "part-deck") {
+    return items.map(it => {
+      const color = it.color || "var(--brand)";
+      return `<div class="part-banner" style="--part-color: ${color};">
+        <div class="part-banner-header" style="background: ${color};">
+          <div class="part-banner-num-block">${escapeHtml(it.icon || "부")}</div>
+          <div class="part-banner-title-block">
+            <span class="part-banner-title-text">${escapeHtml(it.title)}</span>
+            ${it.desc ? `<span class="part-banner-tagline">${escapeHtml(it.desc)}</span>` : ""}
+            ${it.tag ? `<span class="part-banner-chapter-range">${escapeHtml(it.tag)}</span>` : ""}
+          </div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+  // 20. chapter-list (시리즈 목차용 세부 챕터 목록)
+  if (type === "chapter-list") {
+    const getBadgeClass = (tag) => {
+      const map = { "개념": "badge-concept", "도구": "badge-tool", "사례": "badge-case", "가이드": "badge-guide", "실습": "badge-practice", "주의": "badge-warn", "핵심": "badge-practice" };
+      return map[tag.trim()] || "badge-concept";
+    };
+
+    return `<div class="chapter-list">${items.map(it => `
+      <div class="chapter-item">
+        <span class="chapter-num">${escapeHtml(it.icon)}</span>
+        <div class="chapter-title">
+          <strong>${escapeHtml(it.title)}</strong>
+          ${it.desc ? `<span class="chapter-desc">${escapeHtml(it.desc)}</span>` : ""}
+        </div>
+        ${it.tag && it.tag.trim() !== "" ? `<span class="chapter-badge ${getBadgeClass(it.tag)}">${escapeHtml(it.tag)}</span>` : ""}
+      </div>`).join("")}</div>`;
+  }
+  // 21. summary-bar (하단 지표 요약 수치 그리드)
+  if (type === "summary-bar") {
+    return `<div class="summary-bar">${items.map(it => {
+      const rawNum = it.icon || "";
+      const numMatch = rawNum.match(/^(\d+(?:\.\d+)?(?:[Kk]\+?|\+)?)\s*(.*)$/);
+      const val = numMatch ? numMatch[1] : rawNum;
+      const unit = numMatch ? numMatch[2] : "";
+
+      return `<div class="summary-item">
+        <span class="summary-num">${escapeHtml(val)}${unit ? `<span class="unit">${escapeHtml(unit)}</span>` : ""}</span>
+        <span class="summary-label">${escapeHtml(it.title)}</span>
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  // 22. step-flow (구 step-flow) (가로/세로 흐름 시각화)
+  if (type === "step-flow" || type === "flow") {
+    return `<div class="step-flow">${items.map(it => {
+      if (it.type === "arrow" || it.title === "→" || it.icon === "→") {
+        return `<div class="step-flow-arrow">${escapeHtml(it.icon || "→")}</div>`;
+      }
+      const activeClass = it.tag === "active" ? "active" : "";
+      return `<div class="step-flow-step ${activeClass}">
+        <div class="fs-icon">${escapeHtml(it.icon)}</div>
+        <div class="fs-title">${escapeHtml(it.title)}</div>
+        <div class="fs-sub">${escapeHtml(it.desc)}</div>
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  // 23. level-grid (레벨 스펙트럼)
+  if (type === "level-grid") {
+    return `<div class="level-grid">${items.map(it => {
+      const activeClass = it.tag === "highlight" || it.featured === "true" ? "highlight" : "";
+      return `<div class="level-card ${activeClass}">
+        <div class="level-num">${escapeHtml(it.title)}</div>
+        <div class="level-name">${escapeHtml(it.desc)}</div>
+        <div class="level-tool">${escapeHtml(it.meta)}</div>
+        <div class="level-desc">${escapeHtml(it.note)}</div>
+      </div>`;
+    }).join("")}</div>`;
+  }
+
+  // 24. checkpoint-grid (중간 검수 포인트)
+  if (type === "checkpoint-grid") {
+    return `<div class="checkpoint-grid">${items.map(it => `
+      <div class="checkpoint-item">
+        <div class="ci-icon">${escapeHtml(it.icon || "📐")}</div>
+        <div class="ci-text"><strong>${escapeHtml(it.title || "")}</strong><br>${escapeHtml(it.desc || "")}</div>
+      </div>`).join("")}</div>`;
+  }
+
+  // 25. compare-diff (구 compare-diff) (좌우 1:1 전후 대조)
+  if (type === "compare-diff" || type === "compare-before-after") {
+    const bad = items[0] || {};
+    const good = items[1] || {};
+    return `<div class="compare-diff">
+      <div class="before-box">
+        <div class="ba-label">❌ ${escapeHtml(bad.title)}</div>
+        <div class="ba-content">${escapeHtml(bad.desc).replace(/\n/g, "<br>")}</div>
+      </div>
+      <div class="after-box">
+        <div class="ba-label">✅ ${escapeHtml(good.title)}</div>
+        <div class="ba-content">${escapeHtml(good.desc).replace(/\n/g, "<br>")}</div>
+      </div>
+    </div>`;
+  }
+
+  // 26. takeaway-banner-banner (구 takeaway-banner) (Key Takeaway)
+  if (type === "takeaway-banner" || type === "takeaway") {
+    const it = items[0] || {};
+    return `<div class="takeaway-banner">
+      <div class="ta-icon">${escapeHtml(it.icon || "💡")}</div>
+      <div>
+        <div class="ta-label">${escapeHtml(it.title || "Key Takeaway")}</div>
+        <div class="ta-text">${escapeHtml(it.desc || "")}</div>
+      </div>
+    </div>`;
+  }
+
+  if (type === "slide-config") {
+    const lines = body.split(/\r?\n/);
+    let bg = "", color = "";
+    for (const line of lines) {
+      const m = line.match(/^\s*(?:-\s*)?([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
+      if (m) {
+        const key = m[1].trim();
+        const val = cleanValue(m[2]);
+        if (key === "bg") bg = val;
+        if (key === "color") color = val;
+      }
+    }
+    if (bg || color) {
+      const uid = "style-" + Math.random().toString(36).slice(2, 7);
+      let styles = "";
+      if (bg) {
+        styles += `
+          .section:has(.${uid}) { background-color: ${bg} !important; }
+          .section:has(.${uid}) .card { background-color: ${bg} !important; border-color: rgba(255,255,255,0.1) !important; }
+          .slide:has(.${uid}) { background-color: ${bg} !important; }
+          .slide:has(.${uid}) .card { background-color: ${bg} !important; border-color: rgba(255,255,255,0.1) !important; }
+        `;
+      }
+      if (color) {
+        styles += `
+          .section:has(.${uid}) { color: ${color} !important; }
+          .section:has(.${uid}) h2,
+          .section:has(.${uid}) h3,
+          .section:has(.${uid}) p,
+          .section:has(.${uid}) li,
+          .section:has(.${uid}) span,
+          .section:has(.${uid}) div,
+          .section:has(.${uid}) strong,
+          .section:has(.${uid}) a {
+            color: ${color} !important;
+          }
+          .slide:has(.${uid}) { color: ${color} !important; }
+          .slide:has(.${uid}) h1,
+          .slide:has(.${uid}) h2,
+          .slide:has(.${uid}) h3,
+          .slide:has(.${uid}) p,
+          .slide:has(.${uid}) li,
+          .slide:has(.${uid}) span,
+          .slide:has(.${uid}) div,
+          .slide:has(.${uid}) strong,
+          .slide:has(.${uid}) a {
+            color: ${color} !important;
+          }
+        `;
+      }
+      return `<style>${styles}</style><div class="slide-style-trigger ${uid}" style="display:none;"></div>`;
+    }
+    return "";
+  }
+
+  return "";
+}
 
 export function buildPresentationHtml(inputPaths, opts = {}) {
   const fontConfig = HTML_CONFIG?.htmlFont || {};
@@ -41,8 +686,6 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
   const fontCode  = fontConfig.code  || "'JetBrains Mono', monospace";
   const fontTag   = fontConfig.tag   || "'Noto Sans KR', sans-serif";
   const fontScale = fontConfig.scale || 1.0;
-  // 크기 토큰: config/htmldesign.config.json 의 htmlSize.presentation 에서 로드 (하드코딩 금지 — 폴백만 리터럴)
-  const sz = HTML_CONFIG?.htmlSize?.presentation || {};
 
   const paths = Array.isArray(inputPaths) ? inputPaths : [inputPaths];
   if (!paths.length) throw new Error("변환할 마크다운 파일 경로가 지정되지 않았습니다.");
@@ -98,19 +741,10 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
     };
     let isAfterSplit = false;
 
-    // cover 슬라이드라도 테이블·div·pre·ul 등 실질 콘텐츠가 있으면 content 슬라이드로 업그레이드
-    const pushSlide = (s) => {
-      if (!s) return;
-      if (s.type === "cover" && /<(table|div|pre|ul|ol)\b/i.test(s.body)) {
-        s.type = "content";
-      }
-      slides.push(s);
-    };
-
     for (const tok of tokens) {
       if (tok.type === "heading" && tok.depth === 1) {
         if (currentSlide && (currentSlide.body.trim() || currentSlide.title.trim())) {
-          pushSlide(currentSlide);
+          slides.push(currentSlide);
         }
         const title = marked.parser([{type: 'paragraph', tokens: tok.tokens}]).replace(/^<p>|<\/p>\n?$/g, "");
         currentSlide = {
@@ -122,7 +756,7 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
         isAfterSplit = false;
       } else if (tok.type === "heading" && tok.depth === 2) {
         if (currentSlide && (currentSlide.body.trim() || currentSlide.title.trim())) {
-          pushSlide(currentSlide);
+          slides.push(currentSlide);
         }
         const title = marked.parser([{type: 'paragraph', tokens: tok.tokens}]).replace(/^<p>|<\/p>\n?$/g, "");
         currentSlide = {
@@ -134,7 +768,7 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
         isAfterSplit = false;
       } else if (tok.type === "hr") {
         if (currentSlide && (currentSlide.body.trim() || currentSlide.title.trim())) {
-          pushSlide(currentSlide);
+          slides.push(currentSlide);
         }
         currentSlide = null;
         isAfterSplit = true;
@@ -162,7 +796,7 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
       }
     }
     if (currentSlide && (currentSlide.body.trim() || currentSlide.title.trim())) {
-      pushSlide(currentSlide);
+      slides.push(currentSlide);
     }
   }
 
@@ -189,7 +823,7 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
   const slidesHtml = slides.map((s, idx) => {
     const sNum = `${idx + 1} / ${slides.length}`;
     const activeStyle = s.style || STYLES["ai-chat"];
-    const styleAttr = `style="--brand: ${activeStyle.brand}; --brand-dark: ${activeStyle.brandDark}; --brand-deep: ${activeStyle.brandDeep}; --brand-light: ${activeStyle.brandLight}; --brand-mid: ${activeStyle.brandMid || activeStyle.brand}; --brand-gradient: linear-gradient(135deg, ${activeStyle.brand}, ${activeStyle.brandDeep});"`;
+    const styleAttr = `style="--brand: ${activeStyle.brand}; --brand-dark: ${activeStyle.brandDark}; --brand-deep: ${activeStyle.brandDeep}; --brand-light: ${activeStyle.brandLight}; --brand-mid: ${activeStyle.brandMid}; --brand-gradient: linear-gradient(135deg, ${activeStyle.brand}, ${activeStyle.brandDeep});"`;
 
     if (s.type === "cover") {
       const coverBg = mainFm?.coverBg || "";
@@ -229,18 +863,13 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
     --brand-dark: ${mainStyle.brandDark};
     --brand-deep: ${mainStyle.brandDeep};
     --brand-light: ${mainStyle.brandLight};
-    --brand-mid:  ${mainStyle.brandMid || mainStyle.brand};
+    --brand-mid:  ${mainStyle.brandMid};
     --brand-gradient: linear-gradient(135deg, ${mainStyle.brand}, ${mainStyle.brandDeep});
     --border:     rgba(255, 255, 255, 0.1);
     --bg:         #0b0d12; /* 💡 다크모드 기본 배경색을 변경하려면 이 값을 수정하세요! */
     --text:       #f8fafc;
     --text-muted: #94a3b8;
-    --text-2:     rgba(255,255,255,0.78);
-    --text-3:     #94a3b8;
     --card-bg:    #11141b; /* 💡 다크모드 카드 배경색을 변경하려면 이 값을 수정하세요! */
-    --shadow:     0 4px 24px rgba(0,0,0,0.25);
-    --shadow-lg:  0 8px 40px rgba(0,0,0,0.3);
-    --done-subtitle-color: rgba(255,255,255,0.86);
     --radius:     ${cssRadius};
 
     /* 💡 역할별 폰트 — 스타일별 webFont/webFontTitle 우선, 없으면 htmldesign.config.json 기본값 */
@@ -253,31 +882,27 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
     /* 💡 폰트 크기 일괄 스케일 배율 (설정 파일 config/htmldesign.config.json 에서 관리) */
     --font-scale: ${fontScale};
 
-    /* 💡 크기 토큰 — config/htmldesign.config.json 의 htmlSize.presentation 에서 로드 (폴백만 리터럴) */
-    --size-h1: ${sz['h1'] || '3rem'};
-    --size-h2: ${sz['h2'] || '2.6rem'};
-    --size-h3: ${sz['h3'] || '1.8rem'};
-    --size-body-p: ${sz['body-p'] || '1.3rem'};
-    --size-card-title: ${sz['card-title'] || '1.45rem'};
-    --size-card-p: ${sz['card-p'] || '1.2rem'};
-    --size-stat-val: ${sz['stat-val'] || '2.6rem'};
-    --size-stat-name: ${sz['stat-name'] || '1.2rem'};
-    --size-stat-note: ${sz['stat-note'] || '1.1rem'};
-    --size-plan-badge: ${sz['plan-badge'] || '0.8rem'};
-    --size-plan-features: ${sz['plan-features'] || '1.1rem'};
-    --size-workflow-name: ${sz['workflow-name'] || '1.15rem'};
-    --size-workflow-tool: ${sz['workflow-tool'] || '0.95rem'};
+    /* 💡 [중앙통제] 특정 숏코드 및 컴포넌트별 폰트 크기 개별 정의 (필요 시 개별 오버라이드 가능!) */
+    --size-h1: 3rem;
+    --size-h2: 2.6rem;
+    --size-h3: 1.8rem;
+    --size-body-p: 1.3rem;
+    --size-card-title: 1.45rem;
+    --size-card-p: 1.2rem;
+    --size-stat-val: 2.6rem;
+    --size-stat-name: 1.2rem;
+    --size-stat-note: 1.1rem;
+    --size-plan-badge: 0.8rem;
+    --size-plan-features: 1.1rem;
+    --size-workflow-name: 1.15rem;
+    --size-workflow-tool: 0.95rem;
   }
   body.light-mode {
     --border:     rgba(15, 23, 42, 0.08);
     --bg:         #f8fafc; /* 💡 라이트모드 기본 배경색 */
     --text:       #0f172a;
     --text-muted: #64748b;
-    --text-2:     #475569;
-    --text-3:     #8892B0;
     --card-bg:    #ffffff; /* 💡 라이트모드 카드 배경색 */
-    --shadow:     0 4px 24px rgba(0,0,0,0.06);
-    --shadow-lg:  0 8px 40px rgba(0,0,0,0.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -1053,8 +1678,6 @@ export function buildPresentationHtml(inputPaths, opts = {}) {
       padding: 60px 80px !important;
     }
   }
-  /* ── 공유 숏코드 컴포넌트 CSS (정본 — build-guide 와 동일) ── */
-  ${SHORTCODE_CSS}
 </style>
 </head>
 <body>

@@ -1,8 +1,6 @@
 import { marked } from 'marked';
-// @ts-ignore — 순수 JS 공유 모듈 (정본 숏코드 렌더러 + CSS). build-guide 와 동일 출력 보장.
-import { renderShortcode } from '../../scripts/shortcode-render.mjs';
-// @ts-ignore
-import { SHORTCODE_CSS } from '../../scripts/shortcode-styles.mjs';
+// [안정화 복원 2026-06-25] presentation/preview 회귀로 공유 렌더러(shortcode-render)·공유 CSS(SHORTCODE_CSS) 사용을 철회.
+// client-compiler 는 자체 renderClientShortcode + 자체 CSS 로 복귀. (옛 CSS 제거를 통한 일관 통합은 안정화 후 재추진 — docs/plan/presentation-stabilization.md)
 // 크기 토큰 단일 출처: config/htmldesign.config.json (Node 의 loadJsonWithComments 와 동일하게 주석 제거 후 파싱)
 // @ts-ignore — Vite ?raw 로 원문 문자열 import
 import htmlDesignRaw from '../../config/htmldesign.config.json?raw';
@@ -661,7 +659,7 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
   const subtitle = match ? (match[1].match(/subtitle:\s*(.*)/)?.[1] || "").replace(/^["']|["']$/g, "") : "";
 
   const shortcodeCompiled = body.replace(/:::\s*([a-zA-Z0-9_-]+)(.*?)\r?\n([\s\S]*?)\r?\n:::/g, (match, type, args, content) => {
-    const html = renderShortcode(type.trim(), content, args.trim());
+    const html = renderClientShortcode(type.trim(), content, args.trim(), style);
     // CommonMark: HTML block terminates at first blank line (whitespace-only line).
     // Remove whitespace-only lines and collapse multi-newlines to prevent premature termination.
     const cleanHtml = html.replace(/^[ \t]+$/gm, "").replace(/\n{2,}/g, "\n");
@@ -861,8 +859,6 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
   .nav-btn { position:fixed; bottom:40px; z-index:1000; width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:1.4rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; backdrop-filter:blur(8px); }
   .nav-btn:hover { background:rgba(255,255,255,0.16); }
   .prev-btn { left:40px; } .next-btn { right:40px; }
-  /* ── 공유 숏코드 컴포넌트 CSS (정본 — build-guide 와 동일) ── */
-  ${SHORTCODE_CSS}
 </style>
 </head>
 <body>
@@ -1099,8 +1095,6 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
     padding: 12px 20px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 25px;
     display: flex; align-items: center; gap: 10px; font-weight: 500;
   }
-  /* ── 공유 숏코드 컴포넌트 CSS (정본 — build-guide 와 동일) ── */
-  ${SHORTCODE_CSS}
 </style>
 </head>
 <body>

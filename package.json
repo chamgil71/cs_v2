@@ -13,7 +13,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "pptx:md": "node scripts/md-to-pptx.mjs"
+    "pptx:md": "node scripts/md-to-pptx.mjs",
+    "verify:pptx": "node scripts/verify-pptx-roundtrip.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

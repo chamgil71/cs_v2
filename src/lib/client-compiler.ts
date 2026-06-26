@@ -11,6 +11,16 @@ const HTML_DESIGN: any = (() => {
 const HSZ_GUIDE = HTML_DESIGN?.htmlSize?.guide || {};
 const HSZ_PRES = HTML_DESIGN?.htmlSize?.presentation || {};
 
+// [Step 2] 프레젠테이션은 환경 비의존 코어(build-presentation 와 공유)로 생성 → standalone==server.
+// @ts-ignore — 순수 JS 코어 모듈
+import { buildPresentationHtml } from '../../scripts/presentation-core.mjs';
+// @ts-ignore — pptdesign config(globalRadius 등) 주입용 원문 import
+import pptDesignRaw from '../../config/pptdesign.config.json?raw';
+const PPT_DESIGN: any = (() => {
+  try { return JSON.parse(String(pptDesignRaw).replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '')); }
+  catch { return {}; }
+})();
+
 // Fallback styles for offline mode
 export const FALLBACK_STYLES: Record<string, any> = {
   "custom-blue": {
@@ -667,239 +677,14 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
   });
 
   if (mode === "presentation") {
-    // Build slide list: frontmatter cover → h1(cover) / h2(content) / ---( break)
-    const slideList: Array<{type: 'cover'|'content', title: string, body: string}> = [];
-    slideList.push({ type: 'cover', title, body: subtitle });
-    const tokens = (marked as any).lexer(shortcodeCompiled);
-    let curSlide: {type: 'cover'|'content', title: string, body: string} | null = null;
-    const flush = () => { if (curSlide && (curSlide.body.trim() || curSlide.title.trim())) { slideList.push(curSlide); } curSlide = null; };
-    for (const tok of tokens) {
-      if (tok.type === 'heading' && (tok as any).depth === 1) { flush(); curSlide = { type: 'cover', title: tok.text || '', body: '' }; }
-      else if (tok.type === 'heading' && (tok as any).depth === 2) { flush(); curSlide = { type: 'content', title: tok.text || '', body: '' }; }
-      else if (tok.type === 'hr') { flush(); }
-      else if (tok.type !== 'space') { if (!curSlide) curSlide = { type: 'content', title: '', body: '' }; curSlide.body += (marked as any).parser([tok]); }
-    }
-    flush();
-    const total = slideList.length;
-    const slidesHtml = slideList.map((s, idx) => {
-      if (s.type === 'cover') {
-        return `<div class="slide cover"><h1>${renderInline(s.title)}</h1>${s.body ? `<div class="cover-body">${s.body}</div>` : ''}</div>`;
-      }
-      return `<div class="slide content"><header class="slide-header"><h2>${renderInline(s.title)}</h2><span class="slide-num">${idx + 1} / ${total}</span></header><div class="slide-body">${s.body}</div></div>`;
-    }).join('\n');
-
-    return `<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${escapeHtml(title)}</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --brand:       ${style.brand || '#6366F1'};
-    --brand-dark:  ${style.brandDark || '#4F46E5'};
-    --brand-deep:  ${style.brandDeep || '#3730A3'};
-    --brand-light: ${style.brandLight || '#EEF0FE'};
-    --brand-mid:   ${style.brandMid || '#D8DCFB'};
-    --brand-gradient: linear-gradient(135deg, ${style.brandDeep || '#3730A3'}, ${style.brandDark || '#4F46E5'});
-    --bg: #0b0d12; --card-bg: #11141b;
-    --text: #f8fafc; --text-2: rgba(255,255,255,0.78); --text-3: #94a3b8; --text-muted: #94a3b8;
-    --border: rgba(255,255,255,0.08);
-    --radius: 12px;
-    --font-title: ${style.webFontTitle || "'Noto Serif KR', serif"};
-    --font-desc:  ${style.webFont || "'Noto Sans KR', sans-serif"};
-    --font-note:  'JetBrains Mono', monospace; --font-code: 'JetBrains Mono', monospace;
-    --font-scale: 1.0;
-    --size-h1: ${HSZ_PRES['h1'] || '3rem'}; --size-h2: ${HSZ_PRES['h2'] || '2.6rem'}; --size-h3: ${HSZ_PRES['h3'] || '1.8rem'};
-    --size-body-p: ${HSZ_PRES['body-p'] || '1.3rem'}; --size-card-title: ${HSZ_PRES['card-title'] || '1.45rem'}; --size-card-p: ${HSZ_PRES['card-p'] || '1.2rem'};
-    --size-stat-val: ${HSZ_PRES['stat-val'] || '2.6rem'}; --size-stat-name: ${HSZ_PRES['stat-name'] || '1.2rem'}; --size-stat-note: ${HSZ_PRES['stat-note'] || '1.1rem'};
-    --size-plan-badge: ${HSZ_PRES['plan-badge'] || '0.8rem'}; --size-plan-features: ${HSZ_PRES['plan-features'] || '1.1rem'}; --font-tag: 'Noto Sans KR', sans-serif;
-    --shadow: 0 4px 24px rgba(0,0,0,0.25); --shadow-lg: 0 8px 40px rgba(0,0,0,0.3);
+    // 슬라이드 분할·페이지 템플릿·CSS·숏코드 렌더 전부 코어가 담당(서버 CLI 와 동일 코드).
+    // 원문 md(프론트매터 포함)를 그대로 코어에 넘긴다 — 클라이언트 자체 전처리(shortcodeCompiled) 우회.
+    const { html } = buildPresentationHtml(
+      [{ raw: md, basename: "" }],
+      { styles: resolvedStyles, config: PPT_DESIGN, htmlConfig: HTML_DESIGN, style: styleName }
+    );
+    return html;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-desc), sans-serif; background: var(--bg); color: var(--text); overflow: hidden; width: 100vw; height: 100vh; }
-  .slides-container { display: flex; width: 100vw; height: 100vh; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; -ms-overflow-style: none; }
-  .slides-container::-webkit-scrollbar { display: none; }
-  .slide { flex: 0 0 100vw; width: 100vw; height: 100vh; scroll-snap-align: start; display: flex; flex-direction: column; padding: 80px 100px; box-sizing: border-box; overflow-y: auto; background: var(--bg); }
-  .slide.cover { justify-content: center; align-items: center; background: linear-gradient(135deg, var(--brand-deep), var(--brand-dark)); text-align: center; }
-  .slide.cover h1 { font-family: var(--font-title); font-size: calc(var(--size-h1)*var(--font-scale)); font-weight: 900; color: #fff; margin-bottom: 24px; text-shadow: 0 4px 16px rgba(0,0,0,0.3); }
-  .cover-body { max-width: 900px; margin: 20px auto 0; color: var(--brand-light); }
-  .cover-body p { font-size: calc(1.4rem*var(--font-scale)); line-height: 1.8; margin-bottom: 16px; color: var(--brand-light); }
-  .slide.content { justify-content: flex-start; align-items: flex-start; }
-  .slide-header { width: 100%; border-bottom: 2px solid var(--brand); padding-bottom: 20px; margin-bottom: 40px; display: flex; align-items: center; justify-content: space-between; }
-  .slide-header h2 { font-family: var(--font-title); font-size: calc(var(--size-h2)*var(--font-scale)); color: rgba(255,255,255,0.95); font-weight: 700; }
-  .slide-num { font-family: var(--font-note); font-size: 1.1rem; color: var(--text-muted); }
-  .slide-body { width: 100%; flex: 1; font-size: calc(1.3rem*var(--font-scale)); line-height: 1.8; }
-  .slide-body h3 { font-family: var(--font-title); font-size: calc(var(--size-h3)*var(--font-scale)); color: var(--brand-light); margin: 20px 0 12px; }
-  .slide-body p { color: var(--text-2); margin-bottom: 14px; }
-  .slide-body ul,.slide-body ol { padding-left: 24px; margin-bottom: 14px; }
-  .slide-body li { margin-bottom: 8px; color: var(--text-2); }
-  .slide-body strong { color: #fff; font-weight: 700; }
-  .slide-body pre { background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; padding: 16px; border-radius: 8px; font-family: var(--font-code); font-size: 0.9rem; overflow-x: auto; margin: 14px 0; }
-  .slide-body code { background: rgba(255,255,255,0.1); color: var(--brand-light); padding: 2px 6px; border-radius: 4px; font-size: 0.85em; font-family: var(--font-code); }
-  .slide-body pre code { background: none; }
-  .slide-body table { width: 100%; border-collapse: collapse; margin: 14px 0; }
-  .slide-body th { background: var(--brand); color: #fff; padding: 10px 14px; text-align: center; font-size: 0.9rem; font-weight: 700; }
-  .slide-body td { padding: 8px 14px; border-bottom: 1px solid rgba(255,255,255,0.07); color: var(--text-2); text-align: center; }
-  /* ── shortcode card shared CSS (same as guide HTML, dark overrides below) ── */
-  .icon-grid,.feature-grid,.compare-grid,.plan-grid,.columns-grid,.badge-grid { display:grid; gap:20px; margin:20px 0; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); }
-  .icon-card,.feature-card,.compare-card,.column-card,.plan-card,.summary-box,.badge-item { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:20px; position:relative; overflow:hidden; }
-  .card-top-bar { height:4px; background:var(--brand); position:absolute; top:0; left:0; right:0; }
-  .feature-tag { position:absolute; top:10px; right:10px; font-size:0.7rem; font-weight:bold; padding:2px 8px; border-radius:100px; background:rgba(255,255,255,0.1); color:var(--brand-light); }
-  .icon-wrap { font-size:2rem; margin-bottom:12px; }
-  .icon-card-title,.feature-card-title,.compare-card-title,.col-title { font-family:var(--font-title); font-size:var(--size-card-title); font-weight:700; color:var(--text); margin-bottom:8px; }
-  .icon-card p,.feature-card p,.compare-card p,.column-card p { font-size:var(--size-card-p); color:var(--text-muted); margin:0; line-height:1.55; }
-  /* step-flow */
-  .step-flow { display:flex; align-items:stretch; gap:15px; overflow-x:auto; padding-bottom:8px; }
-  .step-flow-step { flex:1; min-width:130px; background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:18px; text-align:center; display:flex; flex-direction:column; align-items:center; }
-  .step-flow-step.active { border-color:var(--brand); }
-  .fs-icon { width:45px; height:45px; margin:0 auto 10px; background:rgba(255,255,255,0.06); color:var(--brand); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3rem; }
-  .step-flow-step.active .fs-icon { background:var(--brand); color:#fff; }
-  .fs-title { font-weight:800; font-size:1rem; margin-bottom:5px; color:var(--text); }
-  .fs-meta { font-size:0.75rem; color:var(--text-muted); margin-top:4px; }
-  .fs-sub { font-size:0.9rem; color:var(--text-muted); margin:0; }
-  .step-flow-arrow { display:flex; align-items:center; justify-content:center; font-weight:900; color:rgba(255,255,255,0.2); font-size:1.5rem; flex-shrink:0; }
-  /* stat-grid */
-  .stat-grid { display:grid; gap:20px; margin:20px 0; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
-  .stat-card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:24px; text-align:center; }
-  .stat-val { font-family:var(--font-title); font-size:2.4rem; font-weight:900; color:var(--brand); }
-  .stat-name { font-size:1rem; font-weight:600; color:var(--text); margin:6px 0 4px; }
-  .stat-note { font-size:0.85rem; color:var(--text-muted); }
-  /* alert-box */
-  .alert-box { border-left:4px solid var(--brand); background:rgba(255,255,255,0.04); padding:16px 20px; border-radius:var(--radius); margin:14px 0; }
-  .alert-body p { color:var(--text-2); }
-  /* summary-box */
-  .summary-box { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:20px; }
-  .summary-box p { color:var(--text-muted); }
-  /* takeaway-banner */
-  .takeaway-banner { display:flex; gap:16px; align-items:flex-start; background:linear-gradient(135deg,var(--brand-deep),var(--brand-dark)); border-radius:var(--radius); padding:24px 32px; margin:20px 0; color:#fff; }
-  .ta-icon { font-size:1.8rem; line-height:1.2; flex-shrink:0; }
-  .ta-label { font-size:1rem; font-weight:800; color:#fff; margin-bottom:6px; }
-  .ta-text { font-size:0.92rem; color:rgba(255,255,255,0.8); line-height:1.6; }
-  /* badge-grid */
-  .badge-grid { display:flex; flex-wrap:wrap; gap:10px; margin:16px 0; }
-  .badge-item { padding:6px 16px; border-radius:100px; font-size:0.85rem; font-weight:600; background:rgba(255,255,255,0.08); color:var(--text); border:none; }
-  /* faq-list, step-list */
-  .faq-list { margin:16px 0; }
-  .step-list { margin:16px 0; }
-  .faq-item { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); margin-bottom:10px; overflow:hidden; }
-  .step-item { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:16px 20px; margin-bottom:10px; }
-  .faq-q { width:100%; display:flex; justify-content:space-between; align-items:center; padding:16px 20px; background:transparent; border:none; cursor:pointer; font-size:0.95rem; font-weight:700; color:var(--text); text-align:left; gap:12px; font-family:inherit; }
-  .faq-q:hover { background:rgba(255,255,255,0.05); }
-  .faq-item.open .faq-q { color:var(--brand); }
-  .faq-arrow { transition:transform 0.2s; font-size:0.7rem; opacity:0.5; flex-shrink:0; }
-  .faq-item.open .faq-arrow { transform:rotate(180deg); opacity:1; }
-  .faq-a { display:none; padding:0 20px 16px; color:var(--text-muted); font-size:0.95rem; }
-  .faq-item.open .faq-a { display:block; }
-  .step-title { font-weight:700; color:var(--text); margin-bottom:6px; }
-  .step-desc { color:var(--text-muted); font-size:0.95rem; }
-  /* os-tabs */
-  .tabs-wrap { margin:16px 0; border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); overflow:hidden; }
-  .tabs-nav { display:flex; background:rgba(255,255,255,0.03); border-bottom:1px solid rgba(255,255,255,0.08); overflow-x:auto; }
-  .tab-btn { padding:11px 20px; background:transparent; border:none; border-bottom:2px solid transparent; cursor:pointer; font-size:0.9rem; font-weight:600; color:var(--text-muted); white-space:nowrap; transition:0.15s; font-family:inherit; margin-bottom:-1px; }
-  .tab-btn.active { color:var(--brand); border-bottom-color:var(--brand); }
-  .tab-btn:hover:not(.active) { color:var(--text); }
-  .tab-panel { display:none; padding:24px; }
-  .tab-panel.active { display:block; }
-  /* skill-list (align=left) */
-  .skill-list { display:flex; flex-direction:column; gap:15px; margin:20px 0; }
-  .skill-item { display:flex; align-items:center; gap:20px; background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:15px 25px; }
-  .skill-icon { width:40px; height:40px; background:rgba(255,255,255,0.08); color:var(--brand); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
-  .skill-title { font-weight:800; font-size:1rem; width:30%; color:var(--text); }
-  .skill-desc { font-size:0.9rem; color:var(--text-muted); flex:1; }
-  /* checkpoint-grid (align=row) */
-  .checkpoint-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin:20px 0; }
-  .checkpoint-item { display:flex; align-items:center; gap:16px; background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:18px; }
-  .ci-icon { font-size:1.6rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; width:42px; height:42px; background:rgba(255,255,255,0.08); border-radius:50%; color:var(--brand); }
-  .ci-text { font-size:0.9rem; color:var(--text); line-height:1.4; }
-  .ci-text strong { font-size:1rem; font-weight:700; color:var(--brand-light); }
-  /* compare-diff */
-  .compare-diff { display:flex; flex-direction:column; gap:20px; margin:20px 0; }
-  .before-box,.after-box { display:flex; flex-direction:column; gap:8px; }
-  .before-box { border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:20px; }
-  .ba-label { font-weight:800; font-size:1rem; color:var(--text); }
-  .ba-content { font-size:0.92rem; color:var(--text-muted); line-height:1.6; }
-  /* network-box */
-  .graph-visual { background:#0A0F1E; border-radius:var(--radius); height:280px; position:relative; margin:20px 0; overflow:hidden; }
-  .graph-nodes { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:20px; flex-wrap:wrap; padding:20px; }
-  .node { border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:0.85rem; font-weight:700; text-align:center; padding:10px; }
-  .node-main { width:90px; height:90px; color:#fff; font-size:0.95rem; }
-  /* summary-bar */
-  .summary-bar { margin:20px 0; padding:24px; background:rgba(255,255,255,0.05); border-radius:var(--radius); border:1px solid rgba(255,255,255,0.08); display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:20px; }
-  .summary-item { display:flex; flex-direction:column; gap:4px; }
-  .summary-num { font-family:var(--font-note); font-size:1.8rem; font-weight:700; color:var(--brand); line-height:1; }
-  .summary-unit { font-size:0.75rem; font-weight:300; color:var(--text-muted); margin-left:2px; }
-  .summary-label { font-size:0.8rem; color:var(--text-muted); }
-  /* part-banner */
-  .part-banner { margin-bottom:20px; }
-  .part-banner-header { display:flex; align-items:center; border-radius:var(--radius); overflow:hidden; }
-  .part-banner-num-block { width:52px; height:52px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:0.85rem; font-weight:500; color:white; }
-  .part-banner-title-block { flex:1; height:52px; display:flex; align-items:center; padding:0 20px; gap:12px; }
-  .part-banner-title-text { font-size:0.95rem; font-weight:600; color:white; }
-  .part-banner-tagline { font-size:0.8rem; color:rgba(255,255,255,0.7); font-weight:300; }
-  .part-banner-chapter-range { font-size:0.75rem; color:rgba(255,255,255,0.5); margin-left:auto; letter-spacing:0.05em; }
-  /* level-grid */
-  .level-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin:20px 0; }
-  .level-card { background:var(--card-bg); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:20px; text-align:center; }
-  .level-num { font-size:1.25rem; font-weight:900; color:var(--brand); margin-bottom:8px; }
-  .level-name { font-size:0.95rem; font-weight:700; color:var(--text); }
-  .level-desc { font-size:0.78rem; color:var(--text-muted); font-style:italic; margin-top:8px; }
-  /* git-flow */
-  .git-flow-container { background:#0F172A; padding:28px; border-radius:var(--radius); border:1px solid rgba(255,255,255,0.08); overflow-x:auto; }
-  .flow-branches { display:flex; flex-direction:column; gap:20px; min-width:600px; }
-  .branch-row { display:grid; grid-template-columns:140px 1fr; gap:20px; align-items:center; min-height:80px; }
-  .branch-label { padding:8px 16px; border-radius:8px; font-size:0.9rem; text-align:center; }
-  .branch-line { display:flex; align-items:center; flex:1; height:32px; position:relative; padding:0 10%; }
-  .commit { width:18px; height:18px; background:#0F172A; border:3px solid var(--brand); border-radius:50%; position:relative; flex-shrink:0; }
-  .commit-label { position:absolute; bottom:24px; left:50%; transform:translateX(-50%); color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:100px; white-space:nowrap; }
-  .commit-desc { position:absolute; top:24px; left:50%; transform:translateX(-50%); color:#94A3B8; font-size:0.72rem; white-space:nowrap; }
-  .commit-line-segment { flex:1; height:3px; min-width:30px; }
-  /* nav buttons */
-  .nav-btn { position:fixed; bottom:40px; z-index:1000; width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:1.4rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; backdrop-filter:blur(8px); }
-  .nav-btn:hover { background:rgba(255,255,255,0.16); }
-  .prev-btn { left:40px; } .next-btn { right:40px; }
-</style>
-</head>
-<body>
-<div class="slides-container" id="slidesContainer">${slidesHtml}</div>
-<button class="nav-btn prev-btn" id="btnPrev">&#8592;</button>
-<button class="nav-btn next-btn" id="btnNext">&#8594;</button>
-<script>
-  var currentIdx = 0;
-  var container = document.getElementById('slidesContainer');
-  var slides = container.querySelectorAll('.slide');
-  var btnPrev = document.getElementById('btnPrev');
-  var btnNext = document.getElementById('btnNext');
-  function scrollToSlide(idx) {
-    if (idx < 0 || idx >= slides.length) return;
-    currentIdx = idx;
-    container.scrollTo({ left: idx * window.innerWidth, behavior: 'smooth' });
-    btnPrev.style.opacity = idx === 0 ? '0.3' : '1';
-    btnNext.style.opacity = idx === slides.length - 1 ? '0.3' : '1';
-  }
-  btnPrev.addEventListener('click', function() { scrollToSlide(currentIdx - 1); });
-  btnNext.addEventListener('click', function() { scrollToSlide(currentIdx + 1); });
-  window.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); scrollToSlide(currentIdx + 1); }
-    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); scrollToSlide(currentIdx - 1); }
-    else if (e.key === 'Home') { e.preventDefault(); scrollToSlide(0); }
-    else if (e.key === 'End') { e.preventDefault(); scrollToSlide(slides.length - 1); }
-  });
-  var scrollTimer;
-  container.addEventListener('scroll', function() {
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(function() {
-      var idx = Math.round(container.scrollLeft / window.innerWidth);
-      if (idx !== currentIdx) { currentIdx = idx; }
-    }, 100);
-  });
-  scrollToSlide(0);
-</script>
-</body>
-</html>`;
-  }
-
   const bodyHtml = marked.parse(shortcodeCompiled) as string;
 
   const html = `<!DOCTYPE html>

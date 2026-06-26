@@ -10,6 +10,9 @@
  */
 import matter from "gray-matter";
 import { marked } from "marked";
+// [HTML 통합] 프레젠테이션도 가이드와 동일한 공유 숏코드 렌더러+CSS 사용 (단일 출처 — shortcode-styles.mjs 한 곳만 고치면 3종 HTML 반영)
+import { renderShortcode as renderShortcodeShared } from "./shortcode-render.mjs";
+import { SHORTCODE_CSS } from "./shortcode-styles.mjs";
 
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -708,7 +711,7 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
 
     // Parse shortcodes
     let processedContent = content.replace(/^:::\s*([A-Za-z0-9_-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$/gm, (_, type, args, body) => {
-      const html = renderShortcode(type, body, args);
+      const html = renderShortcodeShared(type, body, args);
       return html ? `\n${html.replace(/\n\s+/g, '\n')}\n` : "";
     });
 
@@ -855,7 +858,12 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
     --bg:         #0b0d12; /* 💡 다크모드 기본 배경색을 변경하려면 이 값을 수정하세요! */
     --text:       #f8fafc;
     --text-muted: #94a3b8;
+    --text-2:     rgba(255,255,255,0.78); /* 공유 숏코드 CSS(shortcode-styles)에서 사용 */
+    --text-3:     rgba(255,255,255,0.55);
     --card-bg:    #11141b; /* 💡 다크모드 카드 배경색을 변경하려면 이 값을 수정하세요! */
+    --shadow:     0 4px 24px rgba(0,0,0,0.25);
+    --shadow-lg:  0 8px 40px rgba(0,0,0,0.3);
+    --done-subtitle-color: rgba(255,255,255,0.85);
     --radius:     ${cssRadius};
 
     /* 💡 역할별 폰트 — 스타일별 webFont/webFontTitle 우선, 없으면 htmldesign.config.json 기본값 */
@@ -888,6 +896,8 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
     --bg:         #f8fafc; /* 💡 라이트모드 기본 배경색 */
     --text:       #0f172a;
     --text-muted: #64748b;
+    --text-2:     #475569;
+    --text-3:     #94a3b8;
     --card-bg:    #ffffff; /* 💡 라이트모드 카드 배경색 */
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1155,6 +1165,12 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     color: rgba(255, 255, 255, 0.85);
   }
+  /* 라이트모드: 표 본문 글자색 보정 (다크용 흰색 하드코딩이 흰배경에서 안 보이던 문제) */
+  body.light-mode td,
+  body.light-mode .slide:not(.cover) td {
+    color: var(--text-2);
+    border-bottom-color: rgba(15, 23, 42, 0.08);
+  }
 
   tr:last-child td {
     border-bottom: none;
@@ -1189,282 +1205,9 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
   .slide-body p { margin-bottom: 20px; color: var(--text-muted); font-size: calc(var(--size-body-p) * var(--font-scale)); }
   .slide-body h3 { font-family: var(--font-title); font-size: calc(var(--size-h3) * var(--font-scale)); color: var(--text); margin: 24px 0 12px; }
 
-  /* Standard visual components inside slides */
-  .icon-grid, .feature-grid, .compare-grid, .plan-grid, .columns-grid, .stat-grid { display: grid; gap: 20px; margin: 25px 0; width: 100%; }
-  .icon-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-  .feature-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-  .plan-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-  .compare-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-  .columns-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-  .stat-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-
-  .icon-card, .feature-card, .compare-card, .column-card, .plan-card, .summary-box, .badge-item, .stat-card { 
-    background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; 
-    position: relative; overflow: hidden; transition: 0.2s; color: var(--text-muted);
-  }
-  /* 텍스트 정렬 정규화: 기존 HTML 숏코드 양식과 동일하게 좌측 정렬 보장 */
-  .feature-card, .compare-card, .column-card, .summary-box, .stat-card, .step-content, .skill-desc, .fs-sub, .ci-text, .alert-body, .chapter-title {
-    text-align: left;
-  }
-  .icon-card p, .feature-card p, .compare-card p, .column-card p, .plan-card p, .summary-box p, .stat-card p, .stat-note p {
-    font-family: var(--font-desc);
-    color: var(--text-muted);
-    font-size: calc(var(--size-card-p) * var(--font-scale));
-    line-height: 1.6;
-  }
-  .stat-val { font-size: calc(var(--size-stat-val) * var(--font-scale)); font-weight: 900; color: var(--brand); font-family: var(--font-title); margin-bottom: 6px; line-height: 1.1; }
-  .stat-name { font-family: var(--font-desc); font-weight: 700; font-size: calc(var(--size-stat-name) * var(--font-scale)); margin-bottom: 4px; color: var(--text); }
-  .stat-note { font-family: var(--font-desc); font-size: calc(var(--size-stat-note) * var(--font-scale)); color: var(--text-muted); }
-  .card-top-bar { height: 4px; background: var(--brand); position: absolute; top: 0; left: 0; right: 0; }
-  .icon-card-icon { font-size: 2.8rem; margin-bottom: 12px; text-align: center; }
-  .icon-card-title, .feature-card-title, .compare-card-title, .col-title, .plan-title { 
-    font-family: var(--font-desc); font-weight: 800; font-size: calc(var(--size-card-title) * var(--font-scale)); margin-bottom: 8px; color: var(--text); 
-  }
-  .feature-tag { position: absolute; top: 12px; right: 12px; font-size: calc(0.8rem * var(--font-scale)); font-weight: 900; padding: 4px 10px; border-radius: 100px; background: var(--brand); color: #fff; }
-
-  /* Plan Grid details */
-  .plan-card { text-align: center; padding-top: 35px; }
-  .plan-featured { border-color: var(--brand); box-shadow: 0 8px 30px rgba(99,102,241,0.2); }
-  .plan-badge { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: var(--brand); color: #fff; font-size: calc(var(--size-plan-badge) * var(--font-scale)); font-weight: 900; padding: 4px 12px; border-radius: 100px; }
-  .plan-features { list-style: none; margin: 0 0 15px 0; padding: 0; text-align: left; }
-  .plan-features li { padding: 6px 0; border-bottom: 1px solid var(--border); font-size: calc(var(--size-plan-features) * var(--font-scale)); color: var(--text-muted); }
-  .plan-features li:before { content: '✓'; color: var(--brand); margin-right: 8px; font-weight: bold; }
-  .plan-note { margin-top: auto; padding: 6px; background: var(--brand-dark); color: #fff; font-size: calc(0.85rem * var(--font-scale)); font-weight: bold; border-radius: 8px; }
-
-  /* Compare Diff (Before-After / 1:1) */
-  .compare-diff {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    width: 100%;
-    margin: 25px 0;
-  }
-  .before-box, .after-box {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    text-align: left;
-  }
-  .before-box {
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 20px;
-  }
-  .ba-label {
-    font-family: var(--font-desc);
-    font-weight: 800;
-    font-size: calc(1.35rem * var(--font-scale));
-    color: var(--text);
-  }
-  .ba-content {
-    font-family: var(--font-desc);
-    font-size: calc(1.2rem * var(--font-scale));
-    color: var(--text-muted);
-    line-height: 1.7;
-  }
-  .slide.cover .ba-label {
-    color: #fff !important;
-  }
-  .slide.cover .ba-content {
-    color: var(--brand-light) !important;
-  }
-
-  /* Alert Box */
-  .alert-box { display: flex; gap: 14px; padding: 16px 20px; border-radius: var(--radius); border-left: 4px solid var(--alert-color, var(--brand)); background: rgba(255,255,255,0.02); margin: 20px 0; }
-  .alert-tip  { --alert-color: var(--brand); }
-  .alert-warn { --alert-color: #F59E0B; }
-  .alert-success { --alert-color: #22C55E; }
-  .alert-danger { --alert-color: #EF4444; }
-  .alert-icon { font-size: 1.3rem; flex-shrink: 0; line-height: 1.5; }
-  .alert-body strong { display: block; font-size: 0.95rem; font-weight: 800; color: var(--alert-color, var(--brand)); margin-bottom: 4px; }
-  .alert-body p { margin: 0; font-size: 0.92rem; color: #cbd5e1; }
-
-  /* Cmd / Code block */
-  .cmd-block { background: #000; border-radius: var(--radius); overflow: hidden; margin: 20px 0; width: 100%; }
-  .cmd-header { display: flex; align-items: center; gap: 8px; padding: 9px 16px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05); }
-  .cmd-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); font-family: 'JetBrains Mono', monospace; flex: 1; }
-  .cmd-lang { font-size: 0.75rem; color: var(--brand); font-family: 'JetBrains Mono', monospace; }
-  .cmd-copy { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 3px 10px; font-size: 0.75rem; cursor: pointer; transition: 0.15s; }
-  .cmd-copy:hover { background: rgba(255,255,255,0.1); color: white; }
-  .cmd-pre { margin: 0; padding: 18px 20px; color: #cbd5e1; font-size: 0.95rem; overflow-x: auto; font-family: 'JetBrains Mono', monospace; white-space: pre-wrap; }
-
-  /* [NEW] Git flow (다차원 깃 플로우 브랜치 흐름 시각화) */
-  .git-flow-container { background: #000; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border); margin: 25px 0; width: 100%; }
-  .flow-branches { display: flex; flex-direction: column; gap: 20px; }
-  .branch-row { display: grid; grid-template-columns: 140px 1fr; gap: 20px; align-items: center; min-height: 80px; }
-  .branch-label { padding: 6px 12px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; text-align: center; }
-  .branch-line { display: flex; align-items: center; justify-content: flex-start; flex: 1; height: 32px; position: relative; padding: 0 10%; }
-  .commit { width: 16px; height: 16px; background: #000; border: 3px solid var(--brand); border-radius: 50%; position: relative; cursor: pointer; flex-shrink: 0; }
-  .commit-label { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 0.7rem; font-weight: 800; padding: 2px 6px; border-radius: 100px; white-space: nowrap; font-family: 'JetBrains Mono', monospace; }
-  .commit-desc { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); color: #94A3B8; font-size: 0.7rem; white-space: nowrap; font-family: inherit; font-weight: 500; }
-  .commit-line-segment { flex: 1; height: 3px; min-width: 30px; }
-
-  /* Editor Box */
-  .editor-sim { background: #1e1e1e; border: 1px solid #333; border-radius: var(--radius); overflow: hidden; margin: 25px 0; width: 100%; }
-  .editor-titlebar { background: #2d2d2d; height: 36px; display: flex; align-items: center; padding: 0 16px; gap: 8px; }
-  .editor-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .editor-dot.red { background: #FF5F56; }
-  .editor-dot.yellow { background: #FFBD2E; }
-  .editor-dot.green { background: #27C93F; }
-  .editor-tab { background: #1e1e1e; color: #fff; height: 100%; display: flex; align-items: center; padding: 0 16px; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; margin-left: 12px; border-top: 2px solid var(--brand); }
-  .editor-body { display: grid; grid-template-columns: 40px 1fr; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.8; color: #d4d4d4; }
-  .line-nums { background: #1e1e1e; color: #858585; text-align: right; padding: 12px 10px 12px 0; border-right: 1px solid #3c3c3c; user-select: none; display: flex; flex-direction: column; }
-  .code-area { padding: 12px 20px; overflow-x: auto; }
-  .code-area pre { margin: 0; }
-
-  /* Network Box */
-  .graph-visual { background: #05070a; border-radius: var(--radius); border: 1px solid var(--border); height: 260px; position: relative; margin: 25px 0; overflow: hidden; width: 100%; }
-  .graph-nodes { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-  .node { position: absolute; border-radius: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; text-align: center; }
-  .node-main { width: 90px; height: 90px; color: #fff; font-size: 0.95rem; z-index: 5; background: var(--brand); box-shadow: 0 0 20px var(--brand); animation: pulseGlow 3s infinite ease-in-out; }
-  .node-1 { width: 70px; height: 70px; transform: translate(-140px, -40px); border: 2px solid var(--brand-light); color: var(--brand-light); }
-  .node-2 { width: 70px; height: 70px; transform: translate(140px, 40px); border: 2px solid var(--brand-light); color: var(--brand-light); }
-  .node-3 { width: 70px; height: 70px; transform: translate(-90px, 80px); border: 2px solid var(--brand-light); color: var(--brand-light); }
-  .node-4 { width: 70px; height: 70px; transform: translate(100px, -70px); border: 2px solid var(--brand-light); color: var(--brand-light); }
-
-  /* ── [NEW] 시리즈 목차 숏코드 컴포넌트 스타일 ── */
-  .part-banner { margin-bottom: 30px; width: 100%; }
-  .part-banner-header { display: flex; align-items: center; border-radius: var(--radius); overflow: hidden; margin-bottom: 0; border: 1px solid var(--border); }
-  .part-banner-num-block { width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: white; background: var(--part-color, var(--brand)); }
-  .part-banner-title-block { flex: 1; height: 52px; display: flex; align-items: center; padding: 0 20px; background: var(--part-color, var(--brand)); }
-  .part-banner-title-text { font-family: 'Noto Serif KR', serif; font-size: 15px; font-weight: 600; color: white; }
-  .part-banner-tagline { font-size: 11px; color: rgba(255,255,255,0.7); margin-left: 12px; font-weight: 300; }
-  .part-banner-chapter-range { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.5); margin-left: auto; letter-spacing: 0.05em; }
-
-  .chapter-list { margin-top: 0; border-left: 2px solid var(--border); margin-left: 26px; padding-left: 15px; width: 100%; }
-  .chapter-item { display: flex; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--border); position: relative; }
-  .chapter-item:last-child { border-bottom: none; }
-  .chapter-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); min-width: 38px; flex-shrink: 0; }
-  .chapter-title { font-size: 14px; color: var(--text-muted); flex: 1; line-height: 1.45; }
-  .chapter-title strong { font-weight: 600; color: #fff; }
-  .chapter-desc { font-size: 11px; color: var(--text-muted); opacity: 0.7; margin-top: 2px; display: block; font-weight: 300; }
-  .chapter-badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 100px; flex-shrink: 0; font-weight: 500; }
-
-  .badge-concept   { background: rgba(232, 240, 254, 0.15); color: #a4c2f4; }
-  .badge-tool      { background: rgba(240, 252, 232, 0.15); color: #a4f4b2; }
-  .badge-case      { background: rgba(254, 243, 232, 0.15); color: #f4c2a4; }
-  .badge-guide     { background: rgba(248, 232, 254, 0.15); color: #f4a4f4; }
-  .badge-practice  { background: rgba(232, 254, 243, 0.15); color: #a4f4d2; }
-  .badge-warn      { background: rgba(254, 232, 232, 0.15); color: #f4a4a4; }
-
-  .summary-bar { margin-top: 40px; padding: 24px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 20px; width: 100%; }
-  .summary-item { display: flex; flex-direction: column; gap: 4px; }
-  .summary-num { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--brand-light); line-height: 1; }
-  .summary-num .unit { font-size: 12px; font-weight: 300; color: var(--text-muted); opacity: 0.8; margin-left: 2px; }
-  .summary-label { font-size: 11px; color: var(--text-muted); opacity: 0.6; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
-
-  /* ── [NEW] level-grid, checkpoint-grid, step-flow, takeaway-banner 스타일 ── */
-  .level-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 25px 0; width: 100%; }
-  .level-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
-  .level-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
-  .level-card.highlight { border-color: var(--brand); background: rgba(255, 255, 255, 0.03); }
-  .level-num { font-size: 1.25rem; font-weight: 900; color: var(--brand); margin-bottom: 8px; }
-  .level-card.highlight .level-num { color: var(--brand-dark); }
-  .level-name { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
-  .level-name p { margin: 0; }
-  .level-tool { font-size: 0.82rem; color: var(--text-muted); font-weight: 500; margin-bottom: 8px; }
-  .level-desc { font-size: 0.78rem; color: var(--text-muted); opacity: 0.8; font-style: italic; margin-top: auto; border-top: 1px dashed var(--border); padding-top: 8px; }
-  .level-desc p { margin: 0; }
-
-  /* Tool Card - 두 컬럼 레이아웃 (좌: 색상 사이드바, 우: 설명) */
-  .tool-card { display: flex; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); margin: 10px 0; min-height: 76px; }
-  .tc-side { width: 210px; flex-shrink: 0; padding: 14px 18px; display: flex; flex-direction: column; justify-content: center; gap: 6px; color: #fff; }
-  .tc-icon { font-size: 1.5rem; line-height: 1; }
-  .tc-name { font-size: 1rem; font-weight: 800; line-height: 1.3; }
-  .tc-badge { font-size: 0.68rem; padding: 2px 8px; border-radius: 100px; background: rgba(255,255,255,0.25); align-self: flex-start; white-space: nowrap; }
-  .tc-body { flex: 1; padding: 14px 18px; background: var(--card-bg); display: flex; flex-direction: column; justify-content: center; gap: 8px; overflow: hidden; }
-  .tc-sub { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
-  .tc-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 5px; }
-  .tc-list li { font-size: 0.76rem; background: rgba(255,255,255,0.04); padding: 2px 9px; border-radius: 100px; border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; }
-
-  /* Light-mode: #fff 하드코딩 컴포넌트 오버라이드 */
-  body.light-mode .level-name { color: var(--text); }
-  body.light-mode .fs-title { color: var(--text); }
-  body.light-mode .ci-text strong { color: var(--text); }
-  body.light-mode .ta-label { color: var(--text); }
-  body.light-mode .tc-list li { background: rgba(15,23,42,0.04); }
-
-  .checkpoint-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 25px 0; width: 100%; }
-  .checkpoint-item { display: flex; align-items: center; gap: 16px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
-  .checkpoint-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-  .ci-icon { font-size: 1.6rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 42px; height: 42px; background: rgba(255, 255, 255, 0.05); border-radius: 50%; color: var(--brand); }
-  .ci-text { font-size: 0.9rem; color: var(--text); line-height: 1.4; text-align: left; }
-  .ci-text strong { font-weight: 700; color: #fff; }
-
-  .step-flow { display: flex; align-items: stretch; gap: 15px; margin: 25px 0; overflow-x: auto; padding-bottom: 10px; width: 100%; }
-  .step-flow-step { flex: 1; min-width: 140px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; position: relative; display: flex; flex-direction: column; align-items: center; }
-  .step-flow-step.active { border-color: var(--brand); }
-  .step-flow-step.active .fs-icon { background: var(--brand); color: #fff; }
-  .fs-icon { width: 45px; height: 45px; margin: 0 auto 10px; background: rgba(255, 255, 255, 0.05); color: var(--brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
-  .fs-title { font-weight: 800; font-size: 1rem; margin-bottom: 5px; color: #fff; }
-  .fs-sub { font-size: 0.82rem; color: var(--text-muted); margin: 0; }
-  .fs-sub p { margin: 0; }
-  .step-flow-arrow { display: flex; align-items: center; justify-content: center; font-weight: 900; color: var(--text-muted); opacity: 0.5; font-size: 1.5rem; flex-shrink: 0; user-select: none; }
-
-  .takeaway-banner {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    padding: 24px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.05) 100%);
-    border-left: 5px solid var(--brand);
-    border-radius: var(--radius);
-    margin: 25px 0;
-    width: 100%;
-  }
-  .ta-icon {
-    font-size: 1.8rem;
-    line-height: 1.2;
-    flex-shrink: 0;
-  }
-  .ta-label {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 6px;
-    text-align: left;
-  }
-  .ta-text {
-    font-size: 0.95rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-    text-align: left;
-  }
-  .ta-text p {
-    margin: 0;
-  }
-
-  /* Workflow */
-  .workflow-flow { display: flex; align-items: stretch; gap: 15px; margin: 20px 0; width: 100%; }
-  .wf-step { flex: 1; min-width: 130px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 14px; text-align: center; position: relative; display: flex; flex-direction: column; align-items: center; }
-  .wf-icon { width: 45px; height: 45px; margin: 0 auto 10px; background: var(--brand-light); color: var(--brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
-  .wf-name { font-weight: 800; font-size: 1rem; margin-bottom: 4px; color: var(--text); }
-  .wf-tool { font-size: 0.8rem; color: var(--text-muted); }
-  .wf-arrow { display: flex; align-items: center; justify-content: center; font-weight: 900; color: var(--text-muted); opacity: 0.5; z-index: 1; font-size: 1.4rem; flex-shrink: 0; }
-
-  /* Steps */
-  .step-list { display: flex; flex-direction: column; gap: 15px; margin: 25px 0; width: 100%; }
-  .step-item { display: flex; gap: 20px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-  .step-num { width: 35px; height: 35px; background: var(--brand); color: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
-  .step-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 5px; color: var(--text); }
-  .step-content p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
-
-  /* Plan Grid */
-  .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 25px 0; width: 100%; }
-  .plan-card { text-align: center; padding: 35px 20px 20px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); position: relative; display: flex; flex-direction: column; }
-  .plan-featured { border-color: var(--brand); box-shadow: 0 8px 30px rgba(99,102,241,0.15); transform: translateY(-5px); }
-  .plan-badge { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: var(--brand); color: #fff; font-size: 0.75rem; font-weight: 900; padding: 4px 15px; border-radius: 100px; }
-  .plan-title { font-size: 1.3rem; margin-bottom: 20px; color: var(--text); }
-  .plan-features { list-style: none; margin: 0 0 20px 0; padding: 0; text-align: left; }
-  .plan-features li { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; color: var(--text-muted); }
-  .plan-features li:before { content: '✓'; color: var(--brand); margin-right: 8px; font-weight: bold; }
-  .plan-note { margin-top: auto; padding: 8px; background: rgba(99,102,241,0.1); color: var(--brand); font-size: 0.85rem; font-weight: bold; border-radius: 8px; }
-
-  /* Skill List */
-  .skill-list { display: flex; flex-direction: column; gap: 15px; margin: 25px 0; width: 100%; }
-  .skill-item { display: flex; align-items: center; gap: 20px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px 25px; }
-  .skill-icon { width: 40px; height: 40px; background: rgba(255,255,255,0.05); color: var(--brand); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
-  .skill-title { font-weight: 800; font-size: 1.1rem; color: var(--text); }
-  .skill-desc { font-size: 0.92rem; color: var(--text-muted); flex: 1; }
+  /* ── 공유 숏코드 컴포넌트 CSS (정본: shortcode-styles.mjs — 가이드/클라이언트와 단일 출처) ──
+     슬라이드 :root 의 다크 테마 변수 위에서 렌더된다. 라이트 토글은 body.light-mode 변수로 처리. */
+${SHORTCODE_CSS}
 
   /* ── TOC Sidebar ── */
   .toc-toggle-btn {
@@ -1702,6 +1445,8 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
   </div>
 
   <script>
+    // os-tabs 탭 전환 (공유 렌더러가 emit 하는 onclick switchTab 과 짝)
+    function switchTab(btn,id){var w=btn.closest('.tabs-wrap');w.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});w.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});btn.classList.add('active');var r=btn.getRootNode();var panel=r.getElementById?r.getElementById(id):document.getElementById(id);if(panel)panel.classList.add('active');}
     const container = document.getElementById('slides');
     const slides = document.querySelectorAll('.slide');
     const progress = document.getElementById('progress');

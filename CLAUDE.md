@@ -313,15 +313,17 @@ icon | title | desc | tag | meta | color
 
 **구조: 환경 비의존 "코어" 2개가 페이지 생성 전체(슬라이드 분할·페이지 템플릿·CSS·숏코드 렌더)를 소유하고, CLI 래퍼와 브라우저 클라이언트가 그 코어를 그대로 호출한다 → `standalone(브라우저) == server(CLI)` 를 코드 레벨에서 보장.**
 
-| 코어 (정본) | 렌더러 | 호출처 |
+| 코어 (정본) | 숏코드 렌더링 | 호출처 |
 |------------|-------|-------|
-| `scripts/guide-core.mjs` | `shortcode-render.mjs` + `shortcode-styles.mjs`(공유, `var(--*)`) | `build-guide.mjs`(CLI) + `client-compiler.ts` **html 모드** |
-| `scripts/presentation-core.mjs` | **자체 렌더러 + 자체 CSS**(슬라이드 튜닝·light-mode 오버라이드 내장) | `build-presentation.mjs`(CLI) + `client-compiler.ts` **presentation 모드** |
+| `scripts/guide-core.mjs` | `shortcode-render.mjs` + `shortcode-styles.mjs` (공유) | `build-guide.mjs`(CLI) + `client-compiler.ts` **html 모드** |
+| `scripts/presentation-core.mjs` | `shortcode-render.mjs` + `shortcode-styles.mjs` (**공유 — 가이드와 동일**) | `build-presentation.mjs`(CLI) + `client-compiler.ts` **presentation 모드** |
 
-- 코어 시그니처(환경 비의존, fs/path 없음): `buildHtml(doc{raw}, {styles,config,htmlConfig,style})` / `buildPresentationHtml(docs[{raw,basename}], {styles,config,htmlConfig,style})`. 프론트매터는 gray-matter(브라우저 안전), 토큰화는 marked.
-- **CLI 래퍼**(`build-guide.mjs`·`build-presentation.mjs`)는 파일읽기 + `loadJsonWithComments` config 로드 + 코어 호출만 담당(각 ~140·160행).
-- **클라이언트**(`client-compiler.ts`, ~90행)는 자체 렌더러를 두지 않고 `?raw`로 config를 주입해 코어를 호출. 과거 `renderClientShortcode`·자체 템플릿·자체 CSS·standalone 배너는 전부 제거됨.
-- ⚠️ **주의**: presentation 은 가이드의 공유 `renderShortcode`/`SHORTCODE_CSS` 를 쓰지 **않는다**(presentation-core 자체 렌더러 사용 — 슬라이드 회귀 방지를 위한 안정화 결정, `docs/plan/presentation-stabilization.md`). 가이드 렌더러만 `shortcode-render.mjs` 공유.
+- **숏코드 마크업+CSS 단일 출처**: `shortcode-render.mjs`(렌더러) + `shortcode-styles.mjs`(CSS, `var(--*)` 테마 독립). **3종 HTML(가이드·프레젠테이션·클라이언트)이 모두 이 한 쌍을 공유** → 숏코드 하나의 여백/스타일을 바꾸려면 `shortcode-styles.mjs` **1곳만** 수정(드리프트·누락 구조적 불가). 각 코어는 페이지 골격(슬라이드 분할·표지/헤더·스크롤·TOC·표)과 `:root` 테마 변수만 자기 매체에 맞게 정의.
+- presentation-core 의 `:root`는 다크 기본(+`body.light-mode` 라이트 변수)을 정의하고 `${SHORTCODE_CSS}`를 포함한다. os-tabs `switchTab` 함수는 페이지 스크립트에 포함.
+- 코어 시그니처(환경 비의존, fs/path 없음): `buildHtml(doc{raw}, {styles,config,htmlConfig,style})` / `buildPresentationHtml(docs[{raw,basename}], {styles,config,htmlConfig,style})`. 프론트매터는 gray-matter(브라우저는 `buffer-polyfill` 필요), 토큰화는 marked.
+- **CLI 래퍼**(`build-guide.mjs`·`build-presentation.mjs`)는 파일읽기 + `loadJsonWithComments` config 로드 + 코어 호출만 담당.
+- **클라이언트**(`client-compiler.ts`)는 자체 렌더러를 두지 않고 `?raw`로 config를 주입해 코어를 호출. 과거 `renderClientShortcode`·자체 템플릿·자체 CSS·standalone 배너는 전부 제거됨.
+- ⚠️ **PPTX 는 별개**: `pptx-renderers/` + `pptdesign.config.json`(절대좌표·수치). HTML과 렌더링 공유 불가(매체 상이). 입력 데이터 모델(`standardizeItem`)만 개념상 공유.
 - **수정 시 규칙**: 코어/렌더러/`client-compiler.ts` 변경 후 → `npm run build:standalone` (정합성 게이트 후 standalone 재빌드). 빠른 재빌드만 필요하면 `build:standalone:fast`.
 - **정합성 테스트**: `src/__tests__/shortcode-conformance.test.ts`(87건) — ① 공유 HTML 렌더러+PPTX 레지스트리 커버리지 ② **`standalone==server` 출력 동치 잠금**(html=guide-core, presentation=presentation-core). `build:standalone`이 먼저 실행.
 
@@ -413,6 +415,8 @@ npm run test:watch
 | standalone(브라우저) vs server(CLI) 프레젠테이션 분기 — 동일 MD에 슬라이드 4 vs 40 (2026-06-26) | 숏코드 렌더러만 공유했을 뿐 **슬라이드 분할·페이지 생성·CSS는 client/server 별도 구현** | 페이지 생성 전체를 환경 비의존 코어(`guide-core.mjs`·`presentation-core.mjs`)로 추출 → CLI 래퍼+client 가 동일 코어 호출. 각 단계 byte-identical 게이트 + `standalone==server` 동치 잠금 테스트. (docs/plan/presentation-stabilization.md §3 완료) |
 | 가이드 `<title>`·nav title 미escape XSS (2026-06-26) | build-guide buildHtml 이 frontmatter title 을 `<title>`/nav-logo 에 raw 삽입 | guide-core 에서 `escapeHtml(fm.title)` 적용(양성 title 출력 동일 → byte-identical 유지) |
 | standalone 미리보기(html·presentation) 전부 공백 (2026-06-26) | 코어가 frontmatter 파싱에 gray-matter 사용 → 브라우저 빌드는 `buffer` externalize → `Buffer` 전역 부재로 `matter()`가 `Buffer.from` throw → `clientCompileMarkdown` 예외 → previewHtml 빈 채. (구 client 는 정규식 파싱이라 무영향) | `buffer` 폴리필 설치 + `src/lib/buffer-polyfill.ts`(전역 Buffer 보강)를 gray-matter 경로(`client-compiler.ts`·`pptx-browser.ts`) 최상단 import. 헤드리스(puppeteer) 검증: html 62KB·presentation 40슬라이드 렌더. ※ pptx-browser 도 동일 잠재 버그였음(함께 해소). |
+| 프레젠테이션 숏코드가 가이드와 완전히 다르게 렌더 (2026-06-26) | presentation-core 가 가이드와 **별도 렌더러+CSS** 보유(안정화 임시방편) → 규칙 1(숏코드 CSS 단일 출처) 위반. badge-grid·faq-list·console-box·compare-split CSS 누락(unstyled), os-tabs·before-after 렌더러 자체 부재. 숏코드 1개 여백 바꾸려면 2파일 수정 필요했음 | presentation-core 를 공유 `shortcode-render.mjs`+`SHORTCODE_CSS` 로 **교체**(append 아님). `:root`에 다크/라이트 테마 변수 완비(`--text-2/3`,`--shadow(-lg)` 등) + os-tabs `switchTab` 추가 + 라이트모드 표 글자색 보정. 헤드리스 다크/라이트 검증. → 숏코드 스타일 단일 출처(`shortcode-styles.mjs` 1곳) |
+| 프레젠테이션 전부 파란 표지 (2026-06-26) | showcase.md 등 모든 가이드가 섹션 제목에 `#`(h1) 사용 → 코어가 h1→표지(파란 중앙정렬)로 분기 → 거의 전부 표지·중앙정렬·제목짤림 | (정책) 섹션 제목은 `##`(h2=내용 슬라이드), `#`/frontmatter 만 표지. showcase.md 의 섹션 37개를 `#`→`##` 변환(코드펜스 내 `#` 제외) |
 
 ### 크기 수치 설정 규칙 (P2 — 상세, 규칙 1 보충)
 - **모든 폰트/크기 수치는 매체별 config json에 둔다**: PPTX=`pptdesign.config.json`, HTML=`htmldesign.config.json`. 렌더러 코드에 폰트 크기 리터럴 금지.

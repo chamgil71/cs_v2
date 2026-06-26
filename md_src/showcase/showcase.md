@@ -14,7 +14,7 @@ stats:
     label: "블록 인자 제어"
 ---
 
-# 현재 지원 숏코드 목록
+## 현재 지원 숏코드 목록
 
 | 분류 | 정식 숏코드 (25종) |
 | --- | --- |
@@ -28,7 +28,7 @@ stats:
 
 > **하위 호환 alias** (기존 문서에서 계속 동작): `compare-grid`→columns-grid, `workflow-flow`→step-flow, `skill-list`→icon-grid align=left, `checkpoint-grid`→icon-grid align=row, `compare-diff`→before-after
 
-# 숏코드 표준 입력 키
+## 숏코드 표준 입력 키
 
 | 키 | 용도 | 비고 |
 | --- | --- | --- |
@@ -43,7 +43,7 @@ stats:
 
 숏코드별 예약 키: `featured`는 `plan-grid` 추천 플랜 강조, `alert-box`는 선언부 `tip·warn·success·danger` 타입을 읽습니다.
 
-# 블록 인자
+## 블록 인자
 
 숏코드명 뒤에 공백으로 지정하며 복수 조합이 가능합니다.
 
@@ -58,7 +58,7 @@ stats:
 
 ---
 
-# 1. icon-grid
+## 1. icon-grid
 
 | 항목 | 내용 |
 | --- | --- |
@@ -93,7 +93,7 @@ stats:
   desc: "링크 공유와 댓글로 팀 작업을 이어갈 수 있습니다."
 :::
 
-# 2. feature-grid
+## 2. feature-grid
 
 | 항목 | 내용 |
 | --- | --- |
@@ -140,7 +140,7 @@ stats:
   color: "#F59E0B"
 :::
 
-# 3. badge-grid
+## 3. badge-grid
 
 | 항목 | 내용 |
 | --- | --- |
@@ -181,7 +181,7 @@ stats:
   tag: "HTML"
 :::
 
-# 4. stat-grid
+## 4. stat-grid
 
 | 항목 | 내용 |
 | --- | --- |
@@ -216,7 +216,7 @@ stats:
   desc: "icon·title·desc·tag·meta·note·color·bullet"
 :::
 
-# 5. columns-grid
+## 5. columns-grid
 
 | 항목 | 내용 |
 | --- | --- |
@@ -251,7 +251,7 @@ stats:
   note: "npm run build:standalone"
 :::
 
-# 6. columns-grid *(구: compare-grid)*
+## 6. columns-grid *(구: compare-grid)*
 
 | 항목 | 내용 |
 | --- | --- |
@@ -284,7 +284,7 @@ stats:
   color: "#10B981"
 :::
 
-# 7. plan-grid
+## 7. plan-grid
 
 | 항목 | 내용 |
 | --- | --- |
@@ -329,7 +329,7 @@ stats:
   note: "문의"
 :::
 
-# 8. level-grid
+## 8. level-grid
 
 | 항목 | 내용 |
 | --- | --- |
@@ -364,7 +364,7 @@ stats:
   tag: "highlight"
 :::
 
-# 9. icon-grid align=row *(구: checkpoint-grid)*
+## 9. icon-grid align=row *(구: checkpoint-grid)*
 
 | 항목 | 내용 |
 | --- | --- |
@@ -393,7 +393,7 @@ stats:
   desc: "입력 데이터 검증"
 :::
 
-# 10. step-list
+## 10. step-list
 
 | 항목 | 내용 |
 | --- | --- |
@@ -422,7 +422,7 @@ stats:
   desc: "md-to-pptx.mjs로 발표 자료를 생성합니다."
 :::
 
-# 11. icon-grid align=left *(구: skill-list)*
+## 11. icon-grid align=left *(구: skill-list)*
 
 | 항목 | 내용 |
 | --- | --- |
@@ -457,7 +457,7 @@ stats:
   desc: "실시간 데이터를 시각화합니다."
 :::
 
-# 12. chapter-list
+## 12. chapter-list
 
 | 항목 | 내용 |
 | --- | --- |
@@ -498,7 +498,7 @@ stats:
   tag: "실습"
 :::
 
-# 13. faq-list
+## 13. faq-list
 
 | 항목 | 내용 |
 | --- | --- |
@@ -523,7 +523,7 @@ stats:
   desc: "아니요. 쇼케이스와 가이드는 숏코드 문법으로 작성하는 것이 원칙입니다."
 :::
 
-# 14. tool-list
+## 14. tool-list
 
 | 항목 | 내용 |
 | --- | --- |
@@ -564,7 +564,7 @@ stats:
   color: "#2563EB"
 :::
 
-# 15. workflow-flow
+## 15. workflow-flow
 
 | 항목 | 내용 |
 | --- | --- |
@@ -605,7 +605,7 @@ stats:
   meta: "HTML/PPTX"
 :::
 
-# 16. git-flow
+## 16. git-flow
 
 | 항목 | 내용 |
 | --- | --- |
@@ -638,7 +638,7 @@ stats:
   color: "#3B82F6"
 :::
 
-# 17. step-flow
+## 17. step-flow
 
 | 항목 | 내용 |
 | --- | --- |
@@ -685,7 +685,7 @@ stats:
   tag: "active"
 :::
 
-# 18. alert-box
+## 18. alert-box
 
 | 항목 | 내용 |
 | --- | --- |
@@ -716,7 +716,7 @@ stats:
   desc: "들여쓰기가 틀어지면 숏코드 파서가 항목을 잘못 읽을 수 있습니다."
 :::
 
-# 19. cmd-box
+## 19. cmd-box
 
 | 항목 | 내용 |
 | --- | --- |
@@ -739,7 +739,7 @@ stats:
   desc: "node scripts/build-guide.mjs md_src/showcase/showcase.md"
 :::
 
-# 20. console-box
+## 20. console-box
 
 | 항목 | 내용 |
 | --- | --- |
@@ -766,7 +766,7 @@ stats:
     마지막에는 faq-list를 넣어줘.
 :::
 
-# 21. editor-box
+## 21. editor-box
 
 | 항목 | 내용 |
 | --- | --- |
@@ -799,7 +799,7 @@ stats:
     }
 :::
 
-# 22. network-box
+## 22. network-box
 
 | 항목 | 내용 |
 | --- | --- |
@@ -838,7 +838,7 @@ stats:
   color: "#F59E0B"
 :::
 
-# 23. summary-box
+## 23. summary-box
 
 | 항목 | 내용 |
 | --- | --- |
@@ -861,7 +861,7 @@ stats:
   meta: "HTML 자동 생성|PPTX 자동 생성|표준 키 사용|재사용 가능"
 :::
 
-# 24. compare-split
+## 24. compare-split
 
 | 항목 | 내용 |
 | --- | --- |
@@ -890,7 +890,7 @@ stats:
   note: "자동 파이프라인"
 :::
 
-# 25. compare-diff
+## 25. compare-diff
 
 | 항목 | 내용 |
 | --- | --- |
@@ -915,7 +915,7 @@ stats:
   desc: "Python으로 A열 날짜, B열 금액 합산 summary.xlsx 만드는 Pandas 코드 작성해줘."
 :::
 
-# 26. part-banner
+## 26. part-banner
 
 | 항목 | 내용 |
 | --- | --- |
@@ -952,7 +952,7 @@ stats:
   color: "#1a4a3a"
 :::
 
-# 27. takeaway-banner
+## 27. takeaway-banner
 
 | 항목 | 내용 |
 | --- | --- |
@@ -977,7 +977,7 @@ stats:
 
 ---
 
-# 28. summary-bar
+## 28. summary-bar
 
 | 항목 | 내용 |
 | --- | --- |
@@ -1006,7 +1006,7 @@ stats:
   title: "Output Formats"
 :::
 
-# 29. os-tabs
+## 29. os-tabs
 
 | 항목 | 내용 |
 | --- | --- |
@@ -1047,7 +1047,7 @@ stats:
     ```
 :::
 
-# 부록 A. desc 다중 줄 불릿 목록
+## 부록 A. desc 다중 줄 불릿 목록
 
 `desc`에 `\n`(YAML 멀티라인 `|`)으로 줄을 나누면 자동으로 불릿 목록이 됩니다. 줄 앞에 이모지를 쓰면 그 이모지가 불릿으로 사용됩니다.
 
@@ -1089,7 +1089,7 @@ stats:
     • 불릿 기호
 :::
 
-# 부록 B. bullet 필드 — 아이템별 불릿 오버라이드
+## 부록 B. bullet 필드 — 아이템별 불릿 오버라이드
 
 아이템의 `bullet:` 필드로 해당 카드의 불릿 기호만 바꿀 수 있습니다.
 
@@ -1119,7 +1119,7 @@ stats:
   bullet: "🔐"
 :::
 
-# 부록 C. bullet= 블록 인자 — 블록 전체 불릿 지정
+## 부록 C. bullet= 블록 인자 — 블록 전체 불릿 지정
 
 `bullet=X` 블록 인자로 블록 안 모든 아이템의 기본 불릿을 한 번에 지정합니다. 아이템 `bullet:` 필드가 있으면 그쪽이 우선합니다.
 
@@ -1151,7 +1151,7 @@ stats:
   desc: "실시간 모니터링\n대시보드\n알림 설정"
 :::
 
-# 부록 D. color — 카드 강조 + SVG 불릿 색 동시 적용
+## 부록 D. color — 카드 강조 + SVG 불릿 색 동시 적용
 
 `color:` 필드는 카드 테두리·배경과 함께 SVG 불릿 색상도 동시에 제어합니다.
 
@@ -1181,7 +1181,7 @@ stats:
   color: "#E11D48"
 :::
 
-# 부록 E. Frontmatter (문서 메타) 및 slide-config
+## 부록 E. Frontmatter (문서 메타) 및 slide-config
 
 ## 1. Frontmatter 설정 (문서 메타데이터)
 마크다운 문서 최상단의 YAML Frontmatter 영역에서 문서 전체의 테마, 제목, 및 표지 설정을 할 수 있습니다.

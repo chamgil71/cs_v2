@@ -1,3 +1,5 @@
+// 브라우저에서 gray-matter(코어가 사용) 가 쓰는 Buffer 전역을 먼저 보강 (반드시 코어 import 보다 위).
+import './buffer-polyfill';
 // [파이프라인 통합] clientCompileMarkdown 은 자체 렌더러를 두지 않고 서버 CLI 와 동일한 환경 비의존 코어에 위임한다:
 //   html 모드        → scripts/guide-core.mjs (build-guide 와 공유)
 //   presentation 모드 → scripts/presentation-core.mjs (build-presentation 과 공유)

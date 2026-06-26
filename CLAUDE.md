@@ -412,6 +412,7 @@ npm run test:watch
 | HTML 렌더러 3벌 드리프트 (2026-06-25, Phase 5) | build-guide/presentation/client 렌더러·CSS 중복 | `shortcode-render.mjs`/`shortcode-styles.mjs` 공유 모듈로 통합 + 정합성 테스트 게이트 |
 | standalone(브라우저) vs server(CLI) 프레젠테이션 분기 — 동일 MD에 슬라이드 4 vs 40 (2026-06-26) | 숏코드 렌더러만 공유했을 뿐 **슬라이드 분할·페이지 생성·CSS는 client/server 별도 구현** | 페이지 생성 전체를 환경 비의존 코어(`guide-core.mjs`·`presentation-core.mjs`)로 추출 → CLI 래퍼+client 가 동일 코어 호출. 각 단계 byte-identical 게이트 + `standalone==server` 동치 잠금 테스트. (docs/plan/presentation-stabilization.md §3 완료) |
 | 가이드 `<title>`·nav title 미escape XSS (2026-06-26) | build-guide buildHtml 이 frontmatter title 을 `<title>`/nav-logo 에 raw 삽입 | guide-core 에서 `escapeHtml(fm.title)` 적용(양성 title 출력 동일 → byte-identical 유지) |
+| standalone 미리보기(html·presentation) 전부 공백 (2026-06-26) | 코어가 frontmatter 파싱에 gray-matter 사용 → 브라우저 빌드는 `buffer` externalize → `Buffer` 전역 부재로 `matter()`가 `Buffer.from` throw → `clientCompileMarkdown` 예외 → previewHtml 빈 채. (구 client 는 정규식 파싱이라 무영향) | `buffer` 폴리필 설치 + `src/lib/buffer-polyfill.ts`(전역 Buffer 보강)를 gray-matter 경로(`client-compiler.ts`·`pptx-browser.ts`) 최상단 import. 헤드리스(puppeteer) 검증: html 62KB·presentation 40슬라이드 렌더. ※ pptx-browser 도 동일 잠재 버그였음(함께 해소). |
 
 ### 크기 수치 설정 규칙 (P2 — 상세, 규칙 1 보충)
 - **모든 폰트/크기 수치는 매체별 config json에 둔다**: PPTX=`pptdesign.config.json`, HTML=`htmldesign.config.json`. 렌더러 코드에 폰트 크기 리터럴 금지.

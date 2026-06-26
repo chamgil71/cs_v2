@@ -4,6 +4,7 @@
  * md-to-pptx.mjs의 브라우저 호환 포트 (Node.js fs/path 제거, 직접 다운로드)
  */
 
+import './buffer-polyfill'; // 브라우저에서 gray-matter 가 쓰는 Buffer 전역 보강 (gray-matter import 보다 위)
 import STYLES_RAW from '../../config/styles.json?raw';
 import DESIGN_RAW from '../../config/pptdesign.config.json?raw';
 import FONT_ALIASES_RAW from '../../config/font-aliases.json?raw';

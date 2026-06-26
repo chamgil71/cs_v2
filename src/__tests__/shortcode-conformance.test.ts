@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest';
 // 정본(canonical) 공유 숏코드 렌더러 — guide/presentation/client 가 모두 사용
 // @ts-ignore — 순수 JS 공유 모듈
 import { renderShortcode } from '../../scripts/shortcode-render.mjs';
+// @ts-ignore — 공유 숏코드 CSS (단일 출처)
+import { SHORTCODE_CSS } from '../../scripts/shortcode-styles.mjs';
 // @ts-ignore
 import { pptxRegistry } from '../../scripts/pptx-renderers/registry.mjs';
 import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
@@ -129,4 +131,28 @@ describe('숏코드 정합성 — standalone(client) == server(core) 출력 잠�
     const server = presCore([{ raw: md, basename: '' }], { styles: REAL_STYLES, config: REAL_PPT, htmlConfig: REAL_HTML, style: 'ai-chat' }).html;
     expect(norm(client)).toBe(norm(server));
   });
+});
+
+// ── 숏코드 CSS 커버리지 가드 ────────────────────────────────────────────
+// [왜] 기존 "비어있지 않은 HTML" 검사는 '렌더러가 클래스를 emit 하지만 CSS 규칙이 없어
+//   unstyled 로 나오는' 결함(badge-grid/faq-list/console-box 사례)을 못 잡았다.
+//   렌더러가 내보내는 모든 클래스에 shortcode-styles.mjs 의 CSS 규칙이 존재하는지 검사한다.
+describe('숏코드 정합성 — CSS 커버리지 (emit 클래스 = 정의된 CSS)', () => {
+  // SHORTCODE_CSS 에 셀렉터로 정의된 클래스명 집합
+  const definedClasses = new Set<string>(
+    [...SHORTCODE_CSS.matchAll(/\.([a-zA-Z0-9_-]+)/g)].map((m: RegExpMatchArray) => m[1])
+  );
+  // CSS 규칙 없이 부모 레이아웃/인라인 스타일로 처리되는 구조 래퍼 (의도적 예외)
+  const ALLOW = new Set<string>([]);
+
+  for (const [type, body] of Object.entries(CASES)) {
+    it(`${type} → emit 하는 모든 클래스에 CSS 규칙 존재`, () => {
+      const html = String(renderShortcode(type, body, ''));
+      const classes = new Set<string>(
+        [...html.matchAll(/class="([^"]+)"/g)].flatMap((m: RegExpMatchArray) => m[1].trim().split(/\s+/))
+      );
+      const missing = [...classes].filter(c => c && !definedClasses.has(c) && !ALLOW.has(c));
+      expect(missing, `${type}: CSS 규칙 없는 클래스 → ${missing.join(', ')} (shortcode-styles.mjs 에 추가 필요)`).toEqual([]);
+    });
+  }
 });

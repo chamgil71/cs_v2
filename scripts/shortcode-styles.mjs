@@ -44,6 +44,7 @@ export const SHORTCODE_CSS = `
   .tool-card { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); margin: 25px 0; }
   .tc-header { padding: 25px; display: flex; align-items: center; gap: 20px; }
   .tc-icon { width: 55px; height: 55px; border-radius: calc(var(--radius) / 2); background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: calc(1.8rem * var(--font-scale)); }
+  .tc-content { flex: 1; min-width: 0; }
   .tc-name { font-size: calc(var(--size-card-title) * var(--font-scale)); font-weight: 800; }
   .tc-sub { font-size: calc(var(--size-card-p) * var(--font-scale)); opacity: 0.9; }
   .tc-badge { margin-left: auto; font-size: calc(0.8rem * var(--font-scale)); font-weight: 800; padding: 5px 15px; border-radius: 100px; background: rgba(255,255,255,0.25); }
@@ -61,6 +62,7 @@ export const SHORTCODE_CSS = `
   .step-list { display: flex; flex-direction: column; gap: 15px; margin: 25px 0; }
   .step-item { display: flex; gap: 20px; background: var(--card-bg, #fff); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
   .step-num { width: 35px; height: 35px; background: var(--brand); color: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
+  .step-content { flex: 1; min-width: 0; }
   .step-title { font-weight: 800; font-size: calc(var(--size-card-title) * var(--font-scale)); margin-bottom: 5px; }
 
   /* Plan Grid */

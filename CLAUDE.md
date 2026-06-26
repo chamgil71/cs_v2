@@ -31,7 +31,7 @@
 - [ ] **CLAUDE.md** — 아키텍처/규칙/이슈 이력에 영향이 있으면 갱신 (특히 「주요 이슈 이력」 표)
 - [ ] **README.md** — 폴더 구조·스크립트·기능 설명에 변경이 있으면 갱신 (숏코드 개수 등 수치 표기 포함)
 - [ ] **docs/** — `scripts_guide.md`(개발자), `guide.md`(사용자), `shortcode-reference.md`, `shortcode-changelog.md`(변경이력 **추가**) 중 해당 문서 갱신
-- [ ] **정합성 테스트** — 숏코드/렌더러 변경 시 `npm test` (정합성 87건 포함) 통과 확인
+- [ ] **정합성 테스트** — 숏코드/렌더러 변경 시 `npm test` (정합성 117건 포함) 통과 확인
 - [ ] 시점 기록 문서(`docs/report/*_YYYY-MM-DD.md`)는 **수정하지 말고 새 항목/새 파일로 추가** (역사 보존)
 
 > 문서화는 작업의 일부다. "코드만 고치고 문서는 나중에"는 이 프로젝트의 반복 이슈(드리프트)의 원인이므로 금지.
@@ -66,9 +66,9 @@ cs_v2/
 │   │   └── utils.ts               # clsx/tailwind 유틸
 │   ├── __tests__/
 │   │   ├── client-compiler.test.ts # 브라우저 컴파일러 유닛 테스트
-│   │   ├── shortcode-conformance.test.ts # 정합성 87개 — 공유 렌더러+PPTX 커버리지 + standalone==server 동치 잠금
+│   │   ├── shortcode-conformance.test.ts # 정합성 117개 — 공유 렌더러+PPTX 커버리지 + CSS 커버리지 가드 + standalone==server 동치 잠금
 │   │   ├── pptx-analyzer.test.ts  # PPTX 분석기 테스트
-│   │   └── wcag.test.ts           # WCAG 유틸 테스트 (전체 160개)
+│   │   └── wcag.test.ts           # WCAG 유틸 테스트 (전체 190개)
 │   ├── standalone/
 │   │   ├── module1-main.tsx       # 스탠드얼론 모듈1 진입점
 │   │   └── module2-main.tsx       # 스탠드얼론 모듈2 진입점
@@ -82,7 +82,7 @@ cs_v2/
 │   ├── shortcode-render.mjs       # [정본] 숏코드 → HTML 파서+렌더러 (guide-core 공유, 순수 함수)
 │   ├── shortcode-styles.mjs       # [정본] 숏코드 컴포넌트 CSS (var(--*) 테마 독립)
 │   ├── guide-core.mjs             # [정본 코어] MD 문서 → 가이드 HTML (fs/path 비의존). build-guide CLI + client html 모드 공유
-│   ├── presentation-core.mjs      # [정본 코어] MD 문서 → 횡슬라이드 HTML (fs/path 비의존, 자체 렌더러+CSS). build-presentation CLI + client presentation 모드 공유
+│   ├── presentation-core.mjs      # [정본 코어] MD 문서 → 횡슬라이드 HTML (fs/path 비의존, 숏코드는 shortcode-render/styles 공유). build-presentation CLI + client presentation 모드 공유
 │   ├── build-guide.mjs            # MD → 가이드 HTML (얇은 CLI 래퍼: 파일읽기+config로드+코어호출)
 │   ├── build-presentation.mjs     # MD → 횡슬라이드 HTML (얇은 CLI 래퍼: 파일읽기+config로드+코어호출)
 │   ├── md-to-pptx.mjs             # MD → PPTX 변환 CLI (Universal Schema 기반)
@@ -162,7 +162,7 @@ npm run build
 npm run build:standalone
 
 # 테스트 실행
-npm test             # vitest run (160개 — 정합성 87개 포함)
+npm test             # vitest run (190개 — 정합성 117개 포함)
 npm run test:watch   # watch 모드
 
 # PPTX CLI 단축키
@@ -390,9 +390,9 @@ npm run test:watch
 ```
 
 - `client-compiler.test.ts`: `clientCompileMarkdown()` HTML 출력 구조, 숏코드 렌더링, FALLBACK_STYLES 유효성
-- `shortcode-conformance.test.ts`: 정합성 가드 87개 — 공유 HTML 렌더러 + PPTX 레지스트리 커버리지 + standalone `:::` 잔존 + **standalone==server 출력 동치 잠금**(html/presentation)
+- `shortcode-conformance.test.ts`: 정합성 가드 117개 — 공유 HTML 렌더러 + PPTX 레지스트리 커버리지 + standalone `:::` 잔존 + **standalone==server 출력 동치 잠금**(html/presentation)
 - `pptx-analyzer.test.ts`: PPTX XML 분석기 유닛 테스트
-- `wcag.test.ts`: `getContrast()`, `getLuminance()` 계산 검증 (전체 160개)
+- `wcag.test.ts`: `getContrast()`, `getLuminance()` 계산 검증 (전체 190개)
 
 ---
 

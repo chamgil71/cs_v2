@@ -68,7 +68,7 @@ cs_v2/
 │   │   ├── client-compiler.test.ts # 브라우저 컴파일러 유닛 테스트
 │   │   ├── shortcode-conformance.test.ts # 정합성 117개 — 공유 렌더러+PPTX 커버리지 + CSS 커버리지 가드 + standalone==server 동치 잠금
 │   │   ├── pptx-analyzer.test.ts  # PPTX 분석기 테스트
-│   │   └── wcag.test.ts           # WCAG 유틸 테스트 (전체 190개)
+│   │   └── wcag.test.ts           # WCAG 유틸 테스트 (전체 192개)
 │   ├── standalone/
 │   │   ├── module1-main.tsx       # 스탠드얼론 모듈1 진입점
 │   │   └── module2-main.tsx       # 스탠드얼론 모듈2 진입점
@@ -162,7 +162,7 @@ npm run build
 npm run build:standalone
 
 # 테스트 실행
-npm test             # vitest run (190개 — 정합성 117개 포함)
+npm test             # vitest run (192개 — 정합성 117개 포함)
 npm run test:watch   # watch 모드
 
 # PPTX CLI 단축키
@@ -392,7 +392,7 @@ npm run test:watch
 - `client-compiler.test.ts`: `clientCompileMarkdown()` HTML 출력 구조, 숏코드 렌더링, FALLBACK_STYLES 유효성
 - `shortcode-conformance.test.ts`: 정합성 가드 117개 — 공유 HTML 렌더러 + PPTX 레지스트리 커버리지 + standalone `:::` 잔존 + **standalone==server 출력 동치 잠금**(html/presentation)
 - `pptx-analyzer.test.ts`: PPTX XML 분석기 유닛 테스트
-- `wcag.test.ts`: `getContrast()`, `getLuminance()` 계산 검증 (전체 190개)
+- `wcag.test.ts`: `getContrast()`, `getLuminance()` 계산 검증 (전체 192개)
 
 ---
 

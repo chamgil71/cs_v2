@@ -5,6 +5,12 @@ import { renderShortcode } from '../../scripts/shortcode-render.mjs';
 // @ts-ignore
 import { pptxRegistry } from '../../scripts/pptx-renderers/registry.mjs';
 import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
+// @ts-ignore — 환경 비의존 코어 (client 가 위임하는 server 코드 경로)
+import { buildHtml as guideCore } from '../../scripts/guide-core.mjs';
+// @ts-ignore
+import { buildPresentationHtml as presCore } from '../../scripts/presentation-core.mjs';
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * 정합성(conformance) 테스트 — 출력물 간 드리프트 방지 (D4).
@@ -93,4 +99,34 @@ describe('숏코드 정합성 — client-compiler 가 공유 렌더러 사용 (r
       expect(bodyPart, `${type}: 미처리 ::: 블록 잔존`).not.toContain(`::: ${type}`);
     });
   }
+});
+
+// ── standalone(client) == server(core) 출력 일치 잠금 ──────────────────
+// [파이프라인 통합] client 는 자체 렌더러를 두지 않고 guide-core/presentation-core 에 위임한다.
+// 아래 두 테스트가 그 단일화를 코드 레벨에서 고정한다(누군가 client 에 별도 렌더러를 재도입하면 깨짐).
+describe('숏코드 정합성 — standalone(client) == server(core) 출력 잠금', () => {
+  const ROOT = path.resolve(__dirname, '../..');
+  const loadJsonc = (p: string) =>
+    JSON.parse(fs.readFileSync(p, 'utf8').replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, ''));
+  const REAL_STYLES = loadJsonc(path.join(ROOT, 'config/styles.json'));
+  const REAL_PPT = loadJsonc(path.join(ROOT, 'config/pptdesign.config.json'));
+  const REAL_HTML = loadJsonc(path.join(ROOT, 'config/htmldesign.config.json'));
+  // os-tabs/slide-config 의 비결정 uid 정규화
+  const norm = (s: string) => s.replace(/style-[a-z0-9]{5}/g, 'style-UID').replace(/\bt[a-z0-9]{5}-\d+/g, 'tUID');
+  const md =
+    `---\ntitle: 통합 테스트\nstyle: ai-chat\n---\n\n# 표지\n\n## 본문\n\n` +
+    `::: icon-grid\n- icon: "⚡"\n  title: "빠름"\n  desc: "설명"\n:::\n\n` +
+    `::: alert-box\n- title: "주의"\n  desc: "확인"\n:::\n`;
+
+  it('html 모드: client 출력 == guide-core 출력', () => {
+    const client = clientCompileMarkdown(md, 'html', 'ai-chat', REAL_STYLES);
+    const server = guideCore({ raw: md }, { styles: REAL_STYLES, config: REAL_PPT, htmlConfig: REAL_HTML, style: 'ai-chat' }).html;
+    expect(norm(client)).toBe(norm(server));
+  });
+
+  it('presentation 모드: client 출력 == presentation-core 출력', () => {
+    const client = clientCompileMarkdown(md, 'presentation', 'ai-chat', REAL_STYLES);
+    const server = presCore([{ raw: md, basename: '' }], { styles: REAL_STYLES, config: REAL_PPT, htmlConfig: REAL_HTML, style: 'ai-chat' }).html;
+    expect(norm(client)).toBe(norm(server));
+  });
 });

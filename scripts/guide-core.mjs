@@ -136,7 +136,7 @@ export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverr
 <html lang="ko">
 <head>
 <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${fm.title || 'Guide'}</title>
+<title>${escapeHtml(fm.title || 'Guide')}</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@700&family=JetBrains+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -218,7 +218,7 @@ ${SHORTCODE_CSS}
 </style>
 </head>
 <body>
-  <nav class="nav"><div class="nav-inner"><a href="#" class="nav-logo">${fm.logo ? fm.logo + " " : ""}${fm.title}</a><ul class="nav-links">${navLinks.slice(0, 7).join("")}${navLinks.length > 7 ? `<li class="nav-more">+${navLinks.length - 7}</li>` : ""}</ul></div></nav>
+  <nav class="nav"><div class="nav-inner"><a href="#" class="nav-logo">${fm.logo ? fm.logo + " " : ""}${escapeHtml(fm.title)}</a><ul class="nav-links">${navLinks.slice(0, 7).join("")}${navLinks.length > 7 ? `<li class="nav-more">+${navLinks.length - 7}</li>` : ""}</ul></div></nav>
   <header class="hero">
     <div class="hero-inner">
       ${fm.badge ? `<div class="hero-badge"><span></span>${escapeHtml(fm.badge)}</div>` : ""}

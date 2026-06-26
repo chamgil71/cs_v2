@@ -62,10 +62,11 @@ describe('clientCompileMarkdown — 기본 출력', () => {
     expect(html).toContain(`--brand:      ${STYLE.brand}`);
   });
 
-  it('스탠드얼론 배너 포함', () => {
-    const html = compile('내용');
-    expect(html).toContain('standalone-banner');
-    expect(html).toContain('Serverless');
+  it('통합 가이드 셸 구조 출력 (build-guide 와 동일 — nav/hero)', () => {
+    // [파이프라인 통합] client html == build-guide. 과거 client 전용 standalone 배너는 제거됨.
+    const html = compile('# 제목\n\n본문');
+    expect(html).toContain('class="nav"');
+    expect(html).toContain('nav-logo');
   });
 
   it('XSS 방어: 스크립트 삽입 시 이스케이프', () => {
@@ -127,7 +128,7 @@ describe('clientCompileMarkdown — 숏코드 처리', () => {
   it('console-box 숏코드 → 다크 콘솔 블록', () => {
     const md = `:::console-box\n- title: Terminal\n  desc: npm install\n:::`;
     const html = compile(md);
-    // client 자체 렌더러: 다크 배경(#0F172A) 인라인 + 내용
+    // 통합 후 공유 코어(build-guide) 출력 — 다크 콘솔 색(#0F172A) 포함
     expect(html).toContain('0F172A');
     expect(html).toContain('npm install');
   });
@@ -152,9 +153,10 @@ describe('clientCompileMarkdown — 숏코드 처리', () => {
 
 // ── 존재하지 않는 스타일 처리 ─────────────────────────────────────────
 describe('clientCompileMarkdown — 스타일 폴백', () => {
-  it('존재하지 않는 styleName → custom-blue 폴백 적용', () => {
+  it('존재하지 않는 styleName → ai-chat(서버 기본) 폴백 적용', () => {
+    // [파이프라인 통합] 코어(build-guide)와 동일하게 미등록 스타일은 ai-chat 기본으로 폴백.
     const html = clientCompileMarkdown('내용', 'html', 'nonexistent-style', STYLES);
-    expect(html).toContain(`--brand:      ${FALLBACK_STYLES['custom-blue'].brand}`);
+    expect(html).toContain(`--brand:      ${FALLBACK_STYLES['ai-chat'].brand}`);
   });
 
   it('빈 stylesList → FALLBACK_STYLES 자동 사용', () => {

@@ -9,3 +9,7 @@
 - `AGENTS.md`(SSOT 진입점) 및 `agent/` 거버넌스 엔진(orchestration·prompts·knowledge·profiles·templates) 이식.
 - 적용 프로필: 레포 성격에 맞게 AGENTS.md에 선언.
 - 다음 계획: 실제 개발 세션에서 프로필·오케스트레이션 규칙 적용 개시.
+
+## 2026-07-02 — 세션 2: 사양 앵커 확인
+- 기존 `docs/spec.md`(401줄 실 사양서)를 그대로 유지(덮어쓰기 안 함).
+- `agent/` 스캐폴드·`AGENTS.md`는 세션 1 이식분 유지. 사양 관련 별도 변경 없음.

@@ -14,7 +14,7 @@ Markdown → 가이드 HTML·횡슬라이드 HTML·PPTX 변환 저작 파이프�
 ## Facts (무엇을 만드는가)
 
 - 사양·빌드·규칙의 1차 출처는 [`CLAUDE.md`](./CLAUDE.md), [`README.md`](./README.md), [`docs/`](./docs/)입니다.
-- 세션 진행 로그는 루트 [`worklog.md`](./worklog.md)에 누적합니다.
+- 세션 진행 로그는 [`docs/worklog.md`](./docs/worklog.md)에 누적합니다.
 
 ## Project Shape
 

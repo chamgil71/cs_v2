@@ -22,6 +22,11 @@ Markdown → 가이드 HTML·횡슬라이드 HTML·PPTX 변환 저작 파이프�
 - `config/` — `pptdesign.config.json`, `htmldesign.config.json`, `styles.json`, `font-aliases.json` (수치·스타일 단일 출처)
 - `src/`, `index.html`, `standalone.html`, `module1/2.html` — React UI 및 독립 실행 셸
 
+### 프론트엔드 기술 스택
+
+React 18 + `react-router-dom` + Vite + Tailwind CSS 3.x + shadcn/ui(Radix) 조합입니다([`CLAUDE.md`](./CLAUDE.md) 상세 참조).
+> ⚠️ 워크스페이스 신규 표준 체인(React → TanStack Start → Vite → Tailwind CSS → shadcn/ui)은 아직 도입되지 않았습니다. 라우터 교체는 별도 승인 후에만 진행합니다.
+
 ## Local Rules
 
 - 수치·데이터를 코드에 직접 박지 않습니다. `config/`에 키를 추가하고 코드는 그 키를 읽습니다(캐스케이드 우선순위는 [`CLAUDE.md`](./CLAUDE.md)).

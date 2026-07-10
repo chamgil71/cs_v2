@@ -40,7 +40,7 @@
 
 ## 주요 기술 스택
 
-- **Frontend**: React 18 + TypeScript + Vite 8 + shadcn/ui
+- **Frontend**: React 18 + TypeScript + Vite 8 + shadcn/ui (라우팅: `react-router-dom`, TanStack Router/Start 미사용)
 - **빌드 파이프라인**: Node.js ESM 스크립트 (pptxgenjs 4.x, marked 18.x, gray-matter)
 - **스타일**: Tailwind CSS 3.x + CSS 변수 기반 테마
 - **테스트**: Vitest 3.x + @testing-library/react

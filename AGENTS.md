@@ -2,9 +2,9 @@
 
 Markdown → 가이드 HTML·횡슬라이드 HTML·PPTX 변환 저작 파이프라인 + React UI (독립형 서버리스 프레임워크). 이 문서는 이 레포에서 AI 에이전트 작업의 **최상위 진입점(SSOT)**입니다.
 
-- **적용 프로필**: `standard` — [`agent/profiles/standard.md`](./agent/profiles/standard.md)
-- **오케스트레이션**: [`agent/orchestration.md`](./agent/orchestration.md)의 라우팅·의존성·롤백 규칙을 따릅니다.
-- **거버넌스 엔진**: 구현/검증 패턴이 필요할 때 [`agent/knowledge/`](./agent/knowledge/)를 `view_file`로 읽어 적용합니다.
+- **적용 프로필**: `standard` — [`standard.md`](./.claude/reference/profiles/standard.md)
+- **오케스트레이션**: [`orchestration.md`](./.claude/reference/orchestration.md)의 라우팅·의존성·롤백 규칙을 따릅니다.
+- **거버넌스 엔진**: 상시 컨벤션은 [`.claude/rules/`](./.claude/rules/), 단계별 절차와 구현 패턴은 [`.claude/skills/`](./.claude/skills/)를 읽어 적용합니다.
 
 ## 문서 우선순위 (CLAUDE.md 공존)
 

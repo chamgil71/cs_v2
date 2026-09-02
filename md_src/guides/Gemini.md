@@ -1,12 +1,12 @@
 ---
 title: "Google Gemini완전 활용 가이드"
 subtitle: "Google 멀티모달 AI"
-badge: "Google DeepMind · Gemini 3 · 2026"
+badge: "Google DeepMind · Gemini 3.1 · 2026"
 style: "ai-chat"
 stats:
   - value: "1M+"
     label: "컨텍스트 토큰 (Pro)"
-  - value: "Gemini 3"
+  - value: "Gemini 3.1"
     label: "최신 세대 모델"
   - value: "Antigravity"
     label: "에이전트 IDE 연동"
@@ -17,13 +17,13 @@ stats:
 # Gemini 모델 라인업
 
 ::: feature-grid cols=3
-- title: "Gemini 3 Pro"
-  desc: "가장 강력한 멀티모달 추론. 비전 퍼즐·과학 지식·코딩 벤치마크에서 2.5 Pro 대비 크게 향상. 제로샷으로 인터랙티브 웹 UI를 생성하는 '생성형 UI' 지원."
+- title: "Gemini 3.1 Pro"
+  desc: "가장 강력한 멀티모달 추론(2025.11 Gemini 3 Pro 출시 후 2026년 3.1로 업그레이드). 비전 퍼즐·과학 지식·코딩 벤치마크에서 2.5 Pro 대비 크게 향상. 제로샷으로 인터랙티브 웹 UI를 생성하는 '생성형 UI' 지원."
   featured: "true"
-- title: "Gemini 3 Flash"
-  desc: "빠른 속도와 낮은 비용. API 대량 처리, 실시간 응답이 필요한 서비스에 적합."
-- title: "Gemini 3 Deep Think"
-  desc: "복잡한 과학·수학·코딩 문제에 특화된 고비용 추론 모드. AI Studio·Gemini 앱 상위 요금제에서 제공."
+- title: "Gemini 3.7 Flash"
+  desc: "빠른 속도와 낮은 비용(3.5→3.6을 거쳐 2026.08 3.7로 갱신). API 대량 처리, 실시간 응답이 필요한 서비스에 적합."
+- title: "Gemini 3.1 Deep Think"
+  desc: "복잡한 과학·수학·코딩 문제에 특화된 고비용 추론 모드. AI Studio·Gemini 앱 상위 요금제에서 제공(Gemini 3.1 사이클에 포함)."
 - title: "Gemini Nano"
   desc: "Android 기기에서 인터넷 없이 실행. Pixel 폰, Galaxy AI 탑재. 완전한 프라이버시."
 :::
@@ -141,7 +141,7 @@ stats:
 
 ::: alert-box tip
 - title: "💡 Gemini Notebook(구 NotebookLM) & Antigravity:"
-  desc: "NotebookLM은 2026년 Gemini Notebook으로 리브랜딩되어 Gemini 3.5 기반 리서치·요약에 특화되었고, 코딩 작업은 Gemini 3를 품은 에이전트 IDE Google Antigravity로 이어집니다. 자세한 내용은 각각의 전용 가이드를 참고하세요."
+  desc: "NotebookLM은 2026년 Gemini Notebook으로 리브랜딩되며 3.5세대 모델을 순차 도입 중인 리서치·요약 전용 도구로 자리잡았고, 코딩 작업은 Gemini 최신 세대를 품은 에이전트 IDE Google Antigravity로 이어집니다. 자세한 내용은 각각의 전용 가이드를 참고하세요."
 :::
 
 # 고급 활용 — AI Studio & API

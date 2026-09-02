@@ -57,7 +57,7 @@ Node.js 환경만 준비되어 있다면 명령어 몇 줄로 초기 세팅이 �
 
 ::: step-list
 - title: "초기화 및 설치"
-  desc: "터미널에서 `npm create quartz@latest`를 입력하여 기본 프로젝트 구조를 생성합니다."
+  desc: "`git clone https://github.com/jackyzha0/quartz.git && cd quartz && npm i`로 저장소를 내려받아 의존성을 설치한 뒤, `npx quartz create`로 기본 프로젝트 구조를 생성합니다."
 - title: "마크다운 파일 동기화"
   desc: "작성한 `.md` 파일과 이미지/에셋들을 Quartz 폴더 안의 `content/` 폴더로 복사합니다."
 - title: "로컬 프리뷰"

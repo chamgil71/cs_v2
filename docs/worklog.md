@@ -166,3 +166,13 @@
 - **범위 밖으로 남겨둔 것(의도적)**: `docs/docs_index.md`의 "26종의 대화형 숏코드"(현재 정식 25+alias 13과 불일치)는 오늘 세션들이 손댄 적 없는 훨씬 이전(2026-06 이전 추정) 드리프트라 이번 점검 범위에서 제외 — 건드리면 관련 없는 변경이 섞여 들어갈 우려. 별도로 처리 필요.
 - **콘텐츠 신뢰도 관련 오픈 아이템 재확인(수정 없음, 이미 정확히 기록돼 있음)**: `Quartz.md`·`CapCut.md`는 세션 9 재검증에서 독립 검증 못 함, `Gemini.md`(Gemini 3 vs 3.1/3.5)·`Genspark.md`("80+ 도구") 저신뢰 — 전부 세션 9 worklog 항목에 이미 명시돼 있고 "다 됐다"고 잘못 표시된 곳 없음을 확인.
 - 검증: `npm test`(204/204), `npx tsc --noEmit`(에러 없음).
+
+## 2026-09-02 — 세션 14: docs_index.md 숏코드 개수 정정 + Quartz/Gemini 콘텐츠 최신화(CapCut·Genspark는 검증 결과 정확했음)
+
+세션 13에서 범위 밖으로 남겨뒀던 `docs/docs_index.md`의 "26종 숏코드"와, 세션 9부터 미확인으로 남아있던 4개 콘텐츠 항목(Quartz/CapCut/Gemini/Genspark)을 마저 처리해달라는 요청에 따라 진행.
+
+- **`docs/docs_index.md` "26종" 정정**: `docs/shortcode-reference.md`를 직접 대조한 결과 세션 13에서 언급한 "25+13"조차 이미 구식이었음을 확인 — 실제로는 세션 5(2026-09-01)에 데이터 다이어그램 3종이 추가되며 **28종 정식 + 14종 alias**로 늘어나 있었음. 정확한 값으로 갱신.
+- **Quartz.md 오류 수정**: 설치 명령이 `npm create quartz@latest`(존재하지 않는 명령)로 잘못 기재돼 있었음 — 실제로는 `git clone https://github.com/jackyzha0/quartz.git && cd quartz && npm i && npx quartz create`가 맞는 흐름(공식 문서 직접 확인). Node v22/npm v10.9.2 요구사항, "Quartz 5" 버전 표기, `npx quartz build --serve` 로컬 프리뷰 명령은 전부 정확한 것으로 확인돼 그대로 둠.
+- **Gemini.md 세대 표기 최신화**: "Gemini 3"(Pro/Flash/Deep Think) 평평한 표기가 한 세대 뒤처져 있었음을 확인 — Google 공식 블로그 기준 Pro는 3.1로, Flash는 3.5→3.6을 거쳐 3.7로(2026.08) 이미 갱신됨. "Gemini 3.5 Pro"는 TechCrunch(2026.07.21) 보도대로 **출시된 적 없음**(일정 밀림). 모델 라인업 카드 3개(Pro/Flash/Deep Think)와 배지·통계 값을 3.1/3.7/3.1로 정정, Gemini Notebook의 "Gemini 3.5 기반" 단정도 근거 수준에 맞춰 "3.5세대 모델을 순차 도입 중"으로 완화. Nano Banana Pro의 "Gemini 3 Pro Image" 표기는 이번 리서치가 직접 다루지 않아 건드리지 않음(별도 세션에서 이미 출처 확인된 내용).
+- **CapCut.md·Genspark.md는 검증 결과 정확했음, 수정 없음**: "AI Auto-Edit"·"Director Mode"는 둘 다 실제 CapCut 기능(2026년 보도 기준 거의 동일한 설명)으로 확인. Genspark "80+ 통합 도구"도 Genspark 자체 발표 외에 제3자 보도(blockchain.news 등)에서도 일관되게 확인되는 수치로, 과장이 아님을 확인.
+- 검증: `build-guide.mjs`로 Gemini.md·Quartz.md 개별 재빌드 무오류, `npm test`(204/204) 통과, `build-folder.mjs --dir guides`로 전체 42개 재빌드 및 `guides-onepage.html` 갱신.

@@ -659,6 +659,75 @@ function renderShortcode(type, body, args) {
     </div>`;
   }
   
+  // 18-1. [NEW] venn-diagram — 두 영역의 교집합에서 새 가치가 발생함을 표현
+  //   items[0]=왼쪽 원, items[1]=오른쪽 원, items[2](선택)=교집합 캡션(icon/desc)
+  if (type === "venn-diagram" || type === "venn") {
+    const left = items[0] || {};
+    const right = items[1] || {};
+    const center = items[2] || {};
+    const leftColor = resolveColorKeyword(left.color) || "var(--brand)";
+    const rightColor = resolveColorKeyword(right.color) || "var(--brand-dark)";
+    const hasCenter = !!(center.icon || center.desc || center.title);
+    return `<div class="venn-diagram">
+      <div class="venn-circle venn-left" style="border-color:${leftColor}; background:color-mix(in srgb, ${leftColor} 16%, transparent);">
+        <span class="venn-label" style="color:${leftColor};">${escapeHtml(left.title)}</span>
+      </div>
+      <div class="venn-circle venn-right" style="border-color:${rightColor}; background:color-mix(in srgb, ${rightColor} 16%, transparent);">
+        <span class="venn-label" style="color:${rightColor};">${escapeHtml(right.title)}</span>
+      </div>
+      ${hasCenter ? `<div class="venn-center">
+        ${center.icon ? `<span class="venn-center-icon">${escapeHtml(center.icon)}</span>` : ""}
+        ${(center.desc || center.title) ? `<span class="venn-center-desc">${escapeHtml(center.desc || center.title)}</span>` : ""}
+      </div>` : ""}
+    </div>`;
+  }
+
+  // 18-2. [NEW] quadrant-chart — 두 축(X/Y) 기준 여러 항목의 상대 위치 비교
+  //   블록 인수: xLabel="..." yLabel="..." (따옴표 필수, 공백 포함 라벨 지원)
+  //   항목 필드: title(라벨), color, fx/fy(0~1 비율, 좌하단이 0,0)
+  if (type === "quadrant-chart") {
+    const xLabelMatch = (args || "").match(/xLabel="([^"]*)"/);
+    const yLabelMatch = (args || "").match(/yLabel="([^"]*)"/);
+    const xLabel = xLabelMatch ? xLabelMatch[1] : "";
+    const yLabel = yLabelMatch ? yLabelMatch[1] : "";
+    const clamp01 = (v) => Math.min(1, Math.max(0, parseFloat(v)));
+    return `<div class="quadrant-chart">
+      ${yLabel ? `<div class="quadrant-axis-y">${escapeHtml(yLabel)}</div>` : ""}
+      <div class="quadrant-plot">
+        <div class="quadrant-gridline quadrant-gridline-h"></div>
+        <div class="quadrant-gridline quadrant-gridline-v"></div>
+        ${items.map(it => {
+          const fx = Number.isFinite(clamp01(it.fx)) ? clamp01(it.fx) : 0.5;
+          const fy = Number.isFinite(clamp01(it.fy)) ? clamp01(it.fy) : 0.5;
+          const color = resolveColorKeyword(it.color) || "var(--brand)";
+          return `<div class="quadrant-point" style="left:${(fx * 100).toFixed(1)}%; bottom:${(fy * 100).toFixed(1)}%;">
+            <span class="quadrant-dot" style="background:${color};"></span>
+            <span class="quadrant-point-label" style="color:${color};">${escapeHtml(it.title)}</span>
+          </div>`;
+        }).join("")}
+      </div>
+      ${xLabel ? `<div class="quadrant-axis-x">${escapeHtml(xLabel)}</div>` : ""}
+    </div>`;
+  }
+
+  // 18-3. [NEW] concentric-rings — A⊃B⊃C 같은 계층적 포함관계 (바깥→안쪽 순서로 작성)
+  //   마지막 항목의 icon 이 있으면 가장 안쪽에 중심 아이콘으로 표시
+  if (type === "concentric-rings") {
+    const n = items.length;
+    return `<div class="concentric-rings">
+      <div class="rings-visual">
+        ${items.map((it, i) => {
+          const color = resolveColorKeyword(it.color) || "var(--brand)";
+          return `<div class="ring ring-depth-${Math.min(i, 5)}" style="background:${color}; z-index:${i + 1};"></div>`;
+        }).join("")}
+        ${items[n - 1]?.icon ? `<div class="ring-center-icon" style="z-index:${n + 1};">${escapeHtml(items[n - 1].icon)}</div>` : ""}
+      </div>
+      <div class="rings-legend">
+        ${items.map(it => `<span class="ring-legend-item"><i style="background:${resolveColorKeyword(it.color) || "var(--brand)"};"></i>${escapeHtml(it.title)}</span>`).join("")}
+      </div>
+    </div>`;
+  }
+
   // 19. [NEW] part-banner (구 part-deck 호환)
   if (type === "part-banner" || type === "part-deck") {
     return items.map(it => {

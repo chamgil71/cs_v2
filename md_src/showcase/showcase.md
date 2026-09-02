@@ -16,7 +16,7 @@ stats:
 
 ## 현재 지원 숏코드 목록
 
-| 분류 | 정식 숏코드 (25종) |
+| 분류 | 정식 숏코드 (28종) |
 | --- | --- |
 | **Group A: Grid** | `icon-grid` *(align=center\|left\|row)*, `feature-grid`, `badge-grid`, `stat-grid`, `columns-grid`, `plan-grid`, `level-grid` |
 | **Group B: List** | `step-list`, `chapter-list`, `faq-list`, `tool-list` |
@@ -25,8 +25,9 @@ stats:
 | **Group E: Split** | `compare-split`, `before-after` |
 | **Group F: Banner & Bar** | `part-banner`, `takeaway-banner`, `summary-bar` |
 | **Group G: Interactive** | `os-tabs` |
+| **Group H: 데이터 다이어그램** *(2026-09 추가)* | `venn-diagram`, `quadrant-chart`, `concentric-rings` |
 
-> **하위 호환 alias** (기존 문서에서 계속 동작): `compare-grid`→columns-grid, `workflow-flow`→step-flow, `skill-list`→icon-grid align=left, `checkpoint-grid`→icon-grid align=row, `compare-diff`→before-after
+> **하위 호환 alias** (기존 문서에서 계속 동작): `compare-grid`→columns-grid, `workflow-flow`→step-flow, `skill-list`→icon-grid align=left, `checkpoint-grid`→icon-grid align=row, `compare-diff`→before-after, `venn`→venn-diagram
 
 ## 숏코드 표준 입력 키
 
@@ -1047,6 +1048,140 @@ stats:
     ```
 :::
 
+## 30. venn-diagram
+
+| 항목 | 내용 |
+| --- | --- |
+| 숏코드 명 | `venn-diagram` (alias: `venn`) |
+| 구현내용 | 두 영역이 겹칠 때 새로운 가치가 발생함을 표현하는 벤 다이어그램입니다. 항목 3개 고정 순서(왼쪽 원 / 오른쪽 원 / 교집합 캡션). |
+
+숏코드 입력내용
+
+```md
+\::: venn-diagram
+- title: "디자인"
+  color: "#6366F1"
+- title: "개발"
+  color: "#EC4899"
+- icon: "⭐"
+  desc: "새로운 가치"
+\:::
+```
+
+::: venn-diagram
+- title: "디자인"
+  color: "#6366F1"
+- title: "개발"
+  color: "#EC4899"
+- icon: "⭐"
+  desc: "새로운 가치"
+:::
+
+## 31. quadrant-chart
+
+| 항목 | 내용 |
+| --- | --- |
+| 숏코드 명 | `quadrant-chart` |
+| 구현내용 | 두 축(X/Y) 기준으로 여러 항목의 상대 위치를 비교하는 사분면 차트입니다. 축 라벨은 블록 인수(`xLabel=`, `yLabel=`)로, 위치는 항목별 `fx`/`fy`(0~1 비율)로 지정합니다. |
+
+숏코드 입력내용
+
+```md
+\::: quadrant-chart xLabel="가격" yLabel="품질"
+- title: "제품 A"
+  fx: "0.3"
+  fy: "0.7"
+  color: "#6366F1"
+- title: "제품 B"
+  fx: "0.8"
+  fy: "0.2"
+  color: "#EC4899"
+- title: "제품 C"
+  fx: "0.5"
+  fy: "0.9"
+  color: "#10A37F"
+\:::
+```
+
+::: quadrant-chart xLabel="가격" yLabel="품질"
+- title: "제품 A"
+  fx: "0.3"
+  fy: "0.7"
+  color: "#6366F1"
+- title: "제품 B"
+  fx: "0.8"
+  fy: "0.2"
+  color: "#EC4899"
+- title: "제품 C"
+  fx: "0.5"
+  fy: "0.9"
+  color: "#10A37F"
+:::
+
+## 32. concentric-rings
+
+| 항목 | 내용 |
+| --- | --- |
+| 숏코드 명 | `concentric-rings` |
+| 구현내용 | A⊃B⊃C 같은 계층적 포함관계를 동심원으로 표현합니다. 항목은 바깥(가장 큰 범주)에서 안쪽(가장 구체적인 범주) 순서로 작성하며, 마지막 항목의 `icon`이 중심 아이콘이 됩니다. |
+
+숏코드 입력내용
+
+```md
+\::: concentric-rings
+- title: "AI"
+  color: "#94A3B8"
+- title: "머신러닝"
+  color: "#64748B"
+- title: "딥러닝"
+  color: "#475569"
+- title: "LLM"
+  icon: "🧠"
+  color: "#1E293B"
+\:::
+```
+
+::: concentric-rings
+- title: "AI"
+  color: "#94A3B8"
+- title: "머신러닝"
+  color: "#64748B"
+- title: "딥러닝"
+  color: "#475569"
+- title: "LLM"
+  icon: "🧠"
+  color: "#1E293B"
+:::
+
+## 33. Mermaid 구조도 *(숏코드 아님 — 표준 fenced code block)*
+
+| 항목 | 내용 |
+| --- | --- |
+| 문법 | ` ```mermaid ` 코드 블록 |
+| 구현내용 | 가이드·프레젠테이션 HTML에서는 `mermaid.js`가 브라우저에서 실제 SVG로 렌더링합니다. **PPTX에는 다이어그램 이미지로 변환되지 않고 원문이 코드박스로 표시됩니다**(전용 렌더러 없음). |
+
+숏코드 입력내용
+
+````md
+```mermaid
+graph TD
+    A[시작] --> B{조건 확인}
+    B -->|참| C[처리 A]
+    B -->|거짓| D[처리 B]
+    C --> E[종료]
+    D --> E
+```
+````
+
+```mermaid
+graph TD
+    A[시작] --> B{조건 확인}
+    B -->|참| C[처리 A]
+    B -->|거짓| D[처리 B]
+    C --> E[종료]
+    D --> E
+```
+
 ## 부록 A. desc 다중 줄 불릿 목록
 
 `desc`에 `\n`(YAML 멀티라인 `|`)으로 줄을 나누면 자동으로 불릿 목록이 됩니다. 줄 앞에 이모지를 쓰면 그 이모지가 불릿으로 사용됩니다.
@@ -1203,6 +1338,16 @@ stats:
 \::: slide-config
 bg: "#0F172A"
 color: "#F8FAFC"
+\:::
+```
+
+## 3. slide-config — notes (발표스크립트, 2026-09 추가)
+
+`notes` 키를 추가하면 PPTX 변환 시 해당 섹션의 첫 슬라이드에 파워포인트 발표자 노트(speaker notes)로 들어갑니다. HTML(가이드·프레젠테이션)에는 영향이 없는 PPTX 전용 기능입니다. 여러 줄이 필요하면 `\n` 리터럴을 사용하세요(YAML `|` 블록 스칼라는 지원하지 않습니다).
+
+```md
+\::: slide-config
+notes: "여기서는 청중에게 배경을 먼저 설명합니다.\n그 다음 데모로 넘어갑니다."
 \:::
 ```
 

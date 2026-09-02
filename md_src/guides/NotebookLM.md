@@ -1,15 +1,15 @@
 ---
 title: "내 문서로 만드는나만의 AI 전문가"
-subtitle: "Google AI 노트 도구"
-badge: "🔵 Google이 만든 AI 지식 어시스턴트"
+subtitle: "Google AI 노트 도구 (Gemini Notebook)"
+badge: "🔵 Google이 만든 AI 지식 어시스턴트 · 2026"
 style: "knowledge"
 stats:
-  - value: "완전 무료"
-    label: "Google 계정만 있으면"
+  - value: "Gemini 3.5"
+    label: "기반 모델 (구 NotebookLM)"
   - value: "50개"
     label: "소스 per 노트북"
-  - value: "오디오 개요"
-    label: "AI 팟캐스트 생성"
+  - value: "시네마틱 영상"
+    label: "몰입형 Video Overview"
   - value: "출처 인용"
     label: "모든 답변에 소스 표시"
 ---
@@ -32,7 +32,7 @@ stats:
 - title: "오디오"
   desc: "팟캐스트, 강의 녹음 파일"
 - title: "텍스트 파일"
-  desc: ".txt, .md 파일"
+  desc: ".txt, .md, .epub 파일"
 - title: "직접 입력"
   desc: "노트나 텍스트 직접 붙여넣기"
 :::
@@ -75,7 +75,12 @@ stats:
 
 "이 데이터의 한계점은 무엇인가?" "FAQ를 만들어줘"
 
-# 오디오 개요 — AI 팟캐스트
+::: alert-box tip
+- title: "💡 NotebookLM → Gemini Notebook 리브랜딩:"
+  desc: "2026년 NotebookLM은 Gemini Notebook으로 이름이 바뀌고 Gemini 3.5 모델로 업그레이드되었습니다(주소는 기존 notebooklm.google.com도 유지). 노트북 통째로 복제하는 기능과 EPUB 업로드가 새로 추가되었습니다."
+:::
+
+# 오디오·영상 개요 — AI 팟캐스트 & 시네마틱 영상
 
 문서를 두 AI 진행자가 나누는 자연스러운 팟캐스트로 변환합니다.
 
@@ -98,6 +103,10 @@ stats:
 #### ⚙️ 커스텀 가이드
 
 특정 청중, 강조 내용 지정 가능
+
+#### 🎬 시네마틱 Video Overview
+
+Gemini가 소스 내용을 분석해 애니메이션과 내레이션이 있는 몰입형 영상으로 자동 재구성
 
 # 실전 활용 사례
 

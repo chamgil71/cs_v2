@@ -87,6 +87,83 @@ vite-api-plugin.ts (API Router)
   - `build-guide.mjs`는 `config/styles.json`에서 해당 테마의 HSL/HEX 컬러 코드를 불러와 변환 대상 HTML 문서의 `<style>` 태그(예: `:root { --brand: ... }`)에 CSS 변수 형태로 강제 임베딩합니다.
   - `md-to-pptx.mjs`는 마크다운 구문을 `pptxgenjs`가 해석할 수 있는 형태의 객체 구조로 파싱하면서, 서체 폰트맵(`typeface`)과 도형 배경색 파라미터에 styles.json의 설정값을 직접 대입하여 최종 PPTX 바이너리를 패키징합니다.
 
+### 3-1. `hub-config.mjs` + `md_src/<dir>/hub.config.json` — 폴더별 카테고리·UI 설정 단일 출처
+
+과거엔 카테고리 라벨·순서·색상이 `scripts/guide-categories.mjs`라는 **전역 JS 상수**(모든 폴더가 공유)에 하드코딩되어 있었다(CLAUDE.md 규칙 1 위반). **2026-09-02부터 폴더마다 자기 소유의 설정 파일**을 갖도록 바꿨다: `md_src/<dir>/hub.config.json`.
+
+```jsonc
+{
+  "categories": {
+    "order": ["ai-chat", "ai-dev", "productivity"],          // 표시 순서 (배열에 없는 카테고리는 뒤로, uncategorized는 항상 맨 뒤)
+    "meta": {
+      "ai-chat": { "label": "AI 챗봇 & 어시스턴트", "description": "...", "color": "#6366f1" }
+    }
+  },
+  "sidebar": { "defaultOpen": true },                       // onepage 허브의 좌측 사이드바 초기 상태
+  "outputs": { "onepage": true, "presentationBundle": false } // build-folder.mjs가 플래그 없이 실행될 때 기본으로 만들 산출물
+}
+```
+
+* `scripts/hub-config.mjs`가 이 파일을 읽는 유일한 로더다. 모든 함수는 **폴더의 절대경로 1개**만 받는다(`loadHubConfig(folderAbsPath)`) — `resolveFolderDir(rootDir, dirArg)`가 `"guides"` 같은 짧은 이름은 `md_src/guides`로, 경로 구분자가 섞인 값이나 절대경로는 그대로 소스 폴더로 해석해 이 절대경로를 만들어준다(웹 GUI에서 사용자가 OS 폴더 다이얼로그로 고른, `md_src` 밖의 임의 폴더도 동일하게 다루기 위함). `sortByCategoryOrder()`/`categoryMetaFor()`로 정렬·메타 조회를 표준화한다. **파일이 없는 폴더는 안전한 기본값**(카테고리 없음=id를 그대로 라벨로 사용, 사이드바 항상 열림, onepage/presentation-bundle 기본 off)으로 동작하므로, 새 폴더를 만들 때 이 파일부터 준비할 필요는 없다.
+* `build-guide-hub.mjs`(onepage 허브)와 `sync-guides-index.mjs`(React용 `src/data/guides.json`) **양쪽 다 이 로더 하나만 참조**한다 — 즉 `hub.config.json`을 고치고 재실행하면 두 산출물의 표시 순서가 항상 함께 바뀐다(과거엔 `sync-guides-index.mjs`가 `guides.json`에 저장된 이전 순서를 그대로 보존하는 별도 로직이라 서로 어긋날 수 있었음 — 이 드리프트를 없앴다).
+* `md_src/guides/hub.config.json`·`md_src/claudeguide/hub.config.json` 둘 다 이미 만들어져 있다. 새 폴더를 추가하면 이 파일도 같이 만들어주는 게 좋다(안 만들어도 동작은 하지만 카테고리 라벨이 전부 id 그대로 나온다).
+
+**새 폴더에 hub.config.json을 어떻게 처음 만드나** — 손으로 처음부터 쓸 필요 없다. `build-folder.mjs`의 `--init-config` 플래그가 그 폴더 md 전체의 `style` frontmatter를 스캔해서 "라벨=id 그대로, 색은 팔레트 순환"인 초안을 만들어준다:
+
+```bash
+npm run build:folder -- --dir newFolder --init-config
+# → md_src/newFolder/hub.config.json 생성하고 종료 (다른 산출물 플래그를 안 줬으면 빌드는 안 함)
+```
+
+이미 파일이 있으면 **절대 덮어쓰지 않는다**(수동으로 고친 라벨/색/순서 보호) — "이미 존재 — 건너뜀" 메시지만 찍고 넘어간다. 초안이 생기면 라벨·색·`order` 순서를 원하는 대로 고친 뒤, 플래그 없이(또는 원하는 산출물 플래그와 함께) 다시 실행하면 그 설정이 그대로 반영된다.
+
+**json을 고친 뒤 다시 돌리는 법**(운영 중인 폴더, 이미 config가 있는 경우) — 새로 만들 필요 없이 `hub.config.json`을 직접 열어 `categories.order` 배열 순서를 바꾸거나 `meta`의 라벨/색/설명을 고친 뒤, 그 폴더를 다시 빌드하면 된다:
+
+```bash
+# hub.config.json 수정 후:
+npm run build:onepage -- --dir guides    # onepage 허브만 다시
+npm run build:folder -- --dir guides     # 폴더 index.html까지 포함해 전부 다시
+node scripts/sync-guides-index.mjs        # React용 src/data/guides.json도 (guides 폴더 한정)
+```
+세 산출물 모두 같은 `hub.config.json`을 읽으므로 순서/라벨이 항상 같이 바뀐다 — 특정 산출물만 구식 순서로 남는 일은 구조적으로 없다.
+
+### 3-2. `build-guide-hub.mjs` — 오프라인 가이드 허브 onepage 단일 HTML
+
+`md_src/<dir>/*.md` 전체를 **서버 없이 파일 하나로 열리는 SPA**로 묶는다 (`npm run build:onepage`, 기본 출력 `publish/<dir>-onepage.html` — 기본 `--dir`은 `guides`라 `publish/guides-onepage.html`).
+
+* 각 md의 `guide-core.buildHtml()` 결과에서 `<style>`/`<body>` 본문만 추출해 `guideContents[slug] = {styles, body}`로 JSON 직렬화, `<script id="appdata" type="application/json">`에 임베딩한다. `<` 문자는 전부 `<`로 이스케이프해 `</script>` 조기 종료를 방지한다.
+* 카테고리 표시 순서·라벨·색상은 위 3-1의 `hub.config.json`에서 읽는다.
+* 기본 출력 파일명에는 항상 `-onepage`가 붙는다(`defaultOutPath()` 헬퍼) — `--dir`로 폴더를 바꿔도 파일명 로직 한 곳에서 자동으로 붙는다. **"onepage"와 `npm run build:standalone`(웹앱 번들, `dist/webdesignsuite.html` 등)은 완전히 다른 파이프라인**이다 — onepage는 이미 렌더링된 콘텐츠(문서 본문 텍스트)를 한 파일에 담고, build:standalone은 React 앱(편집 로직 포함)을 한 파일로 번들링한다. 초기엔 이름이 겹쳐서(둘 다 "standalone"이라 불렀음) 혼동이 있었고, 2026-09-02에 콘텐츠 쪽만 "onepage"로 분리해 정리했다.
+* 각 가이드 본문은 클릭 시 Shadow DOM에 주입되어 `:root`/`html`/`body` 셀렉터가 `:host`/`.guide-document`로 리라이트된 채 렌더링되므로, 가이드마다 다른 테마 CSS 변수가 서로 침범하지 않는다.
+* **좌측 사이드바 열림/닫힘**: 헤더의 ☰ 버튼으로 토글, 초기 상태는 `hub.config.json`의 `sidebar.defaultOpen`, 사용자가 한 번 토글하면 `localStorage`(`onepage-sidebar`)에 저장되어 이후에도 유지된다.
+* **홈 화면(사이드바에서 아무것도 선택하지 않았을 때)**은 히어로(배지+그라디언트 타이틀+검색창+CTA)·카테고리 필터 pill·카드형 그리드(상단 강조 바+화살표 hover)로 구성된다(`showHome()`). 검색창은 카드의 `data-q`(제목+부제 소문자)를 substring 매칭해 카드/카테고리 블록을 즉시 show/hide한다 — React가 없는 순수 vanilla JS 구현이라 프레임워크 없이도 동작한다.
+* `render(folder)`를 export하므로 `build-folder.mjs`가 CLI를 거치지 않고 함수로 바로 재사용한다.
+
+### 3-3. `build-folder.mjs` — 폴더 단위 통합 오케스트레이터
+
+"이 폴더를 선택하면 필요한 걸 다 만들어줘"에 대응하는 스크립트. **새 변환 로직을 만들지 않고 기존 스크립트(`guide-core`/`presentation-core`/`md-to-pptx`/`build-guide-hub`)를 순서대로 호출만** 한다 — 각 스크립트는 지금처럼 단독 CLI로도 계속 쓸 수 있다. `--dir`은 `md_src` 하위 짧은 이름뿐 아니라 임의 경로(절대경로 등)도 받는다 — `resolveFolderDir()`가 자동으로 구분한다.
+
+```bash
+npm run build:folder -- --dir guides              # 기본 세트: 개별 html + 개별 presentation html + 개별 pptx + 폴더 index.html
+npm run build:folder -- --dir guides --all        # 위 4개 + onepage 허브 + 통합 프레젠테이션 덱까지 전부
+npm run build:folder -- --dir guides --guide --presentation --pptx --onepage   # 원하는 산출물만 선택
+npm run build:folder -- --dir guides --no-onepage   # hub.config.json의 outputs.onepage가 true여도 이번엔 끄기
+npm run build:folder -- --dir "C:/Users/me/Desktop/my-docs" --out-dir public   # md_src 밖 임의 폴더 + 출력 위치 지정도 가능
+```
+
+산출 위치(`<base>`는 `--dir`이 짧은 이름이면 그 이름, 명시적 경로면 마지막 폴더명):
+
+| 산출물 | 경로 | 플래그 |
+| --- | --- | --- |
+| 개별 종형 가이드 html | `<out-dir>/<base>/<파일명>.html` | `--guide` |
+| 개별 횡형 프레젠테이션 html | `<out-dir>/<base>/<파일명>_presentation.html` | `--presentation` |
+| 개별 pptx | `<out-dir>/<base>/<파일명>.pptx` | `--pptx` |
+| 폴더 목록 index.html(가벼운 정적 링크 페이지) | `<out-dir>/<base>/index.html` | `--hub` |
+| onepage 단일 파일 허브 | `<out-dir>/<base>-onepage.html` | `--onepage` (기본값은 `hub.config.json`의 `outputs.onepage`) |
+| 통합 프레젠테이션 덱(폴더 전체를 합친 슬라이드) | `<out-dir>/<base>-presentation-bundle.html` | `--presentation-bundle` (기본값은 `outputs.presentationBundle`) |
+
+(`--out-dir` 기본값은 `publish`.) 플래그를 하나도 안 주면 "기본 세트"(개별 3종 + 폴더 `index.html`)가 나가고, `--onepage`/`--presentation-bundle`은 `hub.config.json`의 `outputs`에 따라 자동으로 켜지거나 꺼진다. `<out-dir>/<base>/index.html`은 **onepage 허브와 다른 산출물**이다 — 본문을 전부 내장하는 게 아니라 그 폴더 안에 실제로 생긴 개별 파일(html/presentation/pptx)로 링크만 거는 가벼운 정적 페이지라, 폴더를 그대로 정적 호스팅할 때(예: GitHub Pages) 진입점으로 쓰기 좋다.
+
 ---
 
 ## 4. 숏코드 렌더링 & 폰트 크기 시스템 (2026-06-25 단일화)

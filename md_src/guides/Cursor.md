@@ -1,15 +1,15 @@
 ---
 title: "Cursor 완전 활용 가이드"
 subtitle: "VS Code를 대체할 가장 강력한 AI 네이티브 코드 에디터이자 Vibe Coding의 끝판왕"
-badge: "🪄 AI 에디터 · Vibe Coding"
+badge: "🪄 AI 에디터 · Vibe Coding · 2026"
 style: "ai-dev"
 stats:
   - value: "VS Code"
     label: "100% 호환"
   - value: "Composer"
-    label: "다중 파일 수정"
-  - value: "Claude 3.5"
-    label: "최고 성능 탑재"
+    label: "Cursor 자체 초고속 코딩 모델"
+  - value: "Cloud Agents"
+    label: "격리 VM 병렬 원격 작업"
   - value: "무료"
     label: "기본 제공"
 ---
@@ -33,6 +33,14 @@ Cursor는 단순한 AI 자동완성 도구(예: Copilot)를 넘어, 에디터 �
 - icon: "📦"
   title: "원클릭 마이그레이션"
   desc: "기존 VS Code에서 쓰던 모든 확장 프로그램, 테마, 단축키를 1초 만에 그대로 가져옵니다."
+- icon: "☁️"
+  title: "Cloud Agents (Cursor 3.5)"
+  desc: "격리된 클라우드 VM에서 터미널·브라우저·데스크톱까지 제어하는 에이전트가 여러 저장소를 동시에 작업하고, 완료되면 IDE로 비동기 보고합니다."
+:::
+
+::: alert-box tip
+- title: "💡 Composer — Cursor 자체 모델:"
+  desc: "Cursor는 자체 개발한 프론티어 모델 Composer를 기본 탑재해 대부분의 턴을 30초 이내에 처리합니다. 필요에 따라 Claude Opus/Sonnet, GPT-5.6, Gemini 3, Grok 4.6 등 외부 모델로 언제든 전환할 수 있습니다."
 :::
 
 ### 이런 분들께 강력 추천합니다
@@ -98,7 +106,7 @@ Cursor의 진가는 '컨텍스트 멘션(@)' 기능에서 나옵니다.
   
   파일 활용 지시 필수)
 
-> 💡 TIP: 프로젝트 최상단에 .cursorrules 라는 파일을 만들고 "항상 한국어로 답변할 것", "컴포넌트는 화살표 함수로 작성할 것" 등 나만의 코딩 규칙을 적어두세요. Cursor가 프로젝트 전체를 분석할 때 이 규칙을 최우선으로 학습하여 매번 지시하지 않아도 일관된 스타일의 코드를 작성해 줍니다.
+> 💡 TIP: 프로젝트 루트에 `.cursor/rules/` 폴더를 만들고 그 안에 `.mdc` 파일로 "항상 한국어로 답변할 것", "컴포넌트는 화살표 함수로 작성할 것" 같은 나만의 코딩 규칙을 적어두세요. 예전에 쓰던 단일 `.cursorrules` 파일은 지금도 동작은 하지만 공식적으로 deprecated 상태이며, 조건 없이 매 요청마다 전체가 로드돼 토큰을 낭비합니다. `.mdc` 파일은 YAML 프론트매터로 "항상 로드/특정 파일 패턴에서만 로드/AI 판단 시 로드/수동 참조 시만 로드"를 지정할 수 있어 프론트엔드·백엔드·테스트처럼 레이어가 나뉜 프로젝트에 특히 유리합니다.
 
 ## 말하는 대로 코딩되는 마법을 경험하세요
 

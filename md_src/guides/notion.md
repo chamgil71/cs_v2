@@ -1,15 +1,15 @@
 ---
 title: "모든 작업을 한 곳에서,노션으로 정리하세요"
 subtitle: "올인원 워크스페이스"
-badge: "📝 올인원 워크스페이스"
+badge: "📝 올인원 워크스페이스 · 2026"
 style: "knowledge"
 stats:
   - value: "무료"
     label: "기본 플랜"
   - value: "1억+"
     label: "사용자"
-  - value: "Notion AI"
-    label: "내장 AI"
+  - value: "Custom Agents"
+    label: "예약·트리거 자동 실행"
   - value: "멀티플랫폼"
     label: "웹·앱 지원"
 ---
@@ -102,11 +102,13 @@ stats:
   desc: "회의록에서 할 일 목록 자동 추출"
 - title: "🌐 웹 검색 연동"
   desc: "최신 정보를 검색하여 문서에 통합"
+- title: "🤖 Custom Agents"
+  desc: "예약·트리거로 스스로 실행되는 팀 전용 봇. Opus 4.8, Grok 4.3, 저비용 GLM 5.2 등 모델을 작업에 맞게 선택"
 :::
 
 ::: alert-box tip
-- title: "💰 Notion AI 요금"
-  desc: "Notion AI는 별도 추가 요금($10/월 per user)이 있습니다. Free 플랜에서도 제한적으로 체험 가능합니다. 팀 플랜($15/월)에는 AI가 포함되어 있습니다."
+- title: "💰 Notion AI 요금 (크레딧 기반)"
+  desc: "2026.05부터 크레딧 기반 과금으로 전환되었습니다. Custom Agents는 Business/Enterprise 플랜 전용(추가 $10/1,000크레딧)이며 Free 플랜에서는 쓸 수 없고, 다른 유료 플랜은 매달 지급되는 크레딧 안에서 요약·검색 등 기본 AI 기능을 사용합니다."
 :::
 
 # 필수 단축키

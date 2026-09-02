@@ -33,6 +33,9 @@ Cloudflare는 초기에는 웹사이트를 빠르게 로딩해주는 CDN(콘텐�
 - icon: "⚙️"
   title: "Workers"
   desc: "무거운 서버 구축 없이, 자바스크립트 코드 몇 줄로 엣지 네트워크에서 실행되는 API를 만듭니다."
+- icon: "🧠"
+  title: "Workers AI + AI Gateway"
+  desc: "GLM-5.3 등 오픈 모델을 전용 GPU 풀에서 서빙. Workers AI와 AI Gateway가 통합되어 같은 바인딩/REST API로 자체 호스팅 모델과 외부 제공자 모델을 함께 호출합니다."
 :::
 
 ### 이런 분들께 강력 추천합니다

@@ -112,6 +112,14 @@ stats:
   title: "Copilot"
   tag: "커뮤니티"
   desc: "ChatGPT, Claude 등 AI를 옵시디언 내에서 직접 사용합니다. 노트 요약, 번역, 질문 응답 등."
+- icon: "🪶"
+  title: "Nova"
+  tag: "커뮤니티 · 2026"
+  desc: "채팅창 없이 선택한 텍스트를 그 자리에서 바로 수정하는 AI 라이팅 어시스턴트. Ollama/LM Studio 로컬 실행 또는 API 키로 완전한 프라이버시 유지."
+- icon: "🔎"
+  title: "Smart Connections"
+  tag: "커뮤니티 · 2026"
+  desc: "로컬 임베딩 기반 시맨틱 검색. 설정 없이 바로 볼트 전체에서 의미가 비슷한 노트를 찾아줍니다."
 - icon: "🗂️"
   title: "Kanban"
   tag: "커뮤니티"
@@ -177,7 +185,11 @@ stats:
     - 웹에서 찾은 정보를 Web Clipper로 저장 후 AI로 가공
     
      
-    - NotebookLM에 볼트의 핵심 노트를 업로드하여 대화형 질의응답 활용
+    - Nova로 선택한 문장을 채팅 없이 그 자리에서 바로 다듬기
+    
+     
+    
+    - Gemini Notebook(구 NotebookLM)에 볼트의 핵심 노트를 업로드하여 대화형 질의응답 활용
 :::
 
 ::: alert-box tip

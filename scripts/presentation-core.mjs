@@ -277,7 +277,12 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
             };
           }
         }
-        currentSlide.body += marked.parser([tok]);
+        if (tok.type === "code" && (tok.lang || "").trim().toLowerCase() === "mermaid") {
+          // Mermaid 구조도 — 원문 그대로 <pre class="mermaid">에 넣어 클라이언트에서 mermaid.js 가 렌더링
+          currentSlide.body += `<pre class="mermaid">${escapeHtml(tok.text)}</pre>`;
+        } else {
+          currentSlide.body += marked.parser([tok]);
+        }
       }
     }
     if (currentSlide && (currentSlide.body.trim() || currentSlide.title.trim())) {
@@ -291,10 +296,15 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
   const mainStyle = STYLES[opts.style || mainFm?.style || "ai-chat"] || STYLES["ai-chat"];
 
   // Generate TOC items HTML
+  // 💡 커버 항목 글자색: 문서마다 다른 --brand-light(전역 :root 고정값, 첫 문서 기준)에 의존하면
+  //    라이트모드에서 흰 배경 위에 옅은 파스텔 색이 겹쳐 텍스트가 거의 안 보이는 문제가 생긴다
+  //    (여러 문서를 병합한 덱일수록 두드러짐). 문서 자신의 brandDark(짙고 대비가 확보된 톤)를
+  //    항목별 CSS 변수로 주입해 라이트/다크 모드 모두에서 읽히도록 한다.
   const tocHtml = slides.map((s, idx) => {
     const plainTitle = s.title.replace(/<[^>]*>/g, "");
     const isCover = s.type === "cover";
-    return `<div class="toc-item${isCover ? " toc-cover" : ""}" data-idx="${idx}" onclick="scrollToSlide(${idx}); toggleToc(false);">
+    const coverStyleAttr = isCover ? ` style="--cover-color: ${(s.style || mainStyle).brandDark || (s.style || mainStyle).brand}"` : "";
+    return `<div class="toc-item${isCover ? " toc-cover" : ""}" data-idx="${idx}"${coverStyleAttr} onclick="scrollToSlide(${idx}); toggleToc(false);">
       <span class="toc-num">${idx + 1}</span>
       <span class="toc-title">${escapeHtml(plainTitle)}</span>
     </div>`;
@@ -831,7 +841,7 @@ ${SHORTCODE_CSS}
   .toc-item.active .toc-title { color: var(--text); }
   .toc-cover .toc-title {
     font-weight: 700;
-    color: var(--brand-light, var(--brand));
+    color: var(--cover-color, var(--brand-light, var(--brand)));
   }
   .toc-item.active.toc-cover .toc-title { color: var(--brand); }
 
@@ -904,6 +914,8 @@ ${SHORTCODE_CSS}
     }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: "dark" });</script>
 </head>
 <body>
   <div class="slides-container" id="slides">

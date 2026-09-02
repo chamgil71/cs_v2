@@ -3,30 +3,15 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import matter from "gray-matter";
+import { loadHubConfig, categoryMetaFor, sortByCategoryOrder } from "./hub-config.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 const MD_SRC = path.join(ROOT, "md_src");
 const DATA_FILE = path.join(ROOT, "src", "data", "guides.json");
-const STYLES_FILE = path.join(ROOT, "config", "styles.json");
 
 // Ensure output directory exists
 fs.mkdirSync(path.dirname(DATA_FILE), { recursive: true });
-
-const STYLE_META = {
-  "ai-chat": { label: "AI 챗봇 & 어시스턴트", description: "범용 AI 어시스턴트로 생각하고, 쓰고, 검색하기", colorVar: "--cat-chat", color: "#6366f1" },
-  "ai-dev": { label: "AI 개발 도구", description: "AI가 코드를 쓰고 완성하는 개발 환경", colorVar: "--cat-dev", color: "#10b981" },
-  "webdev": { label: "개발 & 배포 플랫폼", description: "앱을 만들고, 배포하고, 운영하는 클라우드 생태계", colorVar: "--cat-webdev", color: "#0ea5e9" },
-  "knowledge": { label: "노트 & 지식 관리", description: "정보를 모으고 연결해 두 번째 뇌 만들기", colorVar: "--cat-knowledge", color: "#f59e0b" },
-  "productivity": { label: "생산성 유틸리티", description: "PC 사용을 빠르게 만드는 필수 도구", colorVar: "--cat-prod", color: "#ec4899" },
-  "creative": { label: "크리에이티브 AI", description: "이미지 · 영상 · 디자인을 AI로 만들기", colorVar: "--cat-creative", color: "#8b5cf6" },
-  "security": { label: "보안 & 인프라", description: "보안, 네트워크, 인프라 운영 가이드", colorVar: "--cat-security", color: "#06b6d4" },
-  "finance": { label: "재테크 & 금융", description: "금융·재테크 도구와 워크플로우", colorVar: "--cat-finance", color: "#D4A017" },
-  "future": { label: "퓨처 AI", description: "새로운 AI 실험과 미래형 도구", colorVar: "--cat-future", color: "#84CC16" },
-  "enterprise": { label: "엔터프라이즈", description: "조직 운영과 기업형 도구", colorVar: "--cat-enterprise", color: "#475569" },
-  "media": { label: "미디어 & 콘텐츠", description: "미디어 제작과 콘텐츠 운영 도구", colorVar: "--cat-media", color: "#E11D48" },
-  uncategorized: { label: "미분류", description: "style frontmatter가 없는 문서", colorVar: "--cat-uncategorized", color: "#64748b" }
-};
 
 function readJson(file, fallback) {
   if (!fs.existsSync(file)) return fallback;
@@ -71,38 +56,23 @@ function mdInfo(file) {
   };
 }
 
-function existingOrder(data) {
-  const categoryOrder = new Map();
-  const guideOrder = new Map();
+// 카테고리 순서/라벨/색상은 더 이상 guides.json에 저장된 이전 상태를 보존하지 않는다 — md_src/guides/hub.config.json이
+// 유일한 출처다(2026-09-02). 이렇게 해야 hub.config.json 하나만 고쳐도 이 파일과 오프라인 허브(build-guide-hub.mjs)
+// 양쪽의 표시 순서가 함께 바뀐다. 개별 가이드의 slug/title/subtitle 수동 오버라이드만 기존 값을 보존한다.
+function existingGuideOverrides(data) {
   const guideByFile = new Map();
-  (data.categories || []).forEach((cat, catIdx) => {
-    categoryOrder.set(cat.id, catIdx);
-    (cat.guides || []).forEach((guide, guideIdx) => {
-      guideOrder.set(guide.slug, guideIdx);
+  (data.categories || []).forEach((cat) => {
+    (cat.guides || []).forEach((guide) => {
       guideByFile.set(String(guide.file || "").toLowerCase(), guide);
     });
   });
-  return { categoryOrder, guideOrder, guideByFile };
-}
-
-function categoryMeta(style, stylesConfig, existing) {
-  const current = existing?.categories?.find((cat) => cat.id === style);
-  const predefined = STYLE_META[style];
-  const styleLabel = stylesConfig?.[style]?.label;
-  return {
-    id: style,
-    label: current?.label || predefined?.label || styleLabel || style,
-    description: current?.description || predefined?.description || `${style} 스타일 문서`,
-    colorVar: current?.colorVar || predefined?.colorVar || "--cat-uncategorized",
-    color: current?.color || predefined?.color || stylesConfig?.[style]?.brand || "#64748b",
-    guides: []
-  };
+  return guideByFile;
 }
 
 function syncGuides() {
   const existing = readJson(DATA_FILE, { categories: [], collections: [], showcase: null });
-  const stylesConfig = readJson(STYLES_FILE, {});
-  const { categoryOrder, guideOrder, guideByFile } = existingOrder(existing);
+  const hubConfig = loadHubConfig(path.join(MD_SRC, "guides"));
+  const guideByFile = existingGuideOverrides(existing);
   const guideFiles = walkMd(path.join(MD_SRC, "guides"));
   const byStyle = new Map();
 
@@ -120,24 +90,13 @@ function syncGuides() {
     });
   }
 
-  const styleIds = [...byStyle.keys()].sort((a, b) => {
-    const ao = categoryOrder.has(a) ? categoryOrder.get(a) : Number.MAX_SAFE_INTEGER;
-    const bo = categoryOrder.has(b) ? categoryOrder.get(b) : Number.MAX_SAFE_INTEGER;
-    if (ao !== bo) return ao - bo;
-    if (a === "uncategorized") return 1;
-    if (b === "uncategorized") return -1;
-    return a.localeCompare(b);
-  });
+  const styleIds = sortByCategoryOrder([...byStyle.keys()], hubConfig);
 
   const categories = styleIds.map((style) => {
-    const cat = categoryMeta(style, stylesConfig, existing);
-    cat.guides = byStyle.get(style).sort((a, b) => {
-      const ao = guideOrder.has(a.slug) ? guideOrder.get(a.slug) : Number.MAX_SAFE_INTEGER;
-      const bo = guideOrder.has(b.slug) ? guideOrder.get(b.slug) : Number.MAX_SAFE_INTEGER;
-      if (ao !== bo) return ao - bo;
-      return a.title.localeCompare(b.title, "ko");
-    }).map(({ style: _style, mdFile: _mdFile, ...guide }) => guide);
-    return cat;
+    const meta = categoryMetaFor(hubConfig, style);
+    const guides = byStyle.get(style).sort((a, b) => a.title.localeCompare(b.title, "ko"))
+      .map(({ style: _style, mdFile: _mdFile, ...guide }) => guide);
+    return { id: style, label: meta.label, description: meta.description, color: meta.color, guides };
   });
 
   const collections = [];
@@ -173,7 +132,7 @@ function syncGuides() {
   fs.writeFileSync(DATA_FILE, `${JSON.stringify(next, null, 2)}\n`, "utf8");
   console.log(`✅ synced ${path.relative(ROOT, DATA_FILE)}`);
   console.log(`   categories: ${categories.length}, guides: ${categories.reduce((n, c) => n + c.guides.length, 0)}`);
-  console.log("   order: existing guides.json order preserved; new files appended by title");
+  console.log("   order: md_src/guides/hub.config.json 기준 (개별 가이드 slug/title 수동 오버라이드만 보존)");
 }
 
 syncGuides();

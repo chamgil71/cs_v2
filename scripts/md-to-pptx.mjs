@@ -766,7 +766,13 @@ function renderSectionSlide(prs, section, pal, verbose) {
     }
 
     initSlideHeader(currentSlide, pageCount);
-    
+
+    // 발표스크립트(speaker notes) — ::: slide-config 의 notes: 필드. 섹션이 여러 페이지로
+    // 자동분할되어도 첫 페이지에만 붙인다(섹션당 스크립트 1개라는 저작 모델과 일치).
+    if (section.config && section.config.notes) {
+      currentSlide.addNotes(String(section.config.notes).replace(/\\n/g, "\n"));
+    }
+
     let curY = D.slide.bodyTopY;
     
     for (const item of section.items) {

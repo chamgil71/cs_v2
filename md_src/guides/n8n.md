@@ -33,6 +33,14 @@ n8n(엔에이트엔)은 다양한 웹 서비스(텔레그램, 구글 시트, 깃
 - icon: "🤖"
   title: "Advanced AI"
   desc: "LangChain 개념이 내장되어 있어, OpenAI나 로컬 LLM을 연결해 텍스트를 분류하고 요약하는 파이프라인을 짭니다."
+- icon: "🔌"
+  title: "MCP 서버/클라이언트"
+  desc: "n8n을 MCP 서버로 노출해 워크플로를 외부 에이전트가 호출하게 하거나, MCP 클라이언트로 Claude·Codex 등의 도구를 워크플로 안에서 직접 사용합니다."
+:::
+
+::: alert-box tip
+- title: "💡 n8n 2.0 — 멀티 에이전트 오케스트레이션:"
+  desc: "n8n 2.0부터 AI Agent 노드가 구조화된 툴콜·재시도·메모리(Redis/Postgres/Motorhead)를 지원하며, 단일 에이전트가 아닌 중앙 오케스트레이터가 여러 전문 서브 에이전트를 지휘하는 구조로 발전했습니다."
 :::
 
 ### 이런 분들께 강력 추천합니다

@@ -367,5 +367,55 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
 - title: "고급"
   desc: "아키텍처 설계 및 최적화 수행"
 :::`
+  },
+  {
+    key: "venn-diagram",
+    name: "⭕ 벤 다이어그램 (venn-diagram)",
+    category: "데이터 다이어그램",
+    desc: "두 영역이 겹칠 때 새로운 가치/의미가 발생함을 표현. 항목 3개 고정 순서(왼쪽 원 / 오른쪽 원 / 교집합 캡션).",
+    fields: "[0]title,color (왼쪽 원) · [1]title,color (오른쪽 원) · [2]icon,desc (교집합, 선택)",
+    snippet: `::: venn-diagram
+- title: "전공 A"
+  color: "#6366F1"
+- title: "전공 B"
+  color: "#EC4899"
+- icon: "⭐"
+  desc: "새로운 가치"
+:::`
+  },
+  {
+    key: "quadrant-chart",
+    name: "📍 사분면 차트 (quadrant-chart)",
+    category: "데이터 다이어그램",
+    desc: "두 축(X/Y) 기준으로 여러 항목의 상대 위치를 비교. 축 라벨은 블록 인수로 지정.",
+    fields: "블록 인수 xLabel=\"...\" yLabel=\"...\" · title, color, fx/fy (0~1 비율)",
+    snippet: `::: quadrant-chart xLabel="가격" yLabel="품질"
+- title: "제품 A"
+  fx: "0.3"
+  fy: "0.7"
+  color: "#6366F1"
+- title: "제품 B"
+  fx: "0.8"
+  fy: "0.2"
+  color: "#EC4899"
+:::`
+  },
+  {
+    key: "concentric-rings",
+    name: "🎯 동심원 포함관계 (concentric-rings)",
+    category: "데이터 다이어그램",
+    desc: "A⊃B⊃C 같은 계층적 포함관계 표현. 항목은 바깥(큰 범주)에서 안쪽(구체적 범주) 순서로 작성.",
+    fields: "title (범주명), color, icon (마지막 항목에만 — 중심 아이콘)",
+    snippet: `::: concentric-rings
+- title: "AI"
+  color: "#94A3B8"
+- title: "머신러닝"
+  color: "#64748B"
+- title: "딥러닝"
+  color: "#475569"
+- title: "LLM"
+  icon: "🧠"
+  color: "#1E293B"
+:::`
   }
 ];

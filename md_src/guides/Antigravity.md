@@ -1,145 +1,95 @@
 ---
-title: "중력을 거슬러 — AI로 한계를 넘어서는개발 생산성의 새로운 기준"
-subtitle: "AI 개발 생산성 플랫폼"
-badge: "⚡ AI 개발자 생산성 극대화 가이드"
+title: "Google Antigravity완전 활용 가이드"
+subtitle: "Gemini 3 기반 에이전트 우선 개발 환경"
+badge: "⚡ Google · 에이전트 IDE · 2026"
 style: "ai-dev"
 stats:
-  - value: "6가지"
-    label: "핵심 도구"
-  - value: "AI 퍼스트"
-    label: "워크플로우"
-  - value: "10× 생산성"
-    label: "목표"
-  - value: "무료 ~ 저비용"
-    label: "모든 도구"
+  - value: "Gemini 3"
+    label: "코어 모델"
+  - value: "Mac/Win/Linux"
+    label: "데스크톱 지원"
+  - value: "Agent Manager"
+    label: "다중 에이전트 관제"
+  - value: "무료"
+    label: "개인 사용"
 ---
 
-# AI 개발자의 필수 도구 생태계
+# Antigravity는 어떤 도구인가
 
-각 도구는 서로 다른 역할을 하며, 조합될 때 시너지가 극대화됩니다.
+Google Antigravity는 2026년 Gemini 3와 함께 출시된 **에이전트 우선(agent-first) 개발 환경**입니다. VS Code 확장이나 자동완성 도구를 넘어, 여러 개의 자율 에이전트가 코드 작성·브라우저 조작·터미널 명령까지 비동기로 동시에 수행하고 그 결과를 하나의 관제 화면(Agent Manager)에서 확인·승인하는 방식으로 동작합니다.
 
-::: tool-list
-- icon: "🔮"
-  title: "Obsidian"
-  tag: "지식 관리"
-  desc: "두 번째 뇌. 아이디어와 연구 자료를 로컬에 저장하고, 링크로 연결하여 지식 그래프를 구성합니다."
-  meta: "개발 노트, 아이디어 메모|기술 문서 개인 아카이브|마크다운으로 Claude와 연동"
+### 한눈에 보는 핵심 기능
+
+::: icon-grid
+- icon: "🕹️"
+  title: "Agent Manager"
+  desc: "여러 에이전트가 병렬로 진행 중인 작업(계획·실행·검증 단계)을 한 화면에서 관제. 각 작업의 아티팩트(계획서·스크린샷·실행 로그)를 검토 후 승인합니다."
+- icon: "🌐"
+  title: "브라우저 제어"
+  desc: "에이전트가 실제 브라우저를 열어 웹앱을 클릭·입력·스크린샷 촬영하며 직접 검증. 프론트엔드 변경 사항을 시각적으로 확인합니다."
+- icon: "🧩"
+  title: "비동기 에이전트 실행"
+  desc: "하나의 작업을 지시하고 다른 작업으로 넘어가도 에이전트가 백그라운드에서 계속 진행. 완료되면 알림으로 결과 확인."
+- icon: "🖥️"
+  title: "Antigravity CLI"
+  desc: "터미널에서 Antigravity 에이전트를 직접 호출·모니터링. Gemini Audio 기반 실시간 음성 전사도 지원."
 :::
 
-::: tool-list
-- icon: "📝"
-  title: "Notion"
-  tag: "프로젝트 관리"
-  desc: "팀 협업과 프로젝트 관리의 허브. 로드맵, 스프린트, 문서화를 한 곳에서 관리합니다."
-  meta: "프로젝트 로드맵 & 스프린트|기술 스펙 문서|팀 위키 & 온보딩 자료"
+### 이런 분들께 강력 추천합니다
+
+::: feature-grid cols=3
+- title: "🤹 여러 작업을 동시에 굴리는 개발자"
+  tag: "생산성"
+  desc: "기능 구현, 버그 수정, 리팩토링을 동시에 여러 에이전트에게 맡기고 결과만 검토하고 싶은 분."
+- title: "🎨 프론트엔드·비주얼 작업이 많은 팀"
+  tag: "검증"
+  desc: "에이전트가 실제 브라우저로 UI를 직접 확인하고 스크린샷 근거를 남겨주길 원하는 분."
+- title: "🔗 Gemini 생태계 사용자"
+  tag: "통합"
+  desc: "Gemini 3·Gemini Notebook(NotebookLM)과 이어지는 워크플로를 하나의 Google 계정으로 관리하고 싶은 분."
 :::
 
-::: tool-list
-- icon: "🐙"
-  title: "GitHub"
-  tag: "버전 관리 & 협업"
-  desc: "코드의 집. 버전 관리, 코드 리뷰, CI/CD 자동화, Copilot AI 코딩 지원까지 통합합니다."
-  meta: "코드 저장 & 버전 관리|PR 기반 협업|Actions로 자동화"
+# 시작하기
+
+::: step-list
+- title: "다운로드 및 설치"
+  desc: "antigravity.google 에서 macOS/Windows/Linux 데스크톱 앱을 내려받아 설치합니다."
+- title: "Google 계정 로그인"
+  desc: "Gemini 앱과 동일한 Google 계정으로 로그인하면 개인 사용 기준 무료로 이용할 수 있습니다."
+- title: "첫 작업 지시"
+  desc: "Agent Manager에서 \"이 저장소에 다크모드를 추가해줘\"처럼 자연어로 작업을 등록하면 에이전트가 계획을 세우고 실행합니다."
+- title: "계획·결과 검토"
+  desc: "에이전트가 제시한 계획(Plan)과 실행 아티팩트를 검토한 뒤 승인하거나 수정 지시를 내립니다."
+- title: "CLI 연동 (선택)"
+  desc: "터미널 중심 워크플로가 필요하면 Antigravity CLI로 동일한 에이전트를 호출·관리할 수 있습니다."
 :::
 
-::: tool-list
-- icon: "💻"
-  title: "VS Code"
-  tag: "코드 에디터"
-  desc: "개발의 중심. GitHub Copilot과 Claude Code의 허브로, 모든 AI 코딩 도구를 통합합니다."
-  meta: "인라인 AI 코드 완성|터미널에서 Claude Code 실행|확장으로 무한 확장"
+# 다른 에이전트 IDE와 비교
+
+| 항목 | Antigravity | Cursor | Claude Code | GitHub Copilot |
+| --- | --- | --- | --- | --- |
+| 기본 모델 | Gemini 3 | Composer(자체) + 외부 모델 | Claude Sonnet/Opus | GPT-5 계열 |
+| 실행 형태 | 독립 에이전트 관제 앱 | AI 네이티브 에디터 | 터미널 에이전트 | 에디터 확장 |
+| 브라우저 제어 | ✓ 내장 | △ 확장 필요 | △ MCP 연동 | ✓ (VS Code Agent) |
+| 다중 에이전트 병렬 | ✓ Agent Manager | ✓ Cloud Agents | ✓ 서브에이전트 | △ 병렬 세션 |
+| 비용 | 무료(개인) | 무료~유료 | Pro 구독/API | $10/월~ |
+
+::: alert-box tip
+- title: "💡 Antigravity 2.0:"
+  desc: "2026.05 출시된 Antigravity 2.0은 별도의 코드 에디터 화면 없이 에이전트 관리에만 집중하는 독립형 데스크톱 앱으로 재편되었습니다. 코드 편집 자체는 VS Code 등 기존 에디터와 나란히 열어 두고, Antigravity는 에이전트 오케스트레이션 역할에 집중하는 구조입니다."
 :::
+
+# Gemini 생태계와의 연결
+
+Antigravity는 단독으로도 쓸 수 있지만, 같은 Google 계정으로 아래 도구와 이어지면 시너지가 커집니다.
 
 ::: tool-list
 - icon: "📒"
-  title: "NotebookLM"
-  tag: "AI 리서치"
-  desc: "기술 문서, 논문, 레퍼런스를 업로드하면 AI가 핵심을 추출하고 질문에 답해줍니다."
-  meta: "기술 논문 & 문서 분석|API 문서 Q&A|경쟁사 리서치 분석"
+  title: "Gemini Notebook(구 NotebookLM)"
+  desc: "리서치·문서 분석 담당"
+  meta: "기술 문서·API 레퍼런스를 먼저 Gemini Notebook에 모아 요약|핵심 요구사항을 Antigravity 작업 지시문으로 변환"
+- icon: "💬"
+  title: "Gemini 앱"
+  desc: "아이디어 브레인스토밍"
+  meta: "생성형 UI로 빠른 프로토타입 시안 확인|확정된 아이디어를 Antigravity 에이전트 작업으로 전달"
 :::
-
-::: tool-list
-- icon: "🤖"
-  title: "Claude Code"
-  tag: "AI 코딩 어시스턴트"
-  desc: "터미널에서 직접 코드베이스를 분석하고 수정하는 AI. 복잡한 리팩토링의 게임 체인저."
-  meta: "전체 코드베이스 분석|복잡한 버그 수정|코드 생성 & 리팩토링"
-:::
-
-# 통합 AI 개발 워크플로우
-
-아이디어에서 배포까지 — 도구들이 연결되는 방식을 시각화합니다.
-
-::: workflow-flow
-- title: |
-    💡 아이디어 발생
-     →
-     🔮 Obsidian 기록
-     →
-     📒 NotebookLM 리서치
-     →
-     📝 Notion 기획
-- title: "💡 아이디어 발생"
-- title: "🔮 Obsidian 기록"
-- title: "📒 NotebookLM 리서치"
-- title: "📝 Notion 기획"
-- title: "↓"
-- title: |
-    💻 VS Code 개발
-     ←
-     🤖 Claude Code 구현
-     ←
-     GitHub Copilot 완성
-- title: "💻 VS Code 개발"
-- title: "🤖 Claude Code 구현"
-- title: "GitHub Copilot 완성"
-- title: "↓"
-- title: |
-    🐙 GitHub PR & Review
-     →
-     ⚡ Actions 자동 배포
-     →
-     ✅ 프로덕션 배포
-- title: "🐙 GitHub PR & Review"
-- title: "⚡ Actions 자동 배포"
-- title: "✅ 프로덕션 배포"
-:::
-
-# 도구별 특성 비교
-
-각 도구의 강점과 적합한 용도를 비교합니다.
-
-| 도구 | 비용 | 로컬 저장 | AI 통합 | 협업 | 주요 용도 |
-| --- | --- | --- | --- | --- | --- |
-| 🔮 Obsidian | 무료 | ✓ 완전 로컬 | △ 플러그인 | ✗ 개인용 | 지식 관리 / 메모 |
-| 📝 Notion | 무료 ~ | ✗ 클라우드 | ✓ 내장 AI | ✓ 팀 협업 | 프로젝트 / 문서 |
-| 🐙 GitHub | 무료 ~ | ✗ 클라우드 | ✓ Copilot | ✓ 개발팀 | 코드 버전 관리 |
-| 💻 VS Code | 무료 | ✓ 로컬 | ✓ Copilot+ | △ Live Share | 코드 편집기 |
-| 📒 NotebookLM | 무료 | ✗ 클라우드 | ✓ 핵심 기능 | △ 공유 | 문서 분석 / 리서치 |
-| 🤖 Claude Code | Pro/API | ✓ 로컬 실행 | ✓ 핵심 기능 | ✗ 개인용 | AI 코딩 어시스턴트 |
-
-# 생산성 극대화 팁
-
-도구들을 연결하여 최대 시너지를 내는 방법입니다.
-
-⚡ 옵시디언 → Claude Code 연결
-
-옵시디언에서 작성한 기술 스펙이나 아이디어 메모를 Claude Code에 입력하면 즉시 코드로 변환됩니다. 마크다운 형식이 Claude와 완벽히 호환됩니다.
-
-📒 NotebookLM으로 기술 문서 소화하기
-
-새 라이브러리나 프레임워크의 공식 문서를 NotebookLM에 업로드하면 AI 튜터가 됩니다. "이 라이브러리로 파일 업로드 기능 어떻게 구현해?"처럼 자연어로 질문하세요.
-
-🔄 GitHub Issues → Notion 동기화
-
-GitHub Issues를 Notion 커넥터로 연결하면 버그 리포트와 기능 요청이 자동으로 Notion 데이터베이스에 동기화됩니다. 한 곳에서 전체 프로젝트 상태를 파악하세요.
-
-🤖 AI 도구 분업 전략
-
-GitHub Copilot = 타이핑 속도 (인라인 코드 완성) / Claude Code = 사고 속도 (복잡한 문제 해결) / ChatGPT/Gemini = 빠른 검색 대체 / NotebookLM = 내부 문서 기반 Q&A. 각자의 역할에 맞게 사용하세요.
-
-## ⚡ 중력을 거슬러, AI와 함께 비상하세요
-
-올바른 도구의 조합이 생산성의 한계를 바꿉니다.
-
-⚡ 도구 탐색 시작하기

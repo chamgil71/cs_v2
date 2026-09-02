@@ -1,9 +1,10 @@
 # Creative Spark V2 숏코드 레퍼런스
 
-> **Phase 2 정리 기준 (2026-06-24)**: 25종 정식 명칭 + 13종 하위 호환 alias  
+> **Phase 2 정리 기준 (2026-06-24)**: 25종 정식 명칭 + 13종 하위 호환 alias
+> **2026-09-01 추가**: 데이터 다이어그램 3종(venn-diagram, quadrant-chart, concentric-rings) + alias 1종(venn) → 28종 정식 + 14종 alias
 > 변경 이력 상세: [shortcode-changelog.md](./shortcode-changelog.md)
 
-Creative Spark V2가 지원하는 **25종 정식 숏코드 + 13종 alias**의 문법, 사용 필드, 사용처, V1 호환 별칭을 정리한 참조 문서입니다.
+Creative Spark V2가 지원하는 **28종 정식 숏코드 + 14종 alias**의 문법, 사용 필드, 사용처, V1 호환 별칭을 정리한 참조 문서입니다.
 
 ---
 
@@ -48,10 +49,10 @@ Creative Spark V2가 지원하는 **25종 정식 숏코드 + 13종 alias**의 �
 
 | 구분 | 수량 | 설명 |
 |------|------|------|
-| 정식 숏코드 | **25종** | 문서화·권장 사용 대상 |
-| 하위 호환 alias | **13종** | 구형 또는 통합 전 명칭 — 기존 문서 호환용, 신규 작성 비권장 |
-| 내부 특수 토큰 | **2종** | `arrow` (step-flow 내부 항목), `slide-config` (슬라이드 설정 전용) |
-| **총 지원** | **40종** | 빌드 파이프라인이 처리하는 전체 유형 수 |
+| 정식 숏코드 | **28종** | 문서화·권장 사용 대상 |
+| 하위 호환 alias | **14종** | 구형 또는 통합 전 명칭 — 기존 문서 호환용, 신규 작성 비권장 |
+| 내부 특수 토큰 | **2종** | `arrow` (step-flow 내부 항목), `slide-config` (슬라이드 설정 전용 — `bg`/`color`/`titleSize`/`bodySize`/**`notes`**(발표스크립트, PPTX `slide.addNotes()`로만 반영, 2026-09 추가)) |
+| **총 지원** | **42종** | 빌드 파이프라인이 처리하는 전체 유형 수 |
 
 ### icon-grid align 옵션
 
@@ -262,7 +263,7 @@ Creative Spark V2가 지원하는 **25종 정식 숏코드 + 13종 alias**의 �
 :::
 ```
 
-**PPTX 지원**: ⚠️ 전용 렌더러 없음 (슬라이드 변환 시 제외)
+**PPTX 지원**: ✅
 
 ---
 
@@ -384,7 +385,7 @@ Windows cmd 스타일의 커맨드 실행 표현.
 :::
 ```
 
-**PPTX 지원**: ⚠️ 전용 렌더러 없음
+**PPTX 지원**: ✅
 
 ---
 
@@ -409,7 +410,7 @@ Git 브랜치 전략, 브랜치 흐름을 시각화.
 :::
 ```
 
-**PPTX 지원**: ⚠️ 전용 렌더러 없음
+**PPTX 지원**: ✅
 
 ---
 
@@ -463,7 +464,7 @@ Git 브랜치 전략, 브랜치 흐름을 시각화.
 :::
 ```
 
-**PPTX 지원**: ⚠️ 전용 렌더러 없음
+**PPTX 지원**: ✅
 
 ---
 
@@ -601,7 +602,7 @@ Git 브랜치 전략, 브랜치 흐름을 시각화.
 - title: "숏코드와 일반 마크다운을 혼용할 수 있나요?"
   desc: "네, 문서 내 어디서나 자유롭게 혼용 가능합니다. 숏코드 블록 밖의 마크다운은 표준 방식으로 렌더링됩니다."
 - title: "PPTX로 변환이 안 되는 숏코드가 있나요?"
-  desc: "일부 복잡한 시각화 숏코드(compare-diff, network-box, git-flow, step-flow)는 현재 PPTX 렌더러가 없어 변환 시 해당 슬라이드가 제외됩니다."
+  desc: "25종 정식 숏코드 + 13종 alias 전체가 PPTX 렌더러를 갖추고 있어 변환 시 슬라이드가 누락되지 않습니다."
 :::
 ```
 
@@ -670,7 +671,7 @@ Part 하위의 챕터 번호·제목·설명·구분 배지 목록화.
 :::
 ```
 
-**PPTX 지원**: ⚠️ 전용 렌더러 없음
+**PPTX 지원**: ✅
 
 ---
 
@@ -694,7 +695,79 @@ Part 하위의 챕터 번호·제목·설명·구분 배지 목록화.
 :::
 ```
 
-**PPTX 지원**: ⚠️ 전용 렌더러 없음
+**PPTX 지원**: ✅
+
+---
+
+## 7. 데이터 다이어그램 (Data Diagrams) — 2026-09 추가
+
+`slide-pipeline` 스킬(`C:\coding\_templates\myskill\slide-pipeline`)의 데이터템플릿 카탈로그에서 이식한 기하학적 다이어그램 3종. 카드/그리드 계열인 1~6 카테고리와 달리 "관계·위치·포함"을 도형으로 표현한다.
+
+### [30] venn-diagram — 벤 다이어그램
+
+두 영역이 겹칠 때 새로운 가치/의미가 발생함을 표현. **alias**: `venn`
+
+**지원 필드**: 항목 3개 고정 순서 — `[0]` 왼쪽 원(`title`, `color`), `[1]` 오른쪽 원(`title`, `color`), `[2]`(선택) 교집합 캡션(`icon`, `desc`)
+
+```markdown
+::: venn-diagram
+- title: "전공 A"
+  color: "#6366F1"
+- title: "전공 B"
+  color: "#EC4899"
+- icon: "⭐"
+  desc: "새로운 가치"
+:::
+```
+
+**PPTX 지원**: ✅
+
+---
+
+### [31] quadrant-chart — 사분면 위치 차트
+
+두 축(X/Y) 기준으로 여러 항목의 상대 위치를 비교. 축 라벨은 블록 인수로 지정.
+
+**지원 필드**: 블록 인수 `xLabel="..."` `yLabel="..."` (공백 포함 시 큰따옴표 필수) · 항목 `title`(포인트 라벨), `color`, `fx`/`fy`(0~1 비율, 좌하단이 0,0)
+
+```markdown
+::: quadrant-chart xLabel="가격" yLabel="품질"
+- title: "제품 A"
+  fx: "0.3"
+  fy: "0.7"
+  color: "#6366F1"
+- title: "제품 B"
+  fx: "0.8"
+  fy: "0.2"
+  color: "#EC4899"
+:::
+```
+
+**PPTX 지원**: ✅
+
+---
+
+### [32] concentric-rings — 동심원 포함관계
+
+A⊃B⊃C 같은 계층적 포함관계. 항목은 바깥(가장 큰 범주)에서 안쪽(가장 구체적인 범주) 순서로 작성.
+
+**지원 필드**: `title`(범주명), `color`, `icon`(마지막 항목에만 — 중심 아이콘)
+
+```markdown
+::: concentric-rings
+- title: "AI"
+  color: "#94A3B8"
+- title: "머신러닝"
+  color: "#64748B"
+- title: "딥러닝"
+  color: "#475569"
+- title: "LLM"
+  icon: "🧠"
+  color: "#1E293B"
+:::
+```
+
+**PPTX 지원**: ✅
 
 ---
 
@@ -717,6 +790,7 @@ Part 하위의 챕터 번호·제목·설명·구분 배지 목록화.
 | `part-deck` | `part-banner` | Phase 1 (V1 호환) |
 | `takeaway` | `takeaway-banner` | Phase 1 (V1 호환) |
 | `tool-box` | `tool-list` | Phase 1 (V1 호환) |
+| `venn` | `venn-diagram` | 2026-09 추가 |
 
 ---
 
@@ -747,11 +821,32 @@ Part 하위의 챕터 번호·제목·설명·구분 배지 목록화.
 | console-box | ✅ | ✅ |
 | cmd-box | ✅ | ✅ |
 | chapter-list | ✅ | ✅ |
-| compare-diff | ✅ | ⚠️ |
-| network-box | ✅ | ⚠️ |
-| git-flow | ✅ | ⚠️ |
-| step-flow | ✅ | ⚠️ |
-| level-grid | ✅ | ⚠️ |
-| checkpoint-grid | ✅ | ⚠️ |
+| compare-diff | ✅ | ✅ |
+| network-box | ✅ | ✅ |
+| git-flow | ✅ | ✅ |
+| step-flow | ✅ | ✅ |
+| level-grid | ✅ | ✅ |
+| checkpoint-grid | ✅ | ✅ |
+| venn-diagram | ✅ | ✅ |
+| quadrant-chart | ✅ | ✅ |
+| concentric-rings | ✅ | ✅ |
 
-⚠️: PPTX 전용 렌더러 없음 — 변환 시 해당 슬라이드 제외됨.
+현재 28종 정식 숏코드 + 14종 alias 전체가 PPTX 렌더러를 갖추고 있다(⚠️ 표시 대상 없음). 새 숏코드를 추가하고 PPTX 렌더러를 아직 안 붙였다면 이 표에 ⚠️로 표시하고 `src/__tests__/shortcode-conformance.test.ts`의 PPTX 레지스트리 커버리지 테스트가 이를 잡아준다.
+
+---
+
+## Mermaid 구조도 지원 (2026-09 추가)
+
+숏코드(`::: type`)가 아니라 표준 마크다운 fenced code block으로 사용한다. 절차·구조를 다이어그램으로 정확히 보여줘야 하고 위 숏코드 카탈로그로 표현이 안 될 때 사용.
+
+````markdown
+```mermaid
+graph TD
+    A[시작] --> B{조건 확인}
+    B -->|참| C[처리 A]
+    B -->|거짓| D[처리 B]
+```
+````
+
+* **가이드 HTML·프레젠테이션 HTML**: `mermaid.js`(jsdelivr CDN)를 `<head>`에서 로드해 브라우저에서 실제 다이어그램(SVG)으로 렌더링. 가이드는 `theme:"default"`(라이트), 프레젠테이션은 `theme:"dark"`로 고정 — 프레젠테이션의 라이트/다크 토글 버튼을 눌러도 다이어그램 자체 테마는 바뀌지 않는다(알려진 제약).
+* **PPTX**: 전용 렌더러가 없다. 기존 코드블록 렌더링 경로를 그대로 타서 **원문 mermaid 문법이 다크 코드박스 안에 텍스트로 표시**된다(다이어그램 이미지로 변환되지 않음). 실제 이미지가 필요하면 `mmdc`(mermaid-cli)로 PNG를 만들어 이미지로 첨부하는 별도 작업이 필요하다.

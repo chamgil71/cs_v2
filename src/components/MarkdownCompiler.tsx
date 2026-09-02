@@ -90,7 +90,7 @@ ${doc.snippet}
   
   // Final Save Options
   const [outputPath, setOutputPath] = useState("");
-  const [saveOption, setSaveOption] = useState<"standalone" | "guideHub">("standalone");
+  const [saveOption, setSaveOption] = useState<"export" | "guideHub">("export");
   const [targetFormats, setTargetFormats] = useState<string[]>(["html", "presentation", "pptx"]);
   const [options] = useState({
     toc: true,
@@ -332,10 +332,12 @@ ${doc.snippet}
 
         if (res.ok) {
           const result = await res.json();
-          setPortalUrl(result.portalIndex);
+          if (result.portalIndex) setPortalUrl(result.portalIndex);
           toast({
             title: "폴더 일괄 변환 완료",
-            description: `${result.message}\n생성된 가이드 포털로 즉시 연결 가능합니다.`,
+            description: result.portalIndex
+              ? `${result.message}\n생성된 가이드 포털로 즉시 연결 가능합니다.`
+              : result.message,
             duration: 6000,
           });
         } else {
@@ -370,11 +372,11 @@ ${doc.snippet}
 
         if (res.ok) {
           const result = await res.json();
-          
-          // HTML format included, set portal link
-          const hasHtml = targetFormats.includes("html");
-          if (hasHtml) {
-            setPortalUrl("/publish/index.html");
+
+          // 서버가 실제로 미리볼 수 있는 링크를 만들었을 때만(가이드 컬렉션 저장 시 public/으로 재빌드된 경우) 노출.
+          // "임시 내보내기"는 저장 위치가 임의라(기본 publish/·storage/) 개발서버가 못 열어주므로 링크를 만들지 않는다.
+          if (result.portalUrl) {
+            setPortalUrl(result.portalUrl);
           }
 
           toast({
@@ -698,15 +700,15 @@ ${doc.snippet}
                       onChange={(e) => setSaveOption(e.target.value as any)}
                       className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-sm text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full"
                     >
-                      <option value="standalone">독립 파일 단독 생성</option>
-                      <option value="guideHub">가이드 허브 목록 추가 및 전체 빌드</option>
+                      <option value="export">임시 내보내기 (컬렉션에 저장 안 함)</option>
+                      <option value="guideHub">가이드 컬렉션에 저장 + 전체 재빌드</option>
                     </select>
                     <input
                       type="text"
                       value={outputPath}
                       onChange={(e) => setOutputPath(e.target.value)}
                       className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-sm text-slate-800 font-mono w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      placeholder="기본값 (storage/)"
+                      placeholder="기본값: html→publish/, 프레젠테이션/pptx→storage/"
                     />
                   </div>
                 </>

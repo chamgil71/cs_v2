@@ -33,6 +33,9 @@ Playwright는 코드를 통해 크롬, 엣지, 파이어폭스 등 웹 브라우
 - icon: "🥷"
   title: "브라우저 컨텍스트"
   desc: "브라우저를 아예 새로 띄우지 않고 가벼운 '시크릿 탭' 형태로 여러 개를 동시에 열어 수집 속도를 극대화합니다."
+- icon: "🤖"
+  title: "Playwright MCP — AI 에이전트 연동"
+  desc: "공식 MCP 서버가 접근성 트리 기반으로 browser_click·browser_snapshot 등 도구를 노출. Claude Code·Cursor 등 에이전트가 스크린샷 없이도 정밀하게 브라우저를 제어·테스트 생성·자가 치유(self-heal)합니다."
 :::
 
 ### 이런 상황에서 압도적인 위력을 냅니다

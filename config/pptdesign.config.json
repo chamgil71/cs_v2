@@ -109,6 +109,25 @@
     "nodeFontSize": 13          // 노드 라벨 폰트
   },
 
+  // venn-diagram: 벤 다이어그램
+  "venn": {
+    "labelFontSize":      13,   // 원 안 하단 라벨 폰트
+    "centerIconFontSize": 20,   // 교집합 아이콘 폰트
+    "centerDescFontSize": 10.5  // 교집합 캡션 폰트
+  },
+
+  // quadrant-chart: 사분면 위치 차트
+  "quadrant": {
+    "axisLabelFontSize": 10,    // X/Y 축 라벨 폰트
+    "pointLabelFontSize": 9.5   // 포인트 라벨 폰트
+  },
+
+  // concentric-rings: 동심원 포함관계
+  "rings": {
+    "centerIconFontSize": 18,   // 가장 안쪽 중심 아이콘 폰트
+    "legendFontSize":     10    // 하단 범례 라벨 폰트
+  },
+
   // alert-box: 알림 박스
   "alert": {
     "iconFontSize": 14          // 알림 아이콘 폰트

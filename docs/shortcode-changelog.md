@@ -5,6 +5,37 @@
 
 ---
 
+## Phase 6 — 데이터 다이어그램 3종 이식 · 발표스크립트(notes) · Mermaid 지원 (2026-09-01)
+
+### 배경
+사용자가 별도로 만든 `slide-pipeline` 스킬(`C:\coding\_templates\myskill\slide-pipeline`)을 검토한 결과, 그 스킬의 pptx-lib(22패턴)에는 cs_v2 숏코드 카탈로그에 없는 "관계·위치·포함" 계열 기하학적 다이어그램이 다수 있었고, 발표스크립트(speaker notes)·Mermaid 구조도 지원도 없었음. 검토 과정에서 `network-box.mjs`의 PPTX 연결선 렌더링에 실제 버그(음수 extent → PowerPoint 파일 손상 위험)도 함께 발견해 수정.
+
+### 변경 1 — PPTX `addSafeLine()` 버그 수정
+- `slide-pipeline`이 문서화한 "`addShape('line', {w,h})`에 음수 w/h를 그대로 넘기면 PowerPoint가 파일 손상(E_FAIL) 처리하는데 LibreOffice·validate.py로는 못 잡는다"는 패턴이 `network-box.mjs`의 4방향 연결선 중 좌측 두 개에 실제로 존재함을 확인(offset이 음수인 경우 `w`/`h`가 음수로 계산되어 그대로 전달됨).
+- `scripts/pptx-renderers/registry.mjs`의 공용 `helpers`에 `addSafeLine(slide, opts)` 추가(음수면 x/y 보정 + `flipH`/`flipV`로 정규화). `network-box.mjs`가 이를 사용하도록 교체. XML 검증(음수 extent 없음, well-formed)으로 확인.
+- 겸사겸사 발견한 문서 드리프트도 정정: `docs/shortcode-reference.md`·`CLAUDE.md`가 network-box·git-flow·step-flow·level-grid·checkpoint-grid·compare-diff를 "PPTX 렌더러 없음"으로 잘못 표시하고 있었음(실제로는 이미 등록되어 있었음) → 표·예시 텍스트 정정.
+
+### 변경 2 — 데이터 다이어그램 숏코드 3종 신설
+`slide-pipeline`의 22패턴 카탈로그 중 cs_v2에 없던 유형을 선별 이식(hub-spoke는 기존 `network-box`와 개념이 겹쳐 제외):
+- **venn-diagram**(alias `venn`) — 두 영역의 교집합에서 새 가치가 발생함을 표현.
+- **quadrant-chart** — 두 축(X/Y) 기준 여러 항목의 상대 위치 비교. 블록 인수 `xLabel="..."` `yLabel="..."`, 항목 필드 `fx`/`fy`(0~1 비율).
+- **concentric-rings** — A⊃B⊃C 계층적 포함관계. 항목을 바깥→안쪽 순서로 작성.
+- 3종 모두 기존 아키텍처를 그대로 따름: HTML 렌더러는 `shortcode-render.mjs`(+CSS는 `shortcode-styles.mjs`)에 추가, PPTX 렌더러는 `scripts/pptx-renderers/venn.mjs`·`quadrant-chart.mjs`·`concentric-rings.mjs` 신설 후 `registry.mjs`에 등록. 폰트 크기는 `config/pptdesign.config.json`에 `venn`/`quadrant`/`rings` 섹션 추가(기하 구조 좌표는 network-box 선례를 따라 렌더러 코드에 직접 유지 — 이 프로젝트에서 도형 지오메트리는 config화 대상이 아님).
+- `src/__tests__/shortcode-conformance.test.ts`의 `CASES`/`CANONICAL`에 3종 추가 → HTML·PPTX 레지스트리·CSS 커버리지·standalone 컴파일 4개 카테고리 자동 검증(117→129 테스트).
+- `md_src/showcase/showcase.md`에 데모 섹션 추가, `config/shortcode-guide.ts` 삽입 툴바에 3종 등록.
+
+### 변경 3 — 발표스크립트(speaker notes)
+- 기존 `::: slide-config`(bg/color/titleSize/bodySize 지원)에 `notes` 키 추가. `md-to-pptx.mjs`가 섹션의 첫 PPTX 슬라이드에 `slide.addNotes()`로 반영(섹션이 여러 페이지로 자동분할되어도 첫 페이지에만 1회).
+- 다른 필드와 동일하게 값은 한 줄 문자열이며, 여러 줄이 필요하면 프로젝트 기존 관례대로 `\n` 리터럴을 사용(`.replace(/\\n/g, "\n")`로 실제 줄바꿈 변환) — `slide-config`의 미니 파서는 YAML `|` 블록 스칼라를 지원하지 않음(한 줄당 하나의 `key: value`만 인식).
+- HTML(가이드·프레젠테이션)에는 영향 없음 — PPTX 전용 기능.
+
+### 변경 4 — Mermaid 구조도 지원 (HTML만)
+- `guide-core.mjs`·`presentation-core.mjs`가 마크다운 토큰 처리 중 ```` ```mermaid ```` fenced code block을 감지해 `<pre class="mermaid">원문</pre>`로 출력(코드 하이라이팅 대신). `<head>`에 `mermaid.js`(jsdelivr CDN) 로드 + `mermaid.initialize({startOnLoad:true, theme:...})` 추가(가이드=`default`, 프레젠테이션=`dark`).
+- PPTX는 전용 렌더러를 만들지 않음(mmdc 등 외부 바이너리 의존성 추가가 필요해 범위 밖으로 판단) — 기존 코드블록 렌더링 경로를 그대로 타서 원문이 코드박스로 표시됨(다이어그램 이미지로는 변환 안 됨, 콘텐츠 유실은 없음).
+- `docs/shortcode-reference.md`에 "Mermaid 구조도 지원" 절 신설.
+
+---
+
 ## Phase 5 — 렌더링 단일화 · 수치 config 구동 · 정합성 테스트 (2026-06-25)
 
 ### 배경

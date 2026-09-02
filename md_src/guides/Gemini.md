@@ -1,15 +1,15 @@
 ---
 title: "Google Gemini완전 활용 가이드"
 subtitle: "Google 멀티모달 AI"
-badge: "Google DeepMind · 2025"
+badge: "Google DeepMind · Gemini 3 · 2026"
 style: "ai-chat"
 stats:
-  - value: "2M"
-    label: "컨텍스트 토큰 (Ultra)"
-  - value: "4종"
-    label: "모델 라인업"
-  - value: "Google"
-    label: "전체 생태계 통합"
+  - value: "1M+"
+    label: "컨텍스트 토큰 (Pro)"
+  - value: "Gemini 3"
+    label: "최신 세대 모델"
+  - value: "Antigravity"
+    label: "에이전트 IDE 연동"
   - value: "실시간"
     label: "웹 검색 연동"
 ---
@@ -17,13 +17,13 @@ stats:
 # Gemini 모델 라인업
 
 ::: feature-grid cols=3
-- title: "Gemini Ultra"
-  desc: "가장 강력한 멀티모달 추론. 복잡한 과학·수학·코딩 문제에 탁월. 전문가급 성능."
-- title: "Gemini Pro / Pro Vision"
-  desc: "일상 업무와 비즈니스에 최적화. 텍스트·이미지·PDF 분석. Google Workspace 통합."
+- title: "Gemini 3 Pro"
+  desc: "가장 강력한 멀티모달 추론. 비전 퍼즐·과학 지식·코딩 벤치마크에서 2.5 Pro 대비 크게 향상. 제로샷으로 인터랙티브 웹 UI를 생성하는 '생성형 UI' 지원."
   featured: "true"
-- title: "Gemini Flash"
+- title: "Gemini 3 Flash"
   desc: "빠른 속도와 낮은 비용. API 대량 처리, 실시간 응답이 필요한 서비스에 적합."
+- title: "Gemini 3 Deep Think"
+  desc: "복잡한 과학·수학·코딩 문제에 특화된 고비용 추론 모드. AI Studio·Gemini 앱 상위 요금제에서 제공."
 - title: "Gemini Nano"
   desc: "Android 기기에서 인터넷 없이 실행. Pixel 폰, Galaxy AI 탑재. 완전한 프라이버시."
 :::
@@ -38,8 +38,8 @@ stats:
   title: "네이티브 멀티모달"
   desc: "텍스트·이미지·영상·음성·문서를 하나의 대화에서 처리. PDF·PPT 업로드 후 즉시 분석·요약·질의응답."
 - icon: "🎨"
-  title: "Imagen 3 이미지 생성"
-  desc: "Google의 최신 이미지 생성 모델 통합. 고품질 사진, 일러스트, 다이어그램 생성. Gemini Pro에서 직접 사용."
+  title: "Nano Banana Pro 이미지 생성"
+  desc: "Gemini 3 Pro Image(별칭 Nano Banana Pro) 통합. 4096×4096 고해상도, 정확한 다이어그램·인포그래픽 생성에 강점. Gemini 앱에서 직접 사용."
 - icon: "🎙️"
   title: "Deep Research & Gems"
   desc: "복잡한 주제를 심층 분석하는 Deep Research 기능. Gems로 특정 역할의 AI 에이전트를 만들어 재활용."
@@ -137,6 +137,11 @@ stats:
 ::: alert-box tip
 - title: "💡 Workspace AI 활성화:"
   desc: "Google Workspace 계정에서 Gemini for Workspace 구독 시 Docs·Sheets·Slides·Gmail에서 AI 기능 직접 사용. \"@Gemini\"를 입력하면 즉시 호출."
+:::
+
+::: alert-box tip
+- title: "💡 Gemini Notebook(구 NotebookLM) & Antigravity:"
+  desc: "NotebookLM은 2026년 Gemini Notebook으로 리브랜딩되어 Gemini 3.5 기반 리서치·요약에 특화되었고, 코딩 작업은 Gemini 3를 품은 에이전트 IDE Google Antigravity로 이어집니다. 자세한 내용은 각각의 전용 가이드를 참고하세요."
 :::
 
 # 고급 활용 — AI Studio & API

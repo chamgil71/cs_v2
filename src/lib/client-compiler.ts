@@ -81,7 +81,11 @@ export const FALLBACK_STYLES: Record<string, any> = {
 export const BUNDLED_STYLES: Record<string, any> = (() => {
   try {
     const parsed = JSON.parse(String(stylesRaw));
-    return parsed && Object.keys(parsed).length > 0 ? parsed : FALLBACK_STYLES;
+    // "$"로 시작하는 키(예: "$comment")는 JSONC 주석 관용구 — 실제 테마가 아니므로 제외한다.
+    const themesOnly = Object.fromEntries(
+      Object.entries(parsed || {}).filter(([key]) => !key.startsWith("$"))
+    );
+    return Object.keys(themesOnly).length > 0 ? themesOnly : FALLBACK_STYLES;
   } catch { return FALLBACK_STYLES; }
 })();
 

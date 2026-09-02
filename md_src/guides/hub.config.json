@@ -1,0 +1,25 @@
+{
+  "categories": {
+    "order": [
+      "ai-chat", "ai-dev", "webdev", "knowledge",
+      "creative", "security", "finance", "future", "enterprise", "media",
+      "productivity", "uncategorized"
+    ],
+    "meta": {
+      "ai-chat": { "label": "AI 챗봇 & 어시스턴트", "description": "범용 AI 어시스턴트로 생각하고, 쓰고, 검색하기", "color": "#6366f1" },
+      "ai-dev": { "label": "AI 개발 도구", "description": "AI가 코드를 쓰고 완성하는 개발 환경", "color": "#10b981" },
+      "webdev": { "label": "개발 & 배포 플랫폼", "description": "앱을 만들고, 배포하고, 운영하는 클라우드 생태계", "color": "#0ea5e9" },
+      "knowledge": { "label": "노트 & 지식 관리", "description": "정보를 모으고 연결해 두 번째 뇌 만들기", "color": "#f59e0b" },
+      "productivity": { "label": "생산성 유틸리티", "description": "PC 사용을 빠르게 만드는 필수 도구", "color": "#ec4899" },
+      "creative": { "label": "크리에이티브 AI", "description": "이미지 · 영상 · 디자인을 AI로 만들기", "color": "#8b5cf6" },
+      "security": { "label": "보안 & 인프라", "description": "보안, 네트워크, 인프라 운영 가이드", "color": "#06b6d4" },
+      "finance": { "label": "재테크 & 금융", "description": "금융·재테크 도구와 워크플로우", "color": "#D4A017" },
+      "future": { "label": "퓨처 AI", "description": "새로운 AI 실험과 미래형 도구", "color": "#84CC16" },
+      "enterprise": { "label": "엔터프라이즈", "description": "조직 운영과 기업형 도구", "color": "#475569" },
+      "media": { "label": "미디어 & 콘텐츠", "description": "미디어 제작과 콘텐츠 운영 도구", "color": "#E11D48" },
+      "uncategorized": { "label": "미분류", "description": "style frontmatter가 없는 문서", "color": "#64748b" }
+    }
+  },
+  "sidebar": { "defaultOpen": true },
+  "outputs": { "onepage": true, "presentationBundle": false }
+}

@@ -33,6 +33,9 @@ Vercel은 복잡한 서버 인프라 지식 없이도 웹 애플리케이션을 
 - icon: "📈"
   title: "Analytics & Speed"
   desc: "방문자 수 통계와 실제 사용자가 느끼는 웹 성능 점수(Web Vitals)를 실시간 모니터링합니다."
+- icon: "🧠"
+  title: "AI Gateway"
+  desc: "GPT-5.6·Claude·Gemini 3·Grok 4.6 등 수백 개 모델을 하나의 엔드포인트로 라우팅. 예산 제한·사용량 모니터링·자동 폴백을 기본 제공합니다."
 :::
 
 ### 이런 상황에서 빛을 발합니다

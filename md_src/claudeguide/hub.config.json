@@ -1,0 +1,12 @@
+{
+  "categories": {
+    "order": ["custom-blue", "ai-dev", "uncategorized"],
+    "meta": {
+      "custom-blue": { "label": "Claude 공식 가이드", "description": "Claude·Claude Code 활용법", "color": "#2789F5" },
+      "ai-dev": { "label": "프로젝트 요약", "description": "실제 프로젝트에 적용한 요약 문서", "color": "#10b981" },
+      "uncategorized": { "label": "미분류", "description": "style frontmatter가 없는 문서", "color": "#64748b" }
+    }
+  },
+  "sidebar": { "defaultOpen": true },
+  "outputs": { "onepage": true, "presentationBundle": false }
+}

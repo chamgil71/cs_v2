@@ -42,7 +42,7 @@ stats:
     
      response = client.messages.create(
     
-     model="claude-opus-4-5",
+     model="claude-opus-5",
     
      messages=[{"role": "user", "content": summary}]
 :::
@@ -55,7 +55,7 @@ Ctrl+Shift+X (Extensions) 에서 설치할 수 있습니다.
 - icon: "🤖"
   title: "GitHub Copilot"
   tag: "AI 필수"
-  desc: "AI 코드 자동완성. 주석 작성 시 코드를 제안합니다. 학생/교사 무료."
+  desc: "AI 코드 자동완성 + Agent Mode. 주석 작성 시 코드를 제안하고, 자율 모드에서는 여러 파일을 스스로 고치고 빌드 오류까지 재수정합니다. 학생/교사 무료."
 - icon: "🐍"
   title: "Python (ms-python)"
   tag: "언어"
@@ -102,11 +102,15 @@ VS Code 통합 터미널에서 claude 명령으로 복잡한 리팩토링, 전�
 
 #### Continue (확장)
 
-Claude, GPT-4 등 다양한 AI를 VS Code에서 직접 연결. 무료로 사용 가능한 Copilot 대안.
+Claude, GPT-5 등 다양한 AI를 VS Code에서 직접 연결. 무료로 사용 가능한 Copilot 대안.
 
-#### Codeium (확장)
+#### Windsurf Plugin (구 Codeium, 확장)
 
-완전 무료 AI 코드 완성 도구. Copilot 없이도 AI 자동완성 기능을 사용할 수 있습니다.
+과거 이름은 Codeium — 지금은 "Windsurf Plugin(formerly Codeium)"으로 리브랜딩되어 VS Code에서 무료 AI 자동완성으로 계속 쓸 수 있지만, 개발사가 유지보수 모드로 전환해 신규 기능은 거의 추가되지 않습니다. 에디터 형태로 쓰고 싶다면 별도 설치가 필요한데, 그 독립 에디터도 2026.06 Cognition의 인수·리브랜딩으로 이름이 Windsurf에서 **Devin Desktop**으로 바뀌었으니 "Windsurf"로 검색하면 옛 이름이라 헷갈릴 수 있습니다.
+
+#### Agentic Browser Tools (내장)
+
+에이전트가 VS Code 안에서 직접 브라우저를 열어 페이지를 탐색·스크린샷하며 프론트엔드 변경을 검증하는 기능이 정식 지원(GA)됩니다.
 
 # 필수 단축키
 

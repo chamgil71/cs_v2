@@ -1,7 +1,7 @@
 ---
 title: "Manus완전 활용 가이드"
 subtitle: "자율 작업 AI 에이전트"
-badge: "Monica.im · AI Agent · 2025"
+badge: "Monica.im · AI Agent · 2026"
 style: "ai-chat"
 stats:
   - value: "자율"
@@ -62,7 +62,15 @@ stats:
   desc: "Excel, Word, PDF, PPT, CSV를 실제로 생성하여 다운로드 제공. 단순 텍스트 답변이 아닌 완성된 파일."
 - icon: "🔄"
   title: "병렬 멀티태스킹"
-  desc: "여러 작업을 동시에 병렬 처리. \"3개 경쟁사 동시에 조사해줘\" → 동시 실행으로 시간 단축."
+  desc: "유료 플랜 기준 최대 20개 작업 동시 실행 + 20개 예약 작업. Wide Research로 대량 배치 작업을 여러 서브 에이전트에 분산."
+- icon: "🎬"
+  title: "텍스트 → 영상 생성"
+  desc: "텍스트 프롬프트만으로 장면 구성·비주얼 디자인·애니메이션까지 자동화한 완성된 스토리 영상을 생성 (Basic 이상)."
+:::
+
+::: alert-box tip
+- title: "💡 커넥터 확장:"
+  desc: "Gmail·Google Calendar·Google Drive·Notion·GitHub 커넥터와 브라우저 오퍼레이터가 추가되어, 리서치 결과를 곧바로 실제 업무 도구에 반영할 수 있습니다."
 :::
 
 # 실전 활용 사례

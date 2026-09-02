@@ -33,6 +33,9 @@ Supabase는 데이터베이스 연동, 사용자 인증(회원가입/로그인),
 - icon: "📂"
   title: "Storage"
   desc: "프로필 이미지나 문서를 저장하고 최적화하여 서빙하는 S3 호환 클라우드 스토리지를 제공합니다."
+- icon: "🤖"
+  title: "AI 에이전트 연동"
+  desc: "공식 Claude 커넥터로 제공되며, 원격 MCP 서버(OAuth2)로 ChatGPT 등 다른 MCP 클라이언트에서도 연결해 쓸 수 있습니다. Supabase Evals로 Claude Code·Codex 같은 코딩 에이전트의 DB 작업 정확도를 벤치마킹할 수 있습니다."
 :::
 
 ### 이런 프레임워크와 찰떡궁합입니다

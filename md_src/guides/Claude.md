@@ -1,43 +1,51 @@
 ---
 title: "Claude완전 활용 가이드"
 subtitle: "Anthropic의 추론 강화형 AI"
-badge: "Anthropic · 2025"
+badge: "Anthropic · 2026"
 style: "ai-chat"
 stats:
-  - value: "3종"
-    label: "모델 라인업"
-  - value: "200K"
-    label: "컨텍스트 토큰"
+  - value: "4종"
+    label: "모델 라인업 (Fable·Opus·Sonnet·Haiku)"
+  - value: "1M"
+    label: "최대 컨텍스트 토큰"
   - value: "무제한"
     label: "프로젝트 생성"
-  - value: "50+"
-    label: "연결 가능 서비스"
+  - value: "20,000+"
+    label: "MCP 서버 레지스트리"
 ---
 
 # 모델 선택 가이드
 
 ::: icon-grid
 - title: |
-    Claude Opus
-     최고 성능
-     복잡한 분석, 장문 보고서, 다단계 추론에 최적. 가장 강력하지만 응답 속도가 느림.
+    Claude Fable 5
+     최상위 티어
+     Opus보다 한 단계 위의 최고급 지능. 가장 복잡한 리서치·전략 과제에 사용하며 비용도 가장 높음(1M 컨텍스트).
+     
+     🧠 최고난도 추론
+     📄 전략 리포트
+     🔬 심층 연구
+- title: |
+    Claude Opus 5
+     복합 에이전틱 코딩
+     대규모 리팩토링·다단계 에이전트 작업에 최적. 1M 컨텍스트 지원, Sonnet보다 강력하지만 비용↑.
      
      🧠 복잡한 분석
-     📄 장문 작성
+     🤖 장기 에이전트 작업
      🔬 연구
 - title: |
-    Claude Sonnet ⭐ 추천
+    Claude Sonnet 5 ⭐ 추천
      균형 잡힌 선택
-     성능과 속도의 황금비율. 일상 업무, 코딩, 문서 작성에 가장 적합. 대부분의 상황에서 최선.
+     성능과 속도의 황금비율. 일상 업무, 코딩, 문서 작성에 가장 적합. 대부분의 상황에서 최선. 1M 컨텍스트.
      
      💼 업무 자동화
      💻 코딩
      ✍️ 문서 작성
   featured: "true"
 - title: |
-    Claude Haiku
+    Claude Haiku 4.5
      빠른 응답
-     단순 요약, 분류, 빠른 Q&A에 최적화. API 활용 및 대량 처리에 비용 효율적.
+     단순 요약, 분류, 빠른 Q&A에 최적화. API 활용 및 대량 처리에 비용 효율적. 200K 컨텍스트.
      
      ⚡ 빠른 응답
      📊 분류/요약
@@ -88,7 +96,7 @@ stats:
 
 # Claude 스킬 (Skills) 활용
 
-스킬은 Claude에게 특정 작업 방식을 학습시키는 지시 문서입니다. SKILL.md 파일로 관리하며, 프로젝트에 업로드하면 자동으로 적용됩니다.
+스킬은 Claude에게 특정 작업 방식을 학습시키는 지시 문서입니다. SKILL.md 파일로 관리하며, 프로젝트에 업로드하면 자동으로 적용됩니다. Cowork Marketplace(2026.02 출시)를 통해 다른 조직이 만든 스킬을 검색·설치하는 플러그인 생태계도 함께 성장하고 있습니다.
 
 ::: icon-grid
 - icon: "📝"
@@ -179,7 +187,12 @@ stats:
 
 ::: alert-box tip
 - title: "💡 MCP 서버 활용:"
-  desc: "Model Context Protocol로 외부 서비스와 직접 연결. Claude Code에서 claude mcp add 명령으로 추가하면 Claude가 직접 서비스를 제어할 수 있습니다."
+  desc: "Model Context Protocol로 외부 서비스와 직접 연결. Claude Code에서 claude mcp add 명령으로 추가하면 Claude가 직접 서비스를 제어할 수 있습니다. 공식 MCP 레지스트리에는 2026년 기준 2만 개에 가까운 서버가 등록되어 있습니다."
+:::
+
+::: alert-box tip
+- title: "💡 Claude Cowork:"
+  desc: "2026년 정식 출시된 Claude Cowork는 Claude Code와 같은 엔진을 공유하는 팀 협업 워크스페이스로, Claude Code용 MCP 서버와 Skill을 대부분 그대로 재사용할 수 있습니다."
 :::
 
 📡

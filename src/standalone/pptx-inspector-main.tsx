@@ -6,10 +6,11 @@ import PptxInspectorSuite from '../components/PptxInspectorSuite';
 import ErrorBoundary from '../components/ErrorBoundary';
 
 /**
- * 모듈 1 단독 패키지 — PPTX 디자인 인스펙터 & 리매퍼
+ * 모듈 3 단독 패키지 — PPTX 디자인 인스펙터 & 리매퍼
  * 외부 서버 API 없이 브라우저 내에서 100% 서버리스로 완결 동작한다.
+ * 1·2번 모듈과 독립된 별개 워크플로 — 기존 PPTX 파일을 분석/리매핑할 때만 사용.
  */
-function Module1App() {
+function PptxInspectorApp() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col">
       <header className="bg-slate-900 border-b border-slate-800 text-slate-100 px-6 py-4 flex flex-col md:flex-row items-center justify-between shadow-sm sticky top-0 z-50">
@@ -17,7 +18,7 @@ function Module1App() {
           <Sparkles className="h-5 w-5 text-blue-500 shrink-0" />
           <div>
             <h1 className="text-sm font-bold tracking-tight text-white">Creative Spark V2.0 — PPTX 디자인 인스펙터</h1>
-            <div className="text-xs text-slate-400 font-semibold tracking-wider">모듈 1 · 단독 구동형 (서버리스)</div>
+            <div className="text-xs text-slate-400 font-semibold tracking-wider">모듈 3 · 단독 구동형 (서버리스)</div>
           </div>
           <span className="ml-2 bg-emerald-400/25 text-emerald-200 border border-emerald-400/30 text-xs px-2 py-0.5 rounded-full font-bold">
             Standalone
@@ -51,7 +52,7 @@ const mountApp = () => {
   if (root) {
     ReactDOM.createRoot(root).render(
       <React.StrictMode>
-        <Module1App />
+        <PptxInspectorApp />
       </React.StrictMode>
     );
   }

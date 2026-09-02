@@ -12,8 +12,8 @@ stats:
     label: "웹·앱·모바일"
   - value: "CLI 에이전트"
     label: "Claude Code"
-  - value: "3종 모델"
-    label: "Haiku·Sonnet·Opus"
+  - value: "4종 모델"
+    label: "Haiku·Sonnet·Opus·Fable"
 done:
   title: "🎉 Claude 완전 정복!"
   subtitle: "웹과 터미널을 아우르는 최강의 생산성을 직접 경험해 보세요."
@@ -83,22 +83,26 @@ Claude는 사용자의 기기 환경에 맞춰 완전히 동기화되는 3가지
 
 ---
 
-## 성능별 모델 라인업 (Haiku / Sonnet / Opus)
-Claude는 응답 속도와 비용 및 추론 성능에 맞춰 3종의 지능형 모델을 차등 제공합니다.
+## 성능별 모델 라인업 (Haiku / Sonnet / Opus / Fable)
+Claude는 응답 속도와 비용 및 추론 성능에 맞춰 4종의 지능형 모델을 차등 제공합니다. Sonnet·Opus·Fable은 최대 1M 토큰 컨텍스트를 지원합니다.
 
-::: plan-grid cols=3
-- title: "Claude Haiku"
+::: plan-grid cols=4
+- title: "Claude Haiku 4.5"
   tag: "속도 & 저비용"
   meta: "단순 텍스트 분류|초고속 요약|대량 데이터 전처리|API 대량 호출 최적"
   note: "일상 Q&A 및 번역"
-- title: "Claude Sonnet"
-  tag: "균형 추천 (LTS)"
+- title: "Claude Sonnet 5"
+  tag: "균형 추천"
   meta: "프로그래밍 디버깅|정밀 기획서 작성|고성능 데이터 추출|대부분의 실무 최적"
   note: "가장 권장하는 표준 모델"
   featured: "true"
-- title: "Claude Opus"
-  tag: "초고성능 추론"
-  meta: "수학적/논리 추론|최고 정밀도 분석|장편 교육 도서 기필|응답 속도는 다소 느림"
+- title: "Claude Opus 5"
+  tag: "고성능 에이전틱"
+  meta: "수학적/논리 추론|대규모 리팩토링|장기 에이전트 작업|응답 속도는 다소 느림"
+  note: "복잡한 코딩·연구용"
+- title: "Claude Fable 5"
+  tag: "최상위 티어"
+  meta: "최고난도 추론|전략급 리서치|가장 높은 비용|한정된 고난도 과제에 사용"
   note: "최고 난이도 연구용"
 :::
 
@@ -208,6 +212,11 @@ titleSize: 22
 - icon: "🔄"
   title: "/undo"
   desc: "방금 전 클로드 코드가 내 로컬 코드 파일에 수정을 가해 패치한 내용을 이전 상태로 즉각 되돌립니다."
+:::
+
+::: alert-box tip
+- title: "💡 체크포인트 & Git worktree:"
+  desc: "Claude Code는 변경 전 상태를 자동 스냅샷(체크포인트)으로 남겨 Esc 두 번으로 즉시 되돌릴 수 있고, git worktree로 세션마다 격리된 저장소 사본을 만들어 병렬 작업 시 파일 충돌을 방지합니다. Remote Control로 모바일·웹에서도 세션을 이어갈 수 있습니다."
 :::
 
 ---

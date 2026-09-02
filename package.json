@@ -6,14 +6,21 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:standalone": "vitest run src/__tests__/shortcode-conformance.test.ts && node scripts/build-standalone.mjs",
-    "build:standalone:fast": "node scripts/build-standalone.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "pptx:md": "node scripts/md-to-pptx.mjs",
+
+    "build:standalone": "vitest run src/__tests__/shortcode-conformance.test.ts && node scripts/build-standalone.mjs",
+    "build:standalone:fast": "node scripts/build-standalone.mjs",
+
+    "build:guide": "node scripts/build-guide.mjs",
+    "build:presentation": "node scripts/build-presentation.mjs",
+    "build:pptx": "node scripts/md-to-pptx.mjs",
+    "build:onepage": "node scripts/build-guide-hub.mjs",
+    "build:folder": "node scripts/build-folder.mjs",
+
     "verify:pptx": "node scripts/verify-pptx-roundtrip.mjs"
   },
   "dependencies": {
@@ -55,6 +62,7 @@
     "html2canvas": "^1.4.1",
     "input-otp": "^1.4.2",
     "jspdf": "^4.2.1",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
     "playwright": "^1.59.1",

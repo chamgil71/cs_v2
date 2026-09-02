@@ -81,7 +81,7 @@ Git은 코드 변경 이력을 관리하는 분산 버전 관리 시스템입니
   desc: "코드 푸시, PR 등의 이벤트에 자동으로 빌드·테스트·배포를 실행하는 CI/CD 자동화 도구."
 - title: "GitHub Copilot"
   tag: "AI 코딩"
-  desc: "AI 기반 코드 자동완성 도구. 주석을 작성하면 코드를 제안하고, 전체 함수도 생성합니다."
+  desc: "AI 기반 코드 자동완성 도구. Agent Mode가 여러 파일을 스스로 수정하고, Coding Agent는 이슈를 할당하면 백그라운드에서 PR까지 생성합니다."
 - title: "Packages"
   tag: "패키지 관리"
   desc: "npm, Docker, Maven 등의 패키지를 GitHub 내에서 바로 배포하고 관리합니다."

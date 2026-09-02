@@ -1,0 +1,321 @@
+{
+  "categories": [
+    {
+      "id": "ai-chat",
+      "label": "AI 챗봇 & 어시스턴트",
+      "description": "범용 AI 어시스턴트로 생각하고, 쓰고, 검색하기",
+      "color": "#6366f1",
+      "guides": [
+        {
+          "slug": "chatgpt",
+          "title": "ChatGPT완전 활용 가이드",
+          "subtitle": "OpenAI 대화형 AI 활용 가이드",
+          "file": "chatGPT.html"
+        },
+        {
+          "slug": "claude_guide",
+          "title": "Claude & Claude Code 통합 가이드",
+          "subtitle": "웹/앱부터 CLI 터미널 에이전트까지, Anthropic Claude 서비스 완벽 마스터",
+          "file": "claude_guide.html"
+        },
+        {
+          "slug": "claude",
+          "title": "Claude완전 활용 가이드",
+          "subtitle": "Anthropic의 추론 강화형 AI",
+          "file": "Claude.html"
+        },
+        {
+          "slug": "genspark",
+          "title": "Genspark완전 활용 가이드",
+          "subtitle": "AI 에이전트 검색 엔진",
+          "file": "Genspark.html"
+        },
+        {
+          "slug": "gemini",
+          "title": "Google Gemini완전 활용 가이드",
+          "subtitle": "Google 멀티모달 AI",
+          "file": "Gemini.html"
+        },
+        {
+          "slug": "grok",
+          "title": "Grok완전 활용 가이드",
+          "subtitle": "xAI 실시간 대화형 AI",
+          "file": "Grok.html"
+        },
+        {
+          "slug": "manus",
+          "title": "Manus완전 활용 가이드",
+          "subtitle": "자율 작업 AI 에이전트",
+          "file": "Manus.html"
+        },
+        {
+          "slug": "ollama",
+          "title": "Ollama 완전 활용 가이드",
+          "subtitle": "오픈소스 AI 활용 툴",
+          "file": "Ollama.html"
+        },
+        {
+          "slug": "perplexity",
+          "title": "Perplexity AI완전 활용 가이드",
+          "subtitle": "출처 기반 AI 검색",
+          "file": "perplexity.html"
+        }
+      ]
+    },
+    {
+      "id": "ai-dev",
+      "label": "AI 개발 도구",
+      "description": "AI가 코드를 쓰고 완성하는 개발 환경",
+      "color": "#10b981",
+      "guides": [
+        {
+          "slug": "devtools",
+          "title": "브라우저를 다루는 AI 에이전트",
+          "subtitle": "Chrome DevTools MCP · Claude in Chrome · Playwright MCP 완전 정리",
+          "file": "devtools.html"
+        },
+        {
+          "slug": "vscode",
+          "title": "코딩의 표준,Visual Studio Code",
+          "subtitle": "코드 에디터 완전 정복",
+          "file": "Vscode.html"
+        },
+        {
+          "slug": "claudecode",
+          "title": "클로드 코드설치 가이드",
+          "subtitle": "클로드 코드 설치 가이드",
+          "file": "ClaudeCode.html"
+        },
+        {
+          "slug": "terminal-ai-tools",
+          "title": "터미널 AI 코딩 도구 3종 실무 활용기",
+          "subtitle": "Claude Code · Antigravity 2.0 · Codex 완벽 비교 분석",
+          "file": "terminal-ai-tools.html"
+        },
+        {
+          "slug": "cursor",
+          "title": "Cursor 완전 활용 가이드",
+          "subtitle": "VS Code를 대체할 가장 강력한 AI 네이티브 코드 에디터이자 Vibe Coding의 끝판왕",
+          "file": "Cursor.html"
+        },
+        {
+          "slug": "copilot",
+          "title": "GitHub Copilot 완전 활용 가이드",
+          "subtitle": "AI 짝 코딩 & 자동완성",
+          "file": "Copilot.html"
+        },
+        {
+          "slug": "antigravity",
+          "title": "Google Antigravity완전 활용 가이드",
+          "subtitle": "Gemini 3 기반 에이전트 우선 개발 환경",
+          "file": "Antigravity.html"
+        },
+        {
+          "slug": "n8n",
+          "title": "n8n 완전 활용 가이드",
+          "subtitle": "워크플로우 자동화 도구",
+          "file": "n8n.html"
+        },
+        {
+          "slug": "codex",
+          "title": "OpenAI Codex 완전 활용 가이드",
+          "subtitle": "터미널·IDE에서 동작하는 OpenAI의 에이전틱 코딩 도구",
+          "file": "Codex.html"
+        },
+        {
+          "slug": "playwright",
+          "title": "Playwright 완전 활용 가이드",
+          "subtitle": "Selenium의 단점을 모두 극복한 MS의 차세대 웹 크롤링 및 자동 테스트 프레임워크",
+          "file": "Playwright.html"
+        },
+        {
+          "slug": "windsurf",
+          "title": "Windsurf(Devin Desktop) 완전 활용 가이드",
+          "subtitle": "Cognition이 인수한 AI 네이티브 코드 에디터",
+          "file": "Windsurf.html"
+        }
+      ]
+    },
+    {
+      "id": "webdev",
+      "label": "개발 & 배포 플랫폼",
+      "description": "앱을 만들고, 배포하고, 운영하는 클라우드 생태계",
+      "color": "#0ea5e9",
+      "guides": [
+        {
+          "slug": "github",
+          "title": "코드를 함께 만들고,함께 관리하는 GitHub",
+          "subtitle": "버전 관리와 협업",
+          "file": "Github.html"
+        },
+        {
+          "slug": "cloudflare",
+          "title": "Cloudflare 완전 활용 가이드",
+          "subtitle": "CDN · DNS · 인프라 보안",
+          "file": "Cloudflare.html"
+        },
+        {
+          "slug": "lovable",
+          "title": "Lovable 완전 활용 가이드",
+          "subtitle": "AI 풀스택 앱 빌더",
+          "file": "Lovable.html"
+        },
+        {
+          "slug": "replit",
+          "title": "Replit Agent 완전 활용 가이드",
+          "subtitle": "브라우저에서 바로 배포까지 끝내는 AI 풀스택 빌더",
+          "file": "Replit.html"
+        },
+        {
+          "slug": "resend",
+          "title": "Resend 완전 활용 가이드",
+          "subtitle": "개발자용 이메일 API",
+          "file": "Resend.html"
+        },
+        {
+          "slug": "supabase",
+          "title": "Supabase 완전 활용 가이드",
+          "subtitle": "오픈소스 Firebase 대안 BaaS",
+          "file": "Supabase.html"
+        },
+        {
+          "slug": "v0.dev",
+          "title": "v0.dev 완전 활용 가이드",
+          "subtitle": "AI 프론트엔드 UI 생성기 (2026년 v0.app으로 개편)",
+          "file": "v0.dev.html"
+        },
+        {
+          "slug": "vercel",
+          "title": "Vercel 완전 활용 가이드",
+          "subtitle": "프론트엔드 배포 플랫폼",
+          "file": "Vercel.html"
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "label": "노트 & 지식 관리",
+      "description": "정보를 모으고 연결해 두 번째 뇌 만들기",
+      "color": "#f59e0b",
+      "guides": [
+        {
+          "slug": "notebooklm",
+          "title": "내 문서로 만드는나만의 AI 전문가",
+          "subtitle": "Google AI 노트 도구 (Gemini Notebook)",
+          "file": "NotebookLM.html"
+        },
+        {
+          "slug": "notion",
+          "title": "모든 작업을 한 곳에서,노션으로 정리하세요",
+          "subtitle": "올인원 워크스페이스",
+          "file": "notion.html"
+        },
+        {
+          "slug": "obsidian",
+          "title": "생각을 연결하는두 번째 뇌, 옵시디언",
+          "subtitle": "로컬 마크다운 지식 그래프",
+          "file": "obsidian.html"
+        },
+        {
+          "slug": "notebooklm-importer",
+          "title": "NotebookLM Importer",
+          "subtitle": "Gemini Notebook(구 NotebookLM) 자료 가져오기",
+          "file": "NotebookLM Importer.html"
+        },
+        {
+          "slug": "quartz",
+          "title": "Quartz 완전 활용 가이드",
+          "subtitle": "마크다운 기반 디지털 가든 퍼블리싱",
+          "file": "Quartz.html"
+        }
+      ]
+    },
+    {
+      "id": "creative",
+      "label": "크리에이티브 AI",
+      "description": "이미지 · 영상 · 디자인을 AI로 만들기",
+      "color": "#8b5cf6",
+      "guides": [
+        {
+          "slug": "디자인및시각화",
+          "title": "디자인 & 시각화도구 가이드",
+          "subtitle": "디자인 자동화와 데이터 시각화",
+          "file": "디자인및시각화.html"
+        },
+        {
+          "slug": "영상음악ai",
+          "title": "AI 영상 & 음악생성 완전 가이드",
+          "subtitle": "AI로 멀티미디어 제작",
+          "file": "영상음악AI.html"
+        },
+        {
+          "slug": "이미지생성ai",
+          "title": "AI 이미지 생성완전 가이드",
+          "subtitle": "텍스트로 이미지 만들기",
+          "file": "이미지생성ai.html"
+        },
+        {
+          "slug": "capcut",
+          "title": "CapCut 완전 활용 가이드",
+          "subtitle": "숏폼 영상 편집과 AI 자막 제작",
+          "file": "CapCut.html"
+        }
+      ]
+    },
+    {
+      "id": "productivity",
+      "label": "생산성 유틸리티",
+      "description": "PC 사용을 빠르게 만드는 필수 도구",
+      "color": "#ec4899",
+      "guides": [
+        {
+          "slug": "한국ai서비스",
+          "title": "국산 AI 서비스 총정리",
+          "subtitle": "뤼튼 · 네이버 · SKT · 카카오의 AI 전략",
+          "file": "한국AI서비스.html"
+        },
+        {
+          "slug": "everything",
+          "title": "Everything(에브리띵)",
+          "subtitle": "초고속 파일 검색",
+          "file": "Everything.html"
+        },
+        {
+          "slug": "grabbit",
+          "title": "Grabbit (그랩잇)",
+          "subtitle": "드래그로 링크 대량 수집 & 관리",
+          "file": "Grabbit.html"
+        },
+        {
+          "slug": "grabit",
+          "title": "Grabit",
+          "subtitle": "스크린샷 캡처 · 주석 · AI 검색",
+          "file": "Grabit.html"
+        },
+        {
+          "slug": "snipaste",
+          "title": "Snipaste",
+          "subtitle": "캡처와 화면 부착 도구",
+          "file": "Snipaste.html"
+        }
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "id": "claudeguide",
+      "label": "claudeguide 시리즈",
+      "description": "claudeguide 가이드 컬렉션",
+      "color": "#6366f1",
+      "folder": "claudeguide",
+      "indexFile": "table-of-contents.html"
+    }
+  ],
+  "showcase": {
+    "title": "숏코드 쇼케이스",
+    "subtitle": "현재 지원 숏코드 문법 및 구현 예시",
+    "file": "showcase/showcase.html",
+    "pptxFile": "showcase/showcase.pptx",
+    "mdFile": "showcase/showcase.md"
+  }
+}

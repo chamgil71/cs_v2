@@ -44,6 +44,9 @@ const CASES: Record<string, string> = {
   'console-box':     '- title: "T"\n  desc: "출력"',
   'editor-box':      '- title: "a.js"\n  tag: "javascript"\n  desc: "const x = 1;"',
   'network-box':     '- title: "Core"\n  color: "#EC4899"\n- title: "A"\n  meta: "m"',
+  'venn-diagram':    '- title: "A"\n  color: "#6366F1"\n- title: "B"\n  color: "#EC4899"\n- icon: "⭐"\n  desc: "가치"',
+  'quadrant-chart':  '- title: "P1"\n  fx: "0.3"\n  fy: "0.7"\n  color: "#6366F1"\n- title: "P2"\n  fx: "0.8"\n  fy: "0.2"\n  color: "#EC4899"',
+  'concentric-rings':'- title: "A"\n  color: "#94A3B8"\n- title: "B"\n  icon: "🧠"\n  color: "#1E293B"',
   'summary-box':     '- title: "T"\n  desc: "D"\n  meta: "A|B"',
   'compare-split':   '- title: "Before"\n  meta: "A|B"\n  note: "수동"\n- title: "After"\n  meta: "C|D"\n  note: "자동"',
   'before-after':    '- title: "나쁜"\n  desc: "X"\n- title: "좋은"\n  desc: "Y"',
@@ -64,6 +67,7 @@ const CANONICAL = [
   'step-list','chapter-list','faq-list','tool-list','step-flow','git-flow','alert-box','cmd-box',
   'console-box','editor-box','network-box','summary-box','compare-split','before-after',
   'part-banner','takeaway-banner','summary-bar','os-tabs',
+  'venn-diagram','quadrant-chart','concentric-rings',
 ];
 
 // PPTX 가 별도 렌더러로 처리하지 않고 다른 메커니즘으로 흡수하는 타입(있다면 여기 명시)

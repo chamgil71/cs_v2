@@ -74,8 +74,7 @@ node scripts/md-to-pptx.mjs <입력파일> --out <출력pptx경로>
 ⚠️ 주의: [있을 경우 경고 내용]
 ```
 
-빌드 중 PPTX 전용 렌더러가 없는 숏코드(`before-after`, `network-box`, `git-flow`, `step-flow`, `level-grid`)가 사용된 경우:
-> "PPTX 지원 없는 숏코드 N종이 포함되어 있어 해당 슬라이드는 PPTX에서 제외됩니다."
+2026-09-01 기준 28종 정식 + 14종 alias 전체가 PPTX 렌더러를 갖추고 있어 숏코드로 인한 슬라이드 누락은 없다. 새 숏코드를 추가하고 PPTX 렌더러를 아직 안 붙였다면 `docs/shortcode-reference.md`의 "PPTX 변환 지원 현황" 표에서 ⚠️ 여부를 확인하고 안내한다. (Mermaid는 숏코드가 아니라 별개 — PPTX에서는 원문이 코드박스로 표시되고 다이어그램 이미지로는 변환되지 않는다.)
 
 ### 오류 처리 기준
 

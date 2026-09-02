@@ -88,10 +88,13 @@ cs_v2/
 │   ├── build-guide.mjs            # MD → 가이드 HTML (얇은 CLI 래퍼: 파일읽기+config로드+코어호출)
 │   ├── build-presentation.mjs     # MD → 횡슬라이드 HTML (얇은 CLI 래퍼: 파일읽기+config로드+코어호출)
 │   ├── md-to-pptx.mjs             # MD → PPTX 변환 CLI (Universal Schema 기반)
-│   ├── build-publish.mjs          # 배포용 빌드
+│   ├── build-publish.mjs          # md_src 전체 폴더를 public/에 일괄 빌드하는 독립 유틸(더 이상 GUI에서 호출되지 않음 — 2026-09-02부터 웹 GUI의 "가이드 컬렉션에 저장" 옵션은 build-folder.mjs를 씀. 수동 실행은 여전히 가능)
 │   ├── build-standalone.mjs       # 스탠드얼론 빌드 (npm run build:standalone)
+│   ├── build-guide-hub.mjs        # md_src/<dir> 전체를 사이드바+Shadow DOM onepage 단일 HTML로 병합 (npm run build:onepage)
+│   ├── build-folder.mjs           # 폴더 하나를 선택해 개별 3종(html/presentation/pptx)+폴더 index.html+onepage+통합덱까지 한 번에 오케스트레이션 (기존 스크립트들을 순차 호출, npm run build:folder)
+│   ├── hub-config.mjs             # md_src/<dir>/hub.config.json 로더 — 카테고리 라벨·순서·사이드바 기본 상태·기본 산출물 옵션의 단일 출처
 │   ├── spec-parser.js             # 숏코드 사양 파서 (레퍼런스 동기화용)
-│   ├── sync-guides-index.mjs      # md_src 가이드 인덱스 동기화
+│   ├── sync-guides-index.mjs      # md_src 가이드 인덱스 동기화 (src/data/guides.json 생성)
 │   ├── vite-api-plugin.ts         # Vite dev 서버 API 미들웨어 (스타일 저장·미리보기)
 │   └── pptx-renderers/            # PPTX 숏코드별 렌더러 모듈
 │       ├── registry.mjs           # 렌더러 등록 테이블 + 공통 helpers 정의
@@ -154,13 +157,24 @@ node scripts/md-to-pptx.mjs md_src/<폴더>/<파일>.md --out dist/<폴더>/<파
 # 폴더 전체 일괄 변환 (glob)
 node scripts/md-to-pptx.mjs --all "md_src/guides/*.md"
 
+# 폴더 전체 → 횡형 통합 슬라이드 덱 1개 HTML (각 md 표지가 챕터 구분점)
+npm run build:presentation -- "md_src/guides/*.md" --out publish/guides_slides.html
+
+# 폴더 전체 → 종형 통합 허브 1개 onepage HTML (좌측 사이드바 + 카드형 홈, --dir 로 다른 md_src 하위 폴더도 지정 가능)
+npm run build:onepage -- --dir guides   # 기본 출력: publish/guides-onepage.html (폴더명이 바뀌어도 "-onepage" 표시는 항상 붙음)
+
+# 폴더 전체를 한 번에: 개별 3종(html/presentation/pptx) + 폴더 index.html + (설정에 따라) onepage/통합덱까지
+npm run build:folder -- --dir guides             # 기본 세트(개별 3종 + 폴더 index.html) + hub.config.json 기본 옵션
+npm run build:folder -- --dir guides --all       # 전부 다 생성
+npm run build:folder -- --dir guides --guide --presentation --pptx --onepage   # 원하는 것만 선택
+
 # React UI 개발 서버 (Vite API 미들웨어 포함)
 npm run dev
 
 # Vite 프로덕션 빌드
 npm run build
 
-# 스탠드얼론 빌드
+# 웹앱(모듈 1/2/3) standalone 빌드 — 위 콘텐츠 파이프라인의 onepage와는 다른 산출물(React 앱 자체를 번들링, dist/*.html)
 npm run build:standalone
 
 # 테스트 실행
@@ -168,8 +182,21 @@ npm test             # vitest run (192개 — 정합성 117개 포함)
 npm run test:watch   # watch 모드
 
 # PPTX CLI 단축키
-npm run pptx:md -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
+npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 ```
+
+### npm 스크립트 명명 규칙
+
+`build:` 접두사 뒤에 **무엇을 만드는지**를 붙인다(무슨 스크립트 파일을 부르는지가 아니라):
+
+| 스크립트 | 실행 파일 | 만드는 것 |
+| --- | --- | --- |
+| `npm run build:guide` | `build-guide.mjs` | 개별 종형 가이드 html |
+| `npm run build:presentation` | `build-presentation.mjs` | 개별/통합 횡형 프레젠테이션 html |
+| `npm run build:pptx` | `md-to-pptx.mjs` | PPTX |
+| `npm run build:onepage` | `build-guide-hub.mjs` | 폴더 전체를 합친 self-contained 단일 콘텐츠 파일 |
+| `npm run build:folder` | `build-folder.mjs` | 위 4가지를 폴더 단위로 한 번에(오케스트레이터) |
+| `npm run build:standalone` | `build-standalone.mjs` | React 웹앱(모듈 1/2/3) 자체를 번들링한 self-contained 앱 파일 — **콘텐츠가 아니라 도구를 담은 산출물**이라 이름은 비슷해도 위 5개와는 완전히 다른 파이프라인 |
 
 ---
 
@@ -242,9 +269,9 @@ npm run pptx:md -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 | step-list, faq-list, os-tabs, chapter-list | ✅ | ✅ |
 | alert-box, summary-box, takeaway-banner, part-banner, summary-bar | ✅ | ✅ |
 | editor-box, console-box, cmd-box | ✅ | ✅ |
-| before-after, network-box, git-flow, step-flow, level-grid | ✅ | ⚠️ 렌더러 없음 |
+| before-after, network-box, git-flow, step-flow, level-grid | ✅ | ✅ |
 
-⚠️ PPTX 전용 렌더러 없음 — 변환 시 해당 슬라이드 제외됨.
+25종 정식 + 13종 alias 전체가 PPTX 렌더러를 갖추고 있다(2026-09-01 기준, 이전엔 이 표가 stale했음 — `src/__tests__/shortcode-conformance.test.ts`의 PPTX 레지스트리 커버리지 테스트로 드리프트 방지).
 
 ---
 
@@ -420,6 +447,10 @@ npm run test:watch
 | 프레젠테이션 숏코드가 가이드와 완전히 다르게 렌더 (2026-06-26) | presentation-core 가 가이드와 **별도 렌더러+CSS** 보유(안정화 임시방편) → 규칙 1(숏코드 CSS 단일 출처) 위반. badge-grid·faq-list·console-box·compare-split CSS 누락(unstyled), os-tabs·before-after 렌더러 자체 부재. 숏코드 1개 여백 바꾸려면 2파일 수정 필요했음 | presentation-core 를 공유 `shortcode-render.mjs`+`SHORTCODE_CSS` 로 **교체**(append 아님). `:root`에 다크/라이트 테마 변수 완비(`--text-2/3`,`--shadow(-lg)` 등) + os-tabs `switchTab` 추가 + 라이트모드 표 글자색 보정. 헤드리스 다크/라이트 검증. → 숏코드 스타일 단일 출처(`shortcode-styles.mjs` 1곳) |
 | 프레젠테이션 전부 파란 표지 (2026-06-26) | showcase.md 등 모든 가이드가 섹션 제목에 `#`(h1) 사용 → 코어가 h1→표지(파란 중앙정렬)로 분기 → 거의 전부 표지·중앙정렬·제목짤림 | (정책) 섹션 제목은 `##`(h2=내용 슬라이드), `#`/frontmatter 만 표지. showcase.md 의 섹션 37개를 `#`→`##` 변환(코드펜스 내 `#` 제외) |
 | standalone 미리보기(html·presentation) 및 dev 서버 실행 시 Module "buffer" externalized 에러로 module2 미리보기 공백 (2026-06-29) | buffer 패키지가 node_modules에 미설치되었고, Vite/Rolldown이 빌드 시 built-in name인 "buffer"를 강제로 externalize하여 브라우저 runtime에서 모듈 로드 실패 | 1. `npm install` 실행으로 buffer 패키지 설치<br>2. `vite.config.ts` 및 `vite.config.standalone.ts`에 resolve alias (`"buffer": path.resolve(__dirname, "./node_modules/buffer/index.js")`) 추가하여 브라우저용 buffer polyfill을 온전히 인라인 번들링하도록 고정 |
+| 여러 md를 병합한 횡형 프레젠테이션에서 목차(TOC) 항목 글자가 거의 안 보임 (2026-09-01) | `.toc-cover .toc-title`이 전역 `:root --brand-light`(첫 문서 기준으로 고정) 색을 사용 → 여러 문서를 병합하면 모든 문서의 표지 항목이 그 하나의 옅은 파스텔색을 공유. 라이트모드 목차 배경(거의 흰색)과 겹치면 대비가 거의 0에 가까워짐 | `presentation-core.mjs`에서 표지형 목차 항목마다 자신의 `brandDark`를 인라인 CSS 변수(`--cover-color`)로 주입, `.toc-cover .toc-title`이 `var(--cover-color, var(--brand-light, var(--brand)))`를 사용하도록 수정 → 문서별로 뚜렷하고 라이트/다크 모두에서 읽히는 색상 확보. `npm run build:standalone`으로 client-compiler 번들 갱신 |
+| VisualAdjuster/SubUtilities 테마 목록에 `"$comment"`가 가짜 테마로 표시됨 (2026-09-01) | `config/styles.json`의 JSONC 주석 관용구 `"$comment"` 키를, `/api/list-styles`(vite-api-plugin.ts)와 브라우저 standalone 폴백 `BUNDLED_STYLES`(client-compiler.ts)가 필터 없이 그대로 `Object.entries()`로 순회 → 두 컴포넌트 모두 이를 실제 테마 카드로 렌더 | 두 ingestion 지점에서 `$`-접두 키를 응답/번들 전에 제외(단일 지점 수정으로 모든 소비처 자동 해소). `/api/save-styles`는 클라이언트가 `$comment`를 더 이상 보내지 않으므로, 저장 시 기존 파일의 `$`-키를 읽어 병합해 보존 |
+| `VisualAdjuster.tsx`(657L)·`SubUtilities.tsx`(1065L)가 200라인 제한(development_style.md) 위반 (2026-09-01) | God Component — 각각 3개의 독립 패널/섹션을 단일 파일에 상태+렌더링 함께 보유 | VisualAdjuster: 상태·핸들러를 `useThemeEditor`/`useThemeMutations` 훅으로, 3패널을 `visual-adjuster/*` 서브컴포넌트로 분리 → 컴포넌트는 48라인 조합 셸로 축소. SubUtilities: 섹션별 상태가 완전 독립임을 확인 후 `sub-utilities/*` 3개 자기완결 컴포넌트(+PPTX XML 스캔/치환 로직은 `lib/pptx-color-remap.ts`로 분리)로 나눔 → 컴포넌트는 13라인 조합 셸로 축소. 전 파일 200라인 이하 확인, 204/204 테스트 통과, standalone 4종 빌드+헤드리스 검증 완료 |
+| `build-guide-hub.mjs` 홈 화면이 사이드바에 비해 초라함(히어로·검색·필터 없음) (2026-09-02) | 이 오프라인 허브는 원본 `c:\ai\creative-spark`의 React 홈페이지(`src/pages/Index.tsx`, 히어로+검색+카테고리 pill+카드형 그리드, shadcn/ui 기반 — 실제로 `aitoolguide-ms.netlify.app`에 배포되어 있던 화면)를 이식하지 않고 처음부터 새로 만든 vanilla-JS SPA라, 사이드바만 갖추고 홈 화면은 원본보다 훨씬 단순한 채로 남아 있었음 | `build-guide-hub.mjs`의 `showHome()`을 히어로(배지+그라디언트 타이틀+실시간 검색+CTA)·카테고리 pill(카운트 포함)·카드 그리드(상단 강조 바+hover 화살표)+홈 푸터로 재작성해 원본 디자인을 vanilla JS로 재현. 겸사겸사 `sync-guides-index.mjs`와 중복돼 있던 `STYLE_META`/`CATEGORY_ORDER`를 `scripts/guide-categories.mjs` 단일 출처로 추출(드리프트 방지) — 이 과정에서 41개 가이드 기준으로 갱신되지 않고 있던 `src/data/guides.json`(19개 가이드 기준 stale 데이터)도 재동기화됨 |
 
 
 ### 크기 수치 설정 규칙 (P2 — 상세, 규칙 1 보충)

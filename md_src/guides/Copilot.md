@@ -1,22 +1,22 @@
 ---
 title: "GitHub Copilot 완전 활용 가이드"
 subtitle: "AI 짝 코딩 & 자동완성"
-badge: "🤝 AI 짝 코딩 · 자동완성"
+badge: "🤝 AI 짝 코딩 · 에이전트 모드 · 2026"
 style: "ai-dev"
 stats:
-  - value: "$10/월"
-    label: "개인 플랜"
-  - value: "VS Code"
-    label: "최고의 궁합"
-  - value: "Chat"
-    label: "대화형 UI"
-  - value: "CLI"
-    label: "터미널 지원"
+  - value: "$10~100/월"
+    label: "Pro·Pro+·Max"
+  - value: "1M 토큰"
+    label: "확장 컨텍스트 윈도우"
+  - value: "Agent Mode"
+    label: "자율 다중 파일 수정"
+  - value: "Copilot CLI"
+    label: "터미널 에이전트"
 ---
 
 # Copilot은 어떤 도구인가
 
-GitHub Copilot은 VS Code, IntelliJ 같은 코드 에디터에 확장 프로그램 형태로 설치되어, 개발자가 코드를 치는 동안 다음 줄이나 전체 함수를 실시간으로 유추하고 제안해주는 AI 어시스턴트입니다. 단순히 검색된 코드를 붙여넣는 것이 아니라, 현재 열려 있는 파일과 프로젝트의 맥락을 읽어 내 프로젝트 스타일에 딱 맞는 코드를 짜줍니다.
+GitHub Copilot은 VS Code, JetBrains, Visual Studio 같은 코드 에디터에 확장 프로그램 형태로 설치되어, 개발자가 코드를 치는 동안 다음 줄이나 전체 함수를 실시간으로 유추하고 제안해주는 AI 어시스턴트입니다. 2026년 현재는 단순 자동완성을 넘어 **Agent Mode**가 여러 파일을 스스로 읽고 고치고 빌드 실패까지 원인 추적해 재수정하는 수준으로 발전했습니다.
 
 ### 한눈에 보는 핵심 기능
 
@@ -24,15 +24,15 @@ GitHub Copilot은 VS Code, IntelliJ 같은 코드 에디터에 확장 프로그�
 - icon: "👻"
   title: "고스트 텍스트 자동완성"
   desc: "코드를 작성하는 도중 회색 글씨(Ghost Text)로 다음 로직이 추천되며, `Tab` 키로 즉시 적용합니다."
-- icon: "💬"
-  title: "Copilot Chat"
-  desc: "에디터 좌측 패널에서 ChatGPT처럼 대화하며 코드를 리팩토링하거나 테스트 코드를 짜달라고 요청합니다."
-- icon: "🪄"
-  title: "인라인 에디팅"
-  desc: "코드 중간에서 `Ctrl + I` (Mac: `Cmd + I`)를 눌러 프롬프트 창을 띄우고 특정 블록만 바로 수정합니다."
+- icon: "🤖"
+  title: "Agent Mode (GA)"
+  desc: "여러 파일에 걸친 교차 수정을 제안하고, 터미널 명령을 직접 실행·모니터링하며, 빌드가 실패하면 원인을 추적해 스스로 재수정합니다. VS Code·JetBrains 모두 정식 지원."
+- icon: "🛠️"
+  title: "Coding Agent & Agentic Code Review"
+  desc: "이슈를 할당하면 백그라운드에서 PR을 만들어내는 Coding Agent, 프로젝트 전체 맥락을 파악해 리뷰 코멘트를 바로 수정 PR로 연결하는 Agentic Code Review."
 - icon: "🖥️"
   title: "Copilot CLI"
-  desc: "터미널에서 외우기 힘든 Git 요령이나 복잡한 쉘(Shell) 명령어를 자연어로 물어보고 즉시 실행합니다."
+  desc: "Copilot SDK 기반 에이전트를 터미널에서 직접 구동. 에이전트 피커로 자동 모드/승인 모드를 선택하고, Git·쉘 명령을 자연어로 실행."
 :::
 
 ### 이런 분들께 강력 추천합니다
@@ -57,7 +57,7 @@ GitHub Copilot은 VS Code, IntelliJ 같은 코드 에디터에 확장 프로그�
 
 ::: step-list
 - title: "구독 활성화"
-  desc: "GitHub 계정으로 로그인 후 Copilot 플랜을 구독합니다. (학생/오픈소스 메인테이너는 무료)"
+  desc: "GitHub 계정으로 로그인 후 Copilot 플랜을 구독합니다. Pro $10/월·Pro+ $39/월·Max $100/월 3단계이며, 학생/오픈소스 메인테이너는 무료."
 - title: "확장 프로그램 설치"
   desc: "VS Code의 Extensions 탭에서 'GitHub Copilot'과 'GitHub Copilot Chat' 두 가지를 설치합니다."
 - title: "로그인 및 연동"
@@ -83,6 +83,13 @@ Copilot Chat에는 에디터 환경에서만 쓸 수 있는 강력한 '컨텍스
     #file
   desc: "특정 파일을 지목하여 질문합니다. \"#app.py 와 #utils.py를 비교해서 중복 코드를 찾아줘\"라고 지시합니다."
   meta: "파일 간 맥락 연결"
+:::
+
+::: alert-box tip
+- title: "💡 확장된 컨텍스트와 추론 강도 조절:"
+  desc: "2026.06 업데이트로 최대 1백만 토큰 컨텍스트 윈도우를 지원해 대형 코드베이스·문서도 한 번에 참조합니다. 설정에서 추론 강도(reasoning level)를 조절해 속도와 정확도의 균형을 맞출 수 있습니다."
+- title: "💡 과금 방식 변경(2026.06.01):"
+  desc: "기존 Premium Request(요청 횟수 기반) 과금이 AI Credits(토큰 사용량 기반) 방식으로 전환되었습니다. 1M 토큰 컨텍스트나 높은 추론 강도를 쓸수록 요청당 소모되는 크레딧이 커지므로, 대형 컨텍스트 기능은 필요할 때만 켜는 것이 비용 관리에 유리합니다."
 :::
 
 # 마무리 체크리스트

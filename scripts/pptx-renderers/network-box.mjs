@@ -60,7 +60,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     
     const color = helpers.hexClean(node.color || mainNode.color) || pal.brand;
     
-    slide.addShape("line", {
+    helpers.addSafeLine(slide, {
       x: centerX,
       y: centerY,
       w: scX - centerX,

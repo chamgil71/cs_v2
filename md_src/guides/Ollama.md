@@ -1,22 +1,22 @@
 ---
 title: "Ollama 완전 활용 가이드"
 subtitle: "오픈소스 AI 활용 툴"
-badge: "🦙 로컬 AI · LLM"
+badge: "🦙 로컬 AI · LLM · 2026"
 style: "ai-chat"
 stats:
   - value: "오프라인"
     label: "완벽한 보안"
   - value: "무료"
     label: "API 과금 없음"
-  - value: "Llama 3"
-    label: "최신 모델 지원"
+  - value: "gpt-oss·Qwen3.5"
+    label: "최신 오픈 모델 지원"
   - value: "CLI"
     label: "가벼운 터미널"
 ---
 
 # Ollama는 어떤 도구인가
 
-Ollama는 Meta의 Llama 3, 구글의 Gemma 등 성능이 뛰어난 오픈소스 AI 모델을 로컬 환경(내 PC)에서 클릭 몇 번 또는 명령어 한 줄로 쉽게 다운로드하고 구동할 수 있게 해주는 런타임 플랫폼입니다.
+Ollama는 Meta의 Llama, 구글의 Gemma, Alibaba의 Qwen, OpenAI의 gpt-oss 등 성능이 뛰어난 오픈소스 AI 모델을 로컬 환경(내 PC)에서 클릭 몇 번 또는 명령어 한 줄로 쉽게 다운로드하고 구동할 수 있게 해주는 런타임 플랫폼입니다.
 
 ### 한눈에 보는 핵심 기능
 
@@ -59,7 +59,7 @@ Ollama는 Meta의 Llama 3, 구글의 Gemma 등 성능이 뛰어난 오픈소스 
 - title: "프로그램 설치"
   desc: "공식 홈페이지에서 운영체제에 맞는 설치 파일을 받아 설치합니다. (윈도우/맥/리눅스 지원)"
 - title: "모델 다운로드 및 실행"
-  desc: "터미널을 열고 `ollama run llama3` (또는 원하는 모델명)을 입력하면 모델을 다운받은 뒤 대화창이 열립니다."
+  desc: "터미널을 열고 `ollama run gpt-oss:20b` (또는 원하는 모델명)을 입력하면 모델을 다운받은 뒤 대화창이 열립니다."
 - title: "프롬프트 대화"
   desc: "프롬프트 창에 질문을 던지면 내 컴퓨터의 CPU/GPU 자원을 이용해 AI가 즉각 답변을 생성합니다."
 - title: "REST API 활용"
@@ -73,15 +73,15 @@ Ollama는 Meta의 Llama 3, 구글의 Gemma 등 성능이 뛰어난 오픈소스 
 Ollama 생태계에는 수많은 모델이 있습니다. PC 스펙(RAM)에 맞게 고르는 것이 핵심입니다.
 
 ::: compare-grid cols=3
-- title: "코딩 전용 (DeepSeek Coder 등)"
-  desc: "`ollama run deepseek-coder`. 코딩 지식에 특화된 모델로, 일반 모델보다 훨씬 정교한 코드 제안을 해줍니다."
+- title: "코딩 전용 (qwen3-coder 등)"
+  desc: "`ollama run qwen3-coder:30b`. MoE 구조로 24~32GB GPU에서 VRAM 대비 최고 수준의 코드 제안 품질을 냅니다."
   meta: "Vibe 코딩 파트너"
-- title: "가볍고 빠른 모델 (Gemma 등)"
-  desc: "메모리가 8~16GB인 미니 PC나 일반 랩톱에서도 쾌적하게 돌아가는 경량 모델입니다."
-  meta: "단순 요약/분류용"
-- title: "Web UI 연결 (Open-WebUI)"
-  desc: "터미널이 불편하다면 도커로 `Open-WebUI`를 띄워 로컬에 챗GPT와 똑같이 생긴 깔끔한 웹 화면을 구축하세요."
-  meta: "완벽한 개인용 ChatGPT"
+- title: "OpenAI 오픈 가중치 (gpt-oss)"
+  desc: "`ollama run gpt-oss:20b`. 16GB RAM에서도 128K 컨텍스트를 지원하는 OpenAI의 오픈 웨이트 모델."
+  meta: "범용 추론용"
+- title: "가볍고 빠른 모델 (Gemma·Qwen3.5 등)"
+  desc: "0.8B~수십B까지 스펙트럼이 넓은 Qwen3.5, 비전·오디오까지 지원하는 Gemma로 미니 PC에서도 쾌적하게 구동."
+  meta: "단순 요약/분류·멀티모달"
 :::
 
 # 마무리 체크리스트

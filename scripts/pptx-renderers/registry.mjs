@@ -48,6 +48,25 @@ export const helpers = {
     if (!args) return defaultValue;
     const match = String(args).match(new RegExp(`\\b${key}\\s*=\\s*["']?([^\\s"']+)["']?`));
     return match ? match[1] : defaultValue;
+  },
+
+  // 연결선 전용 안전 그리기 — slide.addShape("line", {w, h, ...})에 음수 w/h를 그대로 넘기면
+  // PowerPoint가 파일을 손상(E_FAIL)으로 처리한다(LibreOffice·validate.py로는 감지 불가).
+  // 대각선 방향은 좌표를 정규화한 뒤 flipH/flipV로 표현해야 한다. 모든 렌더러는 좌표 차분으로
+  // 만든 w/h를 slide.addShape("line", ...)에 직접 넘기지 말고 반드시 이 함수를 거칠 것.
+  addSafeLine(slide, opts) {
+    const { x, y, w, h, line, ...rest } = opts;
+    const flipH = w < 0, flipV = h < 0;
+    slide.addShape("line", {
+      x: flipH ? x + w : x,
+      y: flipV ? y + h : y,
+      w: Math.abs(w),
+      h: Math.abs(h),
+      flipH,
+      flipV,
+      line,
+      ...rest,
+    });
   }
 };
 
@@ -74,6 +93,9 @@ import * as networkBox from "./network-box.mjs";
 import * as flow from "./flow.mjs";
 import * as takeaway from "./takeaway.mjs";
 import * as compareGrid from "./compare-grid.mjs";
+import * as venn from "./venn.mjs";
+import * as quadrantChart from "./quadrant-chart.mjs";
+import * as concentricRings from "./concentric-rings.mjs";
 
 const renderers = [
   iconGrid,
@@ -95,7 +117,10 @@ const renderers = [
   networkBox,
   flow,
   takeaway,
-  compareGrid
+  compareGrid,
+  venn,
+  quadrantChart,
+  concentricRings
 ];
 
 // 3. 타입 맵핑 테이블 생성

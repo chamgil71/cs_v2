@@ -1,13 +1,13 @@
 ---
 title: "Grok완전 활용 가이드"
 subtitle: "xAI 실시간 대화형 AI"
-badge: "xAI · Elon Musk · 2025"
+badge: "xAI · Grok 4.6 · 2026"
 style: "ai-chat"
 stats:
-  - value: "실시간"
-    label: "X 데이터 연동"
-  - value: "Aurora"
-    label: "이미지 생성 내장"
+  - value: "Grok 4.6"
+    label: "최신 플래그십 · 500K 컨텍스트"
+  - value: "Grok Imagine"
+    label: "통합 이미지·영상 생성"
   - value: "DeepSearch"
     label: "심층 웹 검색"
   - value: "무제한"
@@ -24,11 +24,11 @@ stats:
   title: "DeepSearch — 심층 웹 검색"
   desc: "단순 검색을 넘어 수십 개 소스를 동시에 분석하는 심층 리서치 모드. 복잡한 주제에 대해 출처가 명확한 종합 보고서를 자동 생성."
 - icon: "🎨"
-  title: "Aurora — 이미지 생성"
-  desc: "xAI가 자체 개발한 Aurora 이미지 모델 통합. 텍스트 프롬프트로 고품질 이미지 생성. 다른 AI보다 콘텐츠 제한이 유연하여 창의적 표현에 강점."
+  title: "Grok Imagine — 이미지·영상 생성"
+  desc: "이미지·영상 생성을 하나로 통합한 Grok Imagine API. 짧은 음성 샘플로 목소리를 복제하는 Custom Voices, 타입 지정 응답을 위한 Structured Outputs까지 지원."
 - icon: "🧠"
-  title: "Think 모드 — 추론 강화"
-  desc: "복잡한 문제 해결 시 단계별로 추론하는 Think 모드 활성화. 수학, 코딩, 논리 문제에서 정확도 대폭 향상. o3/Gemini Ultra와 경쟁하는 추론 능력."
+  title: "Think 모드 — 추론 강화 (xhigh까지)"
+  desc: "reasoning effort를 low/medium/high/xhigh로 조절해 속도와 정확도를 트레이드오프. 수학·코딩·논리 문제에서 Opus급 경쟁력을 확보."
 - icon: "🎤"
   title: "음성 대화 모드"
   desc: "iOS/Android 앱에서 실시간 음성 대화. 자연스러운 대화 흐름과 감정 표현 지원. 영어 외 다국어 음성 지원."
@@ -71,12 +71,21 @@ stats:
 - title: "X 프리미엄"
   tag: "X Premium ⭐"
   note: "$8~16 / 월"
-  meta: "Grok 확장 접근|더 많은 메시지|Aurora 이미지|DeepSearch 사용"
+  meta: "Grok 확장 접근|더 많은 메시지|Grok Imagine 이미지|DeepSearch 사용"
   featured: "true"
 - title: "SuperGrok"
   tag: "SuperGrok"
   note: "$30 / 월"
-  meta: "무제한 Grok 사용|Think 모드 무제한|Aurora 무제한|DeepSearch 무제한|API 접근"
+  meta: "무제한 Grok 사용|Think 모드 xhigh까지|Grok Imagine 무제한|DeepSearch 무제한|API 접근"
+- title: "SuperGrok Heavy"
+  tag: "Heavy"
+  note: "$300 / 월"
+  meta: "최상위 컴퓨팅 우선 배정|다중 에이전트 병렬 추론|가장 먼저 신기능 접근|헤비 유저·연구용"
+:::
+
+::: alert-box tip
+- title: "💡 Grok 4.6 — 에이전트·코딩 특화:"
+  desc: "2026.08 출시된 Grok 4.6은 500K 토큰 컨텍스트와 장시간 실행되는 에이전트 작업에 초점. Cursor·Grok Build 등 외부 IDE에서도 선택 가능한 모델로 제공됩니다."
 :::
 
 # 실전 활용 팁

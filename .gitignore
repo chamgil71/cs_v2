@@ -15,6 +15,11 @@ publish/*
 dist-pptx/
 scratch/
 
+# 웹 GUI(가이드북 저작)의 "가이드 컬렉션에 저장" 옵션이 Vite 개발서버 미리보기용으로 재빌드하는 산출물.
+# publish/와 마찬가지로 언제든 재생성 가능한 빌드 출력이라 커밋 대상이 아니다.
+public/*
+!public/.gitkeep
+
 # Local env files
 .env.local
 .env.*.local

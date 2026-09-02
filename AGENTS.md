@@ -20,7 +20,7 @@ Markdown → 가이드 HTML·횡슬라이드 HTML·PPTX 변환 저작 파이프�
 
 - `md_src/` 원본 / `scripts/` 빌더·정본 렌더러(`shortcode-render.mjs`, `shortcode-styles.mjs`)
 - `config/` — `pptdesign.config.json`, `htmldesign.config.json`, `styles.json`, `font-aliases.json` (수치·스타일 단일 출처)
-- `src/`, `index.html`, `standalone.html`, `module1/2.html` — React UI 및 독립 실행 셸
+- `src/` — React UI(웹 디자인 스위트: 모듈 1 디자인 시스템 / 모듈 2 가이드북 저작 / 모듈 3 PPTX 인스펙터). `dashboard.html`(dev)·`webdesignsuite.html`(standalone 통합)·`design-system.html`·`guide-authoring.html`·`pptx-inspector.html`(모듈별 standalone) — 독립 실행 셸
 
 ### 프론트엔드 기술 스택
 

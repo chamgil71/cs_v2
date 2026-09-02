@@ -57,13 +57,14 @@ sequenceDiagram
     UI-->>User: '가이드북 포털 허브 바로가기 ↗' 링크 버튼 노출
 ```
 
-### 🎨 프론트엔드 UI 계층 (`src/` 하위 TSX 파일)
-* **역할**: 사용자가 직접 웹 브라우저에서 조작하는 시각적인 **디자인 관리 센터 인터페이스**입니다.
+### 🎨 프론트엔드 UI 계층 (`src/` 하위 TSX 파일) — "웹 디자인 스위트" (2026-09 재편)
+* **역할**: 사용자가 직접 웹 브라우저에서 조작하는 **3모듈 통합 디자인 스위트**입니다. `dashboard.html`(dev server) / `webdesignsuite.html`(standalone)이 3모듈을 탭으로 묶고, 각 모듈은 `design-system.html` / `guide-authoring.html` / `pptx-inspector.html`로 단독 배포도 가능합니다(워크플로 순서로 번호 부여 — 테마부터 정하고, 그 테마로 콘텐츠를 쓰고, 기존 PPTX 분석은 완전히 별개).
 * **주요 구성**:
-  - `src/main.tsx`: 대시보드 탭 레이아웃 및 전체 뷰포트를 통제하는 메인 대시보드 뷰.
-  - `src/components/MarkdownCompiler.tsx` (모듈 C): 실시간 마크다운 에디터, split-pane 미리보기 iframe 윈도우, 단일/일괄 폴더 변환 실행 및 컴파일 설정 패널.
-  - `src/components/VisualAdjuster.tsx` (모듈 B): HSL 테마 값을 미세 튜닝하고 새로운 배색을 만들며 WCAG 대비도를 검사하는 디자인 조율 UI.
-  - `src/components/PptxAnalyzer.tsx` (모듈 A): 벤치마킹할 PPTX를 로드하여 분석하고 색상을 XML 수준에서 1:1 리매핑하는 UI.
+  - `src/main.tsx`: 3모듈(디자인 시스템/가이드북 저작/PPTX 인스펙터)을 동급 탭으로 배치하는 대시보드 셸.
+  - `src/components/DesignSystemSuite.tsx` (**모듈 1**): `VisualAdjuster.tsx`(HSL 테마 조율·`styles.json` 등록)와 `SubUtilities.tsx`(대비 검사기·커스텀 배색 빌더·컬러 리매퍼)를 서브탭 2개로 묶은 통합 UI.
+  - `src/components/MarkdownCompiler.tsx` (**모듈 2**): 실시간 마크다운 에디터, split-pane 미리보기 iframe 윈도우, 단일/일괄 폴더 변환 실행 및 컴파일 설정 패널.
+  - `src/components/PptxInspectorSuite.tsx` (**모듈 3**): 벤치마킹할 PPTX를 로드하여 분석하고 색상을 XML 수준에서 1:1 리매핑하는 UI. 1·2번 모듈과 독립된 별개 워크플로.
+  - `src/standalone/*-main.tsx`: 각 모듈을 서버 없이 단독 구동시키는 진입점(`design-system-main.tsx`/`guide-authoring-main.tsx`/`pptx-inspector-main.tsx`).
 
 ### ⚙️ 백엔드 엔진 계층 (`scripts/` 하위 mjs/js 파일)
 * **역할**: 웹 화면의 변환/저장 요청을 받아 Node.js 환경에서 **실제 파일 IO 및 마크다운 파싱, PPTX 셰이프 드로잉을 전담하는 변환 코어 엔진**입니다.
@@ -79,24 +80,73 @@ sequenceDiagram
 
 ---
 
+## 2-1. 빌드 파이프라인: 개별 파일 출력 vs 폴더 전체 허브(통합) 출력
+
+md_src 아래 마크다운 원본은 **① 파일 1개당 3종 포맷**으로, 그리고 **② 폴더(컬렉션) 전체를 지정하면 그 폴더 전체를 하나로 묶은 "허브" 1개 파일**로도 만들 수 있습니다. 이 둘은 서로 다른 스크립트가 담당하며 출력 형태도 다릅니다.
+
+### ① 파일 1개 → 3종 포맷 (종형 가이드 · 횡형 프레젠테이션 · PPTX)
+
+| 포맷 | 명령 | 산출물 |
+| --- | --- | --- |
+| 종형 가이드 HTML | `node scripts/build-guide.mjs md_src/guides/Claude.md --out out.html` | 위→아래 스크롤 문서 (guide-core) |
+| 횡형 프레젠테이션 HTML | `node scripts/build-presentation.mjs md_src/guides/Claude.md --out out.html` | 좌→우 슬라이드 덱 (presentation-core), 좌상단 ☰ 버튼으로 목차 토글 |
+| PPTX | `node scripts/md-to-pptx.mjs md_src/guides/Claude.md --out out.pptx` | 파워포인트 파일 |
+
+### ② 폴더 전체 → 통합 허브 1개 HTML (종형 vs 횡형 선택)
+
+같은 폴더(예: `md_src/guides`, `md_src/claudeguide`)의 **모든 md 파일을 하나의 독립 실행 HTML**로 묶어야 할 때는 아래 두 가지 중 목적에 맞는 방식을 선택합니다. 둘 다 인터넷 연결 없이 파일 하나만으로 열립니다.
+
+| 방식 | 명령 | 내비게이션 UX | 적합한 용도 |
+| --- | --- | --- | --- |
+| **횡형 통합 덱** | `node scripts/build-presentation.mjs "md_src/guides/*.md" --out publish/guides_slides.html` | 좌상단 ☰ 버튼 → 전체 슬라이드 목차 오버레이, 슬라이드 넘기듯 좌우 이동 | 발표·데모, 슬라이드 형태로 죽 훑어볼 때 |
+| **종형 통합 허브(standalone)** | `node scripts/build-guide-hub.mjs --dir guides` (기본 출력: `publish/guides-standalone.html`, `--out`으로 경로 변경 가능) | 좌측 고정 사이드바(카테고리별, 열림/닫힘 토글) + 카드형 홈 화면, 클릭 시 해당 가이드 문서 전체를 그 자리에서 표시 — 서버 없이 파일 하나로 완결 | 레퍼런스처럼 필요한 도구를 찾아 읽을 때, 오프라인 배포용 "가이드북" |
+
+**폴더 하나를 통째로 빌드**하려면(개별 html/presentation/pptx + 폴더 목록 `index.html` + 위 표의 두 통합 산출물까지) `node scripts/build-folder.mjs --dir guides`를 씁니다. 플래그 없이 실행하면 개별 3종 + 폴더 `index.html`이 기본 세트로 나오고, `md_src/<폴더>/hub.config.json`의 `outputs` 설정에 따라 standalone·통합 프레젠테이션 덱이 함께 생성됩니다(`--all`로 전부 강제 생성, `--standalone`/`--presentation-bundle`로 개별 지정 가능). 카테고리 라벨·표시 순서·사이드바 기본 열림 상태는 전부 이 `hub.config.json` 하나에서 관리하며, 폴더마다 독립적으로 설정합니다.
+
+* `build-presentation.mjs`에 폴더 글롭(`*.md`)을 넘기면 **내부적으로 이미 다중 문서 병합을 지원**합니다 — 각 md의 표지가 슬라이드 목차의 챕터 구분점이 됩니다.
+* `build-guide-hub.mjs`는 `--dir <md_src 하위 폴더명>` 하나만 바꾸면 `guides` 외에 `claudeguide` 등 **어떤 md_src 하위 폴더에도 동일하게 동작**합니다. `--out`을 여러 번 지정하면 같은 내용을 여러 경로에 동시 저장합니다. 사이드바 카테고리는 각 md의 frontmatter `style` 값을 기준으로 자동 분류됩니다(라벨·색상 매핑은 `scripts/sync-guides-index.mjs`의 `STYLE_META`와 동일 표를 사용 — 카테고리 라벨을 바꿀 땐 두 파일을 함께 수정).
+* 상세 구현은 [`docs/scripts_guide.md`](./docs/scripts_guide.md) 3-1절 참고.
+
+---
+
 ## 3. 평탄화된 폴더 구조 및 파일 명세
 
 ```text
 cs_v2/
-├── index.html              # V2.0 디자인 스위트 웹 대시보드 진입점
-├── vite.config.ts          # 단일 index.html entry 시스템 Vite 설정 파일
+├── index.html              # dashboard.html로 즉시 리디렉션하는 얇은 스텁 (Vite 기본 root 관례 유지용)
+├── dashboard.html          # 웹 디자인 스위트 대시보드(3모듈 통합 탭) — dev server 실제 진입점
+├── design-system.html      # 모듈 1 단독 진입점 (standalone 빌드 대상)
+├── guide-authoring.html    # 모듈 2 단독 진입점 (standalone 빌드 대상)
+├── pptx-inspector.html     # 모듈 3 단독 진입점 (standalone 빌드 대상)
+├── webdesignsuite.html     # 3모듈 통합 탭 standalone 진입점
+├── vite.config.ts          # dev/일반 build 설정 (index.html + dashboard.html 두 엔트리 빌드)
+├── vite.config.standalone.ts # standalone(단일 파일) 빌드 설정 — SA_ENTRY 환경변수로 4개 엔트리 중 선택
 ├── package.json            # Vite 8.0 개발 사양 및 의존 패키지 선언서
 ├── tsconfig.json           # TS 빌드 및 컴파일 환경 설정
 ├── tailwind.config.ts      # Tailwind CSS 시스템 토큰 및 스타일 설정
 ├── src/
-│   ├── main.tsx            # V2.0 메인 대시보드 뷰포트
+│   ├── main.tsx            # 대시보드 뷰포트 — 모듈 1/2/3을 동급 탭으로 배치
+│   ├── standalone/          # 모듈별 단독 구동 진입점 (design-system-main.tsx 등)
 │   ├── index.css           # Tailwind 기반 디자인 시스템 스타일 시트
+│   ├── hooks/
+│   │   ├── use-toast.ts, use-mobile.tsx  # 공통 UI 훅
+│   │   ├── theme-defaults.ts     # ThemeDetails 타입 + 기본/신규 테마 템플릿 상수 (단일 출처)
+│   │   ├── useThemeEditor.ts     # 테마 프리셋 로드·선택 상태 (VisualAdjuster 3패널 공유, ≤200L)
+│   │   └── useThemeMutations.ts  # 테마 추가/수정/삭제 + styles.json 서버 저장 로직
 │   └── components/
-│       ├── PptxAnalyzer.tsx     # Module A. PPTX 디자인 분석 및 타깃 변환기 (독립형)
-│       ├── VisualAdjuster.tsx   # Module B. 실시간 HSL 스타일 조율기 (연계형)
-│       ├── MarkdownCompiler.tsx # Module C. 마크다운 컴파일러 & 실시간 프리뷰어 (연계형)
-│       ├── PptxInspectorSuite.tsx # PPTX 디자인 분석 마스터 슬라이드 뷰어
-│       ├── SubUtilities.tsx     # 부가서비스 (대비 검사기, 커스텀 배색 빌더, 컬러 리매퍼)
+│       ├── DesignSystemSuite.tsx # Module 1. VisualAdjuster+SubUtilities 통합 셸 (연계형, 저장은 서버 전용)
+│       ├── VisualAdjuster.tsx    # (Module 1 서브탭) HSL 스타일 조율기 — useThemeEditor 훅 + 3패널 조합 오케스트레이터
+│       ├── visual-adjuster/      # VisualAdjuster 하위 패널 (좌: 프리셋 목록 / 중: 편집 폼 / 우: 실시간 프리뷰)
+│       │   ├── ThemePresetPanel.tsx, ThemeEditorPanel.tsx, ThemeLivePreviewPanel.tsx
+│       ├── SubUtilities.tsx      # (Module 1 서브탭) 3개 독립 섹션(대비검사기/프리셋빌더/PPTX리매퍼) 조합 오케스트레이터
+│       ├── sub-utilities/        # SubUtilities 하위 섹션 컴포넌트 (섹션별 상태 완전 독립)
+│       │   ├── ContrastChecker.tsx, ContrastPreviewCards.tsx           # 1. 색상 사전 & 대비 검사기
+│       │   ├── ThemePresetBuilder.tsx, ThemePresetSelector.tsx,
+│       │   │   PaletteBuilderForm.tsx, PaletteLivePreview.tsx          # 2. 추천 프리셋 & 커스텀 배색 빌더
+│       │   └── PptxColorRemapper.tsx, PptxUploadZone.tsx,
+│       │       ColorMappingTable.tsx                                    # 3. PPTX 컬러 리매퍼
+│       ├── MarkdownCompiler.tsx  # Module 2. 마크다운 컴파일러 & 실시간 프리뷰어 (연계형)
+│       ├── PptxInspectorSuite.tsx # Module 3. PPTX 디자인 분석·리매퍼 (독립형, 서버리스)
 │       └── ui/                  # Shadcn UI 컴포넌트 라이브러리
 ├── scripts/
 │   ├── vite-api-plugin.ts  # Vite 개발 서버 API 미들웨어 (Bridge)
@@ -109,6 +159,7 @@ cs_v2/
 │   ├── build-guide.mjs     # guide-core 호출 CLI 래퍼
 │   ├── build-presentation.mjs # presentation-core 호출 CLI 래퍼
 │   ├── build-standalone.mjs   # standalone 단일 HTML 빌드 (정합성 테스트 게이트)
+│   ├── build-guide-hub.mjs # md_src/guides 전체를 사이드바+Shadow DOM 오프라인 허브 1개 HTML로 병합
 │   ├── md-to-pptx.mjs      # 마크다운 ➡️ PPTX 컴파일 엔진 (config 폰트 로드)
 │   └── pptx-renderers/     # 숏코드별 PPTX 드로잉 렌더러 모듈 + registry.mjs
 ├── docs/                   # V2.0 공식 마스터 문서 보관 공간

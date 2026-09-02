@@ -1,11 +1,11 @@
 ---
 title: "Perplexity AI완전 활용 가이드"
 subtitle: "출처 기반 AI 검색"
-badge: "Perplexity AI · AI 검색 엔진 · 2025"
+badge: "Perplexity AI · AI 검색 엔진 · 2026"
 style: "ai-chat"
 stats:
-  - value: "실시간"
-    label: "웹 검색 기반"
+  - value: "Comet"
+    label: "AI 네이티브 브라우저"
   - value: "출처 명시"
     label: "모든 답변에 인용"
   - value: "Deep Research"
@@ -35,6 +35,9 @@ stats:
 - icon: "🔗"
   title: "Spaces (공유 리서치)"
   desc: "팀원과 리서치 공간 공유. 같은 소스 기반으로 여러 명이 질문하고 결과 축적. 팀 지식베이스 역할 수행."
+- icon: "🌐"
+  title: "Comet — AI 네이티브 브라우저"
+  desc: "모든 웹페이지에 어시스턴트가 내장된 브라우저. 여러 탭을 넘나들며 요약·비교하고, 항공권 예약·이메일 정리·양식 작성 등을 대신 수행. iOS·Android·Mac·Windows 전 플랫폼과 Enterprise 지원."
 :::
 
 # 검색 모드 & 활용법
@@ -68,6 +71,10 @@ stats:
   note: "$20 / 월"
   meta: "Pro Search 1일 300회+|Deep Research 무제한|Claude·GPT-4o·Gemini 선택|이미지 생성 무제한|Spaces 공유 기능"
   featured: "true"
+- title: "Max 플랜"
+  tag: "Max"
+  note: "$200 / 월"
+  meta: "최상위 추론 모델 무제한|Labs 프로젝트 기능 우선 접근|가장 넓은 컨텍스트·속도|헤비 유저용"
 - title: "기업용"
   tag: "Enterprise"
   note: "$40 / 월 / 인"
@@ -79,8 +86,9 @@ stats:
 | 항목 | Perplexity | Genspark | Google Gemini | ChatGPT |
 | --- | --- | --- | --- | --- |
 | 출처 인용 | ✓ 모든 답변 | ✓ Sparkpage | ✓ 일부 | △ 제한적 |
-| 실시간 검색 | ✓ 항상 | ✓ 항상 | ✓ Google | ✓ Bing |
+| 실시간 검색 | ✓ 항상 | ✓ 항상 | ✓ Google | ✓ 브라우징 |
 | Deep Research | ✓ 전용 모드 | △ 에이전트 | ✓ Gemini | ✓ 일부 |
 | 다중 AI 모델 | ✓ Pro에서 | ✗ | ✗ | ✗ |
+| 전용 AI 브라우저 | ✓ Comet | ✗ | △ Chrome 통합 | △ ChatGPT 내 브라우징 |
 | 무료 사용 | ✓ 충분 | ✓ 충분 | ✓ 충분 | ✓ 충분 |
-| 주력 강점 | 출처 신뢰성 | Sparkpage 공유 | Google 통합 | 범용 AI |
+| 주력 강점 | 출처 신뢰성·Comet | Sparkpage 공유 | Google 통합 | 범용 AI |

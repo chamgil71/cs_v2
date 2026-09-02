@@ -150,6 +150,46 @@ export const SHORTCODE_CSS = `
   @keyframes driftThree { 0%, 100% { transform: translate(-100px, 90px); } 50% { transform: translate(-106px, 84px); } }
   @keyframes driftFour { 0%, 100% { transform: translate(110px, -80px); } 50% { transform: translate(116px, -74px); } }
 
+  /* [NEW] Venn Diagram */
+  .venn-diagram { position: relative; height: 240px; margin: 25px 0; display: flex; align-items: center; justify-content: center; }
+  .venn-circle { position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 20px; }
+  .venn-left { left: calc(50% - 160px); }
+  .venn-right { left: calc(50% - 40px); }
+  .venn-label { font-family: var(--font-title); font-weight: 800; font-size: calc(1.05rem * var(--font-scale)); }
+  .venn-center { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; max-width: 140px; }
+  .venn-center-icon { font-size: calc(2rem * var(--font-scale)); }
+  .venn-center-desc { font-family: var(--font-desc), sans-serif; font-weight: 700; font-size: calc(0.85rem * var(--font-scale)); color: var(--text); }
+
+  /* [NEW] Quadrant Chart */
+  .quadrant-chart { display: grid; grid-template-columns: auto 1fr; grid-template-rows: 1fr auto; gap: 10px; margin: 25px 0; }
+  .quadrant-axis-y { grid-column: 1; grid-row: 1; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-family: var(--font-desc), sans-serif; font-weight: 700; font-size: calc(0.85rem * var(--font-scale)); color: var(--text-2); }
+  .quadrant-axis-x { grid-column: 2; grid-row: 2; text-align: center; font-family: var(--font-desc), sans-serif; font-weight: 700; font-size: calc(0.85rem * var(--font-scale)); color: var(--text-2); }
+  .quadrant-plot { grid-column: 2; grid-row: 1; position: relative; height: 280px; background: var(--card-bg, #fff); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .quadrant-gridline { position: absolute; background: var(--border); }
+  .quadrant-gridline-h { left: 0; right: 0; top: 50%; height: 1px; }
+  .quadrant-gridline-v { top: 0; bottom: 0; left: 50%; width: 1px; }
+  .quadrant-point { position: absolute; transform: translate(-50%, 50%); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .quadrant-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--card-bg, #fff); box-shadow: 0 0 0 1px rgba(0,0,0,0.08); }
+  .quadrant-point-label { font-family: var(--font-desc), sans-serif; font-weight: 700; font-size: calc(0.78rem * var(--font-scale)); white-space: nowrap; }
+
+  /* [NEW] Concentric Rings */
+  .concentric-rings { display: flex; flex-direction: column; align-items: center; gap: 18px; margin: 25px 0; }
+  .rings-visual { position: relative; width: 220px; height: 220px; }
+  .ring { position: absolute; top: 50%; left: 50%; border-radius: 50%; transform: translate(-50%, -50%); opacity: 0.9; }
+  .ring-depth-0 { width: 220px; height: 220px; }
+  .ring-depth-1 { width: 176px; height: 176px; }
+  .ring-depth-2 { width: 132px; height: 132px; }
+  .ring-depth-3 { width: 88px;  height: 88px; }
+  .ring-depth-4 { width: 60px;  height: 60px; }
+  .ring-depth-5 { width: 40px;  height: 40px; }
+  .ring-center-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: calc(1.4rem * var(--font-scale)); }
+  .rings-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; justify-content: center; }
+  .ring-legend-item { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-desc), sans-serif; font-weight: 700; font-size: calc(0.82rem * var(--font-scale)); color: var(--text-2); }
+  .ring-legend-item i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+
+  /* [NEW] Mermaid 구조도 — mermaid.js 가 <pre class="mermaid"> 안의 원문을 SVG 로 치환 */
+  .mermaid { display: flex; justify-content: center; margin: 25px 0; overflow-x: auto; }
+
   /* Done section */
   .done-section { background: linear-gradient(135deg, var(--brand-deep), var(--brand)); color: white; padding: 72px 24px; text-align: center; }
   .done-section h2 { font-family: var(--font-title); font-size: calc(clamp(1.8rem, 4vw, 2.6rem) * var(--font-scale)); margin-bottom: 10px; }

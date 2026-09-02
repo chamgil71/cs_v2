@@ -27,20 +27,22 @@ const removeModuleScript = () => {
 
 // vite-plugin-singlefile은 코드 스플리팅을 비활성화하므로 다중 입력을 지원하지 않는다.
 // 따라서 엔트리를 환경변수(SA_ENTRY)로 선택해 한 번에 하나씩 빌드하고, dist에 누적한다.
-//   - main    : standalone.html (모듈 1 + 2 통합, 탭 전환) — 기본값
-//   - module1 : module1.html    (PPTX 디자인 인스펙터 단독, 서버리스)
-//   - module2 : module2.html    (가이드북 컴파일러 & 배색 빌더 단독, 클라이언트 컴파일 폴백)
+//   - suite          : webdesignsuite.html (모듈 1+2+3 통합, 탭 전환) — 기본값
+//   - designSystem   : design-system.html  (모듈 1: 테마 조율 & 보조 유틸리티, 저장은 서버 연계 전용)
+//   - guideAuthoring : guide-authoring.html(모듈 2: 가이드북 컴파일러, 클라이언트 컴파일 폴백)
+//   - pptxInspector  : pptx-inspector.html (모듈 3: PPTX 디자인 인스펙터, 서버리스)
 const ENTRY_MAP: Record<string, string> = {
-  main: "standalone.html",
-  module1: "module1.html",
-  module2: "module2.html",
+  suite: "webdesignsuite.html",
+  designSystem: "design-system.html",
+  guideAuthoring: "guide-authoring.html",
+  pptxInspector: "pptx-inspector.html",
 };
 
-const saEntry = process.env.SA_ENTRY && ENTRY_MAP[process.env.SA_ENTRY] ? process.env.SA_ENTRY : "main";
+const saEntry = process.env.SA_ENTRY && ENTRY_MAP[process.env.SA_ENTRY] ? process.env.SA_ENTRY : "suite";
 const entryHtml = ENTRY_MAP[saEntry];
 
-// 기본(main) 빌드만 dist를 비우고, 모듈 빌드는 산출물을 누적한다.
-const shouldEmptyOutDir = saEntry === "main";
+// 기본(suite) 빌드만 dist를 비우고, 나머지 모듈 빌드는 산출물을 누적한다.
+const shouldEmptyOutDir = saEntry === "suite";
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({

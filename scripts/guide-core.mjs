@@ -98,6 +98,10 @@ export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverr
       closeCard();
       bodyHtml += `<div class="card"><h3 class="card-title">${marked.parser([{type: 'paragraph', tokens: tok.tokens}]).replace(/^<p>|<\/p>\n?$/g, "")}</h3>`;
       openCard = true;
+    } else if (tok.type === "code" && (tok.lang || "").trim().toLowerCase() === "mermaid") {
+      // Mermaid 구조도 — 원문 그대로 <pre class="mermaid">에 넣어 클라이언트에서 mermaid.js 가 렌더링
+      if (openCard) closeCard();
+      bodyHtml += `<pre class="mermaid">${escapeHtml(tok.text)}</pre>`;
     } else {
       const isShortcode = tok.raw && (
         tok.raw.includes('class="step-flow"') ||
@@ -216,6 +220,8 @@ export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverr
   
 ${SHORTCODE_CSS}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: "default" });</script>
 </head>
 <body>
   <nav class="nav"><div class="nav-inner"><a href="#" class="nav-logo">${fm.logo ? fm.logo + " " : ""}${escapeHtml(fm.title)}</a><ul class="nav-links">${navLinks.slice(0, 7).join("")}${navLinks.length > 7 ? `<li class="nav-more">+${navLinks.length - 7}</li>` : ""}</ul></div></nav>

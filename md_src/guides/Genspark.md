@@ -1,7 +1,7 @@
 ---
 title: "Genspark완전 활용 가이드"
 subtitle: "AI 에이전트 검색 엔진"
-badge: "Genspark AI · 검색의 재발명 · 2025"
+badge: "Genspark AI · 검색의 재발명 · 2026"
 style: "ai-chat"
 stats:
   - value: "Sparkpage"
@@ -55,6 +55,9 @@ genspark.ai/search?q=2025+AI+트렌드
 - icon: "🌍"
   title: "실시간 웹 데이터"
   desc: "항상 최신 웹 정보 기반으로 답변. 학습 데이터 의존이 아닌 실시간 검색으로 최신성 보장."
+- icon: "🧰"
+  title: "80+ 통합 도구 & AI 전화"
+  desc: "이미지(FLUX)·영상(Kling)·3D 게임·웹사이트·문서 생성까지 80개 이상 도구를 한 곳에서. 실제로 전화를 걸어 예약·문의를 대행하는 AI 폰콜 기능이 특히 화제."
 :::
 
 # Genspark 활용 시나리오

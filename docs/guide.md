@@ -276,14 +276,14 @@ node scripts/md-to-pptx.mjs md_src/guides/Claude.md --out publish/guides/Claude.
 # 횡형 통합 — 슬라이드를 넘기며 훑어보는 발표/데모용 (문서마다 표지가 챕터 구분점)
 node scripts/build-presentation.mjs "md_src/guides/*.md" --out publish/guides_slides.html
 
-# 종형 통합 — 좌측 사이드바에서 필요한 도구를 찾아 읽는 레퍼런스/오프라인 가이드북용(standalone, 서버 없이 파일 하나로 열림)
-node scripts/build-guide-hub.mjs --dir guides   # 기본 출력: publish/guides-standalone.html
+# 종형 통합 — 좌측 사이드바에서 필요한 도구를 찾아 읽는 레퍼런스/오프라인 가이드북용(onepage, 서버 없이 파일 하나로 열림)
+npm run build:onepage -- --dir guides   # 기본 출력: publish/guides-onepage.html
 
-# 폴더 하나를 통째로: 개별 html/presentation/pptx + 폴더 index.html + (설정에 따라) standalone·통합 프레젠테이션 덱까지
-node scripts/build-folder.mjs --dir guides
+# 폴더 하나를 통째로: 개별 html/presentation/pptx + 폴더 index.html + (설정에 따라) onepage·통합 프레젠테이션 덱까지
+npm run build:folder -- --dir guides
 ```
 
-`--dir` 값을 `claudeguide` 등 다른 `md_src` 하위 폴더명으로 바꾸면 그 폴더 전체가 같은 방식으로 처리됩니다(기본 출력도 `publish/claudeguide-standalone.html`처럼 자동으로 맞춰짐 — "-standalone" 표시는 파일명 로직에 항상 붙습니다). `--out`을 여러 번 쓰면 같은 내용을 여러 경로에 동시 저장합니다.
+`--dir` 값을 `claudeguide` 등 다른 `md_src` 하위 폴더명으로 바꾸면 그 폴더 전체가 같은 방식으로 처리됩니다(기본 출력도 `publish/claudeguide-onepage.html`처럼 자동으로 맞춰짐 — "-onepage" 표시는 파일명 로직에 항상 붙습니다). `--out`을 여러 번 쓰면 같은 내용을 여러 경로에 동시 저장합니다.
 
 카테고리 라벨·표시 순서·사이드바 기본 열림 상태·기본 산출물 옵션은 `md_src/<폴더>/hub.config.json`에서 폴더별로 관리합니다(파일이 없으면 안전한 기본값으로 동작). 예:
 

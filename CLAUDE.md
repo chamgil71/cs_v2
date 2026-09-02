@@ -33,7 +33,7 @@
 - [ ] **CLAUDE.md** — 아키텍처/규칙/이슈 이력에 영향이 있으면 갱신 (특히 「주요 이슈 이력」 표)
 - [ ] **README.md** — 폴더 구조·스크립트·기능 설명에 변경이 있으면 갱신 (숏코드 개수 등 수치 표기 포함)
 - [ ] **docs/** — `scripts_guide.md`(개발자), `guide.md`(사용자), `shortcode-reference.md`, `shortcode-changelog.md`(변경이력 **추가**) 중 해당 문서 갱신
-- [ ] **정합성 테스트** — 숏코드/렌더러 변경 시 `npm test` (정합성 117건 포함) 통과 확인
+- [ ] **정합성 테스트** — 숏코드/렌더러 변경 시 `npm test` (정합성 129건 포함) 통과 확인
 - [ ] 시점 기록 문서(`docs/report/*_YYYY-MM-DD.md`)는 **수정하지 말고 새 항목/새 파일로 추가** (역사 보존)
 
 > 문서화는 작업의 일부다. "코드만 고치고 문서는 나중에"는 이 프로젝트의 반복 이슈(드리프트)의 원인이므로 금지.
@@ -66,14 +66,16 @@ cs_v2/
 │   │   ├── exportGuide.ts         # 가이드 HTML 내보내기 헬퍼
 │   │   ├── wcag.ts                # WCAG 색상 대비 계산 유틸
 │   │   └── utils.ts               # clsx/tailwind 유틸
-│   ├── __tests__/
-│   │   ├── client-compiler.test.ts # 브라우저 컴파일러 유닛 테스트
-│   │   ├── shortcode-conformance.test.ts # 정합성 117개 — 공유 렌더러+PPTX 커버리지 + CSS 커버리지 가드 + standalone==server 동치 잠금
-│   │   ├── pptx-analyzer.test.ts  # PPTX 분석기 테스트
-│   │   └── wcag.test.ts           # WCAG 유틸 테스트 (전체 192개)
-│   ├── standalone/
-│   │   ├── module1-main.tsx       # 스탠드얼론 모듈1 진입점
-│   │   └── module2-main.tsx       # 스탠드얼론 모듈2 진입점
+│   ├── __tests__/                 # 전체 204개 (아래 5개 파일 합산)
+│   │   ├── client-compiler.test.ts # 브라우저 컴파일러 유닛 테스트 (24개)
+│   │   ├── shortcode-conformance.test.ts # 정합성 129개 — 공유 렌더러+PPTX 커버리지 + CSS 커버리지 가드 + standalone==server 동치 잠금
+│   │   ├── pptx-analyzer.test.ts  # PPTX 분석기 테스트 (23개)
+│   │   ├── pptx-transform.test.ts # PPTX 왕복 변환 테스트 (10개)
+│   │   └── wcag.test.ts           # WCAG 유틸 테스트 (18개)
+│   ├── standalone/                # 웹앱(모듈 1/2/3) standalone 빌드용 엔트리
+│   │   ├── design-system-main.tsx    # 모듈 1 진입점
+│   │   ├── guide-authoring-main.tsx  # 모듈 2 진입점
+│   │   └── pptx-inspector-main.tsx   # 모듈 3 진입점
 │   ├── hooks/
 │   │   ├── use-mobile.tsx
 │   │   └── use-toast.ts
@@ -178,7 +180,7 @@ npm run build
 npm run build:standalone
 
 # 테스트 실행
-npm test             # vitest run (192개 — 정합성 117개 포함)
+npm test             # vitest run (204개 — 정합성 129개 포함)
 npm run test:watch   # watch 모드
 
 # PPTX CLI 단축키
@@ -414,14 +416,15 @@ done:
 ## 테스트
 
 ```bash
-npm test          # vitest run (src/__tests__/ 하위 전체)
+npm test          # vitest run (src/__tests__/ 하위 전체, 204개)
 npm run test:watch
 ```
 
-- `client-compiler.test.ts`: `clientCompileMarkdown()` HTML 출력 구조, 숏코드 렌더링, FALLBACK_STYLES 유효성
-- `shortcode-conformance.test.ts`: 정합성 가드 117개 — 공유 HTML 렌더러 + PPTX 레지스트리 커버리지 + standalone `:::` 잔존 + **standalone==server 출력 동치 잠금**(html/presentation)
-- `pptx-analyzer.test.ts`: PPTX XML 분석기 유닛 테스트
-- `wcag.test.ts`: `getContrast()`, `getLuminance()` 계산 검증 (전체 192개)
+- `client-compiler.test.ts` (24개): `clientCompileMarkdown()` HTML 출력 구조, 숏코드 렌더링, FALLBACK_STYLES 유효성
+- `shortcode-conformance.test.ts` (129개): 정합성 가드 — 공유 HTML 렌더러 + PPTX 레지스트리 커버리지 + standalone `:::` 잔존 + **standalone==server 출력 동치 잠금**(html/presentation)
+- `pptx-analyzer.test.ts` (23개): PPTX XML 분석기 유닛 테스트
+- `pptx-transform.test.ts` (10개): PPTX 왕복(round-trip) 변환 검증
+- `wcag.test.ts` (18개): `getContrast()`, `getLuminance()` 계산 검증
 
 ---
 

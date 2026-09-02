@@ -153,3 +153,16 @@
 - **고아 3종 파일 이관**: `publish/ai-tools-guide.html`·`guide_v2.html`·`index.html`(제작 스크립트가 없는 고아 산출물, 개별 md에서 만들어진 것으로 추정)을 삭제하지 않고 `storage/legacy-standalone-pages/`로 이관 + 설명 README 추가. `publish/ai_guide_standalone.html`(내용이 새 `guides-standalone.html`과 100% 동일한 중복 파일)은 이제 기본 로직이 `-standalone` 이름으로 정확히 생성하므로 별도 유지할 이유가 없어져 삭제.
 - **문서 동기화**: `CLAUDE.md`(scripts 목록·빌드 명령 예시), `README.md`(빌드 파이프라인 표에 `build-folder.mjs` 추가), `docs/guide.md`, `docs/scripts_guide.md`(3-1~3-3절로 확장: hub-config.mjs / build-guide-hub.mjs / build-folder.mjs), `package.json`(`build:folder` 스크립트 추가) 전부 갱신.
 - 검증: `build-folder.mjs`를 `claudeguide`(4개 파일, 소규모)로 먼저 테스트 후 `guides`(42개 파일 전체)로 실행 — 개별 3종 85개 파일 + 폴더 index.html + standalone 허브 전부 정상 생성 확인. 로컬 정적 서버로 `publish/guides/index.html`(카테고리·링크 정상, productivity 마지막에 Grabit·Grabbit 둘 다 노출) 및 `publish/guides-standalone.html`(사이드바 토글 동작, DATA.ui.sidebarDefaultOpen 정상) 헤드리스 브라우저로 직접 확인. `npm test`(204/204) 통과.
+
+## 2026-09-02 — 세션 13: 세션 1~12 커밋(c782f05) 후 문서화 재점검 — 실제로 놓친 게 있었음
+
+사용자가 "문서화도 완료된건가? 더 오류사항이나 검증할 사항은 없는지 점검"이라고 요청 — 커밋 직후라 "다 됐다"고 낙관하지 않고 실제로 grep 기반 재점검을 수행. 결과적으로 세션 12의 `-onepage` 재개명이 일부 문서에는 반영되지 않은 채 커밋됐음을 확인.
+
+- **`docs/guide.md`·`README.md`에 남아있던 `-standalone.html`(콘텐츠 번들) 표기**: 세션 12에서 `CLAUDE.md`·`docs/scripts_guide.md`는 onepage로 갱신했지만 이 두 파일은 빠뜨렸음 — `publish/guides-standalone.html` 등 실제로는 더 이상 만들어지지 않는 파일명이 예시 명령어에 그대로 남아있었음. `npm run build:onepage -- --dir guides`/`npm run build:folder -- --dir guides` 형태로 정정.
+- **`README.md`의 카테고리 관리 설명이 구조 전(guide-categories.mjs 시절)에 머물러 있었음**: "라벨을 바꿀 땐 두 파일을 함께 수정" 같은, 세션 11에서 이미 해소한 드리프트를 여전히 안내하고 있던 문장을 `hub.config.json` 단일 출처 설명으로 교체.
+- **`README.md`의 `scripts/` 폴더 트리에 `build-folder.mjs`·`hub-config.mjs`·`sync-guides-index.mjs`·`build-publish.mjs`가 통째로 빠져 있었음**: 이번 세션에 만들거나 역할이 바뀐 스크립트들이 트리에 반영 안 된 상태로 커밋됐던 것 — 전부 추가하고 각 npm 스크립트 이름도 주석에 병기. `publish/`·`storage/` 옆에 `public/`(신설, gitignore) 항목도 추가.
+- **`CLAUDE.md`의 테스트 개수가 "117건/192개"로 굳어 있었음**: 실제로는 세션 5(2026-09-01)에 이미 117→129로 늘었는데 그 이후 한 번도 CLAUDE.md 본문 수치가 안 고쳐진 채 여러 세션을 거쳐온, 오늘 작업과 무관한 훨씬 오래된 드리프트. `npm test` 실측(204개 전체 = wcag 18 + pptx-analyzer 23 + client-compiler 24 + shortcode-conformance 129 + pptx-transform 10)으로 4곳 전부 정정. 특히 `wcag.test.ts (전체 192개)`는 "전체 스위트 총합을 wcag 파일 개수인 것처럼 잘못 라벨링"한 상태였던 것도 확인 — 파일별 정확한 개수로 재작성.
+- **`src/standalone/` 트리 항목이 세션 6 리네이밍 이전 이름(`module1-main.tsx`/`module2-main.tsx`) 그대로였음**: 실제 파일은 `design-system-main.tsx`/`guide-authoring-main.tsx`/`pptx-inspector-main.tsx` 3개로 이미 바뀐 지 오래(세션 6~7)인데 `CLAUDE.md` 트리만 안 고쳐져 있었음 — 정정.
+- **범위 밖으로 남겨둔 것(의도적)**: `docs/docs_index.md`의 "26종의 대화형 숏코드"(현재 정식 25+alias 13과 불일치)는 오늘 세션들이 손댄 적 없는 훨씬 이전(2026-06 이전 추정) 드리프트라 이번 점검 범위에서 제외 — 건드리면 관련 없는 변경이 섞여 들어갈 우려. 별도로 처리 필요.
+- **콘텐츠 신뢰도 관련 오픈 아이템 재확인(수정 없음, 이미 정확히 기록돼 있음)**: `Quartz.md`·`CapCut.md`는 세션 9 재검증에서 독립 검증 못 함, `Gemini.md`(Gemini 3 vs 3.1/3.5)·`Genspark.md`("80+ 도구") 저신뢰 — 전부 세션 9 worklog 항목에 이미 명시돼 있고 "다 됐다"고 잘못 표시된 곳 없음을 확인.
+- 검증: `npm test`(204/204), `npx tsc --noEmit`(에러 없음).

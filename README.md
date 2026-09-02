@@ -99,13 +99,13 @@ md_src 아래 마크다운 원본은 **① 파일 1개당 3종 포맷**으로, �
 | 방식 | 명령 | 내비게이션 UX | 적합한 용도 |
 | --- | --- | --- | --- |
 | **횡형 통합 덱** | `node scripts/build-presentation.mjs "md_src/guides/*.md" --out publish/guides_slides.html` | 좌상단 ☰ 버튼 → 전체 슬라이드 목차 오버레이, 슬라이드 넘기듯 좌우 이동 | 발표·데모, 슬라이드 형태로 죽 훑어볼 때 |
-| **종형 통합 허브(standalone)** | `node scripts/build-guide-hub.mjs --dir guides` (기본 출력: `publish/guides-standalone.html`, `--out`으로 경로 변경 가능) | 좌측 고정 사이드바(카테고리별, 열림/닫힘 토글) + 카드형 홈 화면, 클릭 시 해당 가이드 문서 전체를 그 자리에서 표시 — 서버 없이 파일 하나로 완결 | 레퍼런스처럼 필요한 도구를 찾아 읽을 때, 오프라인 배포용 "가이드북" |
+| **종형 통합 허브(onepage)** | `npm run build:onepage -- --dir guides` (기본 출력: `publish/guides-onepage.html`, `--out`으로 경로 변경 가능) | 좌측 고정 사이드바(카테고리별, 열림/닫힘 토글) + 카드형 홈 화면, 클릭 시 해당 가이드 문서 전체를 그 자리에서 표시 — 서버 없이 파일 하나로 완결 | 레퍼런스처럼 필요한 도구를 찾아 읽을 때, 오프라인 배포용 "가이드북" |
 
-**폴더 하나를 통째로 빌드**하려면(개별 html/presentation/pptx + 폴더 목록 `index.html` + 위 표의 두 통합 산출물까지) `node scripts/build-folder.mjs --dir guides`를 씁니다. 플래그 없이 실행하면 개별 3종 + 폴더 `index.html`이 기본 세트로 나오고, `md_src/<폴더>/hub.config.json`의 `outputs` 설정에 따라 standalone·통합 프레젠테이션 덱이 함께 생성됩니다(`--all`로 전부 강제 생성, `--standalone`/`--presentation-bundle`로 개별 지정 가능). 카테고리 라벨·표시 순서·사이드바 기본 열림 상태는 전부 이 `hub.config.json` 하나에서 관리하며, 폴더마다 독립적으로 설정합니다.
+**폴더 하나를 통째로 빌드**하려면(개별 html/presentation/pptx + 폴더 목록 `index.html` + 위 표의 두 통합 산출물까지) `npm run build:folder -- --dir guides`를 씁니다. 플래그 없이 실행하면 개별 3종 + 폴더 `index.html`이 기본 세트로 나오고, `md_src/<폴더>/hub.config.json`의 `outputs` 설정에 따라 onepage·통합 프레젠테이션 덱이 함께 생성됩니다(`--all`로 전부 강제 생성, `--onepage`/`--presentation-bundle`로 개별 지정 가능). 카테고리 라벨·표시 순서·사이드바 기본 열림 상태는 전부 이 `hub.config.json` 하나에서 관리하며, 폴더마다 독립적으로 설정합니다.
 
 * `build-presentation.mjs`에 폴더 글롭(`*.md`)을 넘기면 **내부적으로 이미 다중 문서 병합을 지원**합니다 — 각 md의 표지가 슬라이드 목차의 챕터 구분점이 됩니다.
-* `build-guide-hub.mjs`는 `--dir <md_src 하위 폴더명>` 하나만 바꾸면 `guides` 외에 `claudeguide` 등 **어떤 md_src 하위 폴더에도 동일하게 동작**합니다. `--out`을 여러 번 지정하면 같은 내용을 여러 경로에 동시 저장합니다. 사이드바 카테고리는 각 md의 frontmatter `style` 값을 기준으로 자동 분류됩니다(라벨·색상 매핑은 `scripts/sync-guides-index.mjs`의 `STYLE_META`와 동일 표를 사용 — 카테고리 라벨을 바꿀 땐 두 파일을 함께 수정).
-* 상세 구현은 [`docs/scripts_guide.md`](./docs/scripts_guide.md) 3-1절 참고.
+* `build-guide-hub.mjs`는 `--dir <md_src 하위 폴더명>` 하나만 바꾸면 `guides` 외에 `claudeguide` 등 **어떤 md_src 하위 폴더에도 동일하게 동작**합니다(임의의 md_src 밖 경로도 가능). `--out`을 여러 번 지정하면 같은 내용을 여러 경로에 동시 저장합니다. 사이드바 카테고리는 각 md의 frontmatter `style` 값을 기준으로 자동 분류되며, 라벨·색상·표시 순서는 `md_src/<폴더>/hub.config.json` 하나가 유일한 출처입니다(`scripts/hub-config.mjs`가 로더 — `sync-guides-index.mjs`도 같은 파일을 읽으므로 두 곳을 따로 고칠 필요가 없습니다).
+* 상세 구현은 [`docs/scripts_guide.md`](./docs/scripts_guide.md) 3-1~3-3절 참고.
 
 ---
 
@@ -149,18 +149,22 @@ cs_v2/
 │       ├── PptxInspectorSuite.tsx # Module 3. PPTX 디자인 분석·리매퍼 (독립형, 서버리스)
 │       └── ui/                  # Shadcn UI 컴포넌트 라이브러리
 ├── scripts/
-│   ├── vite-api-plugin.ts  # Vite 개발 서버 API 미들웨어 (Bridge)
+│   ├── vite-api-plugin.ts  # Vite 개발 서버 API 미들웨어 (Bridge) — 웹 GUI의 저장/일괄변환 API
 │   ├── pptx-analyzer.js    # PPTX XML 구조 파싱 코어 엔진
 │   ├── spec-parser.js      # PPTX 디자인 스펙 데이터 파서
 │   ├── shortcode-render.mjs   # [정본] 숏코드 → HTML 공유 렌더러 (3개 HTML 출력 공용)
 │   ├── shortcode-styles.mjs   # [정본] 숏코드 컴포넌트 CSS (var(--*) 테마 독립)
 │   ├── guide-core.mjs      # 정본 코어: MD → 가이드 HTML (fs/path 비의존, CLI+client 공유)
 │   ├── presentation-core.mjs # 정본 코어: MD → 16:9 슬라이드 HTML (fs/path 비의존, CLI+client 공유)
-│   ├── build-guide.mjs     # guide-core 호출 CLI 래퍼
-│   ├── build-presentation.mjs # presentation-core 호출 CLI 래퍼
-│   ├── build-standalone.mjs   # standalone 단일 HTML 빌드 (정합성 테스트 게이트)
-│   ├── build-guide-hub.mjs # md_src/guides 전체를 사이드바+Shadow DOM 오프라인 허브 1개 HTML로 병합
-│   ├── md-to-pptx.mjs      # 마크다운 ➡️ PPTX 컴파일 엔진 (config 폰트 로드)
+│   ├── build-guide.mjs     # guide-core 호출 CLI 래퍼 (npm run build:guide)
+│   ├── build-presentation.mjs # presentation-core 호출 CLI 래퍼 (npm run build:presentation)
+│   ├── build-standalone.mjs   # 웹앱(모듈 1/2/3) standalone 단일 HTML 빌드 — 콘텐츠 파이프라인과는 별개(npm run build:standalone)
+│   ├── build-guide-hub.mjs # md_src/<dir> 전체를 사이드바+Shadow DOM onepage 단일 HTML로 병합 (npm run build:onepage)
+│   ├── build-folder.mjs    # 폴더 단위 오케스트레이터 — 개별 3종+폴더 index.html+onepage+통합덱을 한 번에 (npm run build:folder)
+│   ├── hub-config.mjs      # md_src/<dir>/hub.config.json 로더 — 카테고리 라벨·순서·UI 옵션 단일 출처
+│   ├── sync-guides-index.mjs # md_src/guides → src/data/guides.json 동기화 (hub-config.mjs 기준으로 정렬)
+│   ├── build-publish.mjs   # md_src 전체를 public/에 일괄 빌드하는 독립 유틸(현재 GUI에서는 호출 안 됨, 수동 실행용)
+│   ├── md-to-pptx.mjs      # 마크다운 ➡️ PPTX 컴파일 엔진 (config 폰트 로드, npm run build:pptx)
 │   └── pptx-renderers/     # 숏코드별 PPTX 드로잉 렌더러 모듈 + registry.mjs
 ├── docs/                   # V2.0 공식 마스터 문서 보관 공간
 │   ├── docs_index.md       # 문서 시스템 종합 안내 홈
@@ -168,6 +172,7 @@ cs_v2/
 │   ├── scripts_guide.md    # 개발자 변환 코어 엔진 설명서
 │   ├── shortcode-reference.md # 숏코드 레퍼런스 (25 정식 + 13 alias)
 │   ├── shortcode-changelog.md # 숏코드 변경 이력
+│   ├── worklog.md          # 세션별 작업 로그 (누적, 시점 기록)
 │   ├── report/             # 코드 점검·분석 보고서 (시점 기록)
 │   └── plan/               # 아키텍처 및 구현 기획 계획서 보관 폴더
 ├── config/
@@ -177,10 +182,11 @@ cs_v2/
 │   ├── font-aliases.json   # 폰트 alias → 실제 폰트명 매핑
 │   ├── shortcode-guide.ts  # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처)
 │   └── layout.json         # PPTX 분석 가공 오프셋 보관 JSON
-├── src/__tests__/          # Vitest — shortcode-conformance(정합성) 등 148건
-├── md_src/                 # 마크다운 원천 소스 보관 폴더
-├── publish/                # [산출물] 컴파일 완료된 가이드북 포털 및 HTML 저장소
-└── storage/                # [산출물] 프레젠테이션/PPTX 파일 독립 보관 저장소
+├── src/__tests__/          # Vitest — shortcode-conformance(정합성) 등 204건
+├── md_src/                 # 마크다운 원천 소스 보관 폴더 (하위 폴더마다 hub.config.json 선택적 배치)
+├── public/                 # [산출물, gitignore] 웹 GUI "가이드 컬렉션 저장" 시 Vite 개발서버가 서빙하는 재빌드 위치
+├── publish/                # [산출물, gitignore] CLI 빌드 파이프라인(build-folder.mjs 등)의 기본 출력 위치
+└── storage/                # [gitignore] 프레젠테이션/PPTX 독립 보관 + 외부 참고자료(storage/netlify 등)
     ├── presentation/       # 변환된 Presentation HTML
     └── pptx/               # 변환된 PPTX 디자인 결과물
 ```

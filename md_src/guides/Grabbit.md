@@ -2,7 +2,7 @@
 title: "Grabbit (그랩잇)"
 subtitle: "드래그로 링크 대량 수집 & 관리"
 badge: "🔗 크롬 확장 프로그램 · 100,000+ 사용자"
-style: "productivity"
+style: "cobalt-blue"
 stats:
   - value: "드래그"
     label: "다중 링크 즉시 선택"

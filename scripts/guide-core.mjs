@@ -17,7 +17,7 @@ import {
 } from "./shortcode-render.mjs";
 import { SHORTCODE_CSS } from "./shortcode-styles.mjs";
 
-export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverride } = {}) {
+export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverride, mermaidScript } = {}) {
   // 환경 비의존: config 3종 주입 (정본 build-guide 의 모듈 전역과 동일 역할)
   const STYLES = styles || {};
   const CONFIG = config || {};
@@ -49,8 +49,8 @@ export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverr
   fm.title = sanitizeTitle(fm.title || "Guide");
   if (fm.subtitle) fm.subtitle = sanitizeTitle(fm.subtitle);
 
-  const styleKey = opts.style || fm.style || "ai-chat";
-  const style = STYLES[styleKey] || STYLES["ai-chat"];
+  const styleKey = opts.style || fm.style || "emerald";
+  const style = STYLES[styleKey] || STYLES["emerald"];
 
   // Config에서 둥글기 값 가져오기 (없으면 0.08인치 -> 12px)
   const radiusVal = CONFIG?.slide?.globalRadius || 0.08;
@@ -81,7 +81,7 @@ export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverr
   processedContent = processedContent.replace(/^\s*(↓|→|↑|←)\s*$/gm, '<div class="flow-arrow-separator">$1</div>');
 
   const tokens = marked.lexer(processedContent);
-  let sectionNum = 0, bodyHtml = "", navLinks = [], openSection = false, openCard = false;
+  let sectionNum = 0, bodyHtml = "", navLinks = [], openSection = false, openCard = false, hasMermaid = false;
 
   const closeCard = () => { if (openCard) { bodyHtml += `</div>`; openCard = false; } };
   const closeSection = () => { closeCard(); if (openSection) { bodyHtml += `</section>`; openSection = false; } };
@@ -102,6 +102,7 @@ export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverr
       // Mermaid 구조도 — 원문 그대로 <pre class="mermaid">에 넣어 클라이언트에서 mermaid.js 가 렌더링
       if (openCard) closeCard();
       bodyHtml += `<pre class="mermaid">${escapeHtml(tok.text)}</pre>`;
+      hasMermaid = true;
     } else {
       const isShortcode = tok.raw && (
         tok.raw.includes('class="step-flow"') ||
@@ -217,11 +218,14 @@ export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverr
   .section-header h2 { font-family: var(--font-title); font-size: calc(var(--size-h2) * var(--font-scale)); font-weight: 700; }
   .card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 35px; margin-bottom: 24px; box-shadow: var(--shadow); }
   .card-title { font-family: var(--font-title); font-size: calc(var(--size-h3) * var(--font-scale)); color: var(--brand-dark); margin-bottom: 20px; border-bottom: 2px solid var(--brand-light); display: inline-block; padding-bottom: 5px; font-weight: 800;}
-  
+
+  /* Mermaid 다이어그램 — 세로형(TD) 등 자연 크기가 본문 폭보다 큰 경우 비율 유지하며 축소 */
+  .mermaid, pre.mermaid { max-width: 100%; overflow-x: auto; }
+  .mermaid svg, pre.mermaid svg { max-width: 100%; height: auto; }
+
 ${SHORTCODE_CSS}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: "default" });</script>
+${hasMermaid ? (mermaidScript ? `<script>${mermaidScript}</script>` : `<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>`) + `\n<script>mermaid.initialize({ startOnLoad: true, theme: "default" });</script>` : ""}
 </head>
 <body>
   <nav class="nav"><div class="nav-inner"><a href="#" class="nav-logo">${fm.logo ? fm.logo + " " : ""}${escapeHtml(fm.title)}</a><ul class="nav-links">${navLinks.slice(0, 7).join("")}${navLinks.length > 7 ? `<li class="nav-more">+${navLinks.length - 7}</li>` : ""}</ul></div></nav>

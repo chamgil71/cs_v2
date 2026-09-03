@@ -71,18 +71,21 @@ function buildData(folder = "guides") {
   const hubConfig = loadHubConfig(guidesDir);
   const byCategory = new Map();
   const guideContents = {};
+  let hasMermaid = false;
 
   for (const file of files) {
     const base = path.basename(file, ".md");
     const raw = fs.readFileSync(file, "utf8");
     const { data: fm } = matter(raw);
-    const styleKey = String(fm.style || "uncategorized").trim() || "uncategorized";
+    // 그룹핑은 category(그룹핑 전용 필드) 우선, 없으면 style(색상 테마)로 대체(하위호환) — style은 색이지 카테고리가 아니다.
+    const styleKey = String(fm.category || fm.style || "uncategorized").trim() || "uncategorized";
     const title = String(fm.title || base).replace(/\s+/g, " ").trim();
     const subtitle = String(fm.subtitle || "").replace(/\s+/g, " ").trim();
     const slug = slugify(base);
 
     const { html } = buildHtml({ raw }, { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG });
     guideContents[slug] = extractStylesAndBody(html);
+    if (guideContents[slug].body.includes('class="mermaid"')) hasMermaid = true;
 
     if (!byCategory.has(styleKey)) byCategory.set(styleKey, []);
     byCategory.get(styleKey).push({ slug, title, subtitle });
@@ -102,6 +105,8 @@ function buildData(folder = "guides") {
     guideContents,
     collectionContents: {},
     ui: { sidebarDefaultOpen: hubConfig.sidebar.defaultOpen },
+    hero: hubConfig.hero,
+    hasMermaid,
   };
 }
 
@@ -127,13 +132,13 @@ const HEAD = `<!doctype html>
   .sa-layout{display:grid;grid-template-columns:280px minmax(0,1fr);height:calc(100vh - 53px);min-height:0;}
   .sa-layout.sa-sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)}
   .sa-layout.sa-sidebar-collapsed .sa-sidebar{display:none}
-  .sa-sidebar{border-right:1px solid var(--border);background:var(--panel);overflow-y:auto;min-height:0;}
+  .sa-sidebar{grid-column:1;border-right:1px solid var(--border);background:var(--panel);overflow-y:auto;min-height:0;}
   .sa-cat{padding:12px 16px 4px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
   .sa-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
   .sa-nav a,.sa-nav button{display:block;width:100%;text-align:left;padding:6px 16px 6px 32px;font-size:14px;line-height:1.45;color:var(--muted);text-decoration:none;cursor:pointer;background:none;border:none;font-family:inherit}
   .sa-nav a:hover,.sa-nav button:hover{background:var(--panel-2);color:var(--fg)}
   .sa-nav a.active,.sa-nav button.active{background:var(--panel-2);color:var(--fg);font-weight:600;border-left:3px solid var(--accent);padding-left:29px}
-  #main.sa-main{overflow-y:auto;min-height:0;background:var(--main-bg);color:var(--main-fg);}
+  #main.sa-main{grid-column:2;overflow-y:auto;min-height:0;background:var(--main-bg);color:var(--main-fg);}
   .sa-home{background:var(--bg);color:var(--fg);min-height:100%}
   .sa-hero{position:relative;overflow:hidden;padding:56px 32px 40px;border-bottom:1px solid var(--border)}
   .sa-hero::before{content:'';position:absolute;inset:0;opacity:.08;background:linear-gradient(135deg,var(--accent),#8b5cf6);pointer-events:none}
@@ -295,9 +300,10 @@ function showHome(){
 
   let html = '<div class="sa-home">';
   html += '<section class="sa-hero"><div class="sa-hero-inner">';
-  html += '<div class="sa-hero-badge">✨ 한국어로 정리한 도구 가이드 모음</div>';
-  html += '<h2 class="sa-hero-title">AI · 생산성 도구를<br><span class="grad">카테고리별로 빠르게</span></h2>';
-  html += '<p class="sa-hero-desc">'+escapeHtml(totalGuideCount()+'개 도구 가이드를 그룹으로 모아 한 화면에서 탐색하고 바로 읽어볼 수 있습니다. 인터넷 없이도 작동합니다.')+'</p>';
+  const hero = DATA.hero || {};
+  html += '<div class="sa-hero-badge">'+escapeHtml(hero.badge||'')+'</div>';
+  html += '<h2 class="sa-hero-title">'+escapeHtml(hero.titleLine1||'')+'<br><span class="grad">'+escapeHtml(hero.titleAccent||'')+'</span></h2>';
+  html += '<p class="sa-hero-desc">'+escapeHtml((hero.desc||'').replace('{count}', String(totalGuideCount())))+'</p>';
   html += '<div class="sa-hero-controls">';
   html += '<div class="sa-search-wrap"><span class="sa-search-icon">🔍</span><input id="homeSearch" type="text" placeholder="도구 이름이나 카테고리 검색..." /></div>';
   html += '<button class="sa-cta-btn" id="heroStartBtn">탐색 시작 →</button>';
@@ -387,6 +393,10 @@ function renderShadowContent(host, content){
     '@media print{:host{display:block;background:transparent!important;color:inherit!important}.guide-document{min-height:0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.nav,.back-top,#backTop{display:none!important}}',
   ].join('\\n');
   currentShadow.innerHTML = '<style>'+baseCss+'\\n'+normalizeGuideStyles(content.styles)+'</style><div class="guide-document">'+content.body+'</div>';
+  if(window.mermaid){
+    const mmEls = currentShadow.querySelectorAll('.mermaid, pre.mermaid');
+    if(mmEls.length) mermaid.run({ nodes: Array.from(mmEls) }).catch(()=>{});
+  }
   currentShadow.addEventListener('click',(event)=>{
     const path = event.composedPath();
     const link = path.find((node)=>node && node.tagName === 'A' && node.getAttribute);
@@ -465,7 +475,17 @@ function render(folder = "guides") {
   const data = buildData(folder);
   // </script> 조기 종료 및 <!-- 주입 방지: '<' 를 전부 유니코드 이스케이프
   const safeJson = JSON.stringify(data).replace(/</g, "\\u003c");
-  return `${HEAD}\n<script id="appdata" type="application/json">${safeJson}</script>\n${TAIL}`;
+  // mermaid(3.3MB)는 이 폴더의 가이드 중 하나라도 실제로 mermaid 블록을 쓸 때만 인라인한다(오프라인 원칙 + 용량 절약).
+  let MERMAID_TAG = "";
+  if (data.hasMermaid) {
+    const mermaidJsPath = path.join(ROOT, "node_modules/mermaid/dist/mermaid.min.js");
+    const mermaidScript = fs.existsSync(mermaidJsPath) ? fs.readFileSync(mermaidJsPath, "utf8") : null;
+    const scriptTag = mermaidScript
+      ? `<script>${mermaidScript}</script>`
+      : '<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>';
+    MERMAID_TAG = scriptTag + '\n<script>if(window.mermaid) mermaid.initialize({ startOnLoad: false, theme: "default" });</script>';
+  }
+  return `${HEAD}\n<script id="appdata" type="application/json">${safeJson}</script>\n${MERMAID_TAG}\n${TAIL}`;
 }
 
 const isMain = fileURLToPath(import.meta.url) === path.resolve(process.argv[1] || "");

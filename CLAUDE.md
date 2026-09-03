@@ -310,19 +310,23 @@ alias에 없는 값은 그대로 폰트명으로 사용됩니다.
 
 ### 스타일 테마 목록 (`config/styles.json` — 11종)
 
-| 키 | label | 계열 색상 | PPTX 폰트 |
-|----|-------|---------|---------|
-| `custom-blue` | 페이퍼로지 커스텀 블루 | #2789F5 | paperlogy-extrabold / paperlogy-regular |
-| `ai-chat` | AI 챗봇 (그린) | #10A37F | pretendard |
-| `ai-dev` | AI 개발 도구 (오렌지) | #D97757 | Consolas / Pretendard |
-| `knowledge` | 노트 & 지식관리 (퍼플) | #6366F1 | noto-serif / noto-sans |
-| `productivity` | 생산성 유틸 (블루) | #1565C0 | pretendard |
-| `creative` | 크리에이티브 AI (마젠타) | #9B59B6 | paperlogy-extrabold / paperlogy-regular |
-| `security` | 보안 & 인프라 (사이언) | #06B6D4 | pretendard |
-| `finance` | 재테크 & 금융 (골드) | #D4A017 | noto-serif / noto-sans |
-| `future` | 퓨처 AI (네온 라임) | #84CC16 | pretendard |
-| `enterprise` | 엔터프라이즈 (슬레이트) | #475569 | pretendard |
-| `media` | 미디어 & 콘텐츠 (로즈) | #E11D48 | pretendard |
+> **`style`(색상 테마)과 `category`(그룹핑)는 별개다.** 2026-09-03 이전에는 이 테마 키 자체가 `ai-dev`/`productivity`처럼 콘텐츠 카테고리명을 겸하고 있었다 — 처음 `guides/` 가이드 카테고리별로 테마를 하나씩 만들다 보니 그렇게 굳어진 것. 이제 여러 문서를 같은 카테고리로 묶고 싶으면(예: onepage 허브 사이드바, 통합 프레젠테이션 덱 순서) `style`과 무관하게 frontmatter에 `category:`를 별도로 지정한다 — `category`가 없으면 `style` 값이 카테고리로도 쓰인다(하위호환, `md_src/guides`·`md_src/claudeguide`의 기존 46개 문서가 이 경로). `hub.config.json`의 `categories.order`/`categories.meta`는 이 `category`(없으면 style) 값을 키로 쓴다.
+
+| 키(2026-09-03 개명) | 이전 키 | label | 계열 색상 | PPTX 폰트 |
+|----|----|-------|---------|---------|
+| `sky-blue` | `custom-blue` | 스카이 블루 | #2789F5 | paperlogy-extrabold / paperlogy-regular |
+| `emerald` | `ai-chat` | 에메랄드 그린 | #10A37F | pretendard |
+| `terracotta` | `ai-dev` | 테라코타 오렌지 | #D97757 | Consolas / Pretendard |
+| `indigo` | `knowledge` | 인디고 퍼플 | #6366F1 | noto-serif / noto-sans |
+| `cobalt-blue` | `productivity` | 코발트 블루 | #1565C0 | pretendard |
+| `orchid` | `creative` | 오키드 마젠타 | #9B59B6 | paperlogy-extrabold / paperlogy-regular |
+| `cyan` | `security` | 사이언 | #06B6D4 | pretendard |
+| `amber` | `finance` | 앰버 골드 | #D4A017 | noto-serif / noto-sans |
+| `lime` | `future` | 네온 라임 | #84CC16 | pretendard |
+| `slate` | `enterprise` | 슬레이트 그레이 | #475569 | pretendard |
+| `rose` | `media` | 로즈 레드 | #E11D48 | pretendard |
+
+키 이름은 색 속성 기준으로 바뀌었을 뿐 팔레트·폰트 값은 그대로다(개명 전후 산출물 동일). 기존 콘텐츠는 전부 새 키로 일괄 치환 완료 — `style: "ai-dev"` 같은 구 키를 쓰는 문서가 새로 생기면 `STYLES[key]`가 `undefined`가 되어 기본 테마(`emerald`)로 조용히 폴백되니 주의.
 
 각 테마는 `brand`, `brandDark`, `brandDeep`, `brandLight`, `brandMid`, `border`, `bg`, `heroGradient`, `webFont`, `webFontTitle`, `pptxFont`, `pptxFontTitle`, `pptxFontSubTitle` 키를 가집니다.
 
@@ -397,7 +401,8 @@ HTML `:root`의 `--size-*` 변수는 **`config/htmldesign.config.json`의 `htmlS
 ---
 title: "문서 제목"
 subtitle: "부제목"
-style: "custom-blue"     # styles.json 키 (11종 중 선택)
+style: "sky-blue"        # styles.json 색상 테마 키 (11종 중 선택)
+category: "ai-dev-tools" # 그룹핑용(선택, 없으면 style 값이 카테고리로 대체됨)
 logo: "🤖"               # 표지 이모지
 badge: "배지 텍스트"
 titleSize: 22            # PPTX 제목 폰트 크기

@@ -5,10 +5,15 @@
 
 export const type = ["icon-grid", "badge-grid", "checkpoint-grid"];
 
+function getTitleBlock(it, cardW, c, helpers) {
+  const lines = Math.max(1, helpers.estimateLines(it.title || "", cardW - 0.2, c.bodySize));
+  return { lines, h: lines * 0.2 + 0.12 };
+}
+
 function getCardHeight(it, cardW, c, helpers) {
   let h = 0.55; // 아이콘(0.42) 및 타이틀 간격의 기본 높이
   if (it.title) {
-    h += 0.28;
+    h += getTitleBlock(it, cardW, c, helpers).h;
   }
   if (it.desc) {
     const descLines = helpers.estimateLines(it.desc, cardW - 0.24, c.bodySize - 1);

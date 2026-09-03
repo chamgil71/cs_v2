@@ -15,7 +15,14 @@ function renderInline(s) {
 }
 
 function cleanValue(v) {
-  return String(v ?? "").trim().replace(/^["']|["']$/g, "");
+  const s = String(v ?? "").trim();
+  if (s.length >= 2 && s[0] === '"' && s[s.length - 1] === '"') {
+    return s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, "\\");
+  }
+  if (s.length >= 2 && s[0] === "'" && s[s.length - 1] === "'") {
+    return s.slice(1, -1);
+  }
+  return s.replace(/^["']|["']$/g, "");
 }
 
 function splitMeta(meta) {

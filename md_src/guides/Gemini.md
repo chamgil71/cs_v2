@@ -2,7 +2,7 @@
 title: "Google Gemini완전 활용 가이드"
 subtitle: "Google 멀티모달 AI"
 badge: "Google DeepMind · Gemini 3.1 · 2026"
-style: "ai-chat"
+style: "emerald"
 stats:
   - value: "1M+"
     label: "컨텍스트 토큰 (Pro)"

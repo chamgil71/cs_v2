@@ -76,7 +76,7 @@ ${doc.snippet}
   
   // Style and Server files
   const [styles, setStyles] = useState<Record<string, any>>(BUNDLED_STYLES);
-  const [selectedStyle, setSelectedStyle] = useState("custom-blue");
+  const [selectedStyle, setSelectedStyle] = useState("sky-blue");
   const [sourceFiles, setSourceFiles] = useState<string[]>([]);
   const [loadingFiles, setLoadingFiles] = useState(false);
 

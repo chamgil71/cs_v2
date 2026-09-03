@@ -1,0 +1,45 @@
+{
+  "categories": {
+    "order": [
+      "ai-usage",
+      "ai-tools",
+      "my-projects",
+      "uncategorized"
+    ],
+    "meta": {
+      "ai-usage": {
+        "label": "AI 사용 방법",
+        "description": "플랫폼 무관 핵심 원리 — 접근 채널부터 멀티 에이전트 분업까지",
+        "color": "#2789F5"
+      },
+      "ai-tools": {
+        "label": "AI 도구의 종류",
+        "description": "목적별로 정리한 도구 지형도",
+        "color": "#1565C0"
+      },
+      "my-projects": {
+        "label": "내 프로젝트",
+        "description": "23챕터 실전 원고에서 뽑은 대표 사례",
+        "color": "#D97757"
+      },
+      "uncategorized": {
+        "label": "미분류",
+        "description": "category/style frontmatter가 없는 문서",
+        "color": "#64748b"
+      }
+    }
+  },
+  "sidebar": {
+    "defaultOpen": true
+  },
+  "outputs": {
+    "onepage": true,
+    "presentationBundle": true
+  },
+  "hero": {
+    "badge": "📚 AI 활용 강의 자료 3부작",
+    "titleLine1": "AI를 제대로 쓰는 법,",
+    "titleAccent": "원리부터 실전까지",
+    "desc": "{count}개 문서로 AI 사용법 · 도구 지형도 · 실전 프로젝트 사례를 한 화면에서 훑어볼 수 있습니다. 인터넷 없이도 작동합니다."
+  }
+}

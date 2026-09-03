@@ -2,7 +2,7 @@
 title: "국산 AI 서비스 총정리"
 subtitle: "뤼튼 · 네이버 · SKT · 카카오 · 삼성의 AI 전략"
 badge: "🇰🇷 Korean AI · 2026"
-style: "productivity"
+style: "cobalt-blue"
 stats:
   - value: "뤼튼"
     label: "AI 포털 · 캐릭터 챗"

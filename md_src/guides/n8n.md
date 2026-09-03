@@ -2,7 +2,7 @@
 title: "n8n 완전 활용 가이드"
 subtitle: "워크플로우 자동화 도구"
 badge: "⚙️ 워크플로우 · 자동화"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "Self-Host"
     label: "무료 운영"

@@ -2,7 +2,7 @@
 title: "GitHub Copilot 완전 활용 가이드"
 subtitle: "AI 짝 코딩 & 자동완성"
 badge: "🤝 AI 짝 코딩 · 에이전트 모드 · 2026"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "$10~100/월"
     label: "Pro·Pro+·Max"

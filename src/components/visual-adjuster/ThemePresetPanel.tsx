@@ -66,7 +66,7 @@ export default function ThemePresetPanel({
                 <div className="text-xs text-slate-500 font-mono">{key}</div>
               </div>
             </div>
-            {key !== 'custom-blue' && key !== 'ai-chat' && (
+            {key !== 'sky-blue' && key !== 'emerald' && (
               <button
                 onClick={(e) => {
                   e.stopPropagation();

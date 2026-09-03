@@ -2,7 +2,7 @@
 title: "모든 작업을 한 곳에서,노션으로 정리하세요"
 subtitle: "올인원 워크스페이스"
 badge: "📝 올인원 워크스페이스 · 2026"
-style: "knowledge"
+style: "indigo"
 stats:
   - value: "무료"
     label: "기본 플랜"

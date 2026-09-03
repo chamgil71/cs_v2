@@ -2,7 +2,7 @@
 title: "터미널 AI 코딩 도구 3종 실무 활용기"
 subtitle: "Claude Code · Antigravity 2.0 · Codex 완벽 비교 분석"
 badge: "REVOLUTION · 2026"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "3대 도구"
     label: "터미널 에이전트"

@@ -2,7 +2,8 @@
 title: "Supabase 완전 활용 가이드"
 subtitle: "오픈소스 Firebase 대안 BaaS"
 badge: "🗄️ 백엔드 서비스 · PostgreSQL"
-style: "webdev"
+style: "cyan"
+category: "webdev"
 stats:
   - value: "PostgreSQL"
     label: "기본 엔진"

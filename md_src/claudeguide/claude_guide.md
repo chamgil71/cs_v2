@@ -2,7 +2,7 @@
 title: "Claude & Claude Code 통합 마스터 가이드"
 subtitle: "웹 서비스부터 CLI 자율 에이전트, MCP 연동 및 모바일 원격 제어까지"
 badge: "🚀 Anthropic 공식 기능 완벽 마스터"
-style: "custom-blue"
+style: "sky-blue"
 logo: "🤖"
 titleSize: 22
 bodySize: 12

@@ -2,7 +2,7 @@
 title: "Quartz 완전 활용 가이드"
 subtitle: "마크다운 기반 디지털 가든 퍼블리싱"
 badge: "🪴 디지털 정원 · 지식 관리"
-style: "knowledge"
+style: "indigo"
 stats:
   - value: "무료"
     label: "오픈소스"

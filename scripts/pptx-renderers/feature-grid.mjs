@@ -5,12 +5,18 @@
 
 export const type = "feature-grid";
 
+function getTitleBlock(it, cardW, c, helpers) {
+  const titleText = (it.icon && it.icon !== "•" ? it.icon + " " : "") + (it.title || "");
+  const lines = Math.max(1, helpers.estimateLines(titleText, cardW - 0.24, c.titleSize));
+  return { text: titleText, lines, h: lines * 0.22 + 0.12 };
+}
+
 function getCardHeight(it, cardW, c, helpers) {
   let h = 0.12;
   if (it.tag) {
     h += 0.24;
   }
-  h += 0.34;
+  h += getTitleBlock(it, cardW, c, helpers).h;
   if (it.desc) {
     const descLines = helpers.estimateLines(it.desc, cardW - 0.24, c.bodySize - 1);
     h += descLines * 0.18 + 0.12;
@@ -100,14 +106,14 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
       ty += 0.24;
     }
     
-    // 타이틀 (아이콘 포함)
-    const titleText = (it.icon && it.icon !== "•" ? it.icon + " " : "") + (it.title || "");
-    slide.addText(titleText, {
-      x: cx + 0.12, y: ty, w: cardW - 0.24, h: 0.3,
+    // 타이틀 (아이콘 포함, 줄바꿈 시 높이 확장)
+    const titleBlock = getTitleBlock(it, cardW, c, helpers);
+    slide.addText(titleBlock.text, {
+      x: cx + 0.12, y: ty, w: cardW - 0.24, h: titleBlock.h,
       fontSize: c.titleSize, bold: true, color: pal.text,
-      fontFace: font, valign: "middle"
+      fontFace: font, valign: "top"
     });
-    ty += 0.34;
+    ty += titleBlock.h;
     
     // 설명 (desc)
     if (it.desc) {

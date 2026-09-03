@@ -24,10 +24,15 @@ const STYLES = loadJsonWithComments(path.join(CONFIG_DIR, "styles.json"));
 const CONFIG = loadJsonWithComments(path.join(CONFIG_DIR, "pptdesign.config.json"));
 const HTML_CONFIG = loadJsonWithComments(path.join(CONFIG_DIR, "htmldesign.config.json"));
 
+// mermaid 스크립트 원문(3.3MB) — 문서가 실제로 mermaid 블록을 쓸 때만 코어가 인라인한다(규칙 1: 오프라인 원칙).
+// 없는 문서에 매번 인라인하면 낭비이므로, 파일 존재 시 1회만 읽어 캐시(모듈 스코프)한다.
+const MERMAID_JS_PATH = path.join(ROOT, "node_modules/mermaid/dist/mermaid.min.js");
+const MERMAID_SCRIPT = fs.existsSync(MERMAID_JS_PATH) ? fs.readFileSync(MERMAID_JS_PATH, "utf8") : null;
+
 // 파일 경로 → 사전 읽은 문서 → 코어 호출 (기존 buildHtml 과 동일한 외부 계약: (path, opts) → {html,...})
 export function buildHtml(inputPath, opts = {}) {
   const raw = fs.readFileSync(inputPath, "utf8");
-  return buildGuideHtmlCore({ raw }, { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG, style: opts.style || null });
+  return buildGuideHtmlCore({ raw }, { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG, style: opts.style || null, mermaidScript: MERMAID_SCRIPT });
 }
 
 const isMain = fileURLToPath(import.meta.url) === path.resolve(process.argv[1] || "");

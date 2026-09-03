@@ -2,7 +2,7 @@
 title: "AI 영상 & 음악생성 완전 가이드"
 subtitle: "AI로 멀티미디어 제작"
 badge: "AI Creative Media · 2026"
-style: "creative"
+style: "orchid"
 stats:
   - value: "Sora 2"
     label: "OpenAI 영상"

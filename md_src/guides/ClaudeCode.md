@@ -2,7 +2,7 @@
 title: "클로드 코드설치 가이드"
 subtitle: "클로드 코드 설치 가이드"
 badge: "🎉 완전 초보자 맞춤 가이드"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "약 10분"
     label: "설치 소요 시간"

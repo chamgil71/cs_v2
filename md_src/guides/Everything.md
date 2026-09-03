@@ -2,7 +2,7 @@
 title: "Everything(에브리띵)"
 subtitle: "초고속 파일 검색"
 badge: "🔍 Windows 전용 · 완전 무료 · 오픈소스"
-style: "productivity"
+style: "cobalt-blue"
 stats:
   - value: "<1초"
     label: "전체 드라이브 검색"

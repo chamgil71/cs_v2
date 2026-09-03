@@ -2,7 +2,7 @@
 title: "Snipaste"
 subtitle: "캡처와 화면 부착 도구"
 badge: "📌 로컬 설치 · 무료 / Pro"
-style: "productivity"
+style: "cobalt-blue"
 stats:
   - value: "F1"
     label: "캡처 단축키"

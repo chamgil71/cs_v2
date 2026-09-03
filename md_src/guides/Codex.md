@@ -2,7 +2,7 @@
 title: "OpenAI Codex 완전 활용 가이드"
 subtitle: "터미널·IDE에서 동작하는 OpenAI의 에이전틱 코딩 도구"
 badge: "🧠 OpenAI · Codex CLI/IDE · 2026"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "GPT-5.5"
     label: "ChatGPT 로그인 시 기본 모델"

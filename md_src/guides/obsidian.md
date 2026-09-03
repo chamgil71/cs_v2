@@ -2,7 +2,7 @@
 title: "생각을 연결하는두 번째 뇌, 옵시디언"
 subtitle: "로컬 마크다운 지식 그래프"
 badge: "🔮 로컬 우선 지식 관리 도구"
-style: "knowledge"
+style: "indigo"
 stats:
   - value: "무료"
     label: "개인 사용"

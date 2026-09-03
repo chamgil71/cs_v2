@@ -26,6 +26,10 @@ const STYLES = loadJsonWithComments(path.join(CONFIG_DIR, "styles.json"));
 const CONFIG = loadJsonWithComments(path.join(CONFIG_DIR, "pptdesign.config.json"));
 const HTML_CONFIG = loadJsonWithComments(path.join(CONFIG_DIR, "htmldesign.config.json"));
 
+// mermaid 스크립트 원문(3.3MB) — 덱 안에 mermaid 블록이 하나라도 있을 때만 코어가 인라인한다(오프라인 원칙).
+const MERMAID_JS_PATH = path.join(ROOT, "node_modules/mermaid/dist/mermaid.min.js");
+const MERMAID_SCRIPT = fs.existsSync(MERMAID_JS_PATH) ? fs.readFileSync(MERMAID_JS_PATH, "utf8") : null;
+
 // 파일 경로 배열 → 사전 읽은 문서 배열 → 코어 호출 (CLI 전용 얇은 어댑터)
 function buildDeckFromFiles(files, opts = {}) {
   const docs = [];
@@ -37,7 +41,7 @@ function buildDeckFromFiles(files, opts = {}) {
     const raw = fs.readFileSync(fp, "utf8");
     docs.push({ raw, basename: path.basename(fp, ".md") });
   }
-  return buildPresentationHtml(docs, { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG, style: opts.style || null });
+  return buildPresentationHtml(docs, { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG, style: opts.style || null, mermaidScript: MERMAID_SCRIPT });
 }
 
 // 하위 호환: 기존 import 경로 보존 (core 재노출)

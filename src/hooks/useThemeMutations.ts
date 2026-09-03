@@ -66,7 +66,7 @@ export function useThemeMutations({
   };
 
   const handleDeleteTheme = (keyToDelete: string) => {
-    if (keyToDelete === "custom-blue" || keyToDelete === "ai-chat") {
+    if (keyToDelete === "sky-blue" || keyToDelete === "emerald") {
       toast({ title: "삭제 불가능", description: "기본 테마는 삭제할 수 없습니다.", variant: "destructive" });
       return;
     }
@@ -75,7 +75,7 @@ export function useThemeMutations({
     setStyles(newStyles);
 
     if (selectedStyle === keyToDelete) {
-      const first = Object.keys(newStyles)[0] || "custom-blue";
+      const first = Object.keys(newStyles)[0] || "sky-blue";
       setSelectedStyle(first);
       if (newStyles[first]) setThemeForm({ ...newStyles[first] });
     }

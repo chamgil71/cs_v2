@@ -2,7 +2,7 @@
 title: "Playwright 완전 활용 가이드"
 subtitle: "Selenium의 단점을 모두 극복한 MS의 차세대 웹 크롤링 및 자동 테스트 프레임워크"
 badge: "🕷️ 크롤링 · E2E 테스트"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "비동기"
     label: "초고속 실행"

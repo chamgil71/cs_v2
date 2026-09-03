@@ -2,7 +2,7 @@
 title: "내 문서로 만드는나만의 AI 전문가"
 subtitle: "Google AI 노트 도구 (Gemini Notebook)"
 badge: "🔵 Google이 만든 AI 지식 어시스턴트 · 2026"
-style: "knowledge"
+style: "indigo"
 stats:
   - value: "Gemini 3.5"
     label: "기반 모델 (구 NotebookLM)"

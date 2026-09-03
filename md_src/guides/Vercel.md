@@ -2,7 +2,8 @@
 title: "Vercel 완전 활용 가이드"
 subtitle: "프론트엔드 배포 플랫폼"
 badge: "🌐 프론트엔드 배포 · Edge Computing"
-style: "webdev"
+style: "cyan"
+category: "webdev"
 stats:
   - value: "Hobby 무료"
     label: "개인 프로젝트"

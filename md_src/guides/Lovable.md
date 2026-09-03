@@ -2,7 +2,8 @@
 title: "Lovable 완전 활용 가이드"
 subtitle: "AI 풀스택 앱 빌더"
 badge: "🚀 AI 엔지니어링 · No-Code to Code"
-style: "webdev"
+style: "cyan"
+category: "webdev"
 stats:
   - value: "무료"
     label: "시작 가능"

@@ -51,7 +51,7 @@ function mdInfo(file) {
     slug: String(parsed.data.slug || slugify(base)),
     title,
     subtitle: String(parsed.data.subtitle || "").replace(/\s+/g, " ").trim(),
-    style: String(parsed.data.style || "uncategorized").trim() || "uncategorized",
+    style: String(parsed.data.category || parsed.data.style || "uncategorized").trim() || "uncategorized",
     file: `${base}.html`
   };
 }

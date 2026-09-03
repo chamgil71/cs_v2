@@ -2,7 +2,8 @@
 title: "Resend 완전 활용 가이드"
 subtitle: "개발자용 이메일 API"
 badge: "📧 이메일 API · 알림 자동화"
-style: "webdev"
+style: "cyan"
+category: "webdev"
 stats:
   - value: "무료 3,000건"
     label: "월 기본 발송"

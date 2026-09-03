@@ -2,7 +2,7 @@
 title: "Claude완전 활용 가이드"
 subtitle: "Anthropic의 추론 강화형 AI"
 badge: "Anthropic · 2026"
-style: "ai-chat"
+style: "emerald"
 stats:
   - value: "4종"
     label: "모델 라인업 (Fable·Opus·Sonnet·Haiku)"

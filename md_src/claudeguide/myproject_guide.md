@@ -2,7 +2,7 @@
 title: "내 프로젝트 운영 가이드"
 subtitle: "c:\\ai\\ 하위 11개 프로젝트 현황 및 운영 참조"
 badge: "2026-06 기준"
-style: "ai-dev"
+style: "terracotta"
 logo: "🛠️"
 fontFace: "Malgun Gothic"
 titleSize: 22

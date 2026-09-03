@@ -2,7 +2,7 @@
 title: "Cursor 완전 활용 가이드"
 subtitle: "VS Code를 대체할 가장 강력한 AI 네이티브 코드 에디터이자 Vibe Coding의 끝판왕"
 badge: "🪄 AI 에디터 · Vibe Coding · 2026"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "VS Code"
     label: "100% 호환"

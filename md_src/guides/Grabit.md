@@ -2,7 +2,7 @@
 title: "Grabit"
 subtitle: "스크린샷 캡처 · 주석 · AI 검색"
 badge: "🖼️ 크롬 확장 프로그램 · 무료"
-style: "productivity"
+style: "cobalt-blue"
 stats:
   - value: "탭/영역"
     label: "선택 캡처"

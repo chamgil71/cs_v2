@@ -59,6 +59,10 @@ const STYLES = loadJsonWithComments(path.join(CONFIG_DIR, "styles.json"));
 const CONFIG = loadJsonWithComments(path.join(CONFIG_DIR, "pptdesign.config.json"));
 const HTML_CONFIG = loadJsonWithComments(path.join(CONFIG_DIR, "htmldesign.config.json"));
 
+// mermaid 스크립트 원문(3.3MB) — 문서가 실제로 mermaid 블록을 쓸 때만 코어가 인라인한다(오프라인 원칙).
+const MERMAID_JS_PATH = path.join(ROOT, "node_modules/mermaid/dist/mermaid.min.js");
+const MERMAID_SCRIPT = fs.existsSync(MERMAID_JS_PATH) ? fs.readFileSync(MERMAID_JS_PATH, "utf8") : null;
+
 function walkMd(dir) {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir, { withFileTypes: true })
@@ -195,7 +199,7 @@ function parseArgs(argv) {
 
 async function run(flags) {
   const { srcDir: mdSrcDir, outBase } = resolveFolderDir(ROOT, flags.dir);
-  const files = walkMd(mdSrcDir);
+  let files = walkMd(mdSrcDir);
   if (!files.length) {
     console.error(`❌ ${path.relative(ROOT, mdSrcDir)} 안에 .md 파일이 없습니다.`);
     process.exit(1);
@@ -211,7 +215,7 @@ async function run(flags) {
       const seen = new Set();
       for (const f of files) {
         const { data: fm } = matter(fs.readFileSync(f, "utf8"));
-        seen.add(String(fm.style || "uncategorized").trim() || "uncategorized");
+        seen.add(String(fm.category || fm.style || "uncategorized").trim() || "uncategorized");
       }
       const configPath = writeStarterHubConfig(mdSrcDir, [...seen]);
       console.log(`✅ 초안 생성: ${path.relative(ROOT, configPath)} — 라벨·색·순서를 원하는 대로 고친 뒤 다시 실행하세요.`);
@@ -224,6 +228,27 @@ async function run(flags) {
   }
 
   const hubConfig = loadHubConfig(mdSrcDir);
+
+  // 파일 순서를 hub.config.json의 categories.order 기준으로 재배열한다.
+  // (통합 프레젠테이션 덱은 이 순서 그대로 슬라이드가 되므로, "순서를 config로 조절"하려면
+  //  categories.order 하나만 고치면 폴더 목록·onepage 카테고리·통합 덱이 전부 같이 바뀌어야 한다 —
+  //  onepage/index.html은 이미 카테고리별로 묶어서 보여주지만, 통합 덱은 지금까지 파일명 알파벳순이라 따로 놀았다.)
+  const order = hubConfig.categories.order;
+  // category(그룹핑 전용) 우선, 없으면 style(색상 테마)로 대체 — style은 색이지 카테고리가 아니다.
+  const fileMeta = new Map(files.map((f) => {
+    const fm = matter(fs.readFileSync(f, "utf8")).data;
+    const category = String(fm.category || fm.style || "uncategorized").trim() || "uncategorized";
+    const title = String(fm.title || path.basename(f, ".md")).replace(/\s+/g, " ").trim();
+    return [f, { category, title }];
+  }));
+  files = [...files].sort((a, b) => {
+    const ma = fileMeta.get(a), mb = fileMeta.get(b);
+    const ia = order.indexOf(ma.category); const ib = order.indexOf(mb.category);
+    const na = ia === -1 ? Number.MAX_SAFE_INTEGER : ia;
+    const nb = ib === -1 ? Number.MAX_SAFE_INTEGER : ib;
+    if (na !== nb) return na - nb;
+    return ma.title.localeCompare(mb.title, "ko"); // 같은 카테고리 안에서는 제목순 — onepage/sync-guides-index.mjs와 동일 기준
+  });
 
   let { guide: doGuide, presentation: doPresentation, pptx: doPptx, hub: doHub } = flags;
   if (flags.all) { doGuide = doPresentation = doPptx = doHub = true; }
@@ -243,17 +268,17 @@ async function run(flags) {
     const { data: fm } = matter(raw);
     const title = String(fm.title || base).replace(/\s+/g, " ").trim();
     const subtitle = String(fm.subtitle || "").replace(/\s+/g, " ").trim();
-    const style = String(fm.style || "uncategorized").trim() || "uncategorized";
+    const style = String(fm.category || fm.style || "uncategorized").trim() || "uncategorized";
 
     let htmlFile = null, presentationFile = null, pptxFile = null;
 
     if (doGuide) {
-      const { html } = buildGuideHtml({ raw }, { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG });
+      const { html } = buildGuideHtml({ raw }, { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG, mermaidScript: MERMAID_SCRIPT });
       htmlFile = `${base}.html`;
       fs.writeFileSync(path.join(outDir, htmlFile), html, "utf8");
     }
     if (doPresentation) {
-      const { html } = buildPresentationHtml([{ raw, basename: base }], { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG });
+      const { html } = buildPresentationHtml([{ raw, basename: base }], { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG, mermaidScript: MERMAID_SCRIPT });
       presentationFile = `${base}_presentation.html`;
       fs.writeFileSync(path.join(outDir, presentationFile), html, "utf8");
     }
@@ -283,7 +308,7 @@ async function run(flags) {
 
   if (doPresentationBundle) {
     const docs = files.map((f) => ({ raw: fs.readFileSync(f, "utf8"), basename: path.basename(f, ".md") }));
-    const { html } = buildPresentationHtml(docs, { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG });
+    const { html } = buildPresentationHtml(docs, { styles: STYLES, config: CONFIG, htmlConfig: HTML_CONFIG, mermaidScript: MERMAID_SCRIPT });
     const outPath = path.resolve(ROOT, flags.outDir, `${outBase}-presentation-bundle.html`);
     fs.writeFileSync(outPath, html, "utf8");
     console.log(`✅ 통합 프레젠테이션 덱 생성: ${path.relative(ROOT, outPath)}`);

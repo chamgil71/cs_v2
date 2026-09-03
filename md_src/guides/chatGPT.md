@@ -2,7 +2,7 @@
 title: "ChatGPT완전 활용 가이드"
 subtitle: "OpenAI 대화형 AI 활용 가이드"
 badge: "OpenAI · 2026"
-style: "ai-chat"
+style: "emerald"
 stats:
   - value: "GPT-5.6"
     label: "최신 플래그십 모델"

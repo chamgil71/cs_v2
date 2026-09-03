@@ -2,7 +2,7 @@
 title: "Windsurf(Devin Desktop) 완전 활용 가이드"
 subtitle: "Cognition이 인수한 AI 네이티브 코드 에디터"
 badge: "🏄 Cognition · 2026 리브랜딩"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "SWE-1.6"
     label: "자체 개발 코딩 모델"

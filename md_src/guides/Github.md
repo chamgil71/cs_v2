@@ -2,7 +2,8 @@
 title: "코드를 함께 만들고,함께 관리하는 GitHub"
 subtitle: "버전 관리와 협업"
 badge: "🐙 세계 최대 코드 협업 플랫폼"
-style: "webdev"
+style: "cyan"
+category: "webdev"
 stats:
   - value: "무료"
     label: "Public 저장소"

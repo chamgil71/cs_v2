@@ -2,7 +2,7 @@
 title: "Claude & Claude Code 통합 가이드"
 subtitle: "웹/앱부터 CLI 터미널 에이전트까지, Anthropic Claude 서비스 완벽 마스터"
 badge: "💡 Anthropic 공식 파트너급 가이드"
-style: "ai-chat"
+style: "emerald"
 logo: "🤖"
 fontFace: "Malgun Gothic"
 titleSize: 22

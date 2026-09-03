@@ -11,7 +11,7 @@
 
 ### 1) HSL 디자인 시스템 테마 미세 조율 (Visual Adjuster)
 1. **[테마 조율 & 배색 빌더]** 서브탭으로 이동합니다.
-2. 좌측 프리셋 목록에서 수정할 테마 키(예: `custom-blue`)를 선택합니다.
+2. 좌측 프리셋 목록에서 수정할 테마 키(예: `sky-blue`)를 선택합니다.
 3. 가운데 세부 조율 영역에서 브랜드 주컬러, 어두운톤, 중간톤, 배경색 및 폰트 패밀리 값을 미세 조율합니다.
 4. **[현재 테마 설정에 임시 저장 (로컬)]**을 클릭하여 반영합니다.
 5. 조율을 끝내고 **[서버에 최종 저장하기]**를 누르면 실제 `config/styles.json` 파일에 영구 기록되어 마크다운 컴파일 빌드에 투입됩니다.
@@ -185,9 +185,9 @@ HTML 가이드 출력 전체에 적용되는 **웹폰트 패밀리**를 지정�
 HTML/PPTX 양쪽에 적용되는 테마 팔레트를 정의합니다.
 
 ```jsonc
-// config/styles.json (예시 — custom-blue 테마)
+// config/styles.json (예시 — sky-blue 테마)
 {
-  "custom-blue": {
+  "sky-blue": {
     "label": "커스텀 블루",
     "brand":      "#3b82f6",   // 주 강조색 (버튼, 아이콘, 링크)
     "brandDark":  "#1d4ed8",   // 어두운 강조색 (호버, 헤더 배경)
@@ -290,8 +290,8 @@ npm run build:folder -- --dir guides
 ```json
 {
   "categories": {
-    "order": ["ai-chat", "ai-dev", "productivity"],
-    "meta": { "ai-chat": { "label": "AI 챗봇 & 어시스턴트", "color": "#6366f1" } }
+    "order": ["ai-usage", "ai-tools", "my-projects"],
+    "meta": { "ai-usage": { "label": "AI 사용 방법", "color": "#2789F5" } }
   },
   "sidebar": { "defaultOpen": true },
   "outputs": { "standalone": true, "presentationBundle": false }

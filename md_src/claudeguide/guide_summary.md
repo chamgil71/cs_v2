@@ -2,7 +2,7 @@
 title: "Creative Spark AI 활용 도구 종합 요약 가이드"
 subtitle: "40여 종의 최신 AI 툴과 개발 생산성 도구를 단숨에 파악하는 통합 맵"
 badge: "📚 AI 도구 랜드스케이프 요약본"
-style: "ai-dev"
+style: "terracotta"
 logo: "💡"
 fontFace: "Malgun Gothic"
 titleSize: 22

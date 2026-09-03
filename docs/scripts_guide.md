@@ -91,16 +91,24 @@ vite-api-plugin.ts (API Router)
 
 과거엔 카테고리 라벨·순서·색상이 `scripts/guide-categories.mjs`라는 **전역 JS 상수**(모든 폴더가 공유)에 하드코딩되어 있었다(CLAUDE.md 규칙 1 위반). **2026-09-02부터 폴더마다 자기 소유의 설정 파일**을 갖도록 바꿨다: `md_src/<dir>/hub.config.json`.
 
+> **`categories.order`/`categories.meta`의 키는 `category` frontmatter 값이다(없으면 `style` 값으로 대체 — 하위호환).** 2026-09-03 이전에는 이 키가 항상 `style`(색상 테마) 값이었는데, `style`은 원래 색을 고르는 필드일 뿐 "카테고리"가 아니라서 개념이 꼬여 있었다(CLAUDE.md의 스타일 테마 목록 절 참고). `category`를 따로 지정하면 여러 문서가 같은 색 테마를 쓰면서도 다른 카테고리에 속하거나, 반대로 같은 카테고리가 서로 다른 색을 쓰는 것도 가능해진다.
+
 ```jsonc
 {
   "categories": {
-    "order": ["ai-chat", "ai-dev", "productivity"],          // 표시 순서 (배열에 없는 카테고리는 뒤로, uncategorized는 항상 맨 뒤)
+    "order": ["ai-usage", "ai-tools", "my-projects"],         // 표시 순서 (배열에 없는 카테고리는 뒤로, uncategorized는 항상 맨 뒤) — category(없으면 style) 값 기준
     "meta": {
-      "ai-chat": { "label": "AI 챗봇 & 어시스턴트", "description": "...", "color": "#6366f1" }
+      "ai-usage": { "label": "AI 사용 방법", "description": "...", "color": "#2789F5" }
     }
   },
   "sidebar": { "defaultOpen": true },                       // onepage 허브의 좌측 사이드바 초기 상태
-  "outputs": { "onepage": true, "presentationBundle": false } // build-folder.mjs가 플래그 없이 실행될 때 기본으로 만들 산출물
+  "outputs": { "onepage": true, "presentationBundle": false }, // build-folder.mjs가 플래그 없이 실행될 때 기본으로 만들 산출물
+  "hero": {                                                 // onepage 허브 홈 화면 상단 문구(2026-09-03부터 폴더별 오버라이드 가능, 생략 시 "AI·생산성 도구" 기본 문구)
+    "badge": "📚 AI 활용 강의 자료 3부작",
+    "titleLine1": "AI를 제대로 쓰는 법,",
+    "titleAccent": "원리부터 실전까지",
+    "desc": "{count}개 문서로 ... 훑어볼 수 있습니다. 인터넷 없이도 작동합니다." // {count}는 그 폴더의 총 가이드 수로 치환됨
+  }
 }
 ```
 
@@ -108,7 +116,7 @@ vite-api-plugin.ts (API Router)
 * `build-guide-hub.mjs`(onepage 허브)와 `sync-guides-index.mjs`(React용 `src/data/guides.json`) **양쪽 다 이 로더 하나만 참조**한다 — 즉 `hub.config.json`을 고치고 재실행하면 두 산출물의 표시 순서가 항상 함께 바뀐다(과거엔 `sync-guides-index.mjs`가 `guides.json`에 저장된 이전 순서를 그대로 보존하는 별도 로직이라 서로 어긋날 수 있었음 — 이 드리프트를 없앴다).
 * `md_src/guides/hub.config.json`·`md_src/claudeguide/hub.config.json` 둘 다 이미 만들어져 있다. 새 폴더를 추가하면 이 파일도 같이 만들어주는 게 좋다(안 만들어도 동작은 하지만 카테고리 라벨이 전부 id 그대로 나온다).
 
-**새 폴더에 hub.config.json을 어떻게 처음 만드나** — 손으로 처음부터 쓸 필요 없다. `build-folder.mjs`의 `--init-config` 플래그가 그 폴더 md 전체의 `style` frontmatter를 스캔해서 "라벨=id 그대로, 색은 팔레트 순환"인 초안을 만들어준다:
+**새 폴더에 hub.config.json을 어떻게 처음 만드나** — 손으로 처음부터 쓸 필요 없다. `build-folder.mjs`의 `--init-config` 플래그가 그 폴더 md 전체의 `category`(없으면 `style`) frontmatter를 스캔해서 "라벨=id 그대로, 색은 팔레트 순환"인 초안을 만들어준다:
 
 ```bash
 npm run build:folder -- --dir newFolder --init-config
@@ -135,13 +143,15 @@ node scripts/sync-guides-index.mjs        # React용 src/data/guides.json도 (gu
 * 카테고리 표시 순서·라벨·색상은 위 3-1의 `hub.config.json`에서 읽는다.
 * 기본 출력 파일명에는 항상 `-onepage`가 붙는다(`defaultOutPath()` 헬퍼) — `--dir`로 폴더를 바꿔도 파일명 로직 한 곳에서 자동으로 붙는다. **"onepage"와 `npm run build:standalone`(웹앱 번들, `dist/webdesignsuite.html` 등)은 완전히 다른 파이프라인**이다 — onepage는 이미 렌더링된 콘텐츠(문서 본문 텍스트)를 한 파일에 담고, build:standalone은 React 앱(편집 로직 포함)을 한 파일로 번들링한다. 초기엔 이름이 겹쳐서(둘 다 "standalone"이라 불렀음) 혼동이 있었고, 2026-09-02에 콘텐츠 쪽만 "onepage"로 분리해 정리했다.
 * 각 가이드 본문은 클릭 시 Shadow DOM에 주입되어 `:root`/`html`/`body` 셀렉터가 `:host`/`.guide-document`로 리라이트된 채 렌더링되므로, 가이드마다 다른 테마 CSS 변수가 서로 침범하지 않는다.
-* **좌측 사이드바 열림/닫힘**: 헤더의 ☰ 버튼으로 토글, 초기 상태는 `hub.config.json`의 `sidebar.defaultOpen`, 사용자가 한 번 토글하면 `localStorage`(`onepage-sidebar`)에 저장되어 이후에도 유지된다.
-* **홈 화면(사이드바에서 아무것도 선택하지 않았을 때)**은 히어로(배지+그라디언트 타이틀+검색창+CTA)·카테고리 필터 pill·카드형 그리드(상단 강조 바+화살표 hover)로 구성된다(`showHome()`). 검색창은 카드의 `data-q`(제목+부제 소문자)를 substring 매칭해 카드/카테고리 블록을 즉시 show/hide한다 — React가 없는 순수 vanilla JS 구현이라 프레임워크 없이도 동작한다.
+* **좌측 사이드바 열림/닫힘**: 헤더의 ☰ 버튼으로 토글, 초기 상태는 `hub.config.json`의 `sidebar.defaultOpen`, 사용자가 한 번 토글하면 `localStorage`(`onepage-sidebar`)에 저장되어 이후에도 유지된다. `#sidebar`/`#main` 둘 다 `grid-column`을 명시적으로 고정해 둔다(`.sa-sidebar{grid-column:1}` / `#main.sa-main{grid-column:2}`) — 이게 없으면 사이드바에 `display:none`이 걸릴 때 CSS Grid auto-placement가 남은 유일한 아이템인 `#main`을 1번(0px) 트랙으로 재배치해버려 본문 전체가 사라지는 버그가 있었다(2026-09-03 발견·수정).
+* **홈 화면(사이드바에서 아무것도 선택하지 않았을 때)**은 히어로(배지+그라디언트 타이틀+검색창+CTA)·카테고리 필터 pill·카드형 그리드(상단 강조 바+화살표 hover)로 구성된다(`showHome()`). 검색창은 카드의 `data-q`(제목+부제 소문자)를 substring 매칭해 카드/카테고리 블록을 즉시 show/hide한다 — React가 없는 순수 vanilla JS 구현이라 프레임워크 없이도 동작한다. 히어로 배지/타이틀/설명 문구는 `hub.config.json`의 `hero`(2026-09-03 추가)로 폴더별 오버라이드 가능 — 생략하면 "AI·생산성 도구" 기본 문구(`hub-config.mjs`의 `DEFAULT_HERO`) 그대로 나온다.
 * `render(folder)`를 export하므로 `build-folder.mjs`가 CLI를 거치지 않고 함수로 바로 재사용한다.
 
 ### 3-3. `build-folder.mjs` — 폴더 단위 통합 오케스트레이터
 
 "이 폴더를 선택하면 필요한 걸 다 만들어줘"에 대응하는 스크립트. **새 변환 로직을 만들지 않고 기존 스크립트(`guide-core`/`presentation-core`/`md-to-pptx`/`build-guide-hub`)를 순서대로 호출만** 한다 — 각 스크립트는 지금처럼 단독 CLI로도 계속 쓸 수 있다. `--dir`은 `md_src` 하위 짧은 이름뿐 아니라 임의 경로(절대경로 등)도 받는다 — `resolveFolderDir()`가 자동으로 구분한다.
+
+* **통합 프레젠테이션 덱(`--presentation-bundle`) 순서 = onepage와 동일 기준(2026-09-03)**: `hub.config.json`을 로드한 직후 `files` 배열을 `categories.order` 기준(1차)+제목 알파벳순(2차, onepage/`sync-guides-index.mjs`와 동일 tie-break)으로 재정렬한다. 그 전에는 통합 덱만 파일명 알파벳순으로 따로 놀아서, `categories.order`를 고쳐도 onepage 순서만 바뀌고 통합 덱은 그대로인 드리프트가 있었다 — 이제 `categories.order` 하나만 고치면 onepage·폴더 index.html·통합 덱 순서가 전부 같이 바뀐다.
 
 ```bash
 npm run build:folder -- --dir guides              # 기본 세트: 개별 html + 개별 presentation html + 개별 pptx + 폴더 index.html

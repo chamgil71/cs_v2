@@ -2,7 +2,7 @@
 title: "브라우저를 다루는 AI 에이전트"
 subtitle: "Chrome DevTools MCP · Claude in Chrome · Playwright MCP 완전 정리"
 badge: "🌐 브라우저 자동화 · 2026"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "29개"
     label: "Chrome DevTools MCP 도구"

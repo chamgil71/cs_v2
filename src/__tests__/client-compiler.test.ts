@@ -3,7 +3,7 @@ import { clientCompileMarkdown, FALLBACK_STYLES, BUNDLED_STYLES } from '../lib/c
 import fs from 'node:fs';
 import path from 'node:path';
 
-const STYLE = FALLBACK_STYLES['custom-blue'];
+const STYLE = FALLBACK_STYLES['sky-blue'];
 const STYLES = FALLBACK_STYLES;
 
 // ── BUNDLED_STYLES = 스탠드얼론이 실제 쓰는 스타일 소스 (번들된 전체 styles.json) ──
@@ -32,7 +32,7 @@ describe('BUNDLED_STYLES — 스탠드얼론 스타일 소스 완전성', () => 
 
 // ── 헬퍼 ──────────────────────────────────────────────────────────────
 function compile(md: string, mode: 'html' | 'presentation' = 'html') {
-  return clientCompileMarkdown(md, mode, 'custom-blue', STYLES);
+  return clientCompileMarkdown(md, mode, 'sky-blue', STYLES);
 }
 
 // ── FALLBACK_STYLES ────────────────────────────────────────────────────
@@ -179,14 +179,14 @@ describe('clientCompileMarkdown — 숏코드 처리', () => {
 
 // ── 존재하지 않는 스타일 처리 ─────────────────────────────────────────
 describe('clientCompileMarkdown — 스타일 폴백', () => {
-  it('존재하지 않는 styleName → ai-chat(서버 기본) 폴백 적용', () => {
-    // [파이프라인 통합] 코어(build-guide)와 동일하게 미등록 스타일은 ai-chat 기본으로 폴백.
+  it('존재하지 않는 styleName → emerald(서버 기본) 폴백 적용', () => {
+    // [파이프라인 통합] 코어(build-guide)와 동일하게 미등록 스타일은 emerald 기본으로 폴백.
     const html = clientCompileMarkdown('내용', 'html', 'nonexistent-style', STYLES);
-    expect(html).toContain(`--brand:      ${FALLBACK_STYLES['ai-chat'].brand}`);
+    expect(html).toContain(`--brand:      ${FALLBACK_STYLES['emerald'].brand}`);
   });
 
   it('빈 stylesList → FALLBACK_STYLES 자동 사용', () => {
-    const html = clientCompileMarkdown('내용', 'html', 'custom-blue', {});
+    const html = clientCompileMarkdown('내용', 'html', 'sky-blue', {});
     expect(html).toContain('--brand:');
   });
 });

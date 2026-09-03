@@ -16,10 +16,18 @@
 import fs from "node:fs";
 import path from "node:path";
 
+const DEFAULT_HERO = {
+  badge: "✨ 한국어로 정리한 도구 가이드 모음",
+  titleLine1: "AI · 생산성 도구를",
+  titleAccent: "카테고리별로 빠르게",
+  desc: "{count}개 도구 가이드를 그룹으로 모아 한 화면에서 탐색하고 바로 읽어볼 수 있습니다. 인터넷 없이도 작동합니다.",
+};
+
 const DEFAULT_CONFIG = {
   categories: { order: [], meta: {} },
   sidebar: { defaultOpen: true },
   outputs: { onepage: false, presentationBundle: false },
+  hero: { ...DEFAULT_HERO },
 };
 
 function loadJsonWithComments(filePath) {
@@ -66,6 +74,12 @@ export function loadHubConfig(folderAbsPath) {
       onepage: parsed.outputs?.onepage ?? false,
       presentationBundle: parsed.outputs?.presentationBundle ?? false,
     },
+    hero: {
+      badge: parsed.hero?.badge ?? DEFAULT_HERO.badge,
+      titleLine1: parsed.hero?.titleLine1 ?? DEFAULT_HERO.titleLine1,
+      titleAccent: parsed.hero?.titleAccent ?? DEFAULT_HERO.titleAccent,
+      desc: parsed.hero?.desc ?? DEFAULT_HERO.desc,
+    },
   };
 }
 
@@ -111,6 +125,7 @@ export function writeStarterHubConfig(folderAbsPath, styleIds) {
     categories: { order, meta },
     sidebar: { defaultOpen: true },
     outputs: { onepage: false, presentationBundle: false },
+    hero: { ...DEFAULT_HERO },
   };
   const file = hubConfigPath(folderAbsPath);
   fs.mkdirSync(path.dirname(file), { recursive: true });

@@ -2,7 +2,7 @@
 title: "AI 도구 학습 가이드"
 subtitle: "Claude를 중심으로 주요 AI 플랫폼 및 연계 도구 전반 이해"
 badge: "2026 실전 학습 노트"
-style: "custom-blue"
+style: "sky-blue"
 logo: "🤖"
 titleSize: 22
 bodySize: 12

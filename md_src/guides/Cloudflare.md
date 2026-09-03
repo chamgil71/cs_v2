@@ -2,7 +2,8 @@
 title: "Cloudflare 완전 활용 가이드"
 subtitle: "CDN · DNS · 인프라 보안"
 badge: "☁️ 인프라 · 보안 및 배포"
-style: "webdev"
+style: "cyan"
+category: "webdev"
 stats:
   - value: "무료"
     label: "강력한 기본플랜"

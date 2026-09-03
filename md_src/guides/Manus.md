@@ -2,7 +2,7 @@
 title: "Manus완전 활용 가이드"
 subtitle: "자율 작업 AI 에이전트"
 badge: "Monica.im · AI Agent · 2026"
-style: "ai-chat"
+style: "emerald"
 stats:
   - value: "자율"
     label: "스스로 실행"

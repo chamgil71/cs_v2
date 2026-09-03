@@ -2,7 +2,8 @@
 title: "Replit Agent 완전 활용 가이드"
 subtitle: "브라우저에서 바로 배포까지 끝내는 AI 풀스택 빌더"
 badge: "🧑‍💻 Replit · AI Agent · 2026"
-style: "webdev"
+style: "cyan"
+category: "webdev"
 stats:
   - value: "브라우저"
     label: "설치 없이 즉시 시작"

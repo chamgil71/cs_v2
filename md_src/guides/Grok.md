@@ -2,7 +2,7 @@
 title: "Grok완전 활용 가이드"
 subtitle: "xAI 실시간 대화형 AI"
 badge: "xAI · Grok 4.6 · 2026"
-style: "ai-chat"
+style: "emerald"
 stats:
   - value: "Grok 4.6"
     label: "최신 플래그십 · 500K 컨텍스트"

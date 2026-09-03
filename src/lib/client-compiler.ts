@@ -21,6 +21,8 @@ import { buildHtml as buildGuideHtml } from '../../scripts/guide-core.mjs';
 import pptDesignRaw from '../../config/pptdesign.config.json?raw';
 // @ts-ignore — 전체 styles.json 번들 (스탠드얼론도 서버와 동일한 폰트/색 사용 — FALLBACK_STYLES 의 폰트 키 누락으로 serif 폴백되던 문제 해소)
 import stylesRaw from '../../config/styles.json?raw';
+// @ts-ignore — mermaid 원문(3.3MB). 코어가 문서에 mermaid 블록이 있을 때만 인라인한다 — CDN 의존 시 오프라인 원칙 위반이므로 서버(build-guide/presentation)와 동일하게 로컬 번들을 씀.
+import mermaidScriptRaw from '../../node_modules/mermaid/dist/mermaid.min.js?raw';
 const PPT_DESIGN: any = (() => {
   try { return JSON.parse(String(pptDesignRaw).replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '')); }
   catch { return {}; }
@@ -28,8 +30,8 @@ const PPT_DESIGN: any = (() => {
 
 // Fallback styles for offline mode
 export const FALLBACK_STYLES: Record<string, any> = {
-  "custom-blue": {
-    "label": "페이퍼로지 커스텀 블루 (테스트 테마)",
+  "sky-blue": {
+    "label": "스카이 블루 (테스트 테마)",
     "brand": "#2789F5",
     "brandDark": "#1E71CE",
     "brandDeep": "#0F478F",
@@ -37,8 +39,8 @@ export const FALLBACK_STYLES: Record<string, any> = {
     "border": "#D2E5FA",
     "bg": "#FAFBFD"
   },
-  "ai-chat": {
-    "label": "AI 챗봇 (그린)",
+  "emerald": {
+    "label": "에메랄드 그린",
     "brand": "#10A37F",
     "brandDark": "#0D8065",
     "brandDeep": "#085C4A",
@@ -46,8 +48,8 @@ export const FALLBACK_STYLES: Record<string, any> = {
     "border": "#C8E6DF",
     "bg": "#F7FBF9"
   },
-  "ai-dev": {
-    "label": "AI 개발 도구 (오렌지)",
+  "terracotta": {
+    "label": "테라코타 오렌지",
     "brand": "#D97757",
     "brandDark": "#B85F3F",
     "brandDeep": "#8B4530",
@@ -55,8 +57,8 @@ export const FALLBACK_STYLES: Record<string, any> = {
     "border": "#F0D4C4",
     "bg": "#FBF7F5"
   },
-  "knowledge": {
-    "label": "노트 & 지식관리 (퍼플)",
+  "indigo": {
+    "label": "인디고 퍼플",
     "brand": "#6366F1",
     "brandDark": "#4F46E5",
     "brandDeep": "#3730A3",
@@ -64,8 +66,8 @@ export const FALLBACK_STYLES: Record<string, any> = {
     "border": "#D8DCFB",
     "bg": "#F8F9FE"
   },
-  "productivity": {
-    "label": "생산성 유틸 (블루)",
+  "cobalt-blue": {
+    "label": "코발트 블루",
     "brand": "#1565C0",
     "brandDark": "#0D47A1",
     "brandDeep": "#0A3578",
@@ -96,11 +98,11 @@ export function clientCompileMarkdown(md: string, mode: "html" | "presentation",
     // 원문 md(프론트매터 포함)를 그대로 코어에 넘긴다 — 숏코드 파싱/렌더도 코어가 수행.
     const { html } = buildPresentationHtml(
       [{ raw: md, basename: "" }],
-      { styles: resolvedStyles, config: PPT_DESIGN, htmlConfig: HTML_DESIGN, style: styleName }
+      { styles: resolvedStyles, config: PPT_DESIGN, htmlConfig: HTML_DESIGN, style: styleName, mermaidScript: mermaidScriptRaw }
     );
     return html;
   }
   // [Step 4] 가이드 HTML 도 공유 코어(build-guide 와 동일)로 생성 → standalone html == build-guide.
-  const { html } = buildGuideHtml({ raw: md }, { styles: resolvedStyles, config: PPT_DESIGN, htmlConfig: HTML_DESIGN, style: styleName });
+  const { html } = buildGuideHtml({ raw: md }, { styles: resolvedStyles, config: PPT_DESIGN, htmlConfig: HTML_DESIGN, style: styleName, mermaidScript: mermaidScriptRaw });
   return html;
 }

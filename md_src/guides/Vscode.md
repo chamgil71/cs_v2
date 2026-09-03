@@ -2,7 +2,7 @@
 title: "코딩의 표준,Visual Studio Code"
 subtitle: "코드 에디터 완전 정복"
 badge: "💻 세계 1위 코드 에디터"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "완전 무료"
     label: "오픈소스"

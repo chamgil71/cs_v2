@@ -161,7 +161,7 @@ function resolveColorKeyword(color) {
 
 // [통합] 자체 renderShortcode 제거됨 — 공유 renderShortcodeShared(shortcode-render.mjs) 사용.
 
-export function buildPresentationHtml(docs, { styles, config, htmlConfig, style: __styleOverride } = {}) {
+export function buildPresentationHtml(docs, { styles, config, htmlConfig, style: __styleOverride, mermaidScript } = {}) {
   // 환경 비의존: config 3종을 주입받는다 (정본 build-presentation 의 모듈 전역과 동일 역할)
   const STYLES = styles || {};
   const CONFIG = config || {};
@@ -180,6 +180,7 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
 
   const slides = [];
   let mainFm = null;
+  let hasMermaid = false;
 
   // Process all files and collect their H1/H2 slide divisions!
   for (const doc of docList) {
@@ -202,8 +203,8 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
 
     if (!mainFm) mainFm = fm;
 
-    const styleKey = opts.style || fm.style || "ai-chat";
-    const style = STYLES[styleKey] || STYLES["ai-chat"];
+    const styleKey = opts.style || fm.style || "emerald";
+    const style = STYLES[styleKey] || STYLES["emerald"];
 
     // Parse shortcodes
     let processedContent = content.replace(/^:::\s*([A-Za-z0-9_-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$/gm, (_, type, args, body) => {
@@ -280,6 +281,7 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
         if (tok.type === "code" && (tok.lang || "").trim().toLowerCase() === "mermaid") {
           // Mermaid 구조도 — 원문 그대로 <pre class="mermaid">에 넣어 클라이언트에서 mermaid.js 가 렌더링
           currentSlide.body += `<pre class="mermaid">${escapeHtml(tok.text)}</pre>`;
+          hasMermaid = true;
         } else {
           currentSlide.body += marked.parser([tok]);
         }
@@ -293,7 +295,7 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
   if (!slides.length) throw new Error("변환된 슬라이드 데이터가 없습니다.");
 
   // Extract main style for global :root defaults
-  const mainStyle = STYLES[opts.style || mainFm?.style || "ai-chat"] || STYLES["ai-chat"];
+  const mainStyle = STYLES[opts.style || mainFm?.style || "emerald"] || STYLES["emerald"];
 
   // Generate TOC items HTML
   // 💡 커버 항목 글자색: 문서마다 다른 --brand-light(전역 :root 고정값, 첫 문서 기준)에 의존하면
@@ -317,7 +319,7 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
   // Generate slide sections HTML with dynamic per-slide branding!
   const slidesHtml = slides.map((s, idx) => {
     const sNum = `${idx + 1} / ${slides.length}`;
-    const activeStyle = s.style || STYLES["ai-chat"];
+    const activeStyle = s.style || STYLES["emerald"];
     const styleAttr = `style="--brand: ${activeStyle.brand}; --brand-dark: ${activeStyle.brandDark}; --brand-deep: ${activeStyle.brandDeep}; --brand-light: ${activeStyle.brandLight}; --brand-mid: ${activeStyle.brandMid}; --brand-gradient: linear-gradient(135deg, ${activeStyle.brand}, ${activeStyle.brandDeep});"`;
 
     if (s.type === "cover") {
@@ -438,7 +440,6 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   }
   .theme-toggle-btn:hover {
-    transform: scale(1.08);
     background: rgba(255, 255, 255, 0.15);
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
   }
@@ -528,12 +529,16 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
     scroll-snap-align: start;
     display: flex;
     flex-direction: column;
-    padding: 80px 100px;
+    padding: 80px 100px 140px;
     box-sizing: border-box;
     position: relative;
     overflow-y: auto;
     background: var(--bg);
   }
+
+  /* Mermaid 다이어그램 — 세로형(TD) 등 자연 크기가 슬라이드 폭보다 큰 경우 비율 유지하며 축소 */
+  .mermaid, pre.mermaid { max-width: 100%; overflow-x: auto; }
+  .mermaid svg, pre.mermaid svg { max-width: 100%; height: auto; }
 
   /* Slide types */
   .slide.cover {
@@ -736,7 +741,6 @@ ${SHORTCODE_CSS}
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   }
   .toc-toggle-btn:hover {
-    transform: scale(1.08);
     background: rgba(255, 255, 255, 0.15);
   }
   body.light-mode .toc-toggle-btn {
@@ -857,7 +861,7 @@ ${SHORTCODE_CSS}
     transition: 0.2s;
   }
   .controls button:hover:not(:disabled) {
-    background: var(--brand); transform: scale(1.1);
+    background: var(--brand); box-shadow: 0 4px 16px rgba(0,0,0,0.35);
   }
   .controls button:disabled {
     opacity: 0.3; cursor: not-allowed;
@@ -914,8 +918,7 @@ ${SHORTCODE_CSS}
     }
   }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({ startOnLoad: true, theme: "dark" });</script>
+${hasMermaid ? (mermaidScript ? `<script>${mermaidScript}</script>` : `<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>`) + `\n<script>mermaid.initialize({ startOnLoad: true, theme: "dark" });</script>` : ""}
 </head>
 <body>
   <div class="slides-container" id="slides">
@@ -1050,5 +1053,5 @@ ${SHORTCODE_CSS}
 </body>
 </html>`;
 
-  return { html, styleKey: opts.style || mainFm?.style || "ai-chat", fm: mainFm };
+  return { html, styleKey: opts.style || mainFm?.style || "emerald", fm: mainFm };
 }

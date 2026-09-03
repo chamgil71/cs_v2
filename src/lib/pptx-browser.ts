@@ -75,7 +75,14 @@ function estimateLines(text, widthInch, fontSize) {
 }
 
 function cleanValue(v) {
-  return String(v ?? '').trim().replace(/^["']|["']$/g, '');
+  const s = String(v ?? '').trim();
+  if (s.length >= 2 && s[0] === '"' && s[s.length - 1] === '"') {
+    return s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+  }
+  if (s.length >= 2 && s[0] === "'" && s[s.length - 1] === "'") {
+    return s.slice(1, -1);
+  }
+  return s.replace(/^["']|["']$/g, '');
 }
 
 function splitMeta(meta) {
@@ -194,8 +201,8 @@ function tokenToBlock(tok) {
 function buildSlideDataFromContent(mdContent, styleOverride) {
   const raw = mdContent.replace(/\r\n/g, '\n');
   const { data: fm, content } = matter(raw);
-  const styleKey = styleOverride || fm.style || 'ai-chat';
-  const style = STYLES[styleKey] || STYLES['ai-chat'];
+  const styleKey = styleOverride || fm.style || 'emerald';
+  const style = STYLES[styleKey] || STYLES['emerald'];
   const parts = parseContentParts(content);
   const sections = [];
   let currentSection = null;

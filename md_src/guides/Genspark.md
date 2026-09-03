@@ -2,7 +2,7 @@
 title: "Genspark완전 활용 가이드"
 subtitle: "AI 에이전트 검색 엔진"
 badge: "Genspark AI · 검색의 재발명 · 2026"
-style: "ai-chat"
+style: "emerald"
 stats:
   - value: "Sparkpage"
     label: "AI 종합 정리 페이지"

@@ -2,7 +2,7 @@
 title: "NotebookLM Web Importer"
 subtitle: "Gemini Notebook(구 NotebookLM)에 웹 자료 대량 가져오기"
 badge: "✅ 크롬 익스텐션(오픈소스) · 완전 무료 · 2026"
-style: "knowledge"
+style: "indigo"
 stats:
   - value: "1클릭"
     label: "즉시 저장"

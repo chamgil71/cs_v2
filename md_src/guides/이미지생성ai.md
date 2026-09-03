@@ -2,7 +2,7 @@
 title: "AI 이미지 생성완전 가이드"
 subtitle: "텍스트로 이미지 만들기"
 badge: "AI Image Generation · 2026"
-style: "creative"
+style: "orchid"
 stats:
   - value: "GPT Image 2"
     label: "생성·편집 리더보드 1위"

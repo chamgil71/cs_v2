@@ -2,7 +2,7 @@
 title: "Creative Spark 숏코드 쇼케이스"
 subtitle: "현재 등록된 숏코드의 입력 문법과 HTML 구현 결과를 함께 확인하는 레퍼런스"
 badge: "Shortcode Reference · v2.0"
-style: "ai-chat"
+style: "emerald"
 stats:
   - value: "25종"
     label: "정식 숏코드"

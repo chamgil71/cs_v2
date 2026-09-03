@@ -2,7 +2,7 @@
 title: "Google Antigravity완전 활용 가이드"
 subtitle: "Gemini 3 기반 에이전트 우선 개발 환경"
 badge: "⚡ Google · 에이전트 IDE · 2026"
-style: "ai-dev"
+style: "terracotta"
 stats:
   - value: "Gemini 3"
     label: "코어 모델"

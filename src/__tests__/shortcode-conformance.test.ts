@@ -99,7 +99,7 @@ describe('숏코드 정합성 — client-compiler 가 공유 렌더러 사용 (r
   for (const [type, body] of Object.entries(CASES)) {
     it(`${type} → standalone HTML 컴파일 시 ::: 블록이 렌더됨`, () => {
       const md = `# 제목\n\n::: ${type}\n${body}\n:::\n`;
-      const html = clientCompileMarkdown(md, 'html', 'custom-blue', styles);
+      const html = clientCompileMarkdown(md, 'html', 'sky-blue', styles);
       // 숏코드가 렌더되면 본문에 원문 ':::' 델리미터가 남지 않아야 한다
       const bodyPart = html.split('<body')[1] || html;
       expect(bodyPart, `${type}: 미처리 ::: 블록 잔존`).not.toContain(`::: ${type}`);
@@ -120,19 +120,19 @@ describe('숏코드 정합성 — standalone(client) == server(core) 출력 잠�
   // os-tabs/slide-config 의 비결정 uid 정규화
   const norm = (s: string) => s.replace(/style-[a-z0-9]{5}/g, 'style-UID').replace(/\bt[a-z0-9]{5}-\d+/g, 'tUID');
   const md =
-    `---\ntitle: 통합 테스트\nstyle: ai-chat\n---\n\n# 표지\n\n## 본문\n\n` +
+    `---\ntitle: 통합 테스트\nstyle: emerald\n---\n\n# 표지\n\n## 본문\n\n` +
     `::: icon-grid\n- icon: "⚡"\n  title: "빠름"\n  desc: "설명"\n:::\n\n` +
     `::: alert-box\n- title: "주의"\n  desc: "확인"\n:::\n`;
 
   it('html 모드: client 출력 == guide-core 출력', () => {
-    const client = clientCompileMarkdown(md, 'html', 'ai-chat', REAL_STYLES);
-    const server = guideCore({ raw: md }, { styles: REAL_STYLES, config: REAL_PPT, htmlConfig: REAL_HTML, style: 'ai-chat' }).html;
+    const client = clientCompileMarkdown(md, 'html', 'emerald', REAL_STYLES);
+    const server = guideCore({ raw: md }, { styles: REAL_STYLES, config: REAL_PPT, htmlConfig: REAL_HTML, style: 'emerald' }).html;
     expect(norm(client)).toBe(norm(server));
   });
 
   it('presentation 모드: client 출력 == presentation-core 출력', () => {
-    const client = clientCompileMarkdown(md, 'presentation', 'ai-chat', REAL_STYLES);
-    const server = presCore([{ raw: md, basename: '' }], { styles: REAL_STYLES, config: REAL_PPT, htmlConfig: REAL_HTML, style: 'ai-chat' }).html;
+    const client = clientCompileMarkdown(md, 'presentation', 'emerald', REAL_STYLES);
+    const server = presCore([{ raw: md, basename: '' }], { styles: REAL_STYLES, config: REAL_PPT, htmlConfig: REAL_HTML, style: 'emerald' }).html;
     expect(norm(client)).toBe(norm(server));
   });
 });

@@ -2,7 +2,7 @@
 title: "CapCut 완전 활용 가이드"
 subtitle: "숏폼 영상 편집과 AI 자막 제작"
 badge: "🎬 영상 편집 · 숏폼 제작"
-style: "creative"
+style: "orchid"
 stats:
   - value: "무료"
     label: "기본 편집"

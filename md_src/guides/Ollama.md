@@ -2,7 +2,7 @@
 title: "Ollama 완전 활용 가이드"
 subtitle: "오픈소스 AI 활용 툴"
 badge: "🦙 로컬 AI · LLM · 2026"
-style: "ai-chat"
+style: "emerald"
 stats:
   - value: "오프라인"
     label: "완벽한 보안"

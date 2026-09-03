@@ -2,7 +2,7 @@
 title: "Perplexity AI완전 활용 가이드"
 subtitle: "출처 기반 AI 검색"
 badge: "Perplexity AI · AI 검색 엔진 · 2026"
-style: "ai-chat"
+style: "emerald"
 stats:
   - value: "Comet"
     label: "AI 네이티브 브라우저"

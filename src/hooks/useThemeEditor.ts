@@ -9,7 +9,7 @@ export type { ThemeDetails };
 // 추가/수정/삭제/서버저장 로직 자체는 useThemeMutations 에 위임.
 export function useThemeEditor() {
   const [styles, setStyles] = useState<Record<string, ThemeDetails>>({});
-  const [selectedStyle, setSelectedStyle] = useState('custom-blue');
+  const [selectedStyle, setSelectedStyle] = useState('sky-blue');
   const [editingThemeKey, setEditingThemeKey] = useState<string | null>(null);
   const [newThemeKey, setNewThemeKey] = useState('');
   const [loading, setLoading] = useState(false);

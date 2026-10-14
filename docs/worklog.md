@@ -267,6 +267,7 @@
 - **분류**: `config/shortcode-guide.ts` 가 분류·기능 이름을 카탈로그에서 가져오고 스니펫 첫 줄을 기능 이름으로. `MarkdownCompiler.tsx` 의 하드코딩 optgroup·분류 버튼을 데이터 기반으로(이전엔 "데이터 다이어그램" 분류 버튼이 빠져 있었음).
 - **서식 세트**: `scripts/shape-set.mjs` + `shortcode-styles.mjs` 카드 규칙 변수화 + PPTX `helpers.cardBox`/`isAltBlock` + 팔레트 `bgLight`·`brandMid`.
 - **발견·수정한 기존 버그**: ① PPTX `line: { width: 0 }` 49곳이 1pt 짙은 테두리로 출력(pptxgenjs `width || 1`) → `type: "none"`. ② PPTX 가 색 이름 `accent` 를 몰라 검정으로 칠함 → 색 이름 표 통일.
-- 검증: `npm test` 287/287, 기존 md(가이드 3개+showcase) 가이드·프레젠테이션 마크업 변경 전후 동일(CSS 만 변수화), `npm run build:standalone` 4종, 헤드리스로 standalone 모듈2 미리보기(기능 이름·제목 속성·`bg=alt`·elevated 그림자)와 프레젠테이션 다크/라이트 카드색, LibreOffice 로 PPTX 세트별(template·elevated·tinted) 렌더 확인. pptgen 견본(`examples/all-layouts.md`, 기능 이름 46종)을 cs_v2 3종으로 빌드 무오류.
+- **slide-config 여러 줄 규칙 통일**: `notes: |`(pptgen)·`\n`(cs_v2) 둘 다 읽는 공용 `parseSlideConfig` — 이전엔 `notes: |` 가 "|" 로 읽혀 발표스크립트가 사라졌음.
+- 검증: `npm test` 288/288, 기존 md(가이드 3개+showcase) 가이드·프레젠테이션 마크업 변경 전후 동일(CSS 만 변수화), `npm run build:standalone` 4종, 헤드리스로 standalone 모듈2 미리보기(기능 이름·제목 속성·`bg=alt`·elevated 그림자)와 프레젠테이션 다크/라이트 카드색, LibreOffice 로 PPTX 세트별(template·elevated·tinted) 렌더 확인. pptgen 견본(`examples/all-layouts.md`, 기능 이름 46종)을 cs_v2 3종으로 빌드 무오류.
 - 남은 것: 항목 단위 `tag: alt`(pptgen 전용), pptgen 전용 인수(badge·header·connector·emphasis·grow)의 cs_v2 구현, 카탈로그 원본의 cs_v2 이동(지금은 경로만 준비).
 

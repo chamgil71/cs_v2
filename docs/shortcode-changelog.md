@@ -29,8 +29,11 @@
 ### 변경 4 — PPTX 선 없음 버그 수정
 - `line: { width: 0 }` 이 pptxgenjs 에서 1pt `#333333` 테두리가 되던 문제(카드 상단 띠·배지·헤더 바 등 49곳) → `line: { type: "none" }`.
 
+### 변경 5 — `::: slide-config` 여러 줄 값 규칙 통일
+- `key: |` 다음 들여쓴 줄(pptgen 방식)과 한 줄 `\n` 리터럴(cs_v2 방식)을 **양쪽 모두** 줄바꿈으로 읽는다. 공용 파서 `parseSlideConfig`(shortcode-render.mjs)를 md-to-pptx·pptx-browser 가 같이 쓴다(이전엔 `notes: |` 가 `"|"` 한 글자로 읽혀 발표스크립트가 사라졌다).
+
 ### 검증
-- `npm test` 204 → 287(신규 `library-catalog.test.ts` 83), 기존 문서 4종(가이드·프레젠테이션) 마크업 비교 동일, standalone 4종 빌드 + 헤드리스(기능 이름·`bg=alt`·elevated 그림자·다크/라이트) 확인, PPTX LibreOffice 렌더 확인.
+- `npm test` 204 → 288(신규 `library-catalog.test.ts` 83), 기존 문서 4종(가이드·프레젠테이션) 마크업 비교 동일, standalone 4종 빌드 + 헤드리스(기능 이름·`bg=alt`·elevated 그림자·다크/라이트) 확인, PPTX LibreOffice 렌더 확인.
 
 ---
 

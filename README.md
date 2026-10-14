@@ -188,7 +188,7 @@ cs_v2/
 │   ├── shortcode-guide.ts  # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, 분류·기능 이름은 카탈로그에서)
 │   ├── library/            # 공용 배치 카탈로그 복사본(layouts.json 66종·shape-sets.json 6종) — pptgen 과 같은 규칙
 │   └── layout.json         # PPTX 분석 가공 오프셋 보관 JSON
-├── src/__tests__/          # Vitest — shortcode-conformance(정합성 129) + library-catalog(카탈로그 83) 등 287건
+├── src/__tests__/          # Vitest — shortcode-conformance(정합성 129) + library-catalog(카탈로그 84) 등 288건
 ├── md_src/                 # 마크다운 원천 소스 보관 폴더 (하위 폴더마다 hub.config.json 선택적 배치)
 ├── public/                 # [산출물, gitignore] 웹 GUI "가이드 컬렉션 저장" 시 Vite 개발서버가 서빙하는 재빌드 위치
 ├── publish/                # [산출물, gitignore] CLI 빌드 파이프라인(build-folder.mjs 등)의 기본 출력 위치

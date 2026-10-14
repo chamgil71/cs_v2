@@ -26,6 +26,25 @@ function cleanValue(v) {
   return s.replace(/^["']|["']$/g, "");
 }
 
+/**
+ * ::: slide-config 본문 → { key: value } (md-to-pptx·pptx-browser 공용, pptgen lib/parse_v2.js parseConfig 와 같은 규칙)
+ *  - 줄마다 `key: value` 또는 `- key: value`
+ *  - 여러 줄 값: `key: |` 다음 들여쓴 줄들(줄바꿈 유지) — 또는 한 줄에 `\n` 리터럴(둘 다 줄바꿈)
+ */
+function parseSlideConfig(src) {
+  const cfg = {};
+  let lit = null;
+  for (const line of String(src || "").split(/\r?\n/)) {
+    if (lit && /^\s+\S/.test(line)) { cfg[lit] = cfg[lit] ? `${cfg[lit]}\n${line.trim()}` : line.trim(); continue; }
+    lit = null;
+    const m = line.match(/^\s*(?:-\s*)?([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
+    if (!m) continue;
+    const v = cleanValue(m[2]);
+    if (v === "|") { lit = m[1]; cfg[lit] = ""; } else cfg[m[1]] = v.replace(/\\n/g, "\n");
+  }
+  return cfg;
+}
+
 function splitMeta(meta) {
   if (!meta) return [];
   return String(meta)
@@ -927,6 +946,7 @@ export {
   renderInline,
   cleanValue,
   splitMeta,
+  parseSlideConfig,
   standardizeItem,
   parseShortcodeItems,
   DEFAULT_BULLET,

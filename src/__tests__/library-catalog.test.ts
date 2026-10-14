@@ -137,3 +137,12 @@ describe('PPTX — 선 없음 표기', () => {
     expect(bad).toEqual([]);
   });
 });
+
+describe('slide-config — pptgen 과 같은 규칙', () => {
+  it('`key: |` 여러 줄 값과 `\\n` 리터럴이 모두 줄바꿈', async () => {
+    // @ts-ignore
+    const { parseSlideConfig } = await import('../../scripts/shortcode-render.mjs');
+    expect(parseSlideConfig('notes: |\n  첫 줄\n  둘째 줄\nsource: 매체')).toEqual({ notes: '첫 줄\n둘째 줄', source: '매체' });
+    expect(parseSlideConfig('- notes: "가\\n나"\nbg: "#111"')).toEqual({ notes: '가\n나', bg: '#111' });
+  });
+});

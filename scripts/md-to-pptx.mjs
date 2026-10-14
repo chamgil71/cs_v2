@@ -12,6 +12,7 @@ import { marked } from "marked";
 import pptxgen from "pptxgenjs";
 import { glob } from "node:fs/promises";
 import { pptxRegistry, helpers } from "./pptx-renderers/registry.mjs";
+import { parseSlideConfig } from "./shortcode-render.mjs";
 import { shortcodeBlockRe, stripHeadingAttrs, resolveShortcode } from "./library-names.mjs";
 import { shapeSetPptx, pickShapeSet } from "./shape-set.mjs";
 
@@ -326,16 +327,8 @@ function buildSlideData(mdPath, styleOverride) {
       if (!currentSection) { sectionNum++; currentSection = { num: sectionNum, title: "", items: [] }; }
       closeCard();
       if (part.scType === "slide-config") {
-        currentSection.config = currentSection.config || {};
-        const lines = (part.rawBody || "").split(/\r?\n/);
-        for (const line of lines) {
-          const m = line.match(/^\s*(?:-\s*)?([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
-          if (m) {
-            const key = m[1].trim();
-            const val = cleanValue(m[2]);
-            currentSection.config[key] = val;
-          }
-        }
+        // 공용 파서 — `key: |` 여러 줄 값과 `\n` 리터럴 둘 다 줄바꿈 (pptgen 과 같은 규칙)
+        currentSection.config = { ...(currentSection.config || {}), ...parseSlideConfig(part.rawBody) };
       } else {
         currentSection.items.push({ type: part.scType, args: part.args || "", items: part.items });
       }

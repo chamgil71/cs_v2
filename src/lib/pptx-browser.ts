@@ -14,6 +14,8 @@ import pptxgen from 'pptxgenjs';
 // @ts-ignore
 import { pptxRegistry, helpers } from '../../scripts/pptx-renderers/registry.mjs';
 // @ts-ignore — 순수 JS 공유 모듈
+import { parseSlideConfig } from '../../scripts/shortcode-render.mjs';
+// @ts-ignore
 import { shortcodeBlockRe, stripHeadingAttrs, resolveShortcode } from '../../scripts/library-names.mjs';
 // @ts-ignore
 import { shapeSetPptx, pickShapeSet } from '../../scripts/shape-set.mjs';
@@ -237,11 +239,8 @@ function buildSlideDataFromContent(mdContent, styleOverride) {
       if (!currentSection) { sectionNum++; currentSection = { num: sectionNum, title: '', items: [] }; }
       closeCard();
       if (part.scType === 'slide-config') {
-        currentSection.config = currentSection.config || {};
-        for (const line of (part.rawBody || '').split(/\r?\n/)) {
-          const m = line.match(/^\s*(?:-\s*)?([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
-          if (m) currentSection.config[m[1].trim()] = cleanValue(m[2]);
-        }
+        // 공용 파서 — `key: |` 여러 줄 값과 `\n` 리터럴 둘 다 줄바꿈 (pptgen 과 같은 규칙)
+        currentSection.config = { ...(currentSection.config || {}), ...parseSlideConfig(part.rawBody) };
       } else {
         currentSection.items.push({ type: part.scType, args: part.args || '', items: part.items });
       }

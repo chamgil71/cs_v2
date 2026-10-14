@@ -18,7 +18,7 @@ stats:
 
 다양한 형식의 문서를 하나의 노트북에 연결하여 통합 분석합니다.
 
-::: icon-grid
+::: grid.cards
 - title: "PDF"
   desc: "논문, 보고서, 계약서 등 PDF 파일"
 - title: "Google Docs"
@@ -37,7 +37,7 @@ stats:
   desc: "노트나 텍스트 직접 붙여넣기"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 소스 용량 제한"
   desc: "소스당 최대 500,000 단어 (PDF 기준 약 200-500페이지). 노트북 하나에 최대 50개 소스까지 추가 가능합니다."
 :::
@@ -46,7 +46,7 @@ stats:
 
 4단계로 나만의 AI 지식 베이스를 만들어보세요.
 
-::: workflow-flow
+::: process.track connector=arrow
 - title: "🆕 노트북 생성"
   desc: "notebooklm.google.com에서 \"새 노트북\" 클릭"
 - title: "📥 소스 추가"
@@ -75,7 +75,7 @@ stats:
 
 "이 데이터의 한계점은 무엇인가?" "FAQ를 만들어줘"
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 NotebookLM → Gemini Notebook 리브랜딩:"
   desc: "2026년 NotebookLM은 Gemini Notebook으로 이름이 바뀌고 Gemini 3.5 모델로 업그레이드되었습니다(주소는 기존 notebooklm.google.com도 유지). 노트북 통째로 복제하는 기능과 EPUB 업로드가 새로 추가되었습니다."
 :::
@@ -143,22 +143,22 @@ Gemini가 소스 내용을 분석해 애니메이션과 내레이션이 있는 �
 
 더 정확하고 유용한 결과를 얻기 위한 노하우입니다.
 
-::: alert-box tip
+::: text.callout tip
 - title: "🔗 NotebookLM Importer 확장 활용"
   desc: "크롬 확장 'NotebookLM Importer'를 설치하면 브라우저에서 읽는 페이지를 버튼 하나로 노트북에 추가할 수 있습니다. 웹서핑 중 발견한 자료를 즉시 저장하세요."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "🎯 노트북을 주제별로 분리하세요"
   desc: "하나의 노트북에 모든 자료를 넣기보다, \"AI 동향 리서치\", \"Q3 프로젝트\", \"독서 노트\"처럼 주제별로 분리하면 AI 답변의 정확도가 높아집니다."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "📌 인용 출처를 항상 확인하세요"
   desc: "NotebookLM의 모든 답변에는 출처 인용이 포함됩니다. 인용 번호를 클릭하면 해당 소스의 정확한 위치로 이동합니다. 중요한 정보는 항상 원문을 확인하세요."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 노트 기능 적극 활용"
   desc: "AI 답변 중 유용한 내용은 \"노트에 추가\" 버튼으로 저장합니다. 저장된 노트들은 다시 AI 분석의 소스로 활용할 수 있습니다."
 :::

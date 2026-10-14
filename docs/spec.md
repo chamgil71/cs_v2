@@ -181,9 +181,9 @@
 
 ### 5.3 icon-grid align 변형
 ```markdown
-::: icon-grid align=center   # 기본 — 아이콘 중앙 카드
-::: icon-grid align=left     # 아이콘 좌측 배경박스 (구 skill-list)
-::: icon-grid align=row      # 아이콘+텍스트 수평 (구 checkpoint-grid)
+::: grid.cards align=center   # 기본 — 아이콘 중앙 카드
+::: grid.cards align=left     # 아이콘 좌측 배경박스 (구 skill-list)
+::: grid.cards align=row      # 아이콘+텍스트 수평 (구 checkpoint-grid)
 ```
 
 ### 5.4 특수 숏코드

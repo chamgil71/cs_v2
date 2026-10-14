@@ -4,7 +4,7 @@ import { renderShortcode } from '../../scripts/shortcode-render.mjs';
 // @ts-ignore
 import { pptxRegistry, helpers } from '../../scripts/pptx-renderers/registry.mjs';
 // @ts-ignore
-import { LAYOUTS, LAYOUT_ALIASES, NATIVE_SHORTCODES, resolveShortcode, stripHeadingAttrs, shortcodeBlockRe } from '../../scripts/library-names.mjs';
+import { LAYOUTS, LAYOUT_ALIASES, ALIAS_ARGS, IMPL_SHORTCODES, resolveShortcode, stripHeadingAttrs, shortcodeBlockRe } from '../../scripts/library-names.mjs';
 // @ts-ignore
 import { shapeSetCss, shapeSetPptx, pickShapeSet } from '../../scripts/shape-set.mjs';
 // @ts-ignore
@@ -20,7 +20,6 @@ import path from 'node:path';
  */
 const ROOT = path.resolve(__dirname, '../..');
 const BODY = '- icon: "⚡"\n  title: "하나"\n  desc: "설명"\n  meta: "A|B"\n- icon: "🧠"\n  title: "둘"\n  desc: "설명"\n- icon: "✅"\n  title: "셋"\n  desc: "설명"';
-const INTERNAL = new Set(['slide-config', 'arrow']);
 
 describe('카탈로그 — 생성본(library-map.mjs) == 복사본(config/library/layouts.json)', () => {
   const json = JSON.parse(fs.readFileSync(path.join(ROOT, 'config/library/layouts.json'), 'utf8'));
@@ -43,37 +42,67 @@ describe('카탈로그 — 모든 기능 이름이 HTML·PPTX 로 그려진다',
   for (const name of Object.keys(LAYOUTS)) {
     it(`${name} → ${resolveShortcode(name).type}`, () => {
       const r = resolveShortcode(name);
-      expect(NATIVE_SHORTCODES.has(r.type), `${name}: 해석 결과 ${r.type} 가 cs_v2 숏코드가 아님`).toBe(true);
+      expect(IMPL_SHORTCODES.has(r.type), `${name}: 구현 ID ${r.type} 가 cs_v2 렌더러 분기가 아님`).toBe(true);
       const html = renderShortcode(name, BODY, '');
       expect(html, `${name}: 빈 출력`).toBeTruthy();
       expect(html).not.toContain('undefined');
       expect(pptxRegistry.has(r.type), `${name}: PPTX 렌더러 없음 (${r.type})`).toBe(true);
     });
   }
-  it('근사 숏코드(카탈로그 fallback.cs_v2)도 고유 이름표에 있다', () => {
-    expect(NATIVE_SHORTCODES.has(resolveShortcode('text.avatar').type)).toBe(true);
+  it('카탈로그가 가리키는 구현 ID(shortcode·variants·fallback)는 전부 렌더러에 있다', () => {
+    const ids = Object.values<any>(LAYOUTS).flatMap((e) => [e.shortcode, ...(e.variants || []).map((v: any) => v.shortcode)]).filter(Boolean);
+    expect(ids.filter((t) => !IMPL_SHORTCODES.has(t))).toEqual([]);
+    expect(IMPL_SHORTCODES.has(resolveShortcode('text.avatar').type)).toBe(true);
   });
-  it('카탈로그가 가리키는 cs_v2 숏코드는 전부 고유 이름표(NATIVE_SHORTCODES)에 있다', () => {
-    const missing = Object.entries<any>(LAYOUTS).filter(([, e]) => e.shortcode && !NATIVE_SHORTCODES.has(e.shortcode)).map(([k]) => k);
-    expect(missing).toEqual([]);
-  });
-  it('고유 이름표의 모든 숏코드가 실제로 그려진다(이름표 = 렌더러 분기)', () => {
-    const dead = [...NATIVE_SHORTCODES].filter((t: any) => !INTERNAL.has(t) && !renderShortcode(t, BODY, ''));
-    expect(dead).toEqual([]);
-  });
-  it('고유 이름은 해석하지 않는다(skill-list 등 변형 보존 — 기존 문서 출력 동일)', () => {
-    for (const t of ['skill-list', 'checkpoint-grid', 'compare-grid', 'workflow-flow']) {
-      expect(renderShortcode(t, BODY, '')).toBe(renderShortcode(t, BODY, ''));
-      expect(resolveShortcode(t).type).toBe(t);
-    }
-  });
-  it('pptgen 옛 이름(별칭)도 기능 이름으로 받아준다', () => {
-    expect(resolveShortcode('staircase')).toMatchObject({ layout: 'process.staircase', type: 'level-grid' });
-    expect(resolveShortcode('c01-p01').layout).toBe('grid.main-plus-3');
-    expect(Object.keys(LAYOUT_ALIASES).length).toBeGreaterThan(0);
+  it('구현 ID 표의 모든 항목이 실제로 그려진다(표 = 렌더러 분기)', () => {
+    expect([...IMPL_SHORTCODES].filter((t: any) => !renderNativeOk(t))).toEqual([]);
   });
   it('모르는 이름은 기존처럼 빈 출력', () => {
     expect(renderShortcode('no-such.layout', BODY, '')).toBe('');
+  });
+});
+
+// 구현 ID 를 직접 그려 보기 — 구현 ID 는 별칭이기도 하므로 renderShortcode 로 부르면 기능 이름으로 정규화된 뒤 같은 분기로 간다
+const renderNativeOk = (impl: string) => !!renderShortcode(impl, BODY, '');
+
+describe('이름은 하나로 — 옛 이름은 기능 이름 + 인수로 정규화(출력 동일)', () => {
+  const csAliases = Object.keys(LAYOUT_ALIASES).filter((a) => !/^c\d\d-p\d\d$/.test(a));
+  for (const a of csAliases) {
+    const layout = LAYOUT_ALIASES[a];
+    const extra = Object.entries<any>(ALIAS_ARGS[a] || {}).map(([k, v]) => `${k}=${v}`).join(' ');
+    it(`${a} == ${layout}${extra ? ' ' + extra : ''}`, () => {
+      const norm = (h: string) => h.replace(/\bt[a-z0-9]{5}(-\d+)?/g, 'tUID');   // nav.tabs 의 무작위 탭 ID
+      expect(norm(renderShortcode(a, BODY, ''))).toBe(norm(renderShortcode(layout, BODY, extra)));
+      expect(resolveShortcode(a)).toMatchObject({ layout, alias: a });
+    });
+  }
+  it('모양 차이는 인수로 — 변형이 구현 ID 를 고른다', () => {
+    expect(resolveShortcode('grid.columns', 'variant=plain').type).toBe('compare-grid');
+    expect(resolveShortcode('grid.columns', '').type).toBe('columns-grid');
+    expect(resolveShortcode('process.track', 'connector=arrow').type).toBe('workflow-flow');
+    expect(resolveShortcode('process.track', 'connector=none').type).toBe('step-flow');
+    expect(resolveShortcode('compare-grid', 'cols=2')).toMatchObject({ layout: 'grid.columns', type: 'compare-grid', args: 'cols=2 variant=plain' });
+  });
+  it('블록에 쓴 인수가 옛 이름 인수보다 우선', () => {
+    expect(resolveShortcode('workflow-flow', 'connector=none').type).toBe('step-flow');
+  });
+  it('pptgen 옛 이름(구현 ID)도 받아준다', () => {
+    expect(resolveShortcode('staircase')).toMatchObject({ layout: 'process.staircase', type: 'level-grid' });
+    expect(resolveShortcode('c01-p01').layout).toBe('grid.main-plus-3');
+  });
+  it('md_src 에 옛 이름이 남아 있지 않다(npm run migrate:names)', () => {
+    const left: string[] = [];
+    const walk = (d: string) => { for (const f of fs.readdirSync(d)) { const p = path.join(d, f); if (fs.statSync(p).isDirectory()) walk(p); else if (p.endsWith('.md')) {
+      for (const m of fs.readFileSync(p, 'utf8').matchAll(/^\s*\\?:::\s*([A-Za-z0-9_.-]+)/gm)) if (!LAYOUTS[m[1]] && LAYOUT_ALIASES[m[1]]) left.push(`${path.relative(ROOT, p)}: ${m[1]}`);
+    } } };
+    walk(path.join(ROOT, 'md_src'));
+    expect(left).toEqual([]);
+  });
+  it('text.callout 종류는 variant 또는 첫 위치 인수(다른 인수와 함께 써도 안전)', () => {
+    const h = renderShortcode('text.callout', BODY, 'warning bg=alt');
+    expect(h).toContain('alert-warn');
+    expect(h.startsWith('<div class="sc-bg-alt">')).toBe(true);
+    expect(renderShortcode('text.callout', BODY, 'variant=tip')).toContain('alert-tip');
   });
 });
 

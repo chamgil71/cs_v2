@@ -18,7 +18,7 @@ stats:
 
 노션의 모든 콘텐츠는 '블록'으로 구성됩니다. `/`를 입력하면 블록 메뉴가 열립니다.
 
-::: icon-grid
+::: grid.cards
 - title: "텍스트기본 텍스트 입력"
   desc: "기본 텍스트 입력"
 - title: "제목 H1/H2/H3계층별 제목 구조"
@@ -60,7 +60,7 @@ stats:
 | Q3 전략 보고서 | 박지훈 | 2025. 8. 1 | 예정 | 🔴 높음 |
 | SNS 콘텐츠 캘린더 | 최유리 | 2025. 7. 30 | 진행중 | 🟢 낮음 |
 
-::: icon-grid
+::: grid.cards
 - title: "테이블"
   desc: "스프레드시트 형식의 기본 뷰"
 - title: "칸반 보드"
@@ -75,7 +75,7 @@ stats:
   desc: "간결한 목록 형식"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 데이터베이스 속성(프로퍼티) 종류"
   desc: |
     텍스트, 숫자, 선택/다중선택, 날짜, 담당자, 체크박스, URL, 이메일, 전화번호, 수식, 관계(Relation), 롤업(Rollup) — 다양한 속성으로 원하는 데이터 구조를 만들 수 있습니다.
@@ -89,7 +89,7 @@ stats:
 
 문서 작성, 요약, 번역, 개선부터 Q&A(Ask AI), 자동화까지 — 글쓰기의 모든 과정을 AI가 도와줍니다.
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "✍️ 글쓰기 도움"
   desc: "브레인스토밍, 초안 작성, 문체 개선, 길이 조절"
 - title: "📝 요약 & 번역"
@@ -106,7 +106,7 @@ stats:
   desc: "예약·트리거로 스스로 실행되는 팀 전용 봇. Opus 4.8, Grok 4.3, 저비용 GLM 5.2 등 모델을 작업에 맞게 선택"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💰 Notion AI 요금 (크레딧 기반)"
   desc: "2026.05부터 크레딧 기반 과금으로 전환되었습니다. Custom Agents는 Business/Enterprise 플랜 전용(추가 $10/1,000크레딧)이며 Free 플랜에서는 쓸 수 없고, 다른 유료 플랜은 매달 지급되는 크레딧 안에서 요약·검색 등 기본 AI 기능을 사용합니다."
 :::
@@ -213,22 +213,22 @@ Tab
 
 노션을 더 잘 쓰기 위한 노하우를 정리했습니다.
 
-::: alert-box tip
+::: text.callout tip
 - title: "🏗️ 템플릿 갤러리 활용"
   desc: "노션 공식 템플릿 갤러리에서 OKR, 독서 목록, 콘텐츠 캘린더, 버그 트래커 등 수백 가지 무료 템플릿을 바로 사용할 수 있습니다."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "🔁 관계형 DB (Relation & Rollup)"
   desc: "두 데이터베이스를 연결하고 집계값을 롤업으로 가져올 수 있습니다. 예: 프로젝트 DB ↔ 작업 DB를 연결하여 프로젝트별 완료율을 자동 계산."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "🌐 노션 커넥터"
   desc: "GitHub, Jira, Slack, Google Drive 등 외부 서비스를 노션과 연동할 수 있습니다. 설정 → 커넥터에서 연결하세요."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "📤 공유 & 웹 퍼블리시"
   desc: "모든 페이지를 URL로 공유하거나 웹사이트로 공개할 수 있습니다. 포트폴리오, 이력서, 팀 위키로 활용됩니다."
 :::

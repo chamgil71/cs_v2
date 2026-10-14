@@ -21,7 +21,7 @@ Cloudflare는 초기에는 웹사이트를 빠르게 로딩해주는 CDN(콘텐�
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "🛡️"
   title: "프록시(Proxy) DNS"
   desc: "내 서버의 실제 IP 주소를 숨기고 Cloudflare의 방화벽을 거치게 하여 악성 공격을 차단합니다."
@@ -41,7 +41,7 @@ Cloudflare는 초기에는 웹사이트를 빠르게 로딩해주는 CDN(콘텐�
 
 ### 이런 분들께 강력 추천합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "🖥️ 홈 서버 / NAS 운영자"
   tag: "개인"
   desc: "집에서 24시간 돌아가는 미니 PC나 도커 컨테이너를 외부망에서 안전하게 접속하고 싶은 분."
@@ -59,7 +59,7 @@ Cloudflare의 수많은 기능 중 실무에서 가장 많이 쓰이는 두 가�
 
 ### A. 도메인 연결 및 CDN 적용
 
-::: step-list
+::: process.steps
 - title: "도메인 추가"
   desc: "대시보드에서 구매한 도메인 이름을 입력하고 Free 플랜을 선택합니다."
 - title: "네임서버 변경"
@@ -81,7 +81,7 @@ Cloudflare의 수많은 기능 중 실무에서 가장 많이 쓰이는 두 가�
 
 # 실무 효율을 높이는 팁
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "Cloudflare Pages vs Vercel"
   desc: "배포 속도나 DX는 Vercel이 앞서지만, **트래픽 무제한**이라는 점에서 미디어 자산이 많은 페이지는 Cloudflare Pages가 유리합니다."
   meta: "용도별 배포 플랫폼 분리"

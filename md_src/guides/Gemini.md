@@ -16,7 +16,7 @@ stats:
 
 # Gemini 모델 라인업
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "Gemini 3.1 Pro"
   desc: "가장 강력한 멀티모달 추론(2025.11 Gemini 3 Pro 출시 후 2026년 3.1로 업그레이드). 비전 퍼즐·과학 지식·코딩 벤치마크에서 2.5 Pro 대비 크게 향상. 제로샷으로 인터랙티브 웹 UI를 생성하는 '생성형 UI' 지원."
   featured: "true"
@@ -30,7 +30,7 @@ stats:
 
 # 핵심 기능 & 강점
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "🌐"
   title: "실시간 Google 검색 연동"
   desc: "최신 정보를 실시간으로 검색하여 답변에 포함. 뉴스, 주가, 최신 연구도 즉시 확인 가능. 다른 AI 대비 최대 강점."
@@ -53,7 +53,7 @@ stats:
 
 # 효과적인 프롬프트 & Gems 설정
 
-::: console-box
+::: code.console
 - title: "Gems 시스템 지침 예시 — 업무 보고서 작성 에이전트"
   desc: |
     역할: 당신은 한국 공공기관 전문 보고서 작성 AI입니다.
@@ -79,7 +79,7 @@ stats:
 
 # Gemini 특화 프롬프트 기법 🎯
 
-::: feature-grid cols=4
+::: grid.features cols=4
 - icon: "🔍"
   title: "검색 활용"
   desc: "\"최신 정보로\" / \"2025년 기준으로 검색해서\""
@@ -96,7 +96,7 @@ stats:
 
 # Gems 활용 예시 💎
 
-::: feature-grid cols=4
+::: grid.features cols=4
 - icon: "🔤"
   title: "번역 전문가"
   desc: "한↔영 번역 + 문화적 뉘앙스 반영"
@@ -113,7 +113,7 @@ stats:
 
 # Google Workspace 통합
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "📧"
   title: "Gmail"
   desc: "이메일 요약·작성·분류"
@@ -134,12 +134,12 @@ stats:
   desc: "영상 요약·자막 분석"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Workspace AI 활성화:"
   desc: "Google Workspace 계정에서 Gemini for Workspace 구독 시 Docs·Sheets·Slides·Gmail에서 AI 기능 직접 사용. \"@Gemini\"를 입력하면 즉시 호출."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Gemini Notebook(구 NotebookLM) & Antigravity:"
   desc: "NotebookLM은 2026년 Gemini Notebook으로 리브랜딩되며 3.5세대 모델을 순차 도입 중인 리서치·요약 전용 도구로 자리잡았고, 코딩 작업은 Gemini 최신 세대를 품은 에이전트 IDE Google Antigravity로 이어집니다. 자세한 내용은 각각의 전용 가이드를 참고하세요."
 :::
@@ -148,7 +148,7 @@ stats:
 
 🔬 Google AI Studio 핵심 기능
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: |
     프롬프트 설계 도구
      시스템 지침·예시·온도 조절을 시각적으로 설정. 최적 프롬프트 실험 가능.

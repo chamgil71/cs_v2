@@ -42,14 +42,14 @@ Win+Alt+E로 실행
 
 0.1초
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 동작 원리:"
   desc: "Windows NTFS의 MFT(Master File Table)를 직접 읽어 모든 파일 정보를 메모리에 인덱싱. 설치 직후 빠르게 인덱스 구축 후 실시간 업데이트."
 :::
 
 # 검색 문법 & 고급 쿼리
 
-::: columns-grid cols=3
+::: grid.columns cols=3
 - title: |
     *.xlsx
   desc: "특정 확장자 파일 전체 검색"
@@ -77,7 +77,7 @@ Win+Alt+E로 실행
 
 # 주요 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "⚡"
   title: "실시간 인덱스"
   desc: "파일 생성·삭제·이동 즉시 반영. 항상 최신 상태 유지."
@@ -94,14 +94,14 @@ Win+Alt+E로 실행
 
 # 설치 & 설정
 
-::: step-list
+::: process.steps
 - title: "1voidtools.com 접속 → Everything 다운로드 및 설치 (무료)32/64비트 선택. 설치 파일 크기 2MB 이하로 매우 가벼움."
 - title: "2최초 실행 시 자동 인덱싱 시작 (수십 초 ~ 수 분)SSD 환경에서는 100만 파일도 1분 이내 완료. 이후 실시간 업데이트."
 - title: "3Tools → Options → 글로벌 단축키 설정Win+Alt+E 또는 원하는 단축키로 변경. 시작 프로그램에 등록 권장."
 - title: "4시스템 트레이에 상주하며 백그라운드 실행CPU·RAM 점유율 거의 0%. 항상 켜두어도 성능 영향 없음."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 PowerToys Run 연동:"
   desc: "Microsoft PowerToys 설치 후 Alt+Space → Everything 플러그인 활성화. PowerToys Run 검색창에서 Everything 검색 동시 사용 가능."
 :::

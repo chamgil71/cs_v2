@@ -5,7 +5,10 @@
  * 색상은 resolveColorKeyword 가 CSS 변수(var(--brand) 등)로 반환하므로 스타일 객체가 불필요하다.
  */
 import { marked } from "marked";
-import { resolveShortcode, wantsAltBg, colorToken } from "./library-names.mjs";
+import { resolveShortcode, wantsAltBg, colorToken, argKeys } from "./library-names.mjs";
+
+// text.callout 종류 별칭 — 카탈로그 values(tip|info|warning|danger|success)의 warning 을 기존 CSS 클래스(alert-warn)로
+const CALLOUT_ALIAS = { warning: "warn", caution: "warn" };
 
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -262,13 +265,13 @@ function buildSizeOverrideStyle(argsStr) {
 
 /**
  * 숏코드 진입점 — 이름 해석(공용 카탈로그) + 블록 공통 인수 처리 후 cs_v2 렌더러에 넘긴다.
- *  - 이름: cs_v2 고유 이름은 그대로, 기능 이름(grid.cards)·pptgen 옛 이름은 카탈로그로 숏코드를 찾는다 (library-names.mjs)
+ *  - 이름: 기능 이름(grid.cards) 하나로 운영 — 옛 이름은 기능 이름 + 인수로 정규화한 뒤 구현 ID 를 고른다 (library-names.mjs)
  *  - bg=alt: 이 블록의 카드만 서식 세트의 보조 카드색(--card-alt-bg)으로 — 레이아웃에 영향 없는 display:contents 래퍼
  */
 function renderShortcode(type, body, args) {
-  const { type: native } = resolveShortcode(type);
-  const html = renderNative(native, body, args);
-  return html && wantsAltBg(args) ? `<div class="sc-bg-alt">${html}</div>` : html;
+  const r = resolveShortcode(type, args);   // 기능 이름 + 정규화된 인수 → cs_v2 구현 ID
+  const html = renderNative(r.type, body, r.args);
+  return html && wantsAltBg(r.args) ? `<div class="sc-bg-alt">${html}</div>` : html;
 }
 
 function renderNative(type, body, args) {
@@ -528,7 +531,10 @@ function renderNative(type, body, args) {
   if (type === "alert-box") {
     const typeColors = { tip: "var(--brand)", warn: "#F59E0B", success: "#22C55E", danger: "#EF4444" };
     return items.map(it => {
-      const t = (args || it.type || it.tag || "tip").trim().toLowerCase();
+      // 종류 = variant=… 또는 첫 위치 인수(::: text.callout tip) — 인수 문자열 전체를 종류로 쓰지 않는다(bg=alt 등과 함께 써도 안전)
+      const pos = String(args || "").trim().split(/\s+/).find((w) => w && !w.includes("="));
+      const raw = (argKeys(args).variant || pos || it.type || it.tag || "tip").trim().toLowerCase();
+      const t = CALLOUT_ALIAS[raw] || raw;
       const color = typeColors[t] || "var(--brand)";
       return `<div class="alert-box alert-${t}" style="--alert-color:${color}">
         ${it.icon ? `<div class="alert-icon">${escapeHtml(it.icon)}</div>` : ""}

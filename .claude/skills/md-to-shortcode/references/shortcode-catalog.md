@@ -1,8 +1,8 @@
 ---
 title: (md-to-shortcode) 숏코드 카탈로그 — 자체 완결 백업
 type: 참조
-연결: "cs_v2 프로젝트 안에서 작업 중이면 docs/shortcode-reference.md가 authoritative — 이 파일과 어긋나면 그쪽을 따르고, 가능하면 이 파일도 같이 갱신한다(README.md '동기화 절차' 참고). cs_v2 밖에서 이 스킬을 쓰거나 그 문서를 못 찾을 때만 이 파일 하나로 완결되게 작성됨."
-기준일: 2026-09-01 (cs_v2 28종 정식 + 14종 alias)
+연결: "cs_v2 안에서는 docs/shortcode-reference.md 와 config/library/layouts.json(공용 카탈로그)이 authoritative. 이 파일은 cs_v2 밖에서 쓸 때의 백업 — 공용 카탈로그에서 다시 만든다(가이드 데이터 config/shortcode-guide.ts 기준)."
+기준일: 2026-10-14 (이름은 기능 이름 하나로 운영 — cs_v2 가 직접 그리는 28종)
 ---
 
 # 기본 문법
@@ -21,82 +21,160 @@ type: 참조
 - 표준 키(대부분의 숏코드가 공유): `icon`, `title`, `desc`, `tag`, `meta`, `note`, `color`, `bullet`, `featured`.
 - 공통 선택 인수: `title-size=0.95`(비율) / `title-size=1.2rem`(절대값), `desc-size=` 동일 방식.
 
-# 그룹별 카탈로그 (28종 정식)
+# 그룹별 카탈로그 (기능 이름 — cs_v2 가 직접 그리는 28종)
 
-## A. 콘텐츠 그리드
-| 숏코드 | 용도 | 핵심 필드 |
+이름은 **기능 이름 하나**만 쓴다(`<그룹>.<형태>`, pptgen 과 같음). 모양 변형은 인수로(아래 '변형' 표).
+
+## 분할·카드 (`grid`)
+
+| 기능 이름 | 용도 | 필드 |
 |---|---|---|
-| `plan-grid` | 요금제/플랜 비교 | `title`,`tag`,`meta`(\|구분),`note`,`featured`,`color` |
-| `feature-grid` | 핵심 강점/기술 소개 | `icon`,`tag`,`title`,`desc`,`color` |
-| `icon-grid` | 범용 이모지 카드 (`align=center\|left\|row`) | `icon`,`title`,`desc`,`color` |
-| `badge-grid` | 기술 스택/태그 나열 | `icon`,`title`,`tag` |
-| `stat-grid` | 수치 지표 강조 | `icon`(수치),`title`(라벨),`desc`,`color` |
-| `columns-grid` | 다단 텍스트 카드 | `title`,`desc`,`note` |
-| `level-grid` | 레벨/난이도 스펙트럼 | `title`,`desc`,`tag`(highlight 시 강조) |
-| `tool-list` | 도구/앱 상세 소개 | `icon`,`title`,`desc`,`tag`,`meta`(\|구분),`color` |
+| `grid.cards` | 아이콘+제목+설명 카드 격자. align 으로 모양 변형: center(기본) / left(왼쪽 아이콘) / row(수평 배열). | cols (속성), bullet (속성), align=center\|left\|row (속성), icon, title, desc, color (선택) |
+| `grid.features` | 태그 배지 및 아이콘이 포함된 다채로운 핵심 피처 카드 그리드입니다. | cols (속성), icon, title, desc, tag, color (선택) |
+| `grid.badges` | 여러 장점이나 키워드를 작은 배지 칩으로 콤팩트하게 나열합니다. | icon, title, tag, color (선택) |
+| `grid.list` | 사용 도구나 스펙의 강점을 헤더(아이콘, 제목, 부제)와 기능 목록 형태로 렌더링합니다. | icon, title, desc, tag, meta (목록 구분선 \|) |
+| `grid.tiers` | 추천 요금제(tag=Best)나 상품 가격/기능 구성품 스펙을 카드 형태로 비교합니다. | title, tag, meta (목록 구분선 \|), featured (true 시 강조), color (선택), note (하단 설명) |
+| `grid.columns` | 가로 다단 카드 격자. variant=plain 이면 상단 색 띠 없는 담백한 카드(비교 용도). | cols (속성: cols=2), variant=card\|plain (속성), title, desc, note (팁박스), color (선택) |
 
-## B. 비교 & 대조
-| 숏코드 | 용도 | 핵심 필드 |
+## 비교·대조 (`compare`)
+
+| 기능 이름 | 용도 | 필드 |
 |---|---|---|
-| `compare-split` | 좌우 2단 비교 | `title`,`desc`/`meta`,`tag`,`color` |
-| `before-after` | Before/After 전후 대조 (alias: `compare-diff`) | `title`,`desc`,`tag`,`color` |
+| `compare.pair` | 두 대상을 좌우로 2단 분할 배치하여 전후 관계나 상세 비교를 렌더링합니다. | title, desc, meta (구분선 \| 목록) |
+| `compare.before-after` | AS-IS(구형)와 TO-BE(신형)를 ❌/✅ 레이블로 단순 명확하게 전후 대조합니다. | title, desc |
 
-## C. 코드 & 터미널
-| 숏코드 | 용도 |
-|---|---|
-| `editor-box` | 코드 에디터 형태 (`desc: \| \`\`\`lang ... \`\`\``) |
-| `console-box` | 터미널 콘솔 출력 |
-| `cmd-box` | Windows CMD 실행 |
+## 순서·흐름 (`process`)
 
-## D. 시각 자료 & 흐름
-| 숏코드 | 용도 | 핵심 필드 |
+| 기능 이름 | 용도 | 필드 |
 |---|---|---|
-| `step-flow` | 가로 프로세스 흐름 (alias: `workflow-flow`) | `icon`,`title`,`desc`,`tag`; 화살표는 `type: "arrow"` 항목 |
-| `git-flow` | Git 브랜치 흐름 | `title`,`tag`,`meta`,`color` |
-| `network-box` | 중심-주변 네트워크/허브-스포크 다이어그램 | 첫 항목=중심(`title`,`color`), 나머지=주변 노드(`title`,`meta`) |
-| `venn-diagram` | 벤 다이어그램 — 교집합에서 가치 발생 (alias: `venn`) | 항목 3개 고정: [0]왼쪽 원, [1]오른쪽 원, [2](선택)교집합(`icon`,`desc`) |
-| `quadrant-chart` | 두 축(X/Y) 기준 상대 위치 비교 | 블록 인수 `xLabel="..." yLabel="..."`; 항목 `title`,`fx`,`fy`(0~1),`color` |
-| `concentric-rings` | A⊃B⊃C 계층적 포함관계 | 항목을 바깥→안쪽 순서로, `title`,`color`; 마지막 항목의 `icon`이 중심 아이콘 |
+| `process.track` | 단계별 흐름을 가로로 표현. connector=arrow 면 화살표로 이은 단계, none 이면 연결 없음(화살표는 type: arrow 항목). tag:active 로 현재 단계 강조, meta 로 도구/코멘트. | connector=arrow\|line\|none (속성), icon, title, desc, meta (도구/코멘트), tag (active 시 강조), color (선택) |
+| `process.steps` | 1, 2, 3... 순번이 자동으로 매겨진 단계식 지침과 부연 설명을 노출합니다. | title, desc, color (선택) |
+| `process.levels` | 난이도·성숙도·역량 구간을 카드 격자로 비교. tag:highlight 로 강조 카드 지정. | title (레벨명), desc, color (선택), tag (highlight 시 강조) |
+| `process.branch` | Git 브랜치나 버전 릴리즈 흐름을 노드형 다이어그램으로 가시화합니다. | title, tag, meta, color (선택) |
 
-## E. 정보 & 알림
-| 숏코드 | 용도 |
+## 구조·관계 (`structure`)
+
+| 기능 이름 | 용도 | 필드 |
+|---|---|---|
+| `structure.hub` | 여러 개념 간의 연계성 또는 네트워크 연결 관계를 시각화합니다. | title, meta, color (선택) |
+| `structure.rings` | A⊃B⊃C 같은 계층적 포함관계 표현. 항목은 바깥(큰 범주)에서 안쪽(구체적 범주) 순서로 작성. | title (범주명), color, icon (마지막 항목에만 — 중심 아이콘) |
+| `structure.venn` | 두 영역이 겹칠 때 새로운 가치/의미가 발생함을 표현. 항목 3개 고정 순서(왼쪽 원 / 오른쪽 원 / 교집합 캡션). | [0]title,color (왼쪽 원) · [1]title,color (오른쪽 원) · [2]icon,desc (교집합, 선택) |
+
+## 데이터·수치 (`data`)
+
+| 기능 이름 | 용도 | 필드 |
+|---|---|---|
+| `data.stats` | 수치 데이터(icon)와 통계 지표 정보(title, desc)를 상단 바 보더와 함께 시각화합니다. | icon (수치), title, desc, color (선택) |
+| `data.summary-bar` | 수치 통계나 단위 성과들을 가로형 바 형태로 간결하게 나열합니다. | icon, title |
+| `data.quadrant` | 두 축(X/Y) 기준으로 여러 항목의 상대 위치를 비교. 축 라벨은 블록 인수로 지정. | 블록 인수 xLabel="..." yLabel="..." · title, color, fx/fy (0~1 비율) |
+
+## 서술·강조 (`text`)
+
+| 기능 이름 | 용도 | 필드 |
+|---|---|---|
+| `text.takeaway` | 강조하고 싶은 핵심 교훈이나 테이크어웨이 메시지를 한 줄 배너로 노출합니다. | icon, title, desc |
+| `text.callout` | 팁·정보·주의·위험·성공 알림 상자. 종류는 첫 인수 또는 variant= (tip\|info\|warning\|danger\|success). | variant (첫 인수 가능), title, desc, color (선택) |
+| `text.summary` | 가이드 마지막 단에 배치하여 내용을 정리하고, 하단에 다량의 태그 칩을 덧붙입니다. | title, desc, meta (칩 구분선 \|), color (선택) |
+| `text.section` | 긴 문서나 슬라이드 중 단원/파트의 구분을 나누는 가로 대형 단막 배너입니다. | icon, title, desc, tag |
+
+## 코드·터미널 (`code`)
+
+| 기능 이름 | 용도 | 필드 |
+|---|---|---|
+| `code.editor` | 코드 에디터 창(예: VS Code)의 외형을 흉내 낸 다크 에뮬레이터 블록입니다. | title (파일명), tag (언어), desc (코드 내용, 멀티라인 \| 지원) |
+| `code.console` | 시스템 명령어나 스크립트 실행 결과를 출력하는 콘솔화면 블록입니다. | title, tag, desc (멀티라인 \| 지원) |
+| `code.command` | 실행해야 하는 명령어(CLI)를 안내하는 터미널 모형 박스입니다. | title, tag, desc |
+
+## 탐색·목록 (`nav`)
+
+| 기능 이름 | 용도 | 필드 |
+|---|---|---|
+| `nav.faq` | 질문(title)과 그에 답하는 답변(desc) 형태의 아코디언 질문-답변 리스트입니다. | title, desc |
+| `nav.tabs` | Windows / macOS 등 플랫폼별 조치 방법이나 다중 탭을 리스트로 안내합니다. | title, desc |
+| `nav.chapters` | 시리즈 부(Part) 하위에 속한 세부 챕터를 번호·제목·설명·구분 배지로 목록화합니다. | icon (챕터번호), title, desc, tag (개념/도구/사례/가이드/실습/주의/핵심) |
+
+# 변형은 인수로
+
+| 배치 | 인수 | 모양 |
+|---|---|---|
+| `grid.cards` | `align=center`(기본)·`left`·`row` | 중앙 카드 / 왼쪽 아이콘 / 수평 |
+| `grid.columns` | `variant=card`(기본)·`plain` | 상단 색 띠 / 띠 없는 비교 카드 |
+| `process.track` | `connector=arrow`·`none` | 화살표로 이은 단계 / 연결 없음(화살표는 `type: arrow` 항목) |
+| `text.callout` | 첫 인수 또는 `variant=` — `tip`·`info`·`warning`·`danger`·`success` | 알림 종류 |
+| 모든 배치 | `bg=alt` | 이 블록 카드만 보조 카드색 |
+
+# 옛 이름 — 쓰지 않는다
+
+예전 문서를 읽을 수는 있지만(빌드가 기능 이름+인수로 바꾸고 경고) 새로 쓰는 md 에는 넣지 않는다. 받은 md 에 옛 이름이 있으면 cs_v2 `npm run migrate:names -- <파일>` 로 바꾼다.
+
+| 옛 이름 | 기능 이름 + 인수 |
 |---|---|
-| `alert-box` | 경고/팁/주의 (`tip`/`warn`/`success`/`danger`) |
-| `summary-box` | 핵심 요약 (`meta`로 칩 나열) |
-| `takeaway-banner` | 핵심 메시지 배너 |
-| `part-banner` | Part/챕터 구분 배너 |
-| `summary-bar` | 하단 수치 하이라이트 바 |
-
-## F. 구조 & 내비게이션
-| 숏코드 | 용도 |
-|---|---|
-| `step-list` | 수직형 순서 단계 목록 |
-| `chapter-list` | 챕터 목록 (`tag`: 개념/도구/사례/가이드/실습/주의/핵심) |
-| `faq-list` | FAQ 아코디언 |
-| `os-tabs` | OS/플랫폼 탭 전환 |
-
-# 하위 호환 alias (14종 — 신규 문서에는 쓰지 않는다)
-
-| alias | 정식 명칭 |
-|---|---|
-| `compare-grid` | `columns-grid` |
-| `workflow-flow`, `workflow-strip`, `flow` | `step-flow` |
-| `skill-list` | `icon-grid align=left` |
-| `checkpoint-grid` | `icon-grid align=row` |
-| `compare-diff`, `compare-before-after` | `before-after` |
-| `bottom-list` | `summary-box` |
-| `git-flow-strip` | `git-flow` |
-| `part-deck` | `part-banner` |
-| `takeaway` | `takeaway-banner` |
-| `tool-box` | `tool-list` |
-| `venn` | `venn-diagram` |
+| `alert-box` | `text.callout` |
+| `asymmetric-split` | `compare.main-sub` |
+| `badge-grid` | `grid.badges` |
+| `balance-beam` | `compare.balance` |
+| `bar-chart` | `data.bars` |
+| `before-after` | `compare.before-after` |
+| `bottom-list` | `text.summary` |
+| `box-image-split` | `media.cards-image` |
+| `chapter-list` | `nav.chapters` |
+| `checkpoint-grid` | `grid.cards align=row` |
+| `cmd-box` | `code.command` |
+| `columns-grid` | `grid.columns` |
+| `compare-before-after` | `compare.before-after` |
+| `compare-diff` | `compare.before-after` |
+| `compare-grid` | `grid.columns variant=plain` |
+| `compare-split` | `compare.pair` |
+| `concentric-rings` | `structure.rings` |
+| `console-box` | `code.console` |
+| `editor-box` | `code.editor` |
+| `faq-list` | `nav.faq` |
+| `feature-grid` | `grid.features` |
+| `flow` | `process.track connector=none` |
+| `flow-track` | `process.track` |
+| `gauge-arc` | `data.gauge` |
+| `git-flow` | `process.branch` |
+| `git-flow-strip` | `process.branch` |
+| `growth-panel` | `process.growth` |
+| `hub-spoke` | `structure.hub` |
+| `icon-caption` | `text.icon-statement` |
+| `icon-grid` | `grid.cards` |
+| `level-grid` | `process.levels` |
+| `network-box` | `structure.hub` |
+| `os-tabs` | `nav.tabs` |
+| `part-banner` | `text.section` |
+| `part-deck` | `text.section` |
+| `pillars-on-base` | `structure.pillars` |
+| `plan-grid` | `grid.tiers` |
+| `quadrant-chart` | `data.quadrant` |
+| `quote-hero` | `text.quote` |
+| `skill-list` | `grid.cards align=left` |
+| `split-2box` | `compare.pair` |
+| `stacked-bars` | `compare.hbars` |
+| `stat-grid` | `data.stats` |
+| `stat-row` | `data.stats` |
+| `step-flow` | `process.track connector=none` |
+| `step-list` | `process.steps` |
+| `summary-bar` | `data.summary-bar` |
+| `summary-box` | `text.summary` |
+| `takeaway` | `text.takeaway` |
+| `takeaway-banner` | `text.takeaway` |
+| `tool-box` | `grid.list` |
+| `tool-list` | `grid.list` |
+| `triangle-cycle` | `process.cycle-3` |
+| `venn` | `structure.venn` |
+| `venn-diagram` | `structure.venn` |
+| `workflow-flow` | `process.track connector=arrow` |
+| `workflow-strip` | `process.track connector=arrow` |
+| `zigzag-path` | `process.zigzag` |
 
 # 특수 토큰
 
-- `type: "arrow"` — `step-flow` 내부에서만 쓰는 방향 화살표 항목.
-- `::: slide-config` — 화면에 렌더링되지 않는 설정 전용 블록. 키: `bg`(배경색 hex), `color`(글자색 hex), `titleSize`/`bodySize`(pt), `notes`(발표스크립트 — PPTX `addNotes()`로만 반영, HTML 무관, 한 줄 문자열+`\n` 리터럴로 여러 줄 표현).
+- `type: "arrow"` — `process.track` 안에서만 쓰는 방향 화살표 항목.
+- `::: slide-config` — 화면에 렌더링되지 않는 설정 전용 블록. 키: `bg`(배경색 hex), `color`(글자색 hex), `titleSize`/`bodySize`(pt), `notes`(발표스크립트 — PPTX 노트로만 반영, HTML 무관. 여러 줄은 `notes: |` 다음 들여쓴 줄 또는 `\n`).
 - Mermaid 구조도 — 숏코드 아님, 표준 ` ```mermaid ` fenced code block. 가이드·프레젠테이션 HTML은 mermaid.js로 실제 렌더링되지만, **PPTX는 전용 렌더러가 없어 원문이 코드박스로 표시된다**(다이어그램 이미지로 변환 안 됨).
 
 # PPTX 지원 현황
 
-2026-09-01 기준 **28종 정식 + 14종 alias 전체가 PPTX 렌더러를 갖추고 있다**(⚠️ 표시 대상 없음). Mermaid만 예외(위 참조).
+위 28종은 HTML·PPTX 모두 그린다. 공용 카탈로그의 나머지 배치(`process.staircase`·`structure.pillars`·`data.gauge` 등)는 cs_v2 에서 가장 가까운 배치로 근사한다(pptgen 은 직접 그림). Mermaid는 PPTX 에서 코드박스.
+

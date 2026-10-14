@@ -18,7 +18,7 @@ stats:
 
 신택스 하이라이팅, IntelliSense, 멀티 커서 편집 등 강력한 편집 기능을 갖추고 있습니다.
 
-::: editor-box
+::: code.editor
 - title: "app.py"
   tag: "app.py"
   desc: |
@@ -51,7 +51,7 @@ stats:
 
 Ctrl+Shift+X (Extensions) 에서 설치할 수 있습니다.
 
-::: icon-grid
+::: grid.cards
 - icon: "🤖"
   title: "GitHub Copilot"
   tag: "AI 필수"

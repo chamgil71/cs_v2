@@ -5,6 +5,40 @@
 
 ---
 
+## Phase 8 — 이름은 하나로: 옛 숏코드 이름을 기능 이름 + 인수로 (2026-10-14)
+
+### 배경
+- Phase 7 에서 기능 이름을 도입했지만 옛 이름(`icon-grid` 등)을 "해석하지 않고 그대로" 두어 이름이 둘로 운영되고 있었다. 사용자 결정: 확장할 때 그룹·기능별 이름 규칙이 흔들리지 않도록 **기능 이름 하나로 운영**, 옛 이름은 읽기 호환만.
+- 렌더러를 읽어 보니 옛 이름 대부분은 같은 그림의 다른 이름이었지만 `compare-grid`(상단 색 띠 없음)·`workflow-flow`(화살표로 이은 단계)는 실제로 모양이 달랐다 → 이 차이를 **인수**로 옮겨 손실 없이 합쳤다.
+
+### 변경 1 — 옛 이름 → 기능 이름 + 인수
+| 옛 이름 | 기능 이름 + 인수 |
+|---|---|
+| `compare-grid` | `grid.columns variant=plain` |
+| `workflow-flow`·`workflow-strip` | `process.track connector=arrow` |
+| `step-flow`·`flow` | `process.track connector=none` |
+| `skill-list` / `checkpoint-grid` | `grid.cards align=left` / `align=row` |
+| 그 밖의 옛 이름 | 인수 없이 기능 이름(예: `alert-box` → `text.callout`) |
+
+- 표의 출처는 공용 카탈로그 `alias_args`(옛 이름 → 인수)·`impl.cs_v2.variants`(인수 → 구현 ID). 코드에 대응표를 두지 않는다.
+- 옛 이름을 쓰면 빌드 CLI 가 경고: `⚠ 옛 이름 icon-grid → grid.cards`.
+
+### 변경 2 — md_src·문서 일괄 전환
+- `scripts/migrate-names.mjs`(`npm run migrate:names`, `--check`): md_src 50개 문서 466곳 + 문법 예시(`\:::`) 38곳 + 사용자 문서·스킬 문서 전환.
+- 레퍼런스(`shortcode-reference.md`)를 카탈로그 그룹 순서·기능 이름 제목으로 재구성, 옛 이름은 맨 아래 표 한 곳에만.
+- 가이드 패널·삽입 메뉴: 키가 기능 이름, 스니펫은 카탈로그 example(pptgen 견본과 같은 예시).
+
+### 변경 3 — 함께 고친 것
+- `text.callout`(옛 `alert-box`)이 인수 문자열 **전체**를 알림 종류로 쓰던 문제 → `variant=` 또는 첫 위치 인수만(다른 인수와 함께 써도 안전). `warning`/`caution` = `warn`.
+- PPTX `before-after` 가 전·후 대조 모양으로 안 나오던 문제(옛 별칭 이름일 때만 나왔음).
+- PPTX `skill-list` 가 단계 목록 모듈로 가서 글자가 겹치던 문제 → 카드 모듈로 통일(`icon-grid align=left` 와 같은 그림).
+
+### 검증
+- 이전 전후 산출물 150개(50문서 × 가이드·프레젠테이션·PPTX) 비교: HTML 마크업 동일(showcase 의 문법 예시 글 38줄만 새 이름), PPTX 는 변경 3 의 의도한 2곳만 다름(렌더로 확인).
+- `npm test` 289 → 355.
+
+---
+
 ## Phase 7 — 기능 이름(공용 배치 카탈로그) · 서식 세트 · 색 이름 통일 (2026-10-14)
 
 ### 배경

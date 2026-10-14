@@ -293,11 +293,16 @@ cs_v2/config/library/*.json (복사본)  →  scripts/library-map.mjs (생성본
               └─ md-to-pptx / pptx-browser        pal.shape → helpers.cardBox(pal, {alt, radius})
 ```
 
-### 5-1. 이름 해석 규칙 (`resolveShortcode`)
-1. `NATIVE_SHORTCODES`(cs_v2 가 직접 그리는 이름, 렌더러 분기와 같음 — 테스트가 잠금)에 있으면 **그대로** — 기존 문서 출력 불변.
-2. 아니면 카탈로그에서 찾는다: 기능 이름 그대로 또는 별칭(pptgen 옛 이름 `staircase`·`c01-p01` 등) → 기능 이름.
-3. cs_v2 구현 상태가 `ready`/`fallback` 이면 그 숏코드, `markdown`/`none` 이면 `PLAIN_FALLBACK`(`summary-box`).
+### 5-1. 이름 해석 규칙 (`resolveShortcode(name, args)`) — 이름은 하나로 운영
+
+1. 내부 토큰(`slide-config`·`arrow`)은 그대로.
+2. 카탈로그에서 기능 이름을 찾는다: 기능 이름이면 그대로, 옛 이름(별칭 — cs_v2 옛 숏코드·pptgen 구현 ID)이면 **기능 이름 + `ALIAS_ARGS[옛 이름]`** 으로 정규화(블록에 쓴 인수가 우선 — `mergeArgs`). 옛 이름 사용은 `ALIAS_SEEN` 에 기록 → CLI(`build-guide`·`build-presentation`·`md-to-pptx`)가 끝에 `reportAliasUse()` 로 경고.
+3. **구현 ID 고르기**: `impl.cs_v2.variants`(예: `grid.columns` + `variant=plain` → `compare-grid`, `process.track` + `connector=arrow` → `workflow-flow`) → 없으면 `impl.cs_v2.shortcode` → 구현 상태가 `markdown`/`none` 이면 `PLAIN_FALLBACK`(카탈로그 `fallback.cs_v2`).
 4. 모르는 이름은 입력 그대로 → 렌더러가 빈 문자열(기존 동작).
+5. 반환 `{ type: 구현 ID, layout: 기능 이름, args: 정규화된 인수, status, alias }` — `renderShortcode`·`md-to-pptx`·`pptx-browser` 가 같은 결과를 쓴다(HTML·PPTX 같은 해석).
+
+구현 ID(`IMPL_SHORTCODES` — `shortcode-render.mjs` 분기·`pptx-renderers` 타입)는 **내부 이름**이라 문서·예시·화면에 쓰지 않는다(pptgen 의 `c01-p07` 과 같은 위치).
+md 의 옛 이름 일괄 변환: `scripts/migrate-names.mjs`(`npm run migrate:names -- <경로>`, `--check`) — 대응표는 코드가 아니라 카탈로그에서 읽고, 코드 펜스·이스케이프한 문법 예시(`\:::`) 줄도 바꾼다.
 
 ### 5-2. 서식 세트 변수 (HTML)
 | 변수 | template(기본) | 다른 세트 |

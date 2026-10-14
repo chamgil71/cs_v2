@@ -172,7 +172,8 @@ function parseContentParts(content) {
   let match;
   while ((match = re.exec(content)) !== null) {
     if (match.index > lastIndex) parts.push({ kind: 'md', src: content.slice(lastIndex, match.index) });
-    parts.push({ kind: 'shortcode', scType: resolveShortcode(match[1]).type, args: match[2] || '', rawBody: match[3], items: parseShortcodeItems(match[3]) });
+    const r = resolveShortcode(match[1], match[2] || '');   // 기능 이름 + 정규화된 인수 → cs_v2 구현 ID
+    parts.push({ kind: 'shortcode', scType: r.type, args: r.args, rawBody: match[3], items: parseShortcodeItems(match[3]) });
     lastIndex = match.index + match[0].length;
   }
   if (lastIndex < content.length) parts.push({ kind: 'md', src: content.slice(lastIndex) });

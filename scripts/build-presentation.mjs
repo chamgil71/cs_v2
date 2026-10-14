@@ -10,6 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildPresentationHtml } from "./presentation-core.mjs";
+import { reportAliasUse } from "./library-names.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -159,6 +160,7 @@ if (isMain) {
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
     fs.writeFileSync(outPath, html, "utf8");
     console.log(`✅ 프레젠테이션 횡 슬라이드 병합 HTML 생성 완료 (${files.length}개 파일): ${outPath}`);
+    reportAliasUse();
   } catch (e) {
     console.error("❌ 에러 발생:", e.message);
     process.exit(1);

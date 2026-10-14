@@ -16,7 +16,7 @@ stats:
 
 # 플랜 선택 가이드
 
-::: plan-grid cols=4
+::: grid.tiers cols=4
 - title: "무료 플랜"
   tag: "Free"
   note: "₩0 / 월"
@@ -38,7 +38,7 @@ stats:
 
 # GPT 모델 라인업
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "GPT-5.6 Sol — 최상위 플래그십 (2026.08 출시)"
   tag: |
     GPT-5.6 Sol
@@ -61,7 +61,7 @@ stats:
 
 # 내장 도구 활용
 
-::: icon-grid
+::: grid.cards
 - icon: "🌐"
   title: "웹 검색 & 브라우징"
   desc: "실시간 웹 검색은 물론 ChatGPT 내에서 직접 탭을 열고 로그인·다운로드까지 처리하는 브라우저 기능 통합. \"최신 정보로 검색해줘\" 입력."
@@ -83,14 +83,14 @@ stats:
   desc: "풀-듀플렉스 실시간 음성 대화. 감정 표현·끼어들기 지원. 언어 학습·회의 연습에 탁월."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Atlas 브라우저 통합 안내:"
   desc: "별도 앱이던 ChatGPT Atlas 브라우저는 2026년 8월 서비스가 종료되고, 탭·다운로드·로그인 유지 등 브라우징 기능이 ChatGPT 본체와 Codex 안으로 이전되었습니다. 이제 별도 설치 없이 ChatGPT에서 바로 웹 작업을 맡길 수 있습니다."
 :::
 
 # GPTs 설정 & 시스템 프롬프트
 
-::: console-box
+::: code.console
 - title: "GPTs 시스템 프롬프트 예시 — 정책 분석 보조 AI"
   desc: |
     You are a Korean government ICT policy analyst assistant.
@@ -110,7 +110,7 @@ stats:
     Format: Use tables for data comparison. Keep responses concise.
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 GPTs vs 프로젝트 차이:"
   desc: "GPTs는 OpenAI Store에 배포·공유 가능한 독립 AI 앱. 프로젝트(Project)는 개인 워크스페이스로 파일과 지침을 저장. 팀 배포는 GPTs, 개인 활용은 프로젝트 권장."
 :::
@@ -119,7 +119,7 @@ stats:
 
 🧠 ChatGPT 메모리 시스템
 
-::: icon-grid
+::: grid.cards
 - icon: "💾"
   title: "자동 저장"
   desc: "대화 중 중요한 정보를 자동으로 기억. \"~를 기억해줘\"로 명시적 저장도 가능."

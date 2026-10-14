@@ -24,7 +24,7 @@ done:
 
 ## 목차
 
-::: chapter-list
+::: nav.chapters
 - icon: "01"
   title: "Claude 플랫폼 전체 구조"
   desc: "3종 접근 채널 · 플랜별 기능 비교"
@@ -59,7 +59,7 @@ done:
 
 ## 목차 (계속)
 
-::: chapter-list
+::: nav.chapters
 - icon: "08"
   title: "다른 AI 플랫폼"
   desc: "Gemini · ChatGPT · Perplexity · 기타 AI"
@@ -98,7 +98,7 @@ Claude는 Anthropic이 만든 AI 어시스턴트로, 접근 방식에 따라 세
 
 ## 3종 접근 채널 비교
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "웹 Claude (claude.ai)"
   desc: "브라우저에서 즉시 사용. 가장 쉬운 진입 방법으로 별도 설치 없이 로그인만 하면 된다. 아티팩트·프로젝트·커넥터 등 주요 기능을 모두 UI로 조작한다."
   meta: "설치 불필요|아티팩트 미리보기|프로젝트·커넥터 지원|파일 첨부·음성 입력"
@@ -118,7 +118,7 @@ Claude는 Anthropic이 만든 AI 어시스턴트로, 접근 방식에 따라 세
 
 ## Claude 플랜 구조
 
-::: plan-grid cols=4
+::: grid.tiers cols=4
 - title: "Free"
   tag: "무료"
   meta: "하루 제한 메시지|Sonnet 모델|기본 기능"
@@ -147,7 +147,7 @@ Claude는 Anthropic이 만든 AI 어시스턴트로, 접근 방식에 따라 세
 
 좌측 하단 프로필 아이콘 클릭 → **Settings** 진입 후 각 탭에서 설정한다.
 
-::: columns-grid cols=2
+::: grid.columns cols=2
 - title: "이름 · 기본 지침 (Profile 탭)"
   desc: |
     - Name 필드: Claude가 부를 이름 입력
@@ -181,7 +181,7 @@ Claude는 Anthropic이 만든 AI 어시스턴트로, 접근 방식에 따라 세
 
 대화 중 Claude가 생성한 독립 실행 가능한 결과물. 채팅창 오른쪽 별도 패널에 표시된다.
 
-::: step-list
+::: process.steps
 - title: "생성 요청"
   desc: "\"HTML로 할일 관리 앱 만들어줘\" 또는 \"SVG로 로고 그려줘\" 같이 구체적으로 요청한다. 아티팩트가 생성되면 자동으로 우측 패널이 열린다."
   color: "#6366F1"
@@ -196,7 +196,7 @@ Claude는 Anthropic이 만든 AI 어시스턴트로, 접근 방식에 따라 세
   color: "#EC4899"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "아티팩트 활용 예시"
   desc: "간단한 포트폴리오 페이지 뼈대 · 엑셀 데이터 붙여넣기 → 차트 즉시 생성 · 발표용 인터랙티브 슬라이드 · 계산기·게임 등 미니 웹앱"
 :::
@@ -207,7 +207,7 @@ Claude는 Anthropic이 만든 AI 어시스턴트로, 접근 방식에 따라 세
 
 관련 대화를 하나로 묶고 공통 지침·파일을 공유하는 기능. 분야별 전문 AI처럼 만들 수 있다.
 
-::: step-flow
+::: process.track connector=none
 - icon: "1️⃣"
   title: "프로젝트 생성"
   desc: "좌측 사이드바 Projects → + New Project → 이름 입력"
@@ -221,7 +221,7 @@ Claude는 Anthropic이 만든 AI 어시스턴트로, 접근 방식에 따라 세
   desc: "+ Add content → PDF·Word·코드 파일 등록 (최대 200MB)"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "프로젝트 지침 예시"
   desc: "\"모든 응답은 불릿 포인트로 정리해줘. 전문 용어는 괄호 안에 한국어 설명을 달아줘. 분량은 A4 1장 이내로.\" — 이 프로젝트 내 모든 대화에 자동 적용된다."
 :::
@@ -232,7 +232,7 @@ Claude는 Anthropic이 만든 AI 어시스턴트로, 접근 방식에 따라 세
 
 Settings → Integrations → **Skills** 탭에서 관리. 대화창에서 `/`를 입력하면 현재 활성화된 스킬 목록이 자동완성으로 표시된다.
 
-::: columns-grid cols=2
+::: grid.columns cols=2
 - title: "스킬이란?"
   desc: |
     - 특정 업무에 최적화된 프롬프트 단위
@@ -249,7 +249,7 @@ Settings → Integrations → **Skills** 탭에서 관리. 대화창에서 `/`�
   color: "#10A37F"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "스킬 관리"
   desc: "Settings → Integrations → Skills 탭에서 활성 스킬 수 확인 및 관리. 플러그인을 제거하면 해당 스킬도 함께 비활성화된다."
 :::
@@ -260,7 +260,7 @@ Settings → Integrations → **Skills** 탭에서 관리. 대화창에서 `/`�
 
 Settings → Integrations → **Connectors** 탭. MCP 기반으로 웹 Claude에서 외부 서비스 데이터를 직접 조회·제어. 디렉터리에 수십~수백 종이 등록되어 있고 계속 늘어나는 중이며, 아래는 대표 예시다.
 
-::: icon-grid
+::: grid.cards
 - icon: "💬"
   title: "Slack"
   desc: "채널 메시지 조회·발송, 스레드 요약"
@@ -307,7 +307,7 @@ Settings → Integrations → **Connectors** 탭. MCP 기반으로 웹 Claude에
   tag: "트래킹"
 :::
 
-::: alert-box warn
+::: text.callout warn
 - title: "주의"
   desc: "커넥터 연결 후 Claude는 해당 서비스의 실제 데이터에 접근한다. 민감 정보가 포함된 서비스는 연결 범위와 권한을 먼저 확인할 것."
 :::
@@ -318,7 +318,7 @@ Settings → Integrations → **Connectors** 탭. MCP 기반으로 웹 Claude에
 
 Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너사가 제공하는 목적별 기능 패키지. 설치 시 해당 플러그인의 스킬이 자동으로 추가된다.
 
-::: tool-list
+::: grid.list
 - icon: "📣"
   title: "Marketing (Anthropic 공식)"
   desc: "마케팅 채널 전반의 콘텐츠 제작·캠페인 기획·성과 분석. 설치 시 8개 스킬 커맨드 추가됨."
@@ -327,7 +327,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
   color: "#10A37F"
 :::
 
-::: summary-box
+::: text.summary
 - title: "플러그인 → 스킬 → 커넥터 관계"
   desc: "플러그인을 설치하면 스킬이 추가된다. 스킬은 /커맨드로 호출한다. 커넥터는 실시간 외부 데이터 연결이다. 세 가지를 조합하면 Claude가 실제 업무 데이터를 보면서 전문 기능을 수행한다."
 :::
@@ -338,7 +338,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
 
 ## Desktop vs 웹 차이점
 
-::: compare-grid cols=2
+::: grid.columns cols=2 variant=plain
 - title: "Claude Desktop만 가능한 것"
   desc: "MCP 서버 연결로 로컬 파일·외부 서비스를 직접 제어한다. Documents 폴더 읽기, Notion 페이지 쓰기, GitHub 저장소 조작 등 API 수준의 작업이 대화 한 줄로 가능해진다."
   meta: "로컬 파일 시스템 접근|Notion · GitHub · Slack 제어|SQLite DB 조회|브라우저 자동화(Puppeteer)"
@@ -355,7 +355,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
 
 상단 메뉴 → Claude → Settings (Mac: Cmd+,) → Developer 탭 → Edit Config 클릭 → `claude_desktop_config.json` 파일 편집 → 저장 후 Desktop 재시작.
 
-::: editor-box
+::: code.editor
 - title: "claude_desktop_config.json"
   tag: "json"
   desc: |
@@ -388,7 +388,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
 
 ## 주요 MCP 서버 목록
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "📁"
   title: "server-filesystem"
   tag: "로컬 파일"
@@ -421,7 +421,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
 
 ## 설치 및 첫 실행
 
-::: cmd-box
+::: code.command
 - title: "Claude Code 설치 및 실행"
   tag: "bash"
   desc: |
@@ -439,7 +439,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
 
 ## 주요 슬래시 명령어
 
-::: columns-grid cols=3
+::: grid.columns cols=3
 - title: "대화 관리"
   desc: "세션 컨텍스트와 토큰을 제어한다."
   meta: "/help : 명령어 전체 목록|/clear : 컨텍스트 초기화|/compact : 대화 요약 압축 (토큰 절약)|/exit : 세션 종료"
@@ -457,7 +457,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
 
 프로젝트 루트에 `CLAUDE.md` 파일을 만들면 Claude Code가 항상 참조한다. 팀원 모두가 공유하는 AI 행동 규칙서 역할을 한다.
 
-::: editor-box
+::: code.editor
 - title: "CLAUDE.md"
   tag: "markdown"
   desc: |
@@ -482,7 +482,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
 
 ## Claude Code 에이전틱 동작 흐름
 
-::: step-list
+::: process.steps
 - title: "파일 탐색 및 구조 파악"
   desc: "프로젝트 디렉토리를 자동 스캔하여 package.json, tsconfig.json 등을 읽고 기술 스택을 파악한 뒤 수정 대상 파일을 열람한다."
   color: "#6366F1"
@@ -505,7 +505,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
 
 효과적인 지침은 **역할 + 맥락 + 형식 + 제약** 네 가지를 모두 포함한다.
 
-::: feature-grid cols=4
+::: grid.features cols=4
 - icon: "👤"
   title: "역할 (Persona)"
   tag: "누구로 행동할지"
@@ -528,7 +528,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
 
 ## 지침 만드는 실전 흐름
 
-::: step-list
+::: process.steps
 - title: "먼저 자연어로 질문해보기"
   desc: "원하는 작업을 평소 말하듯 자유롭게 입력한다. 결과가 마음에 안 들면 \"더 짧게\", \"다른 형식으로\" 식으로 방향을 조정한다."
   color: "#6366F1"
@@ -546,7 +546,7 @@ Settings → Integrations → **Plugins** 탭. Anthropic 공식 또는 파트너
 
 Claude Code에서 반복 작업을 슬래시 명령어로 등록하는 기능. `.claude/commands/<이름>.md` 파일로 정의한다.
 
-::: workflow-flow
+::: process.track connector=arrow
 - icon: "📝"
   title: "/report"
   meta: "보고서 초안 생성"
@@ -565,7 +565,7 @@ Claude Code에서 반복 작업을 슬래시 명령어로 등록하는 기능. `
 
 ## 커넥터 활용 예시
 
-::: tool-list
+::: grid.list
 - icon: "📅"
   title: "Google Calendar 연결 후"
   tag: "웹 Claude"
@@ -589,7 +589,7 @@ Claude Code에서 반복 작업을 슬래시 명령어로 등록하는 기능. `
 
 ## Claude Cowork (협업 도구 연동)
 
-::: icon-grid cols=2
+::: grid.cards cols=2
 - icon: "📊"
   title: "Claude + Excel / Google Sheets"
   desc: |
@@ -623,7 +623,7 @@ Claude Code에서 반복 작업을 슬래시 명령어로 등록하는 기능. `
 
 Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전트로 등록. PC가 꺼져 있어도 자동 실행된다.
 
-::: step-list
+::: process.steps
 - title: "/schedule 입력"
   desc: "Claude Code 터미널에서 /schedule 입력하면 루틴 등록 대화가 시작된다."
   color: "main"
@@ -635,7 +635,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
   color: "deep"
 :::
 
-::: summary-box
+::: text.summary
 - title: "루틴 활용 예시"
   desc: "매일 오전 8시: 뉴스 헤드라인 수집 → 주요 일정 정리 → 이메일 발송 자동화"
   meta: "매주 월요일 주간 보고 초안 생성|매일 밤 GitHub 이슈 요약|정기 데이터 백업"
@@ -645,7 +645,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## Claude 디자인
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "🎨"
   title: "Figma MCP 연동"
   tag: "코드 ↔ 디자인"
@@ -670,7 +670,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 5대 에이전틱 코딩 도구
 
-::: tool-list
+::: grid.list
 - icon: "🤖"
   title: "Claude Code (Anthropic)"
   tag: "터미널 CLI"
@@ -707,7 +707,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 도구 선택 가이드
 
-::: level-grid
+::: process.levels
 - title: "처음 AI 코딩 시작"
   desc: "GitHub Copilot 권장. VS Code가 익숙하다면 익스텐션 하나 설치로 즉시 시작. 비용 부담 없이 효과를 빠르게 체감."
   note: "VS Code + Copilot → 자동완성 경험 후 → 더 강력한 도구로 이동"
@@ -732,7 +732,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## Google Gemini
 
-::: compare-grid cols=2
+::: grid.columns cols=2 variant=plain
 - title: "Gems (커스텀 AI)"
   desc: "좌측 사이드바 Gems → + New Gem → 이름·지침 입력·파일 업로드 → 저장. 이후 Gems 목록에서 클릭하면 전용 지침이 적용된 대화 시작. Claude 프로젝트와 동일한 개념."
   meta: "Claude 프로젝트와 유사한 개념|분야별 전문 AI 역할 부여|Super Gems(고급 기능) 지원"
@@ -743,7 +743,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
   color: "#34A853"
 :::
 
-::: tool-list
+::: grid.list
 - icon: "🔬"
   title: "Google AI Studio (aistudio.google.com)"
   tag: "개발자용"
@@ -760,7 +760,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## ChatGPT (OpenAI)
 
-::: tool-list
+::: grid.list
 - icon: "📁"
   title: "Projects (프로젝트)"
   tag: "지침 가능"
@@ -783,7 +783,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
   meta: "최대 수십 분 소요|출처 링크 포함|Pro 플랜 필요"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "개인 맞춤설정 (Personalization)"
   desc: "우측 상단 프로필 → Customize ChatGPT → Custom Instructions 탭: \"ChatGPT에게 알려줄 내용\"과 \"응답 방식\" 두 칸 입력. 모든 대화에 전역 적용."
 :::
@@ -794,7 +794,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 검색 엔진과 AI를 결합한 플랫폼. 출처를 인용하며 최신 정보를 답변. 사실 확인이 필요할 때 유리하다.
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "🏠"
   title: "Spaces (지침 가능)"
   tag: "커스텀 공간"
@@ -813,7 +813,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 기타 AI 플랫폼
 
-::: tool-list
+::: grid.list
 - icon: "🤖"
   title: "Grok (xAI)"
   tag: "X 통합"
@@ -837,7 +837,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 설치하면 좋은 핵심 도구
 
-::: tool-list
+::: grid.list
 - icon: "🗒️"
   title: "Obsidian"
   tag: "로컬 지식 저장소"
@@ -862,7 +862,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 유틸리티 도구
 
-::: icon-grid cols=2
+::: grid.cards cols=2
 - icon: "📌"
   title: "Snipaste"
   desc: |
@@ -881,7 +881,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
     - "요약해줘", "번역해줘" 즉시 가능
 :::
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "📹"
   title: "YouTube to NotebookLM"
   tag: "크롬 익스텐션"
@@ -902,7 +902,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 개인 Wiki 사이트 구축
 
-::: git-flow
+::: process.branch
 - title: "Obsidian"
   tag: "노트 작성"
   meta: "마크다운으로 내용 작성|Obsidian Git 플러그인으로 자동 commit"
@@ -925,7 +925,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 시황 뉴스 자동화 파이프라인
 
-::: git-flow
+::: process.branch
 - title: "Claude 루틴"
   tag: "매일 오전 7시"
   meta: "Claude Code /schedule로 등록|PC 없이 클라우드에서 자동 실행"
@@ -948,7 +948,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 문서→슬라이드 자동화 파이프라인
 
-::: workflow-flow
+::: process.track connector=arrow
 - icon: "📝"
   title: "메모 작성"
   meta: "Obsidian 또는 텍스트"
@@ -967,7 +967,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## AI 플랫폼 빠른 비교
 
-::: stat-grid cols=4
+::: data.stats cols=4
 - icon: "1M"
   title: "Claude 컨텍스트"
   desc: "Opus/Sonnet 4.6, 표준 요금"
@@ -982,7 +982,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
   desc: "최신 정보 · 출처 인용 검색"
 :::
 
-::: summary-box
+::: text.summary
 - title: "플랫폼별 최적 용도 요약"
   desc: "Claude: 긴 문서·코딩·자동화 / ChatGPT: 범용·GPTs 생태계 / Gemini: Google 연동·이미지·동영상 / Perplexity: 최신 정보·팩트 체크 / NotebookLM: 자료 기반 학습"
   meta: "목적에 따라 여러 도구를 조합하는 것이 핵심|Claude + Gemini + Perplexity 역할 분리 활용 권장"
@@ -998,7 +998,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 레슨런 — 설계·구조 원칙
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "🎯"
   title: "역할 분리"
   tag: "레슨런 #1"
@@ -1017,7 +1017,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 레슨런 — 기록·자산 원칙
 
-::: feature-grid cols=2
+::: grid.features cols=2
 - icon: "📋"
   title: "실패 기록"
   tag: "레슨런 #2"
@@ -1040,7 +1040,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 레슨런 — 실행 원칙
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "😤"
   title: "고통 우선"
   tag: "레슨런 #8"
@@ -1059,7 +1059,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 레슨런 — 소통·프롬프트 원칙
 
-::: stat-grid cols=4
+::: data.stats cols=4
 - icon: "현상"
   title: "무슨 상황인가"
   desc: "현재 어떤 일이 벌어지고 있는가"
@@ -1074,7 +1074,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
   desc: "이미 시도한 것은 무엇인가"
 :::
 
-::: summary-box
+::: text.summary
 - title: "프롬프트 밀도 4원칙 (레슨런 #11)"
   desc: "현상·예상·실제·시도 네 가지를 명시하면 AI가 핵심을 파악하는 시간이 크게 줄어든다."
   meta: "맥락 명시 (#6): 독자·형식·금지 세 줄 필수|형식 명시 (#14): 몇 줄·어떤 요소·누가 읽는가|도구 연결 (#12): 단일 도구보다 파이프라인 연결이 강력"
@@ -1090,7 +1090,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 단편적 질답 vs 구조화된 접근
 
-::: compare-grid cols=2
+::: grid.columns cols=2 variant=plain
 - title: "단편적 질답 방식"
   desc: "매번 맥락을 처음부터 설명한다. 대화가 끝나면 패턴이 사라진다. AI에게 설명하는 시간이 전체 작업의 절반을 차지한다."
   meta: "매 세션 맥락 재설명 필요|결과 품질이 일관되지 않음|다른 팀원이 재현 불가|패턴이 축적되지 않음"
@@ -1105,7 +1105,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## SKILL.md — 재사용 가능한 지침 구조
 
-::: editor-box
+::: code.editor
 - title: "SKILL.md 템플릿"
   tag: "markdown"
   desc: |
@@ -1129,7 +1129,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 설계(지침)의 힘 — 4가지 효과
 
-::: feature-grid cols=2
+::: grid.features cols=2
 - icon: "⏱️"
   title: "맥락 파악 시간 단축"
   desc: "AI가 프로젝트 배경을 묻지 않아도 된다. 지침 파일이 맥락을 대신 전달한다."
@@ -1154,7 +1154,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 연결 방식 선택 가이드
 
-::: compare-grid cols=2
+::: grid.columns cols=2 variant=plain
 - title: "API · MCP (개발자 방식)"
   desc: "Claude와 외부 서비스를 코드나 MCP 서버로 직접 연결. 완전한 제어가 가능하고 복잡한 로직을 구현할 수 있다."
   meta: "API 직접 호출: 완전한 제어, 코드 필요|MCP 서버: Claude와 서비스 직접 연동|Claude Code 환경에서 즉시 활용 가능"
@@ -1169,7 +1169,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 실전 파이프라인 — 문서 자동 배포
 
-::: git-flow
+::: process.branch
 - title: "Obsidian 노트"
   tag: "내용 작성"
   meta: "마크다운으로 문서 작성|파일 저장 시 웹훅 트리거"
@@ -1196,7 +1196,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 조립의 핵심 원칙
 
-::: step-list
+::: process.steps
 - title: "고통스러운 지점부터"
   desc: "막연한 자동화가 아니라, 실제로 반복되고 고통스러운 부분을 먼저 자동화한다."
   color: "#EF4444"
@@ -1221,7 +1221,7 @@ Claude Code의 `/schedule` 기능으로 반복 작업을 클라우드 에이전�
 
 ## 직접 해봐야 안다
 
-::: summary-box
+::: text.summary
 - title: "백문이 불여일견, 백견이 불여일타, **백타가 불여일문** !!"
   desc: "AI 도구에 대한 설명은 읽는 것만으로 감각이 생기지 않는다. 내 업무에서 가장 고통스러운 부분이 무엇인지 묻는 것에서 시작하라. 그 답이 나왔을 때, 이 모든 도구와 원칙이 비로소 의미를 가진다."
   meta: "설계는 사람이, 구현은 AI가|지침이 정밀할수록 결과가 달라진다|도구는 연결될수록 강해진다"

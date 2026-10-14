@@ -16,7 +16,7 @@ stats:
 
 # AI 영상 생성
 
-::: tool-list
+::: grid.list
 - icon: "🎬"
   title: "Google Flow"
   tag: "AI Pro/Ultra"
@@ -25,7 +25,7 @@ stats:
     Veo 3.1 영상 생성: 텍스트·이미지·영상 프레임으로 4K급 고품질 영상 생성. 오디오·대사·효과음 동시 생성.|Ingredients & Scenebuilder: 캐릭터·장소·오브젝트를 재료로 등록 후 타임라인에서 장면을 조립.|Scene Extension: 60초를 넘는 연속 내러티브도 조명·구도 일관성을 유지하며 이어붙임.|Whisk·ImageFX·Nano Banana 통합: 워크스페이스 안에서 바로 이미지 생성 후 즉시 영상화.
 :::
 
-::: tool-list
+::: grid.list
 - icon: "🎥"
   title: "Sora 2"
   tag: "Plus 이상"
@@ -34,7 +34,7 @@ stats:
     고화질 영상: 텍스트 프롬프트로 물리 법칙을 이해한 현실적 움직임의 영상 생성.|Storyboard 기능: 여러 장면을 순서대로 배치하여 단편 영상 제작. 장면 간 연속성 유지.|Re-cut & Remix: 기존 영상의 특정 부분 수정·재생성. 스타일 변환 및 영상 확장 가능.|Loop 생성: 끊김 없이 반복되는 루프 영상 생성. SNS·배경 영상 제작에 최적.
 :::
 
-::: tool-list
+::: grid.list
 - icon: "🚀"
   title: "Runway Gen-4.5 / Kling 3.0"
   tag: "무료/Pro"
@@ -45,7 +45,7 @@ stats:
 
 # AI 음악 생성
 
-::: tool-list
+::: grid.list
 - icon: "🎵"
   title: "Suno v5"
   tag: "무료/Pro"
@@ -64,7 +64,7 @@ stats:
      프롬프트 예: "K-pop, upbeat, female vocal, 2026 summer vibes" 또는 한국어로 "신나는 여름 팝송, 여성 보컬, 기타 중심"
 :::
 
-::: tool-list
+::: grid.list
 - icon: "🎧"
   title: "Udio / ElevenLabs Music"
   tag: "무료/Pro"
@@ -77,7 +77,7 @@ stats:
      둘 다 상업적 사용 가능 (Pro 이상)
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Google Lyria 3 — Google Flow 통합 음악 AI:"
   desc: "Google DeepMind의 Lyria 3(싱잉 지원)가 Google Flow에 통합되어 영상 생성 시 배경음악·사운드트랙을 자동 제작합니다. YouTube MusicFX에서도 사용 가능."
 :::

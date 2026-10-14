@@ -9,6 +9,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildHtml as buildGuideHtmlCore } from "./guide-core.mjs";
+import { reportAliasUse } from "./library-names.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -98,6 +99,7 @@ if (isMain) {
           fs.mkdirSync(path.dirname(outPath), { recursive: true });
           fs.writeFileSync(outPath, html, "utf8");
           console.log(`✅ ${path.basename(abs)} → ${outPath}`);
+          reportAliasUse();
         } catch (e) {
           console.error(`❌ ${f}: ${e.message}`);
         }
@@ -138,6 +140,7 @@ if (isMain) {
       fs.mkdirSync(path.dirname(outPath), { recursive: true });
       fs.writeFileSync(outPath, html, "utf8");
       console.log(`✅ 가이드 HTML 생성 완료: ${outPath}`);
+      reportAliasUse();
     } catch (e) {
       console.error("❌ 에러 발생:", e.message);
       process.exit(1);

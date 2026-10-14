@@ -44,10 +44,14 @@ const layouts = JSON.parse(layoutsTxt), sets = JSON.parse(setsTxt);
 // 생성 모듈: 이름 해석에 필요한 최소 정보만(배치별 group·label·cs_v2 구현) + 별칭표 + 서식 세트 전체
 const L = {};
 const ALIAS = {};
+const ALIAS_ARGS = {};   // 옛 이름 → 그 이름이 뜻하던 인수(모양이 다른 옛 이름만)
+const EXAMPLES = {};     // 배치 → { args, body, more } (가이드 스니펫·웹 라이브러리 화면의 단일 출처)
 for (const [name, e] of Object.entries(layouts.layouts)) {
   const c = (e.impl || {}).cs_v2 || {};
-  L[name] = { group: e.group, label: e.label, status: c.status || "none", shortcode: c.shortcode || null };
+  L[name] = { group: e.group, label: e.label, fields: e.fields || {}, status: c.status || "none", shortcode: c.shortcode || null, variants: c.variants || [] };
   for (const a of e.aliases || []) ALIAS[a] = name;
+  Object.assign(ALIAS_ARGS, e.alias_args || {});
+  if (e.example) EXAMPLES[name] = e.example;
 }
 const groups = Object.fromEntries(Object.entries(layouts.groups).map(([k, v]) => [k, v]));
 const mod = `// ⚠️ 자동 생성 파일 — 손으로 고치지 마세요. 원본: slide-library/catalog (npm run sync:library)
@@ -56,6 +60,8 @@ export const LIBRARY_UPDATED = ${JSON.stringify(layouts.updated)};
 export const LAYOUT_GROUPS = ${JSON.stringify(groups, null, 1)};
 export const LAYOUTS = ${JSON.stringify(L, null, 1)};
 export const LAYOUT_ALIASES = ${JSON.stringify(ALIAS, null, 1)};
+export const ALIAS_ARGS = ${JSON.stringify(ALIAS_ARGS, null, 1)};
+export const LAYOUT_EXAMPLES = ${JSON.stringify(EXAMPLES, null, 1)};
 export const SHAPE_SETS = ${JSON.stringify(sets, null, 1)};
 export const COLOR_TOKENS = ${JSON.stringify(layouts.color_tokens || {}, null, 1)};
 export const LAYOUT_FALLBACK = ${JSON.stringify(layouts.fallback || {}, null, 1)};

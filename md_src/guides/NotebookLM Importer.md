@@ -14,7 +14,7 @@ stats:
 
 # 무엇을 해결하는가?
 
-::: workflow-flow
+::: process.track connector=arrow
 - title: |
     🌐
      웹 서핑 중
@@ -31,14 +31,14 @@ stats:
      익스텐션 아이콘 클릭 → 완료!
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 핵심 가치:"
   desc: "좋은 콘텐츠를 발견했을 때 \"나중에 봐야지\"가 아니라 즉시 지식베이스로. 컨텍스트 전환 없이 웹 서핑 흐름 유지."
 :::
 
 # 설치 & 사용법
 
-::: step-list
+::: process.steps
 - title: "1Chrome(또는 Firefox) 웹스토어에서 \"NotebookLM Web Importer\" 검색 후 설치오픈소스 프로젝트(GitHub 공개). 완전 무료."
 - title: "2Google 계정으로 로그인 (NotebookLM과 동일 계정)권한: NotebookLM 접근 허용. 다른 데이터에는 접근하지 않음."
 - title: "3저장할 Gemini Notebook 선택 (드롭다운)여러 노트북 중 원하는 곳으로 바로 지정 가능."
@@ -47,7 +47,7 @@ stats:
 
 # 활용 시나리오
 
-::: icon-grid
+::: grid.cards
 - icon: "🔬"
   title: "리서치 수집"
   desc: "논문·기사·보고서를 발견할 때마다 즉시 주제별 노트북에 저장."

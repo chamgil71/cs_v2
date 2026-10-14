@@ -16,7 +16,7 @@ stats:
 
 # Nano Banana Pro (Gemini 3 Pro Image)
 
-::: tool-list
+::: grid.list
 - icon: "🍌"
   title: "Nano Banana Pro"
   desc: "Google DeepMind · Gemini 3 Pro Image · gemini.google.com"
@@ -26,14 +26,14 @@ stats:
 
 # GPT Image 2 (ChatGPT Images 2.0)
 
-::: tool-list
+::: grid.list
 - title: "GPT Image 2 (gpt-image-2)"
   desc: "전 ChatGPT 플랜 · 텍스트·이미지 생성/편집 리더보드 1위 · DALL-E 계열 완전 종료"
   meta: |
     Thinking Mode (Plus↑): 웹 검색 후 레이아웃 추론 → 이미지 생성 → 자동 검증·수정. 한 번에 최대 8장 일관된 배치 생성. 복잡한 씬 성공률 대폭 향상.|한국어·비라틴 문자 정확 렌더링: 한국어·일본어·중국어·힌디어 텍스트를 이미지 안에 정확하게 삽입. 포스터·배너·인포그래픽 제작 수준으로 향상.|2K 해상도 · 다양한 비율: 최대 2K(2048px) 해상도 지원. 3:1~1:3 종횡비 자유롭게 설정. 한 프롬프트에서 8장 일관 배치 생성.|대화형 반복 수정: "배경을 파란 하늘로 바꿔줘" 등 자연어로 정밀 수정. 참조 이미지 스타일 유지 변형. 이전 맥락 기억하며 일관성 유지.
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Midjourney v7 — 아트·에디토리얼 강자:"
   desc: "정확한 텍스트 삽입이나 대화형 수정보다 화풍·구도의 예술적 완성도가 중요한 패션·건축·컨셉아트 작업에서는 여전히 Midjourney v7이 업계 표준으로 꼽힙니다."
 :::
@@ -42,7 +42,7 @@ stats:
 
 ✍️ 황금 공식: 주제 + 스타일 + 조명 + 구도 + 품질
 
-::: console-box
+::: code.console
 - title: "공식 적용 예시"
   desc: |
     [주제] 노트북으로 작업하는 한국인 여성
@@ -90,7 +90,7 @@ ukiyo-e · impressionism · cyberpunk
 | 상업적 사용 | ✓ 가능 | ✓ 가능 | ✓ 가능 |
 | 추천 용도 | 다이어그램·인포그래픽·무료 작업 | 포스터, 텍스트 포함, 정밀 편집 | 패션·컨셉아트·에디토리얼 |
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 실전 추천 워크플로우:"
   desc: "아이디어 탐색 → Nano Banana Pro로 스타일·다이어그램 빠르게 시험 → 예술적 완성도가 필요하면 Midjourney로 최종 화풍 결정 → GPT Image 2로 텍스트·디테일 정밀 수정"
 :::

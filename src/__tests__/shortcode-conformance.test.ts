@@ -6,6 +6,8 @@ import { renderShortcode } from '../../scripts/shortcode-render.mjs';
 import { SHORTCODE_CSS } from '../../scripts/shortcode-styles.mjs';
 // @ts-ignore
 import { pptxRegistry } from '../../scripts/pptx-renderers/registry.mjs';
+// @ts-ignore
+import { resolveShortcode } from '../../scripts/library-names.mjs';
 import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
 // @ts-ignore — 환경 비의존 코어 (client 가 위임하는 server 코드 경로)
 import { buildHtml as guideCore } from '../../scripts/guide-core.mjs';
@@ -24,59 +26,53 @@ import path from 'node:path';
  * 이 테스트가 깨지면: 숏코드를 한 출력에만 추가/변경해 다른 출력과 어긋난 것이다.
  */
 
-// 각 숏코드의 최소 유효 입력 (정본 25종 + 주요 alias)
+// 각 배치의 최소 유효 입력 — 이름은 기능 이름 하나로(공용 카탈로그). 키 = "기능 이름[ 인수]"
 const CASES: Record<string, string> = {
-  'icon-grid':       '- icon: "⚡"\n  title: "T"\n  desc: "D"',
-  'feature-grid':    '- icon: "🧠"\n  title: "T"\n  tag: "핵심"\n  desc: "D"',
-  'badge-grid':      '- icon: "🧪"\n  title: "T"\n  tag: "X"',
-  'stat-grid':       '- icon: "29"\n  title: "T"\n  desc: "D"',
-  'columns-grid':    '- title: "T"\n  desc: "D"\n  note: "N"',
-  'plan-grid':       '- title: "Free"\n  tag: "무료"\n  meta: "A|B"\n  note: "시작"',
-  'level-grid':      '- title: "L1"\n  desc: "D"\n  meta: "M"\n  note: "N"',
-  'step-list':       '- title: "T"\n  desc: "D"',
-  'chapter-list':    '- icon: "01"\n  title: "T"\n  desc: "D"\n  tag: "개념"',
-  'faq-list':        '- title: "Q?"\n  desc: "A"',
-  'tool-list':       '- icon: "💬"\n  title: "T"\n  desc: "D"\n  tag: "무료"\n  meta: "A|B"\n  color: "#10A37F"',
-  'step-flow':       '- icon: "🧑"\n  title: "사람"\n  desc: "D"\n  tag: "active"',
-  'git-flow':        '- title: "main"\n  tag: "v2"\n  meta: "A|B"\n  color: "#10B981"',
-  'alert-box':       '- title: "T"\n  desc: "D"',
-  'cmd-box':         '- title: "T"\n  tag: "bash"\n  desc: "npm run x"',
-  'console-box':     '- title: "T"\n  desc: "출력"',
-  'editor-box':      '- title: "a.js"\n  tag: "javascript"\n  desc: "const x = 1;"',
-  'network-box':     '- title: "Core"\n  color: "#EC4899"\n- title: "A"\n  meta: "m"',
-  'venn-diagram':    '- title: "A"\n  color: "#6366F1"\n- title: "B"\n  color: "#EC4899"\n- icon: "⭐"\n  desc: "가치"',
-  'quadrant-chart':  '- title: "P1"\n  fx: "0.3"\n  fy: "0.7"\n  color: "#6366F1"\n- title: "P2"\n  fx: "0.8"\n  fy: "0.2"\n  color: "#EC4899"',
-  'concentric-rings':'- title: "A"\n  color: "#94A3B8"\n- title: "B"\n  icon: "🧠"\n  color: "#1E293B"',
-  'summary-box':     '- title: "T"\n  desc: "D"\n  meta: "A|B"',
-  'compare-split':   '- title: "Before"\n  meta: "A|B"\n  note: "수동"\n- title: "After"\n  meta: "C|D"\n  note: "자동"',
-  'before-after':    '- title: "나쁜"\n  desc: "X"\n- title: "좋은"\n  desc: "Y"',
-  'part-banner':     '- icon: "1부"\n  title: "T"\n  desc: "D"\n  tag: "Ch.01"\n  color: "#1a3a5c"',
-  'takeaway-banner': '- icon: "💡"\n  title: "Key"\n  desc: "D"',
-  'summary-bar':     '- icon: "29"\n  title: "T"',
-  'os-tabs':         '- title: "macOS"\n  desc: "brew install node"\n- title: "Windows"\n  desc: "winget install node"',
-  // 주요 alias (계속 동작해야 함)
-  'compare-grid':    '- title: "T"\n  desc: "D"',
-  'workflow-flow':   '- icon: "💡"\n  title: "T"\n  meta: "M"',
-  'skill-list':      '- icon: "📄"\n  title: "T"\n  desc: "D"',
-  'checkpoint-grid': '- icon: "📐"\n  title: "T"\n  desc: "D"',
-  'compare-diff':    '- title: "나쁜"\n  desc: "X"\n- title: "좋은"\n  desc: "Y"',
+  'grid.cards':           '- icon: "⚡"\n  title: "T"\n  desc: "D"',
+  'grid.cards align=left':'- icon: "📄"\n  title: "T"\n  desc: "D"',
+  'grid.cards align=row': '- icon: "📐"\n  title: "T"\n  desc: "D"',
+  'grid.features':        '- icon: "🧠"\n  title: "T"\n  tag: "핵심"\n  desc: "D"',
+  'grid.badges':          '- icon: "🧪"\n  title: "T"\n  tag: "X"',
+  'data.stats':           '- icon: "29"\n  title: "T"\n  desc: "D"',
+  'grid.columns':         '- title: "T"\n  desc: "D"\n  note: "N"',
+  'grid.columns variant=plain': '- title: "T"\n  desc: "D"',
+  'grid.tiers':           '- title: "Free"\n  tag: "무료"\n  meta: "A|B"\n  note: "시작"',
+  'process.levels':       '- title: "L1"\n  desc: "D"\n  meta: "M"\n  note: "N"',
+  'process.steps':        '- title: "T"\n  desc: "D"',
+  'nav.chapters':         '- icon: "01"\n  title: "T"\n  desc: "D"\n  tag: "개념"',
+  'nav.faq':              '- title: "Q?"\n  desc: "A"',
+  'grid.list':            '- icon: "💬"\n  title: "T"\n  desc: "D"\n  tag: "무료"\n  meta: "A|B"\n  color: "#10A37F"',
+  'process.track':        '- icon: "🧑"\n  title: "사람"\n  desc: "D"\n  tag: "active"',
+  'process.track connector=arrow': '- icon: "💡"\n  title: "T"\n  meta: "M"',
+  'process.branch':       '- title: "main"\n  tag: "v2"\n  meta: "A|B"\n  color: "#10B981"',
+  'text.callout':         '- title: "T"\n  desc: "D"',
+  'code.command':         '- title: "T"\n  tag: "bash"\n  desc: "npm run x"',
+  'code.console':         '- title: "T"\n  desc: "출력"',
+  'code.editor':          '- title: "a.js"\n  tag: "javascript"\n  desc: "const x = 1;"',
+  'structure.hub':        '- title: "Core"\n  color: "#EC4899"\n- title: "A"\n  meta: "m"',
+  'structure.venn':       '- title: "A"\n  color: "#6366F1"\n- title: "B"\n  color: "#EC4899"\n- icon: "⭐"\n  desc: "가치"',
+  'data.quadrant':        '- title: "P1"\n  fx: "0.3"\n  fy: "0.7"\n  color: "#6366F1"\n- title: "P2"\n  fx: "0.8"\n  fy: "0.2"\n  color: "#EC4899"',
+  'structure.rings':      '- title: "A"\n  color: "#94A3B8"\n- title: "B"\n  icon: "🧠"\n  color: "#1E293B"',
+  'text.summary':         '- title: "T"\n  desc: "D"\n  meta: "A|B"',
+  'compare.pair':         '- title: "Before"\n  meta: "A|B"\n  note: "수동"\n- title: "After"\n  meta: "C|D"\n  note: "자동"',
+  'compare.before-after': '- title: "나쁜"\n  desc: "X"\n- title: "좋은"\n  desc: "Y"',
+  'text.section':         '- icon: "1부"\n  title: "T"\n  desc: "D"\n  tag: "Ch.01"\n  color: "#1a3a5c"',
+  'text.takeaway':        '- icon: "💡"\n  title: "Key"\n  desc: "D"',
+  'data.summary-bar':     '- icon: "29"\n  title: "T"',
+  'nav.tabs':             '- title: "macOS"\n  desc: "brew install node"\n- title: "Windows"\n  desc: "winget install node"',
 };
-
-const CANONICAL = [
-  'icon-grid','feature-grid','badge-grid','stat-grid','columns-grid','plan-grid','level-grid',
-  'step-list','chapter-list','faq-list','tool-list','step-flow','git-flow','alert-box','cmd-box',
-  'console-box','editor-box','network-box','summary-box','compare-split','before-after',
-  'part-banner','takeaway-banner','summary-bar','os-tabs',
-  'venn-diagram','quadrant-chart','concentric-rings',
-];
+// "기능 이름 인수" → [이름, 인수]
+const split = (k: string): [string, string] => { const i = k.indexOf(' '); return i < 0 ? [k, ''] : [k.slice(0, i), k.slice(i + 1)]; };
 
 // PPTX 가 별도 렌더러로 처리하지 않고 다른 메커니즘으로 흡수하는 타입(있다면 여기 명시)
 const PPTX_EXEMPT = new Set<string>([]);
+// PPTX 레지스트리는 cs_v2 구현 ID 로 찾는다(기능 이름 + 인수 → resolveShortcode → 구현 ID)
 
 describe('숏코드 정합성 — 공유 HTML 렌더러 (guide/presentation/standalone 공통)', () => {
-  for (const [type, body] of Object.entries(CASES)) {
-    it(`${type} → 비어있지 않은 HTML, 에러/undefined 없음`, () => {
-      const html = renderShortcode(type, body, '');
+  for (const [key, body] of Object.entries(CASES)) {
+    const [type, args] = split(key);
+    it(`${key} → 비어있지 않은 HTML, 에러/undefined 없음`, () => {
+      const html = renderShortcode(type, body, args);
       expect(html, `${type}: 빈 출력`).toBeTruthy();
       expect(html.length, `${type}: 너무 짧음`).toBeGreaterThan(10);
       expect(html, `${type}: 'undefined' 노출`).not.toContain('undefined');
@@ -86,19 +82,22 @@ describe('숏코드 정합성 — 공유 HTML 렌더러 (guide/presentation/stan
 });
 
 describe('숏코드 정합성 — PPTX 레지스트리 커버리지', () => {
-  for (const type of CANONICAL) {
-    if (PPTX_EXEMPT.has(type)) continue;
-    it(`${type} → PPTX 렌더러 등록됨`, () => {
-      expect(pptxRegistry.has(type), `${type}: PPTX 렌더러 미등록 (HTML엔 있으나 PPTX 누락 = 드리프트)`).toBe(true);
+  for (const key of Object.keys(CASES)) {
+    const [name, args] = split(key);
+    const impl = resolveShortcode(name, args).type;
+    if (PPTX_EXEMPT.has(impl)) continue;
+    it(`${key} → PPTX 렌더러(${impl}) 등록됨`, () => {
+      expect(pptxRegistry.has(impl), `${key}: PPTX 렌더러 미등록 (HTML엔 있으나 PPTX 누락 = 드리프트)`).toBe(true);
     });
   }
 });
 
 describe('숏코드 정합성 — client-compiler 가 공유 렌더러 사용 (raw ::: 잔존 없음)', () => {
   const styles = FALLBACK_STYLES;
-  for (const [type, body] of Object.entries(CASES)) {
-    it(`${type} → standalone HTML 컴파일 시 ::: 블록이 렌더됨`, () => {
-      const md = `# 제목\n\n::: ${type}\n${body}\n:::\n`;
+  for (const [key, body] of Object.entries(CASES)) {
+    const type = split(key)[0];
+    it(`${key} → standalone HTML 컴파일 시 ::: 블록이 렌더됨`, () => {
+      const md = `# 제목\n\n::: ${key}\n${body}\n:::\n`;
       const html = clientCompileMarkdown(md, 'html', 'sky-blue', styles);
       // 숏코드가 렌더되면 본문에 원문 ':::' 델리미터가 남지 않아야 한다
       const bodyPart = html.split('<body')[1] || html;
@@ -121,8 +120,8 @@ describe('숏코드 정합성 — standalone(client) == server(core) 출력 잠�
   const norm = (s: string) => s.replace(/style-[a-z0-9]{5}/g, 'style-UID').replace(/\bt[a-z0-9]{5}-\d+/g, 'tUID');
   const md =
     `---\ntitle: 통합 테스트\nstyle: emerald\n---\n\n# 표지\n\n## 본문\n\n` +
-    `::: icon-grid\n- icon: "⚡"\n  title: "빠름"\n  desc: "설명"\n:::\n\n` +
-    `::: alert-box\n- title: "주의"\n  desc: "확인"\n:::\n`;
+    `::: grid.cards\n- icon: "⚡"\n  title: "빠름"\n  desc: "설명"\n:::\n\n` +
+    `::: text.callout\n- title: "주의"\n  desc: "확인"\n:::\n`;
 
   it('html 모드: client 출력 == guide-core 출력', () => {
     const client = clientCompileMarkdown(md, 'html', 'emerald', REAL_STYLES);
@@ -149,9 +148,10 @@ describe('숏코드 정합성 — CSS 커버리지 (emit 클래스 = 정의된 C
   // CSS 규칙 없이 부모 레이아웃/인라인 스타일로 처리되는 구조 래퍼 (의도적 예외)
   const ALLOW = new Set<string>([]);
 
-  for (const [type, body] of Object.entries(CASES)) {
-    it(`${type} → emit 하는 모든 클래스에 CSS 규칙 존재`, () => {
-      const html = String(renderShortcode(type, body, ''));
+  for (const [key, body] of Object.entries(CASES)) {
+    const [type, args] = split(key);
+    it(`${key} → emit 하는 모든 클래스에 CSS 규칙 존재`, () => {
+      const html = String(renderShortcode(type, body, args));
       const classes = new Set<string>(
         [...html.matchAll(/class="([^"]+)"/g)].flatMap((m: RegExpMatchArray) => m[1].trim().split(/\s+/))
       );

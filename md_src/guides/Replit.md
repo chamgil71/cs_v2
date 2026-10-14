@@ -21,7 +21,7 @@ Replit Agent는 브라우저 안에서 프롬프트 한 줄로 풀스택 웹앱�
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "🚀"
   title: "프롬프트 → 즉시 배포"
   desc: "앱을 만들어줘\"라고 입력하면 스캐폴딩부터 호스팅까지 한 번에 처리되어 바로 접속 가능한 URL이 생깁니다."
@@ -38,7 +38,7 @@ Replit Agent는 브라우저 안에서 프롬프트 한 줄로 풀스택 웹앱�
 
 ### 이런 분들께 강력 추천합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "⚡ 프로토타입을 빨리 보여줘야 하는 창업자"
   tag: "속도"
   desc: "투자자·팀에게 \"작동하는 링크\"를 오늘 안에 보여줘야 하는 분."
@@ -52,7 +52,7 @@ Replit Agent는 브라우저 안에서 프롬프트 한 줄로 풀스택 웹앱�
 
 # 시작하기
 
-::: step-list
+::: process.steps
 - title: "프로젝트 생성"
   desc: "replit.com에서 회원가입 후 \"무엇을 만들고 싶은지\"를 자연어로 입력합니다."
 - title: "Agent 실행 확인"
@@ -65,7 +65,7 @@ Replit Agent는 브라우저 안에서 프롬프트 한 줄로 풀스택 웹앱�
 
 # 도구별 역할 비교
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "Replit Agent (속도 우선)"
   desc: "프롬프트 하나로 스캐폴딩부터 호스팅까지 끝내는 것이 최우선. 프로토타입·내부 도구·학습용에 최적."
   meta: "설치·배포 설정 0"

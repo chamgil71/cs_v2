@@ -279,3 +279,13 @@
 - **사용자 결정**: 이름은 기능 이름 하나로 운영(옛 이름은 읽기 호환 별칭). 모양이 다른 옛 이름 2종(`compare-grid`·`workflow-flow`)은 렌더러를 읽어 확인 후 인수(`variant=plain`·`connector=arrow`)로 옮기는 설계 확정.
 - **CLI 인계**: 남은 작업(이름 통일·이전 도구, cs_v2 미구현 기능, 카탈로그 example 단일 출처 → slide-library views·cs_v2 웹 라이브러리 화면, dev API → pptgen, 층 정리·200줄 분리)은 coding `_templates/skillreview/다음작업_CLI인계.md` 순서대로.
 
+## 2026-10-14 — 세션 23: 이름은 하나로 — 옛 숏코드 이름 이전 (CLI 인계서 B 단계)
+
+- **카탈로그(coding, 인계서 A)**: 옛 이름 인수 `alias_args`, 인수 → 구현 `impl.cs_v2.variants`, 66종 `example`(가이드 스니펫·pptgen 견본 단일 출처) — `npm run sync:library` 로 받음(`library-map.mjs` 에 `ALIAS_ARGS`·`LAYOUT_EXAMPLES`).
+- **이름 해석**: `resolveShortcode(name, args)` 가 모든 이름을 기능 이름 + 인수로 정규화(옛 "고유 이름 비해석" 규칙 제거) → 변형 → 구현 ID. HTML·PPTX 같은 함수. CLI 옛 이름 경고(`reportAliasUse`).
+- **이전**: `scripts/migrate-names.mjs` — md_src 466곳 + 문법 예시 38곳, 사용자 문서·스킬 문서. 레퍼런스 재구성, 스킬 참조 카탈로그 재생성.
+- **UI**: `config/shortcode-guide.ts` 를 카탈로그 기반으로(키 = 기능 이름, 스니펫 = example). 가이드 설명은 `LAYOUT_DESC`(다음 단계에 카탈로그로 옮길 대상).
+- **고친 기존 문제**: `text.callout` 인수 파싱, PPTX `before-after` 전·후 모양, PPTX `skill-list` 글자 겹침.
+- 검증: 이전 전후 150개 산출물 비교(HTML 동일·PPTX 의도 2곳), `npm test` 355, standalone 빌드.
+- 다음: 인계서 C(cs_v2 미구현 기능 — `connector=line`·`badge`·`emphasis`·`grow`·`header`·`tag: alt`, 근사 배치 HTML 렌더러), D(미리보기), E(층 정리).
+

@@ -20,7 +20,7 @@ Ollama는 Meta의 Llama, 구글의 Gemma, Alibaba의 Qwen, OpenAI의 gpt-oss 등
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "🔒"
   title: "완벽한 프라이버시"
   desc: "모든 연산이 내 컴퓨터 내부에서 이루어지므로 회사 기밀이나 개인 일기를 입력해도 외부로 유출되지 않습니다."
@@ -37,7 +37,7 @@ Ollama는 Meta의 Llama, 구글의 Gemma, Alibaba의 Qwen, OpenAI의 gpt-oss 등
 
 ### 이런 분들께 강력 추천합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "🛡️ 보안에 민감한 개발자"
   tag: "보안"
   desc: "외부 API로 코드를 보내는 것이 규정상 금지되어 있어 혼자만의 로컬 AI 보조가 필요한 분."
@@ -55,7 +55,7 @@ Ollama는 Meta의 Llama, 구글의 Gemma, Alibaba의 Qwen, OpenAI의 gpt-oss 등
 
 ### 기본 실행 흐름
 
-::: step-list
+::: process.steps
 - title: "프로그램 설치"
   desc: "공식 홈페이지에서 운영체제에 맞는 설치 파일을 받아 설치합니다. (윈도우/맥/리눅스 지원)"
 - title: "모델 다운로드 및 실행"
@@ -72,7 +72,7 @@ Ollama는 Meta의 Llama, 구글의 Gemma, Alibaba의 Qwen, OpenAI의 gpt-oss 등
 
 Ollama 생태계에는 수많은 모델이 있습니다. PC 스펙(RAM)에 맞게 고르는 것이 핵심입니다.
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "코딩 전용 (qwen3-coder 등)"
   desc: "`ollama run qwen3-coder:30b`. MoE 구조로 24~32GB GPU에서 VRAM 대비 최고 수준의 코드 제안 품질을 냅니다."
   meta: "Vibe 코딩 파트너"

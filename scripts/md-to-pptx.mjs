@@ -13,7 +13,7 @@ import pptxgen from "pptxgenjs";
 import { glob } from "node:fs/promises";
 import { pptxRegistry, helpers } from "./pptx-renderers/registry.mjs";
 import { parseSlideConfig } from "./shortcode-render.mjs";
-import { shortcodeBlockRe, stripHeadingAttrs, resolveShortcode } from "./library-names.mjs";
+import { shortcodeBlockRe, stripHeadingAttrs, resolveShortcode, reportAliasUse } from "./library-names.mjs";
 import { shapeSetPptx, pickShapeSet } from "./shape-set.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -242,7 +242,8 @@ function parseContentParts(content) {
     if (match.index > lastIndex) {
       parts.push({ kind: "md", src: content.slice(lastIndex, match.index) });
     }
-    parts.push({ kind: "shortcode", scType: resolveShortcode(match[1]).type, args: match[2] || "", rawBody: match[3], items: parseShortcodeItems(match[3]) });
+    const r = resolveShortcode(match[1], match[2] || "");   // 기능 이름 + 정규화된 인수 → cs_v2 구현 ID
+    parts.push({ kind: "shortcode", scType: r.type, args: r.args, rawBody: match[3], items: parseShortcodeItems(match[3]) });
     lastIndex = match.index + match[0].length;
   }
   if (lastIndex < content.length) {
@@ -883,6 +884,7 @@ export async function convertMdToPptx(mdPath, opts = {}) {
     mkdirSync(dirname(resolve(outPath)), { recursive: true });
     await prs.writeFile({ fileName: outPath });
     console.log(`✅ ${basename(mdPath)} → ${outPath}  (섹션 ${sections.length}개)`);
+    reportAliasUse();
     return outPath;
   } catch (err) {
     const name = basename(mdPath, extname(mdPath));

@@ -20,7 +20,7 @@ Playwright는 코드를 통해 크롬, 엣지, 파이어폭스 등 웹 브라우
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "⏳"
   title: "자동 대기 (Auto-wait)"
   desc: "요소가 화면에 나타날 때까지 알아서 기다려주어, `sleep(5)` 같은 불안정한 지연 코드를 쓸 필요가 없습니다."
@@ -40,7 +40,7 @@ Playwright는 코드를 통해 크롬, 엣지, 파이어폭스 등 웹 브라우
 
 ### 이런 상황에서 압도적인 위력을 냅니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "📊부동산/경매 데이터 수집가"
   tag: "수집"
   desc: "지도를 이리저리 이동하고 팝업을 클릭해야만 볼 수 있는 복잡한 경매 사이트의 데이터를 매일 추출해야 할 때."
@@ -58,7 +58,7 @@ BeautifulSoup이나 Requests로는 한계가 있는 동적 웹페이지를 공�
 
 ### 기본 크롤링 흐름 (Python 기준)
 
-::: step-list
+::: process.steps
 - title: "패키지 및 브라우저 설치"
   desc: "터미널에서 `pip install playwright` 후, `playwright install`을 쳐서 구동용 브라우저를 다운로드합니다."
 - title: "브라우저 실행 설정"
@@ -73,7 +73,7 @@ BeautifulSoup이나 Requests로는 한계가 있는 동적 웹페이지를 공�
 
 # 크롤링 차단(봇 탐지) 우회 팁
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "User-Agent 커스텀"
   desc: "스크립트 실행 시 실제 모바일 기기나 특정 데스크톱 브라우저인 것처럼 User-Agent 값을 속여 접속합니다."
   meta: "차단 방지의 기본"

@@ -22,7 +22,7 @@ genspark.ai/search?q=2025+AI+트렌드
 
 2025 AI 산업 주요 트렌드 — Sparkpage
 
-::: columns-grid cols=3
+::: grid.columns cols=3
 - title: "📊 시장 동향"
   desc: "20개 이상 소스를 종합한 시장 규모·성장률 요약. 출처 링크 첨부."
 - title: "🏢 주요 기업"
@@ -42,7 +42,7 @@ genspark.ai/search?q=2025+AI+트렌드
 
 # 핵심 기능
 
-::: icon-grid cols=2
+::: grid.cards cols=2
 - icon: "📄"
   title: "Sparkpage 생성"
   desc: "어떤 주제든 검색하면 AI가 수십 개 출처를 종합한 맞춤형 페이지를 즉석 생성. 공유 가능한 영구 링크 제공."
@@ -62,7 +62,7 @@ genspark.ai/search?q=2025+AI+트렌드
 
 # Genspark 활용 시나리오
 
-::: icon-grid
+::: grid.cards
 - icon: "✈️"
   title: "여행 계획"
   desc: "\"도쿄 5박 6일 일정 짜줘\" → 항공·숙박·관광지·음식을 종합한 완성 가이드 페이지 자동 생성."
@@ -83,7 +83,7 @@ genspark.ai/search?q=2025+AI+트렌드
   desc: "매일 아침 특정 분야의 주요 뉴스를 요약한 개인화 브리핑 페이지 생성."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Genspark vs Perplexity:"
   desc: |
     두 서비스 모두 AI 검색이지만, Genspark는 에이전트 기능이 더 강력하고 Sparkpage의 완성도가 높습니다. Perplexity는 빠른 답변, Genspark는 종합 리서치 페이지 생성에 최적.

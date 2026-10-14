@@ -20,7 +20,9 @@
     "build:folder": "node scripts/build-folder.mjs",
     "verify:pptx": "node scripts/verify-pptx-roundtrip.mjs",
     "sync:library": "node scripts/sync-library.mjs",
-    "sync:library:check": "node scripts/sync-library.mjs --check"
+    "sync:library:check": "node scripts/sync-library.mjs --check",
+    "migrate:names": "node scripts/migrate-names.mjs",
+    "migrate:names:check": "node scripts/migrate-names.mjs --check"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

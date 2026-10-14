@@ -20,7 +20,7 @@ GitHub Copilot은 VS Code, JetBrains, Visual Studio 같은 코드 에디터에 �
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "👻"
   title: "고스트 텍스트 자동완성"
   desc: "코드를 작성하는 도중 회색 글씨(Ghost Text)로 다음 로직이 추천되며, `Tab` 키로 즉시 적용합니다."
@@ -37,7 +37,7 @@ GitHub Copilot은 VS Code, JetBrains, Visual Studio 같은 코드 에디터에 �
 
 ### 이런 분들께 강력 추천합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "⚡ 반복 작업이 지겨운 개발자"
   tag: "생산성"
   desc: "보일러플레이트 코드, DTO, 무의미한 Getter/Setter 작성에 시간을 낭비하고 싶지 않은 분."
@@ -55,7 +55,7 @@ GitHub Copilot은 VS Code, JetBrains, Visual Studio 같은 코드 에디터에 �
 
 ### 3분 세팅 흐름
 
-::: step-list
+::: process.steps
 - title: "구독 활성화"
   desc: "GitHub 계정으로 로그인 후 Copilot 플랜을 구독합니다. Pro $10/월·Pro+ $39/월·Max $100/월 3단계이며, 학생/오픈소스 메인테이너는 무료."
 - title: "확장 프로그램 설치"
@@ -72,7 +72,7 @@ GitHub Copilot은 VS Code, JetBrains, Visual Studio 같은 코드 에디터에 �
 
 Copilot Chat에는 에디터 환경에서만 쓸 수 있는 강력한 '컨텍스트 멘션(@)' 기능이 있습니다.
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "@workspace"
   desc: "현재 열려있는 전체 폴더의 코드를 훑어보고 답변합니다. \"이 프로젝트에서 DB 라우팅은 어디서 처리해?\"라고 물어볼 수 있습니다."
   meta: "전체 구조 파악"
@@ -85,7 +85,7 @@ Copilot Chat에는 에디터 환경에서만 쓸 수 있는 강력한 '컨텍스
   meta: "파일 간 맥락 연결"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 확장된 컨텍스트와 추론 강도 조절:"
   desc: "2026.06 업데이트로 최대 1백만 토큰 컨텍스트 윈도우를 지원해 대형 코드베이스·문서도 한 번에 참조합니다. 설정에서 추론 강도(reasoning level)를 조절해 속도와 정확도의 균형을 맞출 수 있습니다."
 - title: "💡 과금 방식 변경(2026.06.01):"

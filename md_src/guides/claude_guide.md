@@ -27,7 +27,7 @@ done:
 ## 언제 어디서나 접속하는 3대 플랫폼 환경
 Claude는 사용자의 기기 환경에 맞춰 완전히 동기화되는 3가지 클라이언트 인터페이스를 공식 지원합니다.
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "🌐"
   title: "Web (Claude.ai)"
   tag: "무설치 브라우저"
@@ -47,7 +47,7 @@ Claude는 사용자의 기기 환경에 맞춰 완전히 동기화되는 3가지
 ## 웹/앱 환경과 모바일 환경의 기능 비교
 모바일에서는 카메라와 음성 인식을 통해 일상의 정보를 즉각 처리하며, 데스크탑에서는 프로젝트 생성과 파일 관리에 집중합니다.
 
-::: compare-split
+::: compare.pair
 - title: "웹 & 데스크탑 환경"
   desc: "넓은 화면을 바탕으로 다량의 문서 자료 업로드, 프로젝트 컨텍스트 관리, 그리고 코드 컴파일 화면 조회가 가능합니다."
   meta: "대용량 프로젝트 관리|Artifacts 독립 창 지원|외부 MCP 서버 추가|고성능 코딩"
@@ -66,7 +66,7 @@ Claude는 사용자의 기기 환경에 맞춰 완전히 동기화되는 3가지
 ## Claude.ai 서비스의 4대 핵심 메뉴 설명
 메뉴별 고유 명칭과 역할을 인지하면 AI가 보유한 기능을 200% 활용할 수 있습니다.
 
-::: icon-grid cols=2
+::: grid.cards cols=2
 - icon: "📁"
   title: "Projects (프로젝트)"
   desc: "자주 쓰는 시스템 지시문(System Prompt)과 참고 지식 문서, 그리고 스킬가이드(SKILL.md)를 올려두어 대화방들의 일관된 맥락을 통제하는 전용 지식 베이스 저장소입니다."
@@ -86,7 +86,7 @@ Claude는 사용자의 기기 환경에 맞춰 완전히 동기화되는 3가지
 ## 성능별 모델 라인업 (Haiku / Sonnet / Opus / Fable)
 Claude는 응답 속도와 비용 및 추론 성능에 맞춰 4종의 지능형 모델을 차등 제공합니다. Sonnet·Opus·Fable은 최대 1M 토큰 컨텍스트를 지원합니다.
 
-::: plan-grid cols=4
+::: grid.tiers cols=4
 - title: "Claude Haiku 4.5"
   tag: "속도 & 저비용"
   meta: "단순 텍스트 분류|초고속 요약|대량 데이터 전처리|API 대량 호출 최적"
@@ -114,7 +114,7 @@ Claude는 응답 속도와 비용 및 추론 성능에 맞춰 4종의 지능형 
 ## 웹 채팅형 Claude vs 터미널 에이전트 Claude Code
 터미널 자율 제어 루프를 장착한 에이전트의 강점을 비교합니다.
 
-::: compare-split
+::: compare.pair
 - title: "기존 웹채팅 (Claude.ai)"
   desc: "브라우저 상에서 마크다운이나 텍스트를 복사-붙여넣기 해야 하며 로컬 명령어 실행이 불가능합니다."
   meta: "정적 텍스트 대화|수동 파일 관리|시스템 접근 권한 없음"
@@ -130,7 +130,7 @@ Claude는 응답 속도와 비용 및 추론 성능에 맞춰 4종의 지능형 
 ## 3단계 운영체제별 설치 가이드
 Node.js(v18+) 환경이 먼저 준비되어야 하며, 터미널에 공식 스크립트를 입력하여 간편히 설치할 수 있습니다.
 
-::: step-list
+::: process.steps
 - title: "Node.js 버전 확인"
   desc: "터미널에 `node -v`를 입력해 v18 이상인지 점검합니다. 없으면 공식 사이트에서 LTS 버전을 설치합니다."
 - title: "macOS / Linux 설치 명령어"
@@ -144,7 +144,7 @@ Node.js(v18+) 환경이 먼저 준비되어야 하며, 터미널에 공식 스�
 ## 처음 시작하는 로그인 및 인증 프로시저
 설치가 끝난 에이전트를 내 Anthropic 계정과 연동하여 활성화하는 보안 인증 절차입니다.
 
-::: step-list
+::: process.steps
 - title: "1단계: claude 명령어 입력"
   desc: "터미널 쉘 창에 아무 인자 없이 `claude`를 입력하고 Enter를 누릅니다."
 - title: "2단계: 웹 브라우저 인증 승인"
@@ -167,7 +167,7 @@ titleSize: 22
 ## Claude Code CLI 실행 매개변수 (CLI Flags)
 기동 명령어인 `claude` 뒤에 인자 플래그를 붙여 에이전트의 구동 환경과 디렉토리를 통제합니다.
 
-::: columns-grid cols=3
+::: grid.columns cols=3
 - title: "인터랙티브 기동"
   desc: "에이전트와 연속 대화를 나눌 수 있는 전용 쉘 환경을 활성화합니다."
   meta: "claude"
@@ -193,7 +193,7 @@ titleSize: 22
 ## 인터랙티브 쉘 내부의 주요 명령어 (Slash Commands)
 기동된 대화방 쉘 내부에서 사용할 수 있는 전용 명령어 리스트입니다.
 
-::: icon-grid cols=3
+::: grid.cards cols=3
 - icon: "❓"
   title: "/help"
   desc: "현재 세션에서 사용 가능한 모든 지시어 도움말 목록을 로출합니다."
@@ -214,7 +214,7 @@ titleSize: 22
   desc: "방금 전 클로드 코드가 내 로컬 코드 파일에 수정을 가해 패치한 내용을 이전 상태로 즉각 되돌립니다."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 체크포인트 & Git worktree:"
   desc: "Claude Code는 변경 전 상태를 자동 스냅샷(체크포인트)으로 남겨 Esc 두 번으로 즉시 되돌릴 수 있고, git worktree로 세션마다 격리된 저장소 사본을 만들어 병렬 작업 시 파일 충돌을 방지합니다. Remote Control로 모바일·웹에서도 세션을 이어갈 수 있습니다."
 :::
@@ -227,7 +227,7 @@ titleSize: 22
 ## 프로젝트를 활용한 기획/보고서 작성 워크플로우
 Claude 웹북 포털을 기획실로 전환하여 복잡한 정부 정책 기획서 초안을 조립해 내는 비즈니스 적용 3단계입니다.
 
-::: step-list
+::: process.steps
 - title: "1단계: 시스템 프롬프트 역할 고정"
   desc: "기획서 양식과 문장 정규화 규칙을 시스템 지시어로 탑재합니다."
 - title: "2단계: SKILL.md 및 참고 파일 업로드"
@@ -241,7 +241,7 @@ Claude 웹북 포털을 기획실로 전환하여 복잡한 정부 정책 기획
 ## 레거시 디버깅 및 테스트 자동화 (Claude Code)
 CLI 에이전트가 코드베이스 구조를 파악하고, 코드를 패치한 뒤, 테스트 검증과 깃 커밋까지 자율 질주하는 일지입니다.
 
-::: step-list
+::: process.steps
 - title: "1. 코드 탐색"
   desc: "`claude \"이 프로젝트의 DB 예외 로직의 위치를 찾아서 설명해줘\"`"
 - title: "2. 파일 부분 수정 (Diff Patch)"
@@ -257,7 +257,7 @@ CLI 에이전트가 코드베이스 구조를 파악하고, 코드를 패치한 
 ## 코드 수정 시뮬레이션 및 Git 변경 이력
 에이전트가 `App.tsx` 파일을 부분 패치하고 Git 커밋 트리에 등록한 결과 화면 예시입니다.
 
-::: editor-box
+::: code.editor
 - title: "src/App.tsx"
   tag: "typescript"
   desc: |
@@ -274,7 +274,7 @@ CLI 에이전트가 코드베이스 구조를 파악하고, 코드를 패치한 
     >>>>>>> UPDATED
 :::
 
-::: git-flow
+::: process.branch
 - title: "main"
   tag: "v1.0.0"
   meta: "기본 모듈 설계 완료"

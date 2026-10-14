@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { JSDOM } from 'jsdom';
-// @ts-ignore — 순수 JS 변환 lib
 import {
   applyFontRunProps, applyShapeOps, applyShapeFillLine,
   applyShapePresets, applyLayoutToXml,

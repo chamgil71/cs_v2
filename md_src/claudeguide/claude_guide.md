@@ -29,7 +29,7 @@ done:
 ## Claude의 3대 구동 환경 및 특성 비교
 사용 목적에 따라 웹 브라우저, 데스크탑 전용 앱, 모바일 앱 환경을 선택하여 완전히 동기화된 컨텍스트를 활용할 수 있습니다.
 
-::: compare-split
+::: compare.pair
 - title: "웹 & 데스크탑 앱 (Claude.ai)"
   desc: "넓은 모니터 화면에서 대용량 문서를 업로드하고, 사이드 패널에 아티팩트 결과물을 즉석 렌더링하며 복잡한 프롬프트 엔지니어링을 수행하는 주력 작업 공간입니다."
   meta: "아티팩트(Artifacts) 독립창 렌더링|대용량 문서(PDF, CSV) 및 프로젝트 관리|시스템 프롬프트 사전 설계|단축키를 활용한 창 전환"
@@ -45,7 +45,7 @@ done:
 ## 실전 시스템 프롬프트(지침) 예시 3종
 Claude 프로젝트(Projects) 설정 내의 System Prompt 영역에 고정하여, 대화방들이 일관성 있게 행동하게 만드는 특화 프롬프트 템플릿입니다.
 
-::: columns-grid cols=3
+::: grid.columns cols=3
 - title: "① 도서 요약 및 독서 모임 가이드"
   desc: "긴 텍스트를 구조화하고 토론 질문을 뽑아냅니다."
   meta: "[역할] 독서 토론 모임의 전문 모더레이터이자 서평가. [출력 형식] 도서의 핵심 요약(주제, 타겟층, 찬반 논점)을 계층 구조로 정리하고, 참가자들이 활발히 논의할 수 있는 질문 3가지를 매번 도출할 것. [제약] 줄거리를 나열하기보다 저자의 핵심 주장과 한계점에 초점을 맞출 것."
@@ -62,7 +62,7 @@ Claude 프로젝트(Projects) 설정 내의 System Prompt 영역에 고정하여
 ## 실전 SKILL.md 스킬 파일 작성 예시 3종
 Claude 프로젝트 컨텍스트에 `SKILL.md` 파일을 업로드하여 AI에게 전문적인 작업 절차와 특정 도구 사용법을 내재화시키는 팁입니다.
 
-::: icon-grid cols=3
+::: grid.cards cols=3
 - icon: "✍️"
   title: "① 블로그 포스팅 및 카피라이팅 스킬"
   desc: |
@@ -85,7 +85,7 @@ Claude 프로젝트 컨텍스트에 `SKILL.md` 파일을 업로드하여 AI에�
 ## 클로드 아티팩트(Artifacts) 200% 활용법
 아티팩트는 대화 흐름을 방해하지 않고 독립 패널에서 고정된 시각 결과물을 조율하는 강력한 렌더링 샌드박스입니다.
 
-::: step-list
+::: process.steps
 - title: "아티팩트 동작 원리"
   desc: "Claude가 한 세션 내에서 HTML, CSS, JS, SVG, Mermaid 다이어그램 등의 구조적 코드를 작성하면 대화창 우측에 전용 탭이 열리며, 로컬에 저장되거나 실시간 브라우저 실행이 가능해집니다."
 - title: "실시간 비주얼 목업 및 시각 피드백"
@@ -103,7 +103,7 @@ Claude 프로젝트 컨텍스트에 `SKILL.md` 파일을 업로드하여 AI에�
 ## Claude Code CLI 실행 매개변수 및 명령어 총정리
 `claude` 명령 뒤에 플래그를 조합해 자동화 수준과 분석 경로를 지정할 수 있으며, 쉘 내부에서 슬래시 명령어 세션을 관리합니다.
 
-::: columns-grid cols=3
+::: grid.columns cols=3
 - title: "기본 CLI 파라미터 (Flags)"
   desc: "터미널 쉘에서 실행 시 옵션"
   meta: "claude : 인터랙티브 대화방 실행|claude \"질문\" : 일회성 작업 후 종료|claude -y : 모든 파일 변경/명령어 실행 승인 단계를 생략하고 자율 처리|claude doctor : 네트워크 상태 및 권한 진단|claude update : 최신 CLI 엔진 업그레이드"
@@ -120,7 +120,7 @@ Claude 프로젝트 컨텍스트에 `SKILL.md` 파일을 업로드하여 AI에�
 ## 클로드 루틴(Claude Routine) 가이드
 에이전트가 로컬 환경에서 작업을 안전하게 수행하도록 통제하고 빌드/테스트를 유기적으로 주도하는 표준 개발 루틴 가이드라인입니다.
 
-::: step-list
+::: process.steps
 - title: "1단계: 파일 탐색 및 구조 분석 루틴"
   desc: "먼저 전체 디렉토리 트리나 `package.json`, `tsconfig.json` 등을 탐색하여 개발 언어와 프레임워크 스택을 파악한 뒤 타겟 소스 파일을 엽니다."
 - title: "2단계: 정밀 부분 패치(Diff Patch) 루틴"
@@ -136,7 +136,7 @@ Claude 프로젝트 컨텍스트에 `SKILL.md` 파일을 업로드하여 AI에�
 ## MCP(Model Context Protocol) 연동 실전 예시
 Claude Code에 MCP 서버를 추가 등록하여 로컬 데이터베이스를 조회하거나 실시간 웹 정보를 AI 컨텍스트에 주입하는 실제 설정 흐름입니다.
 
-::: editor-box
+::: code.editor
 - title: "MCP 서버 등록 및 사용 실전 예시"
   tag: "bash & sql"
   desc: |
@@ -157,7 +157,7 @@ Claude Code에 MCP 서버를 추가 등록하여 로컬 데이터베이스를 �
 ## GitHub 연결을 통한 모바일 원격 제어 워크플로우
 모바일 환경은 키보드 타이핑과 터미널 제어가 대단히 어렵습니다. 이러한 하드웨어 제약을 극복하기 위해 GitHub Actions와 Claude Code를 연계하여 스마트폰으로 로컬/서버 코딩 작업을 대리 기동하는 고급 아키텍처입니다.
 
-::: git-flow
+::: process.branch
 - title: "1. 스마트폰 제어"
   tag: "GitHub Issue 등록"
   meta: "모바일 GitHub 앱으로 리포지토리에 Issue 생성|\"src/App.tsx의 로그인 버그 패치 후 빌드해줘\""
@@ -192,7 +192,7 @@ bodySize: 12
 ## Claude Co-work: 데스크탑 앱 및 크롬 브라우저 활용
 인간 기획자 및 개발자와 실시간으로 화면을 조율하며 동료처럼 작동하는 환경 설정 팁입니다.
 
-::: icon-grid cols=2
+::: grid.cards cols=2
 - icon: "💻"
   title: "데스크탑 전용 앱 (Desktop App)"
   desc: |
@@ -210,7 +210,7 @@ bodySize: 12
 ## Claude Dispatch: 멀티 에이전트 분업 및 오케스트레이션
 하나의 대화방에 모든 역할을 요구하는 대신, 고유 성격을 부여받은 가상의 에이전트들을 기동하여 업무 성격에 맞춰 역할을 배분(Dispatch)하는 전략입니다.
 
-::: plan-grid cols=3
+::: grid.tiers cols=3
 - title: "① 리서치 에이전트"
   tag: "데이터 수집 및 핵심 요약"
   meta: "웹 검색 및 업로드된 PDF 보고서를 심층 탐색|분석 대상의 장단점 및 팩트 데이터 추출|관련 출처 및 통계 수치 정합성 확인"
@@ -231,7 +231,7 @@ bodySize: 12
 ## Claude Design: UI/UX 목업 및 컴포넌트 마크업 설계
 Claude의 시각 결과물 도출 능력과 SVG 인라인 코딩 스킬을 연계하여 현대적인 반응형 디자인 시스템을 단시간에 설계하는 방법입니다.
 
-::: step-list
+::: process.steps
 - title: "사용자 친화적 가계부 플래너 화면 설계"
   desc: "Claude에게 HSL 컬러 스키마가 적용된 반응형 일일 가계부 지출 차트 웹 화면을 아티팩트 패널에 렌더링하게 하여, 터치 한 번으로 카테고리별 지출 금액이 갱신되는 정밀 목업을 완성합니다."
 - title: "SVG 인라인 벡터 디자인 고속 생성"

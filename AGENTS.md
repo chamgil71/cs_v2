@@ -36,9 +36,13 @@ React 18 + `react-router-dom` + Vite + Tailwind CSS 3.x + shadcn/ui(Radix) 조�
 ## Verification
 
 ```bash
-npm install
+npm ci
+npm run lint        # eslint (오류 0)
+npm run typecheck   # tsc --noEmit
 npm run test        # vitest
 npm run build       # Vite 번들
 ```
+
+PR·main 푸시마다 GitHub Actions(`.github/workflows/ci.yml`)가 위 검사 + `migrate:names:check`·`verify:pptx`·`build:standalone:fast` 를 돌립니다.
 
 실행 불가 시 정확한 사유를 보고합니다.

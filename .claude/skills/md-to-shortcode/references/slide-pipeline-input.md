@@ -51,32 +51,32 @@ type: 참조 (모드 B 전용)
 
 # 데이터템플릿(22종) → cs_v2 숏코드 대응표
 
-slide-pipeline `references/layouts/data-templates.md`의 22패턴 기준. **직접 대응**은 그대로 쓰고, **근사 대응**은 표현력이 100% 같지 않다는 걸 최종 보고에 남긴다. **미대응**은 가장 가까운 카드형으로 낮추고, 반복적으로 필요하면 cs_v2에 새 숏코드 추가를 제안한다(2026-09 venn/quadrant-chart/concentric-rings 추가가 이 절차의 실제 사례).
+slide-pipeline `references/layouts/data-templates.md`의 22패턴 기준. **직접 대응**은 그대로 쓰고, **근사 대응**은 표현력이 100% 같지 않다는 걸 최종 보고에 남긴다. **미대응**은 가장 가까운 카드형으로 낮추고, 반복적으로 필요하면 cs_v2에 새 숏코드 추가를 제안한다(2026-09 `structure.venn`·`data.quadrant`·`structure.rings` 추가가 이 절차의 실제 사례).
 
 | slide-pipeline 패턴 | cs_v2 대응 | 대응 수준 |
 |---|---|---|
-| `split-2box` | `compare-split` | 직접 |
-| `asymmetric-split` | `compare-split` | 근사 (비율 강조 불가) |
-| `balance-beam` | `compare-split` | 근사 (저울 시각 없음) |
-| `stacked-bars` | `tool-list` 또는 `columns-grid` | 근사 |
-| `flow-track` | `step-flow` | 직접 |
-| `growth-panel` | `stat-grid`(2항목) | 근사 |
-| `triangle-cycle` | `step-flow`(순환을 선형으로) | 근사 (순환 화살표 없음) |
-| `zigzag-path` | `step-flow` | 근사 (지그재그 시각 없음) |
-| `staircase` | `level-grid` | 근사 (계단 시각 없음, 단계 의미는 보존) |
-| `hub-spoke` | `network-box` | 직접 |
-| `pillars-on-base` | `tool-list` 또는 `columns-grid` | 근사 |
-| `concentric-rings` | `concentric-rings` | 직접 |
-| `venn` | `venn-diagram` | 직접 |
-| `stat-row` | `stat-grid` | 직접 |
-| `bar-chart` | `stat-grid` | 근사 (막대 길이 비교 없음, 수치만) |
-| `quadrant-chart` | `quadrant-chart` | 직접 |
-| `gauge-arc` | `level-grid` 또는 `stat-grid` | 근사 (스펙트럼 위치 표현 안 됨) |
-| `box-image-split` | `columns-grid` + 마크다운 이미지 | 근사 (이미지는 `![](경로)`로 별도 삽입) |
-| `bottom-image-banner` | `columns-grid`(상단) + 마크다운 이미지(하단) | 근사 |
+| `compare.pair` | `compare.pair` | 직접 |
+| `compare.main-sub` | `compare.pair` | 근사 (비율 강조 불가) |
+| `compare.balance` | `compare.pair` | 근사 (저울 시각 없음) |
+| `compare.hbars` | `grid.list` 또는 `grid.columns` | 근사 |
+| `process.track` | `process.track connector=none` | 직접 |
+| `process.growth` | `data.stats`(2항목) | 근사 |
+| `process.cycle-3` | `process.track connector=none`(순환을 선형으로) | 근사 (순환 화살표 없음) |
+| `process.zigzag` | `process.track connector=none` | 근사 (지그재그 시각 없음) |
+| `staircase` | `process.levels` | 근사 (계단 시각 없음, 단계 의미는 보존) |
+| `structure.hub` | `structure.hub` | 직접 |
+| `structure.pillars` | `grid.list` 또는 `grid.columns` | 근사 |
+| `structure.rings` | `structure.rings` | 직접 |
+| `venn` | `structure.venn` | 직접 |
+| `data.stats` | `data.stats` | 직접 |
+| `data.bars` | `data.stats` | 근사 (막대 길이 비교 없음, 수치만) |
+| `data.quadrant` | `data.quadrant` | 직접 |
+| `data.gauge` | `process.levels` 또는 `data.stats` | 근사 (스펙트럼 위치 표현 안 됨) |
+| `media.cards-image` | `grid.columns` + 마크다운 이미지 | 근사 (이미지는 `![](경로)`로 별도 삽입) |
+| `media.banner` | `grid.columns`(상단) + 마크다운 이미지(하단) | 근사 |
 | `placeholder` | (변환 안 함) | 미대응 — 이미지 자리표시자 개념 자체가 cs_v2에 없음 |
-| `icon-caption` | `icon-grid`(단일 항목) | 직접 |
-| `text-only` | 순수 마크다운 문단 | 직접(숏코드 강제 변환 안 함, 원문 모드 규칙과 동일) |
+| `text.icon-statement` | `grid.cards`(단일 항목) | 직접 |
+| `text.statement` | 순수 마크다운 문단 | 직접(숏코드 강제 변환 안 함, 원문 모드 규칙과 동일) |
 
 # 사용 순서
 

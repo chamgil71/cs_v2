@@ -70,7 +70,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 외곽 카드 그리기
     slide.addShape("roundRect", {
       x: cx, y: cy, w: cardW, h: maxCardH,
-      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })
+      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item, it), radius: r })
     });
     
     // 상단 컬러 바

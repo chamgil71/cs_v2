@@ -18,7 +18,7 @@ stats:
 
 코딩 에이전트가 아무리 코드를 잘 고쳐도, 실제로 화면이 의도대로 그려지는지·API 요청이 정상인지·성능이 괜찮은지는 브라우저를 직접 열어봐야 압니다. 2026년 현재 이 역할을 하는 세 가지 축은 성격이 뚜렷이 다릅니다.
 
-::: compare-split
+::: compare.pair
 - title: "Claude in Chrome (확장 프로그램)"
   desc: "내가 로그인해 둔 실제 브라우저 세션을 그대로 사용. Gmail·Notion·사내 시스템처럼 로그인이 필요한 작업을 사람 대신 처리."
   meta: "실제 로그인 세션 재사용|일상 업무 자동화|탭 클릭·양식 작성 대행"
@@ -31,7 +31,7 @@ stats:
 
 # Chrome DevTools MCP — 코딩 에이전트의 눈
 
-::: icon-grid
+::: grid.cards
 - icon: "🖱️"
   title: "브라우저 자동화"
   desc: "클릭·입력·폼 채우기·파일 업로드·페이지 이동·다이얼로그 처리 등 29종 도구로 실제 UI를 조작합니다."
@@ -46,7 +46,7 @@ stats:
   desc: "코드 수정 후 실제 렌더링 결과를 스크린샷으로 확인해 \"눈으로 보이는\" 회귀를 잡아냅니다."
 :::
 
-::: step-list
+::: process.steps
 - title: "설치"
   desc: "Claude Desktop Extension(.dxt)으로 원클릭 설치하거나, `npx chrome-devtools-mcp`로 MCP 서버를 직접 등록합니다."
 - title: "에이전트에 연결"
@@ -57,7 +57,7 @@ stats:
 
 # Playwright MCP — 접근성 트리 기반 자동화
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "스크린샷 없는 정밀 제어"
   tag: "접근성 트리"
   desc: "비전 모델 없이 ARIA 접근성 트리만으로 페이지를 탐색·조작. 브리틀한 CSS 셀렉터 대신 구조 기반으로 동작해 훨씬 안정적."
@@ -69,14 +69,14 @@ stats:
   desc: "browser_navigate·browser_click·browser_snapshot 등 표준화된 도구 30여 종으로 3대 엔진을 동일하게 제어."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 어떤 걸 언제 쓰나:"
   desc: "사람의 로그인 세션이 필요한 반복 업무 자동화는 Claude in Chrome, 코딩 에이전트가 자기 결과물을 검증·디버깅하려면 Chrome DevTools MCP, CI에서 안정적인 E2E 테스트를 자동 생성·치유하려면 Playwright MCP가 적합합니다."
 :::
 
 # VS Code의 에이전틱 브라우저 도구
 
-::: tool-list
+::: grid.list
 - icon: "🧭"
   title: "VS Code Agentic Browser Tools (GA)"
   desc: "에이전트가 페이지를 탐색하고, 콘텐츠를 확인하고, 스크린샷을 찍어 웹앱을 직접 검증"

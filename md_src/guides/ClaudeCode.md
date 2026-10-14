@@ -12,7 +12,7 @@ stats:
     label: "Node.js 설치"
 ---
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "💡"
   title: |
     💡
@@ -43,7 +43,7 @@ stats:
 
 설치하기 전에 클로드 코드가 어떤 도구인지 간단히 알아봐요!
 
-::: icon-grid
+::: grid.cards
 - icon: "💬"
   title: "말로 하는 코딩 도우미"
   desc: "\"이 코드가 왜 오류가 나요?\" 처럼 우리말로 물어보면 AI가 답해줍니다."
@@ -85,7 +85,7 @@ claude
 
 아래 항목들을 미리 준비하시면 설치가 훨씬 매끄럽게 진행됩니다.
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "💻"
   title: "지원 운영체제"
   tag: "필수 확인"
@@ -112,7 +112,7 @@ claude
   desc: "코드 버전 관리를 위한 Git이 있으면 더 편리합니다. Windows 사용자는 Git for Windows를 권장합니다."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "Node.js가 뭔가요?"
   desc: |
     💡
@@ -126,13 +126,13 @@ claude
 
 사용하시는 컴퓨터 종류에 맞는 탭을 눌러주세요. 각 탭마다 맞춤 설치 방법을 안내해 드립니다.
 
-::: os-tabs
+::: nav.tabs
 - title: "macOS (맥)"
 - title: "Windows"
 - title: "Linux"
 :::
 
-::: step-list
+::: process.steps
 - title: "터미널 열기"
   tag: "1"
   desc: "명령어를 입력하는 검은 화면 창을 열어요"
@@ -144,7 +144,7 @@ claude
   desc: "실제로 설치하는 명령어를 입력합니다"
 :::
 
-::: step-list
+::: process.steps
 - title: "PowerShell 열기"
   tag: "1"
   desc: "Windows의 명령 창을 열어요"
@@ -159,7 +159,7 @@ claude
   desc: "제대로 설치되었는지 확인합니다"
 :::
 
-::: step-list
+::: process.steps
 - title: "터미널 열기"
   tag: "1"
   desc: "리눅스에서 터미널을 실행합니다"
@@ -175,7 +175,7 @@ claude
 
 설치가 끝났으면 이제 실행해볼까요? 처음 실행 시 로그인이 필요합니다.
 
-::: step-list
+::: process.steps
 - title: "claude 입력"
   desc: "터미널에 claude를 입력하고 Enter"
 - title: "브라우저 열림"
@@ -188,7 +188,7 @@ claude
   desc: "터미널로 돌아와 사용 시작 🎉"
 :::
 
-::: step-list
+::: process.steps
 - title: "클로드 코드 실행하기"
   tag: "▶"
   desc: "처음 실행 시 자동으로 로그인 화면이 나타납니다"
@@ -204,7 +204,7 @@ claude
 
 가장 자주 발생하는 문제와 해결 방법을 모아봤습니다. 아래 항목을 클릭하면 해결 방법이 펼쳐집니다.
 
-::: faq-list
+::: nav.faq
 - title: "\"command not found: claude\" 오류가 나요"
   desc: "설치는 됐지만 터미널이 claude 명령어 위치를 아직 모르는 경우입니다."
 - title: "npm 설치 시 \"EACCES: permission denied\" 오류가 나요"
@@ -223,7 +223,7 @@ claude
 
 설치 전후로 많이 물어보시는 질문들을 모았습니다.
 
-::: faq-list
+::: nav.faq
 - title: "클로드 코드는 무료인가요?"
   desc: |
     클로드 코드 자체는 무료로 설치할 수 있지만, 사용하려면 Claude Pro($20/월) 이상 구독 또는 Anthropic API 키(사용량 기반 요금)가 필요합니다. Node.js는 완전 무료입니다.

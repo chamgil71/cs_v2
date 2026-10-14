@@ -28,7 +28,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
       x, y: cy, w, h: stepH,
       ...(it.color
         ? { rectRadius: r, fill: { color: color, transparency: 92 }, line: { color: color, width: 0.75 } }
-        : helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })),
+        : helpers.cardBox(pal, { alt: helpers.isAltBlock(item, it), radius: r })),
     });
     
     // 2. 왼쪽 번호 동그라미 뱃지

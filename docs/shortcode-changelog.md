@@ -5,6 +5,94 @@
 
 ---
 
+## Phase 11 — PPTX 공용 코어 · CI (2026-10-14)
+
+### 바뀐 것
+- **MD → PPTX 변환을 공용 코어 하나로**: `scripts/pptx-core/`(fs 없음). `md-to-pptx.mjs`(CLI)·`src/lib/pptx-browser.ts`(웹)는 입출력 래퍼만. 예전 브라우저 쪽은 CLI 복사본이라 갈라져 있었다.
+- **브라우저 PPTX 가 고쳐진 것**: 블록 인수 `title-size=`·`desc-size=` 반영(전엔 무시), 표지 stats·마무리·오류 글자 크기를 config 에서(전엔 숫자 하드코딩).
+- **CI**: `.github/workflows/ci.yml` — lint·typecheck·test·`migrate:names:check`·`verify:pptx`·build·standalone. `npm run typecheck` 추가. 불필요한 `@ts-ignore` 34곳 제거, `ThemeFormShape` 단일 출처.
+
+### 영향 없음(확인)
+- CLI PPTX·HTML: md_src 150개 산출물 전후 동일. 브라우저 PPTX: md_src 50개가 CLI 와 같음(md_src 는 갈라진 기능을 쓰지 않아 예전 브라우저 출력과도 같음).
+
+---
+
+## Phase 10 — 설정·라이브러리·코드 층 정리 · 200줄 분리 (2026-10-14, 인계서 E)
+
+### 바뀐 것
+- **층 분리**: 공용 카탈로그 복사본 `config/library/` → 최상위 `library/`(사람이 고르는 설정과 여러 도구가 같이 쓰는 정의를 나눔). 아무도 읽지 않던 `config/layout.json` 삭제.
+- **설명·기본값은 카탈로그 하나에서**: 가이드 패널의 배치 설명(`LAYOUT_DESC`)을 카탈로그 `emoji`·`desc` 로, 칸 안내는 `fields` + `args` 로. 배치 인수 기본값은 카탈로그 `args.default` 만(값이어야 함 — 빈 값·숫자·values 중 하나, 테스트로 잠금). `bg` 기본 = 빈 값(배치 원래 모양), `text.callout` 기본 종류 = `tip`(pptgen 도 같게).
+- **파일 나눔(출력 동일)**: `shortcode-render.mjs`(1003줄) → 입구 + `shortcode-render/`(글자 도구·파서·옛 숏코드 분기 표 6개), `shortcode-styles.mjs`(469줄) → `SHORTCODE_CSS` 입구 + `shortcode-styles/` 3부분. 테스트 `library-catalog.test.ts` 의 서식 세트·선 없음·slide-config 묶음은 `shape-set.test.ts` 로.
+
+### 영향 없음(확인)
+- 숏코드 이름·인수·마크업·CSS 그대로: `SHORTCODE_CSS` 문자열 동일, 628블록 렌더 동일, md_src 150개 산출물 동일, `npm test` 485, standalone·Vite 빌드.
+
+---
+
+## Phase 9 — cs_v2 에 없던 배치·인수 추가: 근사 36종 전용 HTML + pptgen 과 같은 배치 인수 (2026-10-14)
+
+### 배경
+- 공용 카탈로그 66종 중 38종(계단·기둥·게이지·막대·천칭·인용·이미지·회사 패턴 상자 등)은 cs_v2 렌더러가 없어 모양이 다른 숏코드로 "근사"되었고, pptgen 이 받는 배치 인수(`badge`·`emphasis`·`grow`·`header`·`caption`·`connector=line`)와 항목 `tag: alt` 를 cs_v2 가 무시했다(인계서 C).
+
+### 변경 1 — 기능 이름 구현 36종 (`scripts/shortcode-ext/`)
+- 구현 ID = 기능 이름. 그룹별 파일(grid·process·flows·compare·data·text·media) + 공용 조각, 각 200줄 이하. CSS 는 `var(--*)`·서식 세트 변수만 쓰고 `SHORTCODE_CSS` 끝에 한 번 합쳐진다(숏코드 CSS 단일 출처 유지).
+- 상자형 회사 패턴 12종은 매개변수 하나(`boxes(cols, title, circle, main)`)로, 단계형 4종은 `flows.mjs` 로 묶었다.
+- PPTX 는 카탈로그 `impl.cs_v2.pptx_shortcode`(예전 근사 그대로) — `resolveShortcode(name, args, "pptx")`. 정밀 PPTX 는 pptgen 몫(역할 분담).
+- 남은 근사: 견본 2종(`sample.chart-pair`·`sample.infographic-2`).
+
+### 변경 2 — 배치 인수 (기본값 = 카탈로그 `args.default`)
+| 인수 | 배치 |
+|---|---|
+| `badge=icon\|number\|none` | `grid.cards`·`process.track`·`process.steps`(기본 number) |
+| `connector=line\|arrow\|none` | `process.track`(기본 line — 새로 그림)·`process.branch` |
+| `emphasis=last\|first\|none\|<번호>` | `process.track`·`process.levels`·`data.stats` + 새 배치(staircase 기본 last·zigzag·bars·hbars) |
+| `grow` | `process.levels`(기본 1.0)·`process.staircase`(기본 1.35) |
+| `header` | `grid.cards`·`grid.features`·`grid.columns`·패턴 — 본문 위 머리띠(`compare.pair-summary` 는 아래 결론 띠) |
+| 항목 `tag: alt` | 모든 카드형 — 그 카드만 보조 카드색(HTML `sc-item-alt`, PPTX `helpers.isAltBlock(item, it)`) |
+
+- 카탈로그의 "배치마다" 기본값을 실제 값으로 확정(pptgen 렌더러와 같게). `sync:library` 가 `LAYOUTS[이름].defaults` 로 옮기고 렌더러는 `layoutArgs()` 로 읽는다 — 코드에 기본 수치 없음.
+- 인수가 기본값이면 예전 마크업 그대로 → md_src 150개 산출물(가이드·프레젠테이션·PPTX) 전후 동일.
+
+### 변경 3 — 브라우저 PPTX 발표스크립트
+- `pptx-browser.ts` 가 `slide-config notes` 를 노트에 넣지 않던 문제 수정(CLI 와 같게).
+
+### 테스트
+- `layout-ext.test.ts`(54) 새로 — 36종 예시·변형 렌더, `sx-*` 클래스 CSS 커버리지, 이스케이프, 인수별 동작, `tag: alt`, 브라우저 PPTX 노트. 전체 355 → 410.
+
+## Phase 8 — 이름은 하나로: 옛 숏코드 이름을 기능 이름 + 인수로 (2026-10-14)
+
+### 배경
+- Phase 7 에서 기능 이름을 도입했지만 옛 이름(`icon-grid` 등)을 "해석하지 않고 그대로" 두어 이름이 둘로 운영되고 있었다. 사용자 결정: 확장할 때 그룹·기능별 이름 규칙이 흔들리지 않도록 **기능 이름 하나로 운영**, 옛 이름은 읽기 호환만.
+- 렌더러를 읽어 보니 옛 이름 대부분은 같은 그림의 다른 이름이었지만 `compare-grid`(상단 색 띠 없음)·`workflow-flow`(화살표로 이은 단계)는 실제로 모양이 달랐다 → 이 차이를 **인수**로 옮겨 손실 없이 합쳤다.
+
+### 변경 1 — 옛 이름 → 기능 이름 + 인수
+| 옛 이름 | 기능 이름 + 인수 |
+|---|---|
+| `compare-grid` | `grid.columns variant=plain` |
+| `workflow-flow`·`workflow-strip` | `process.track connector=arrow` |
+| `step-flow`·`flow` | `process.track connector=none` |
+| `skill-list` / `checkpoint-grid` | `grid.cards align=left` / `align=row` |
+| 그 밖의 옛 이름 | 인수 없이 기능 이름(예: `alert-box` → `text.callout`) |
+
+- 표의 출처는 공용 카탈로그 `alias_args`(옛 이름 → 인수)·`impl.cs_v2.variants`(인수 → 구현 ID). 코드에 대응표를 두지 않는다.
+- 옛 이름을 쓰면 빌드 CLI 가 경고: `⚠ 옛 이름 icon-grid → grid.cards`.
+
+### 변경 2 — md_src·문서 일괄 전환
+- `scripts/migrate-names.mjs`(`npm run migrate:names`, `--check`): md_src 50개 문서 466곳 + 문법 예시(`\:::`) 38곳 + 사용자 문서·스킬 문서 전환.
+- 레퍼런스(`shortcode-reference.md`)를 카탈로그 그룹 순서·기능 이름 제목으로 재구성, 옛 이름은 맨 아래 표 한 곳에만.
+- 가이드 패널·삽입 메뉴: 키가 기능 이름, 스니펫은 카탈로그 example(pptgen 견본과 같은 예시).
+
+### 변경 3 — 함께 고친 것
+- `text.callout`(옛 `alert-box`)이 인수 문자열 **전체**를 알림 종류로 쓰던 문제 → `variant=` 또는 첫 위치 인수만(다른 인수와 함께 써도 안전). `warning`/`caution` = `warn`.
+- PPTX `before-after` 가 전·후 대조 모양으로 안 나오던 문제(옛 별칭 이름일 때만 나왔음).
+- PPTX `skill-list` 가 단계 목록 모듈로 가서 글자가 겹치던 문제 → 카드 모듈로 통일(`icon-grid align=left` 와 같은 그림).
+
+### 검증
+- 이전 전후 산출물 150개(50문서 × 가이드·프레젠테이션·PPTX) 비교: HTML 마크업 동일(showcase 의 문법 예시 글 38줄만 새 이름), PPTX 는 변경 3 의 의도한 2곳만 다름(렌더로 확인).
+- `npm test` 289 → 355.
+
+---
+
 ## Phase 7 — 기능 이름(공용 배치 카탈로그) · 서식 세트 · 색 이름 통일 (2026-10-14)
 
 ### 배경

@@ -37,7 +37,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     
     slide.addShape("roundRect", {
       x: cx, y, w: cardW, h: cardH,
-      ...((it.color || isFeatured) ? { rectRadius: r, fill: cardFill, line: { color: cardLine, width: lineWidth } } : helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })),
+      ...((it.color || isFeatured) ? { rectRadius: r, fill: cardFill, line: { color: cardLine, width: lineWidth } } : helpers.cardBox(pal, { alt: helpers.isAltBlock(item, it), radius: r })),
     });
     
     slide.addShape("rect", {

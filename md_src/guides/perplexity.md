@@ -16,7 +16,7 @@ stats:
 
 # 핵심 기능 & 강점
 
-::: icon-grid cols=2
+::: grid.cards cols=2
 - icon: "🔍"
   title: "출처 인용 답변"
   desc: "모든 답변에 실제 웹 출처를 번호로 표시. 클릭하면 원문 확인 가능. 환각(hallucination) 최소화. 학술·리서치 작업에서 타 AI 대비 압도적 신뢰성."
@@ -42,7 +42,7 @@ stats:
 
 # 검색 모드 & 활용법
 
-::: icon-grid
+::: grid.cards
 - title: |
     Quick Search
      빠른 단답형 질문에 최적. 뉴스·현황·정의 등 즉각적인 정보 필요 시. 무료 사용자도 무제한.
@@ -54,14 +54,14 @@ stats:
      자동 반복 검색으로 종합 보고서 생성. 시장 조사·논문 검토·경쟁 분석에 최적. Pro 필요.
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Perplexity 최강 활용:"
   desc: "\"~에 대한 최신 연구 동향 정리해줘 (출처 포함)\" / \"경쟁사 3곳 비교 분석 후 표로 정리해줘\" / \"이 PDF의 핵심 주장과 근거를 요약해줘\""
 :::
 
 # 플랜 선택
 
-::: plan-grid cols=4
+::: grid.tiers cols=4
 - title: "무료"
   tag: "Free"
   note: "₩0"

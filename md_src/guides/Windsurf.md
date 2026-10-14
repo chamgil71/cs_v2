@@ -20,7 +20,7 @@ Windsurf(구 Codeium)는 Cursor와 함께 AI 네이티브 에디터 시장을 �
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "🧠"
   title: "SWE-1.6 자체 모델"
   desc: "Cognition이 에이전틱 코딩에 맞춰 직접 학습한 모델. 동급 모델 대비 훨씬 빠른 편집 속도를 목표로 튜닝."
@@ -37,7 +37,7 @@ Windsurf(구 Codeium)는 Cursor와 함께 AI 네이티브 에디터 시장을 �
 
 ### 이런 분들께 강력 추천합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "⚡ 자동완성 속도가 중요한 개발자"
   tag: "생산성"
   desc: "저지연 탭 자동완성과 빠른 에이전트 응답이 최우선인 분."
@@ -51,7 +51,7 @@ Windsurf(구 Codeium)는 Cursor와 함께 AI 네이티브 에디터 시장을 �
 
 # 시작하기
 
-::: step-list
+::: process.steps
 - title: "다운로드"
   desc: "공식 사이트에서 macOS/Windows/Linux용 Devin Desktop(Windsurf)을 설치합니다."
 - title: "기존 VS Code 환경 가져오기"
@@ -71,7 +71,7 @@ Windsurf(구 Codeium)는 Cursor와 함께 AI 네이티브 에디터 시장을 �
 | IDE 통합 범위 | 40+ (JetBrains 등) | VS Code 포크 | 모든 에디터(터미널 기반) |
 | 가격 | Free / $15~20 / $200 | 무료~유료 | Pro 구독/API |
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 이름에 헷갈리지 마세요:"
   desc: "다운로드 페이지나 리뷰 글에서 \"Windsurf\"와 \"Devin Desktop\"이 혼용됩니다. 2026.06 이후 배포판은 모두 Devin Desktop이며, 기능적으로 동일한 제품의 새 이름입니다."
 :::

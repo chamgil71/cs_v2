@@ -20,7 +20,7 @@ stats:
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "🖥️"
   title: "Codex CLI"
   desc: "터미널에서 자연어로 작업을 지시하면 파일 읽기·수정·명령 실행을 자율적으로 수행. Vim 모드, 원격 세션 상태 표시(/status) 등 터미널 UX 지속 개선."
@@ -37,7 +37,7 @@ stats:
 
 ### 이런 분들께 강력 추천합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "🛠️ 터미널 중심 개발자"
   tag: "개발"
   desc: "IDE보다 터미널 워크플로가 편하고, git worktree·CI 스크립트와 자연스럽게 엮이는 에이전트를 원하는 분."
@@ -53,7 +53,7 @@ stats:
 
 ### 기본 사용 흐름
 
-::: step-list
+::: process.steps
 - title: "설치 및 로그인"
   desc: "`npm install -g @openai/codex` 또는 공식 바이너리 설치 후 ChatGPT 계정(Plus/Pro/Business)으로 로그인합니다. API 키 방식도 지원."
 - title: "AGENTS.md 작성"
@@ -68,7 +68,7 @@ stats:
 
 # 최적의 결과를 얻는 프롬프트 팁
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "명확한 컨텍스트 제공"
   desc: "로그인 화면 만들어줘\" (X) -> \"React와 Tailwind를 사용해서 이메일/비밀번호를 받는 로그인 컴포넌트를 만들어줘.\" (O)"
   meta: "기술 스택 명시 필수"

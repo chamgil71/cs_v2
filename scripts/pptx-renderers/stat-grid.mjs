@@ -35,7 +35,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     
     slide.addShape("roundRect", {
       x: cx, y: cy, w: cardW, h: cardH,
-      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })
+      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item, it), radius: r })
     });
     
     slide.addShape("rect", {

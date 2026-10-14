@@ -1,17 +1,5 @@
 import { BookOpen } from 'lucide-react';
-
-interface ThemeFormShape {
-  label: string;
-  brand: string;
-  brandDark: string;
-  brandDeep: string;
-  brandLight: string;
-  brandMid: string;
-  border: string;
-  bg: string;
-  webFont: string;
-  webFontTitle: string;
-}
+import type { ThemeFormShape } from './theme-form';
 
 interface PaletteLivePreviewProps {
   themeForm: ThemeFormShape;

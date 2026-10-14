@@ -20,7 +20,7 @@ n8n(엔에이트엔)은 다양한 웹 서비스(텔레그램, 구글 시트, 깃
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "🔄"
   title: "무제한 워크플로우"
   desc: "클라우드 유료 플랜(Zapier 등)과 달리, 도커(Docker)로 직접 호스팅하면 실행 횟수 제한 없이 무료로 씁니다."
@@ -38,14 +38,14 @@ n8n(엔에이트엔)은 다양한 웹 서비스(텔레그램, 구글 시트, 깃
   desc: "n8n을 MCP 서버로 노출해 워크플로를 외부 에이전트가 호출하게 하거나, MCP 클라이언트로 Claude·Codex 등의 도구를 워크플로 안에서 직접 사용합니다."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 n8n 2.0 — 멀티 에이전트 오케스트레이션:"
   desc: "n8n 2.0부터 AI Agent 노드가 구조화된 툴콜·재시도·메모리(Redis/Postgres/Motorhead)를 지원하며, 단일 에이전트가 아닌 중앙 오케스트레이터가 여러 전문 서브 에이전트를 지휘하는 구조로 발전했습니다."
 :::
 
 ### 이런 분들께 강력 추천합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "🖥️ 홈 서버 / NAS 운영자"
   tag: "서버"
   desc: "24시간 켜져 있는 미니 PC 환경을 활용해 정기적인 크롤링이나 데이터 백업을 스케줄링하고 싶은 분."
@@ -63,7 +63,7 @@ Docker가 설치된 환경이라면 명령어 한 줄로 즉시 서버가 실행
 
 ### 기본 워크플로우 설계 흐름
 
-::: step-list
+::: process.steps
 - title: "도커 컨테이너 실행"
   desc: "`docker run -it --rm --name n8n -p 5678:5678 docker.n8n.io/n8nio/n8n` 명령어로 로컬에 실행합니다."
 - title: "트리거(Trigger) 설정"
@@ -78,7 +78,7 @@ Docker가 설치된 환경이라면 명령어 한 줄로 즉시 서버가 실행
 
 # 실무 효율을 높이는 팁
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "Sub-Workflow (서브 워크플로우)"
   desc: "자주 쓰는 로직(예: 텔레그램 에러 메시지 발송)은 별도의 워크플로우로 떼어내고, 메인 흐름에서 모듈처럼 호출해서 씁니다."
   meta: "중복 작업 최소화"

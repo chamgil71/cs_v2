@@ -1,24 +1,23 @@
 /**
  * library-names.mjs — 공용 배치 카탈로그 이름 해석 (cs_v2 쪽 단일 지점)
  *
- * pptgen 과 cs_v2 는 같은 배치 이름 규칙을 쓴다: `<그룹>.<형태>` (예: grid.cards, process.track).
- * 카탈로그(config/library/layouts.json, 생성본 scripts/library-map.mjs)가 이름 ↔ cs_v2 숏코드 대응의 단일 출처다.
+ * 이름은 하나로 운영한다(2026-10-14 결정): 정식 이름은 기능 이름 `<그룹>.<형태>`(pptgen 과 같음) 하나뿐이다.
+ * 옛 이름(cs_v2 숏코드 icon-grid·compare-grid…, pptgen 구현 ID staircase·c01-p07…)은 읽기 호환 별칭으로만 받고,
+ * 받는 즉시 "기능 이름 + 그 옛 이름이 뜻하던 인수(카탈로그 alias_args)"로 정규화한다.
  *
- *   ::: grid.cards cols=3        → icon-grid 로 렌더 (기능 이름)
- *   ::: icon-grid cols=3         → 그대로 (cs_v2 고유 이름 — 하위 호환, 기존 문서 그대로 동작)
- *   ::: staircase                → process.staircase → level-grid 근사 (pptgen 옛 이름도 받아준다)
+ *   ::: grid.columns variant=plain   → 기능 이름 그대로
+ *   ::: compare-grid                 → grid.columns variant=plain 과 같은 것으로 정규화 (옛 이름 — npm run migrate:names)
  *
- * 규칙
- *  - cs_v2 가 직접 그리는 숏코드 이름(NATIVE_SHORTCODES)은 해석하지 않고 그대로 쓴다.
- *    (skill-list·checkpoint-grid 처럼 같은 배치의 변형이 고유 이름에 묶인 경우가 있어 기능 이름으로 바꾸면 모양이 달라진다)
- *  - 그 밖의 이름은 카탈로그에서 찾는다: 기능 이름 → 그대로, 별칭 → 기능 이름.
- *    cs_v2 구현이 ready/fallback 이면 그 숏코드, markdown/none 이면 PLAIN_FALLBACK 으로 근사한다.
- *  - 이 파일의 숏코드 블록 정규식(SHORTCODE_BLOCK_SOURCE)을 4개 파서(guide-core·presentation-core·md-to-pptx·pptx-browser)가 같이 쓴다.
- *    이름에 '.' 을 허용한다(기능 이름).
+ * 그다음 기능 이름 + 인수로 cs_v2 "구현 ID"(= shortcode-render.mjs·pptx-renderers 의 내부 분기 이름)를 고른다:
+ *   카탈로그 impl.cs_v2.variants(인수 조합 → 구현 ID) 가 맞으면 그것, 아니면 impl.cs_v2.shortcode,
+ *   cs_v2 구현이 markdown/none 이면 PLAIN_FALLBACK(카탈로그 fallback.cs_v2).
+ * 구현 ID 는 내부 이름일 뿐이라 문서·예시·화면에 쓰지 않는다(pptgen 의 c01-p07 과 같은 위치).
+ *
+ * 이 파일의 숏코드 블록 정규식(SHORTCODE_BLOCK_SOURCE)을 4개 파서(guide-core·presentation-core·md-to-pptx·pptx-browser)가 같이 쓴다.
  */
-import { LAYOUTS, LAYOUT_ALIASES, LAYOUT_GROUPS, SHAPE_SETS, COLOR_TOKENS, LAYOUT_FALLBACK } from "./library-map.mjs";
+import { LAYOUTS, LAYOUT_ALIASES, LAYOUT_GROUPS, SHAPE_SETS, COLOR_TOKENS, LAYOUT_FALLBACK, ALIAS_ARGS, LAYOUT_EXAMPLES } from "./library-map.mjs";
 
-export { LAYOUTS, LAYOUT_ALIASES, LAYOUT_GROUPS, SHAPE_SETS, COLOR_TOKENS };
+export { LAYOUTS, LAYOUT_ALIASES, LAYOUT_GROUPS, SHAPE_SETS, COLOR_TOKENS, ALIAS_ARGS, LAYOUT_EXAMPLES };
 
 /**
  * 항목 color 의 색 이름(primary·secondary·accent·accent2·light·dark·ink·gray + 별칭 main·sub·brand…) → 매체 값.
@@ -39,40 +38,67 @@ export function colorToken(name, medium) {
 export const SHORTCODE_BLOCK_SOURCE = String.raw`^:::\s*([A-Za-z0-9_.-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$`;
 export const shortcodeBlockRe = () => new RegExp(SHORTCODE_BLOCK_SOURCE, "gm");
 
-/** cs_v2 가 직접 그리는 이름 — shortcode-render.mjs 의 분기와 같아야 한다(정합성 테스트가 잠근다) */
-export const NATIVE_SHORTCODES = new Set([
+/** 숏코드 블록이 아닌 내부 토큰 — 이름 해석 없이 그대로 */
+const INTERNAL = new Set(["slide-config", "arrow"]);
+
+/** cs_v2 구현 ID(옛 숏코드 분기) — shortcode-render.mjs 분기 = 카탈로그 impl.cs_v2.shortcode·variants·pptx_shortcode 가 가리키는 값(정합성 테스트가 잠근다).
+ *  2026-10-14 부터 새 배치는 구현 ID = 기능 이름(scripts/shortcode-ext/ — HTML 전용, PPTX 는 pptx_shortcode 로 근사) */
+export const IMPL_SHORTCODES = new Set([
   "icon-grid", "feature-grid", "badge-grid", "stat-grid", "tool-list", "plan-grid",
-  "columns-grid", "compare-split", "before-after", "step-flow", "step-list", "level-grid", "git-flow",
+  "columns-grid", "compare-grid", "compare-split", "before-after", "step-flow", "workflow-flow", "step-list", "level-grid", "git-flow",
   "network-box", "venn-diagram", "quadrant-chart", "concentric-rings", "summary-bar",
   "alert-box", "summary-box", "takeaway-banner", "part-banner", "editor-box", "console-box", "cmd-box",
   "faq-list", "os-tabs", "chapter-list",
-  // cs_v2 하위 호환 별칭(같은 렌더러의 다른 이름)
-  "compare-grid", "workflow-flow", "workflow-strip", "skill-list", "checkpoint-grid", "compare-diff",
-  "bottom-list", "compare-before-after", "flow", "git-flow-strip", "part-deck", "takeaway", "tool-box", "venn",
-  // 내부 토큰
-  "slide-config", "arrow",
 ]);
 
 /** cs_v2 에 대응 숏코드가 없는 배치(markdown/none)를 그릴 때 쓰는 근사 숏코드 — 카탈로그 fallback.cs_v2 (코드에 정책 값을 두지 않는다) */
 export const PLAIN_FALLBACK = LAYOUT_FALLBACK.cs_v2;
 
+/** 인수 문자열의 key=value 들(따옴표 값 포함) — 위치 인수는 무시 */
+export function argKeys(args) {
+  const out = {};
+  for (const m of String(args || "").matchAll(/([A-Za-z][\w.-]*)=("([^"]*)"|'([^']*)'|(\S+))/g)) out[m[1]] = m[3] ?? m[4] ?? m[5];
+  return out;
+}
+
+/** 블록 인수 + 옛 이름이 뜻하던 인수(블록에 이미 있는 키는 블록 값이 우선) → 인수 문자열 */
+function mergeArgs(args, extra) {
+  const have = argKeys(args);
+  const add = Object.entries(extra || {}).filter(([k]) => !(k in have)).map(([k, v]) => `${k}=${v}`);
+  return [String(args || "").trim(), ...add].filter(Boolean).join(" ");
+}
+
+/** 옛 이름 사용 기록(이름 → 정규화 결과) — CLI 빌드가 끝에 경고로 보여 준다(reportAliasUse) */
+export const ALIAS_SEEN = new Map();
+
 /**
- * 블록 이름 → cs_v2 가 그릴 숏코드.
- * @returns {{ type: string, layout: string|null, status: string, known: boolean }}
- *   type   = 실제로 그릴 cs_v2 숏코드(모르는 이름이면 입력 그대로 → 렌더러가 빈 문자열을 낸다: 기존 동작)
- *   layout = 카탈로그 기능 이름(고유 숏코드 이름이면 그 숏코드가 대응하는 기능 이름, 없으면 null)
+ * 블록 이름 + 인수 → cs_v2 가 그릴 구현.
+ * @param medium "html"(기본) | "pptx" — PPTX 는 HTML 전용 구현 대신 pptx_shortcode
+ * @returns {{ type: string, layout: string|null, args: string, status: string, known: boolean, alias: string|null }}
+ *   type   = cs_v2 구현 ID(모르는 이름이면 입력 그대로 → 렌더러가 빈 문자열: 기존 동작)
+ *   layout = 기능 이름, args = 정규화된 인수 문자열(옛 이름 인수 포함), alias = 옛 이름으로 썼으면 그 이름
  */
-export function resolveShortcode(name) {
+export function resolveShortcode(name, args = "", medium = "html") {
   const raw = String(name || "").trim();
-  if (NATIVE_SHORTCODES.has(raw)) {
-    const layout = LAYOUT_ALIASES[raw] || null;
-    return { type: raw, layout, status: "ready", known: true };
-  }
+  if (INTERNAL.has(raw)) return { type: raw, layout: null, args: String(args || ""), status: "internal", known: true, alias: null };
   const layout = LAYOUTS[raw] ? raw : LAYOUT_ALIASES[raw] || null;
-  if (!layout) return { type: raw, layout: null, status: "unknown", known: false };
-  const e = LAYOUTS[layout];
-  const type = e.shortcode && (e.status === "ready" || e.status === "fallback") ? e.shortcode : PLAIN_FALLBACK;
-  return { type, layout, status: e.status, known: true };
+  if (!layout) return { type: raw, layout: null, args: String(args || ""), status: "unknown", known: false, alias: null };
+  const alias = raw !== layout ? raw : null;
+  const merged = mergeArgs(args, alias ? ALIAS_ARGS[alias] : null);
+  if (alias) ALIAS_SEEN.set(alias, `${layout}${alias && ALIAS_ARGS[alias] ? " " + mergeArgs("", ALIAS_ARGS[alias]) : ""}`);
+  const e = LAYOUTS[layout], keys = argKeys(merged);
+  const variant = (e.variants || []).find((v) => Object.entries(v.when || {}).every(([k, val]) => keys[k] === String(val)));
+  // PPTX: 기능 이름 구현(HTML 전용)이면 카탈로그 pptx_shortcode(근사) — cs_v2 PPTX 는 빠른 근사, 정밀 PPTX 는 pptgen 몫
+  const type = variant ? variant.shortcode
+    : medium === "pptx" && e.pptx_shortcode ? e.pptx_shortcode
+    : e.shortcode && (e.status === "ready" || e.status === "fallback") ? e.shortcode : PLAIN_FALLBACK;
+  return { type, layout, args: merged, status: e.status, known: true, alias };
+}
+
+/** CLI 빌드 끝에 옛 이름 사용을 한 줄씩 알린다(브라우저에서는 부르지 않는다) */
+export function reportAliasUse(log = console.warn) {
+  for (const [a, to] of ALIAS_SEEN) log(`  ⚠ 옛 이름 ${a} → ${to}  (기능 이름 하나로 운영 — npm run migrate:names)`);
+  ALIAS_SEEN.clear();
 }
 
 /**
@@ -91,3 +117,31 @@ export function stripHeadingAttrs(md) {
 
 /** 블록 인수 문자열에서 bg=alt (보조 카드색) 여부 */
 export const wantsAltBg = (args) => /(?:^|\s)bg=["']?alt\b/.test(String(args || ""));
+
+/**
+ * 배치 인수 = 카탈로그 기본값(LAYOUTS[layout].defaults) < 블록 인수. 렌더러는 이 객체만 읽는다(기본 수치를 코드에 두지 않음).
+ * layout 이 없으면(옛 경로·내부 토큰) 블록 인수만.
+ */
+export function layoutArgs(layout, args) {
+  return { ...((LAYOUTS[layout] || {}).defaults || {}), ...argKeys(args) };
+}
+
+/**
+ * 강조할 항목 — pptgen U.emphOf 와 같은 규칙: 항목 tag(highlight·active·best·강조)·featured 가 있으면 그것,
+ * 없으면 emphasis 인수(last|first|none|<번호>).
+ */
+export const EMPH_TAG = /^(highlight|active|best|강조)$/i;
+export function emphOf(items, emphasis = "none") {
+  const tagged = items.map((it) => EMPH_TAG.test(String(it.tag || "").trim()) || it.featured === "true");
+  if (tagged.some(Boolean)) return tagged;
+  const e = String(emphasis || "none");
+  return items.map((_, i) => (e === "last" ? i === items.length - 1 : e === "first" ? i === 0 : String(i + 1) === e));
+}
+
+/**
+ * 항목 tag: alt → 그 카드만 서식 세트의 보조 카드색(블록 bg=alt 의 항목판). tag 는 비워 배지로 그리지 않는다.
+ * HTML(shortcode-render)·PPTX(md-to-pptx·pptx-browser) 세 파서가 같이 부른다 — _alt 표시는 여기 한 곳.
+ */
+export function markAltItems(items) {
+  return items.map((it) => (/^alt$/i.test(String(it.tag || "").trim()) ? { ...it, tag: "", _alt: true } : it));
+}

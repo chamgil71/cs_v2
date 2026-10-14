@@ -20,7 +20,7 @@ Quartz는 개발 지식이 깊지 않아도 개인의 마크다운 노트를 블
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "🔗"
   title: "위키링크 완벽 지원"
   desc: "`[[문서명]]` 형태의 내부 링크를 웹사이트의 라우팅으로 완벽하게 변환합니다."
@@ -37,7 +37,7 @@ Quartz는 개발 지식이 깊지 않아도 개인의 마크다운 노트를 블
 
 ### 이런 분들께 강력 추천합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "📝 옵시디언 헤비 유저"
   tag: "기록"
   desc: "로컬에 쌓인 수백 개의 노트를 깨진 링크 없이 웹으로 퍼블리싱하고 싶은 분."
@@ -55,7 +55,7 @@ Node.js 환경만 준비되어 있다면 명령어 몇 줄로 초기 세팅이 �
 
 ### 기본 배포 파이프라인 흐름
 
-::: step-list
+::: process.steps
 - title: "초기화 및 설치"
   desc: "`git clone https://github.com/jackyzha0/quartz.git && cd quartz && npm i`로 저장소를 내려받아 의존성을 설치한 뒤, `npx quartz create`로 기본 프로젝트 구조를 생성합니다."
 - title: "마크다운 파일 동기화"
@@ -83,7 +83,7 @@ Quartz는 Node v22·npm v10.9.2 이상을 요구하며, TypeScript 기반 구조
 
 ### 핵심 설정 파일 가이드
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "색상 및 테마 변경 (`quartz.config.ts`)"
   desc: "라이트/다크 모드의 메인 컬러, 배경색, 폰트(Google Fonts)를 직관적으로 변경할 수 있습니다."
   meta: "디자인 아이덴티티 결정"

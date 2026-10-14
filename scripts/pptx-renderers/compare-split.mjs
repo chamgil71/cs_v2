@@ -17,7 +17,7 @@ export function estimateHeight(item, w, D, helpers) {
   const lh = (c.bodySize / 72) * 1.7;
   
   const maxH = Math.max(1.3, ...item.items.slice(0, 2).map((it, idx) => {
-    const isBeforeAfter = item.type === "compare-before-after" || item.type === "compare-diff";
+    const isBeforeAfter = ["before-after", "compare-before-after", "compare-diff"].includes(item.type);
     const defaultColor = isBeforeAfter ? (idx === 0 ? "#EF4444" : "#10B981") : null;
     const color = helpers.hexClean(it.color || defaultColor);
     
@@ -54,7 +54,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
   const maxH = estimateHeight(item, w, D, helpers) - c.gap;
   const lh = (c.bodySize / 72) * 1.7;
   const noteH = 0.26;
-  const isBeforeAfter = item.type === "compare-before-after" || item.type === "compare-diff";
+  const isBeforeAfter = ["before-after", "compare-before-after", "compare-diff"].includes(item.type);
   
   item.items.slice(0, 2).forEach((it, idx) => {
     const cx = x + idx * (colW + cc.colGap);

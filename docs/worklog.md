@@ -279,3 +279,49 @@
 - **사용자 결정**: 이름은 기능 이름 하나로 운영(옛 이름은 읽기 호환 별칭). 모양이 다른 옛 이름 2종(`compare-grid`·`workflow-flow`)은 렌더러를 읽어 확인 후 인수(`variant=plain`·`connector=arrow`)로 옮기는 설계 확정.
 - **CLI 인계**: 남은 작업(이름 통일·이전 도구, cs_v2 미구현 기능, 카탈로그 example 단일 출처 → slide-library views·cs_v2 웹 라이브러리 화면, dev API → pptgen, 층 정리·200줄 분리)은 coding `_templates/skillreview/다음작업_CLI인계.md` 순서대로.
 
+## 2026-10-14 — 세션 23: 이름은 하나로 — 옛 숏코드 이름 이전 (CLI 인계서 B 단계)
+
+- **카탈로그(coding, 인계서 A)**: 옛 이름 인수 `alias_args`, 인수 → 구현 `impl.cs_v2.variants`, 66종 `example`(가이드 스니펫·pptgen 견본 단일 출처) — `npm run sync:library` 로 받음(`library-map.mjs` 에 `ALIAS_ARGS`·`LAYOUT_EXAMPLES`).
+- **이름 해석**: `resolveShortcode(name, args)` 가 모든 이름을 기능 이름 + 인수로 정규화(옛 "고유 이름 비해석" 규칙 제거) → 변형 → 구현 ID. HTML·PPTX 같은 함수. CLI 옛 이름 경고(`reportAliasUse`).
+- **이전**: `scripts/migrate-names.mjs` — md_src 466곳 + 문법 예시 38곳, 사용자 문서·스킬 문서. 레퍼런스 재구성, 스킬 참조 카탈로그 재생성.
+- **UI**: `config/shortcode-guide.ts` 를 카탈로그 기반으로(키 = 기능 이름, 스니펫 = example). 가이드 설명은 `LAYOUT_DESC`(다음 단계에 카탈로그로 옮길 대상).
+- **고친 기존 문제**: `text.callout` 인수 파싱, PPTX `before-after` 전·후 모양, PPTX `skill-list` 글자 겹침.
+- 검증: 이전 전후 150개 산출물 비교(HTML 동일·PPTX 의도 2곳), `npm test` 355, standalone 빌드.
+- 다음: 인계서 C(cs_v2 미구현 기능 — `connector=line`·`badge`·`emphasis`·`grow`·`header`·`tag: alt`, 근사 배치 HTML 렌더러), D(미리보기), E(층 정리).
+
+## 2026-10-14 — 세션 24: cs_v2 에 없던 배치·인수 추가 (CLI 인계서 C 단계)
+
+- **카탈로그(coding)**: 근사·없음이던 36종을 `impl.cs_v2 = { status: ready, shortcode: <기능 이름>, pptx_shortcode: <예전 근사> }` 로, "배치마다" 기본값을 실제 값으로(pptgen 과 같게), cs_v2 가 새로 받는 인수 플래그 `cs_v2: true`, 패턴 칸 뜻(`desc` = 원 안 글 등) 보강. `sync:library` 가 `defaults`·`pptx_shortcode` 를 생성본에 넣음.
+- **기능 이름 구현** `scripts/shortcode-ext/`(8파일, 각 200줄 이하): 상자형 패턴·계단·성장·삼각 순환·지그재그·단계 패턴·주/부·천칭·가로 막대·결론 띠·막대그래프·게이지(SVG)·문장·본문·인용·아이콘 문장·아바타·이미지 자리. CSS 는 `SHORTCODE_CSS` 로 합침.
+- **기존 숏코드 인수**: `badge`·`connector=line`·`emphasis`·`grow`·`header`, 항목 `tag: alt`(HTML·PPTX). 기본값이면 예전 마크업.
+- **PPTX**: `resolveShortcode(…, "pptx")` → `pptx_shortcode`(예전 근사 유지), `markAltItems` + `helpers.isAltBlock(item, it)`, 브라우저 PPTX 발표스크립트 누락 수정.
+- **검증**: md_src 150개 산출물 전후 동일, 66종 예시(pptgen `examples/all-layouts.md`) 가이드·슬라이드 라이트/다크 헤드리스 스크린샷 확인(막대 대비·순환 표시·천칭 중복 글자·인용 배경 4곳 고침), `npm test` 410, `build:standalone`·`build`, pptgen `--plan` 부족 항목 없음(목차 알림만).
+- **문서**: CLAUDE.md(규칙 표·구조·이름 절·지원 현황·이슈 2행), README, scripts_guide 5-1a, guide, shortcode-reference(64종·배치 인수 표·「기능 이름 배치」 절 — 카탈로그 example 에서 생성), changelog Phase 9, 스킬 참조 카탈로그 재생성.
+- 다음: 인계서 D(미리보기 — pptgen previews-all·cs_v2 웹 배치 라이브러리 화면), E(층 정리, 사용자 확인 후).
+
+## 2026-10-14 — 세션 25: 미리보기 — 웹 배치 라이브러리 화면 (CLI 인계서 D 단계)
+
+- **모듈 1 배치 라이브러리 서브탭**(`src/components/layout-library/` 4파일 + `src/lib/layout-library.ts`, 각 200줄 이하): 카탈로그 66종을 그룹 버튼·검색(기능 이름·설명·옛 이름)으로 찾고,
+  카탈로그 예시를 `clientCompileMarkdown`(서버 CLI 와 같은 코어)으로 미리보기 — 테마·서식 세트 6종·종형/횡형·인수 변형(`more`). 오른쪽에 구현 상태(cs_v2 HTML·PPTX, pptgen), 항목 칸, 배치 인수 표, 옛 이름, 스니펫 복사.
+  미리보기는 편집기와 같은 방식으로 가상 화면(1280×720 / 1200 폭)을 칸 너비에 맞춰 축소하고, 표지 다음(배치가 있는 곳)으로 iframe 안에서만 이동.
+- **생성본 확장**: `sync:library` 가 `LAYOUTS[이름]` 에 `args`·`pptgen`·`aliases` 를 넣음(화면 값의 단일 출처).
+- **pptgen 쪽(coding)**: `views/layouts.pptx`(66종 예시)·`views/shape-sets.pptx`(서식 세트 비교) 를 같은 카탈로그 예시로 — `node lib/run.js layout-views`.
+- 검증: `npm test` 482(새 `layout-library.test.ts` 72 — 66종 예시×변형이 가이드·슬라이드로 그려짐), `build:standalone`·`build`, 헤드리스로 탭·검색·서식 세트·횡형 미리보기 확인(계단 배치 렌더, 콘솔 오류는 standalone 의 기존 `/api/list-styles` 폴백뿐).
+- 다음: 인계서 E(설정·라이브러리·코드 층 정리 — 사용자 확인 후), F(마무리).
+
+## 2026-10-14 — 세션 26: 설정·라이브러리·코드 층 정리 · 200줄 분리 (CLI 인계서 E 단계)
+
+- **E1~E3**: `config/library/` → `library/`, 미사용 `config/layout.json` 삭제, 가이드 설명은 카탈로그 `emoji`·`desc`(`shortcode-guide.ts` 의 `LAYOUT_DESC` 제거).
+- **E5-1 인수 기본값**: 카탈로그 `args.default` 가 값이 되도록 정리(bg="", cols="", callout=tip) — 렌더러의 기본 수치 리터럴 없음. pptgen 도 같은 기본값(`names.argsOf`).
+- **E5 200줄 분리**(맨 마지막, 출력 동일): `shortcode-render.mjs` → `shortcode-render/`(text·parse·cards·lists·boxes·diagrams·sections·config — 옛 if 사슬을 순서 있는 분기 표로), `shortcode-styles.mjs` → `shortcode-styles/`(3부분), 테스트 `shape-set.test.ts` 분리.
+  - 검증: `SHORTCODE_CSS` 동일, md_src·카탈로그 예시 628블록 렌더 동일(탭 id 난수 제외), md_src 150개 산출물 동일, `npm test` 485, `build:standalone`·`build`, 헤드리스(standalone 오류는 기존 `/api/list-styles` 폴백뿐).
+  - 남은 200줄 초과(이번 범위 밖, 기존부터 큼): `PptxInspectorSuite.tsx`·`designspec-md-to-html.mjs`·`presentation-core.mjs`·`MarkdownCompiler.tsx`·`md-to-pptx.mjs`·`vite-api-plugin.ts`·`pptx-browser.ts`·`pptx-analyzer.js`·`exportGuide.ts`·`build-guide-hub.mjs`·`build-folder.mjs`·`guide-core.mjs`, shadcn `ui/*`, 생성본 `library-map.mjs`. 특히 `md-to-pptx.mjs` 와 `pptx-browser.ts` 는 같은 변환을 두 벌 가진 구조라 나누기 전에 공용 코어로 합치는 일이 먼저다(별도 작업).
+- **pptgen 쪽(coding)**: v2 렌더러 수치 → `config/layout.json`, `helpers.js`·`render_spec.js`·`gen_data.js`·`shape_style.js`·`build_deck.js` 분리(lib 전부 200줄 이하, 슬라이드 XML 전후 동일).
+
+## 2026-10-14 — 세션 27: PPTX 공용 코어 · CI
+
+- **왜**: `pptx-browser.ts` 는 2026-06-23 `md-to-pptx.mjs` 의 복사 포트로 생겼고, HTML 은 06-26 공용 코어로 합쳤지만 PPTX 는 두 벌로 남아 갈라져 있었다(함수 22개 중 9개 내용 다름 — 브라우저만 블록 크기 인수 무시, 표지·마무리·오류 글자 크기 하드코딩, 발표 노트는 오늘 C 단계에서 따로 고침).
+- **한 일**: `scripts/pptx-core/`(8파일) 공용 코어, CLI 948→121줄·브라우저 642→28줄 래퍼. 갈라진 부분은 CLI(config 를 읽는 쪽)로 통일. 코어는 config 를 복사해 쓰고 전역 `D` 복원 코드를 없앰.
+- **검증**: md_src 150개 산출물 전후 동일, md_src 50개 브라우저 PPTX == CLI, standalone 화면 다운로드 PPTX == CLI(같은 테마), 새 `pptx-core.test.ts`(옛 브라우저 코드로 돌리면 2건 실패 — 드리프트를 잡는 테스트임을 확인), `npm test` 489.
+- **CI**: `.github/workflows/ci.yml` + `npm run typecheck`. 기존 lint 오류 36(`@ts-ignore` 34 — 불필요, prefer-const 2 — 옛 브라우저 파일)·타입 오류 2(`ThemeFormShape` 이중 선언) 해소 → 깨끗한 체크아웃에서 `npm ci` 부터 전 단계 통과.
+- 남은 것: HTML·PPTX 항목 표준화(`standardizeItem`) 규칙 차이(scripts_guide 5-1c), 나머지 200줄 초과 파일(presentation-core·MarkdownCompiler·PptxInspectorSuite 등).

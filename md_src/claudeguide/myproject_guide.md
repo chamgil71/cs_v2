@@ -31,7 +31,7 @@ done:
 
 ## 도메인별 분류
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "🌐"
   title: "웹 서비스 & 대시보드"
   tag: "3개"
@@ -68,7 +68,7 @@ done:
 
 ## 배포 & 저장소 현황
 
-::: git-flow
+::: process.branch
 - title: "pjtoverview"
   tag: "Vercel 배포"
   meta: "https://pjtoverview.vercel.app|github.com/chamgil71/pjtoverview"
@@ -101,7 +101,7 @@ done:
 
 XLSX 4개 시트 → Python 7단계 파이프라인 → JSON → React 대시보드 → Vercel 정적 배포.
 
-::: tool-list
+::: grid.list
 - icon: "📊"
   title: "KPI 대시보드"
   desc: "KPI 카드 5종, 연도별 트렌드, 본부별·재원별 차트"
@@ -114,7 +114,7 @@ XLSX 4개 시트 → Python 7단계 파이프라인 → JSON → React 대시보
   color: "#4F46E5"
 :::
 
-::: step-list
+::: process.steps
 - title: "1 파이프라인 실행"
   desc: "python pipeline/cli.py --input storage/input.xlsx"
   color: "#6366F1"
@@ -132,7 +132,7 @@ XLSX 4개 시트 → Python 7단계 파이프라인 → JSON → React 대시보
 
 Obsidian 노트 중 `publish: true` 표시된 것만 Quartz v4로 빌드해 Vercel · GitHub Pages에 이중 배포.
 
-::: compare-grid cols=2
+::: grid.columns cols=2 variant=plain
 - title: "Vercel (주 서비스)"
   desc: "mywiki-khaki.vercel.app"
   meta: "GitHub 연동 자동 배포|글로벌 CDN 빠른 응답"
@@ -143,7 +143,7 @@ Obsidian 노트 중 `publish: true` 표시된 것만 Quartz v4로 빌드해 Verc
   color: "#1F2937"
 :::
 
-::: step-list
+::: process.steps
 - title: "노트 작성"
   desc: "Obsidian에서 작성 후 publish: true 설정"
   color: "#7C3AED"
@@ -155,7 +155,7 @@ Obsidian 노트 중 `publish: true` 표시된 것만 Quartz v4로 빌드해 Verc
   color: "#A78BFA"
 :::
 
-::: summary-box
+::: text.summary
 - title: "주요 설정 파일"
   desc: "quartz.config.ts — 사이트 제목·테마·플러그인 / quartz.layout.ts — 레이아웃 구성 / index_md.py — 노트 인덱스 자동 생성"
   meta: "content/ 폴더에 마크다운 노트 보관|deploy.ps1로 Vercel 수동 배포 가능"
@@ -167,7 +167,7 @@ Obsidian 노트 중 `publish: true` 표시된 것만 Quartz v4로 빌드해 Verc
 
 설문·행정 원본 XLSX를 1-Click으로 정밀 정제하고 엑셀 요약 보고서와 React 대시보드로 발행하는 풀스택 플랫폼.
 
-::: compare-grid cols=2
+::: grid.columns cols=2 variant=plain
 - title: "정적 모드"
   desc: "백엔드 없이 demo JSON으로 차트·PDF/CSV 기능 동작. GitHub Pages 환경에서도 서비스 가능."
   meta: "설치 없이 즉시 사용|Donut · Bar · Histogram 차트|PDF/CSV 다운로드"
@@ -178,7 +178,7 @@ Obsidian 노트 중 `publish: true` 표시된 것만 Quartz v4로 빌드해 Verc
   color: "#10A37F"
 :::
 
-::: step-list
+::: process.steps
 - title: "백엔드 실행"
   desc: "pip install -r requirements.txt && python main.py"
   color: "#6366F1"
@@ -200,7 +200,7 @@ Obsidian 노트 중 `publish: true` 표시된 것만 Quartz v4로 빌드해 Verc
 
 RSS 수집 → Gemini/Claude 분석 → 웹 + 이메일 + 텔레그램 + 카드뉴스를 **완전 자동** 발행하는 서버리스 3채널 시스템.
 
-::: stat-grid cols=3
+::: data.stats cols=3
 - icon: "📰"
   title: "뉴스 채널"
   desc: "KST 03:15 수집 → 즉시 배포·발송"
@@ -212,7 +212,7 @@ RSS 수집 → Gemini/Claude 분석 → 웹 + 이메일 + 텔레그램 + 카드�
   desc: "매주 일 07:00 수집 → 즉시 배포·발송"
 :::
 
-::: git-flow
+::: process.branch
 - title: "GitHub Actions 수집"
   tag: "스케줄 트리거"
   meta: "news.yml / stock_build.yml / ai_issue.yml|7개 워크플로우로 채널별 독립 운영"
@@ -237,7 +237,7 @@ RSS 수집 → Gemini/Claude 분석 → 웹 + 이메일 + 텔레그램 + 카드�
 
 팀원이 YAML 파일에 업무를 기록하면 취합·검증·발행·누적 관리까지 자동 처리하는 WRMS v3.2.
 
-::: feature-grid cols=2
+::: grid.features cols=2
 - icon: "📥"
   title: "YAML 입력"
   desc: "reports/yymmdd/팀명.yaml 형식으로 팀별 분리 입력"
@@ -252,7 +252,7 @@ RSS 수집 → Gemini/Claude 분석 → 웹 + 이메일 + 텔레그램 + 카드�
   desc: "누적관리.xlsx — 매주 시트 자동 추가 (히스토리 보존)"
 :::
 
-::: step-list
+::: process.steps
 - title: "dryrun (검증)"
   desc: "python wrms.py --dryrun --date 260613"
   color: "#10A37F"
@@ -274,7 +274,7 @@ RSS 수집 → Gemini/Claude 분석 → 웹 + 이메일 + 텔레그램 + 카드�
 
 PDF·XLSX·YAML 등 다양한 포맷의 정부 예산 자료를 단일 canonical JSON으로 통합하고 TF-IDF 유사도 분석 후 GitHub Pages로 자동 배포.
 
-::: workflow-flow
+::: process.track connector=arrow
 - icon: "📥"
   title: "수집"
   meta: "PDF · XLSX(총괄/A4) · YAML · JSON 멀티 포맷"
@@ -300,7 +300,7 @@ PDF·XLSX·YAML 등 다양한 포맷의 정부 예산 자료를 단일 canonical
   meta: "GitHub Actions → GitHub Pages 자동"
 :::
 
-::: summary-box
+::: text.summary
 - title: "핵심 실행 명령"
   desc: "python backend/master_builder.py — 전체 7단계 한 번에 실행 / python backend/master_builder.py --step 4 — 특정 단계만 부분 실행"
   meta: "config/config.yaml 컬럼 매핑만 수정하면 코드 변경 불필요|cd web && npm run dev — 로컬 대시보드 확인"
@@ -312,7 +312,7 @@ PDF·XLSX·YAML 등 다양한 포맷의 정부 예산 자료를 단일 canonical
 
 내부 기밀문서(HWP·PDF·XLSX·PPTX 등)를 마크다운으로 변환하고 유사도 분석·사업별 분할·통계 통합을 수행하는 **완전 로컬** 분석 환경.
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "🔒"
   title: "보안 원칙"
   tag: "절대 준수"
@@ -334,7 +334,7 @@ PDF·XLSX·YAML 등 다양한 포맷의 정부 예산 자료를 단일 canonical
   desc: "file_classifier.py — 키워드 기반 자동 분류"
 :::
 
-::: step-list
+::: process.steps
 - title: "원본 배치"
   desc: "raw_docs/ 폴더에 기밀 파일 배치 또는 Junction 링크 연결"
   color: "#F59E0B"
@@ -356,7 +356,7 @@ PDF·XLSX·YAML 등 다양한 포맷의 정부 예산 자료를 단일 canonical
 
 ## company 워크스페이스 3종
 
-::: tool-list
+::: grid.list
 - icon: "🏷️"
   title: "companypool — 기업 마스터 DB"
   desc: "다양한 출처의 기업 정보 Excel을 정규화된 마스터 DB(JSON)로 통합하는 ETL 도구"
@@ -374,7 +374,7 @@ PDF·XLSX·YAML 등 다양한 포맷의 정부 예산 자료를 단일 canonical
   color: "#6D28D9"
 :::
 
-::: summary-box
+::: text.summary
 - title: "4-Layer 아키텍처 공통 규칙"
   desc: "backend/(api·service·repository·models) → frontend/ → storage/ → docs/ 구조를 3개 솔루션 모두 준수."
   meta: "Router에 비즈니스 로직 금지|모든 파일 경로는 pathlib.Path 사용|환경변수는 .env + config.yaml 분리"
@@ -390,7 +390,7 @@ PDF·XLSX·YAML 등 다양한 포맷의 정부 예산 자료를 단일 canonical
 
 ## 3가지 출력 형식
 
-::: stat-grid cols=3
+::: data.stats cols=3
 - icon: "📖"
   title: "가이드 HTML"
   desc: "node scripts/build-guide.mjs <파일> → public/<폴더>/<파일>.html"
@@ -406,7 +406,7 @@ PDF·XLSX·YAML 등 다양한 포맷의 정부 예산 자료를 단일 canonical
 
 ## 29종 shortcode & 스타일 시스템
 
-::: feature-grid cols=2
+::: grid.features cols=2
 - icon: "🧩"
   title: "레이아웃 & 목록"
   desc: "feature-grid, icon-grid, compare-grid, stat-grid, tool-list, level-grid, plan-grid, columns-grid"
@@ -421,7 +421,7 @@ PDF·XLSX·YAML 등 다양한 포맷의 정부 예산 자료를 단일 canonical
   desc: "md_src/claudeguide/ — AI 도구·프로젝트 가이드 / config/styles.json — 스타일 설정"
 :::
 
-::: step-list
+::: process.steps
 - title: "단일 파일 빌드"
   desc: "node scripts/build-guide.mjs md_src/claudeguide/ai-tools-guide.md"
   color: "#D97757"
@@ -443,7 +443,7 @@ PDF·XLSX·YAML 등 다양한 포맷의 정부 예산 자료를 단일 canonical
 
 dailynews(7개), BudgetN, pjtoverview에서 공통으로 쓰는 워크플로우 구조.
 
-::: feature-grid cols=2
+::: grid.features cols=2
 - icon: "⏰"
   title: "스케줄 & 수동 트리거"
   desc: "on: schedule(cron: KST 보정) + workflow_dispatch 항상 포함"
@@ -462,7 +462,7 @@ dailynews(7개), BudgetN, pjtoverview에서 공통으로 쓰는 워크플로우 
 
 ## 프로젝트 간 데이터 흐름
 
-::: git-flow
+::: process.branch
 - title: "원본 데이터"
   tag: "입력"
   meta: "doc-analysis: 기밀 HWP·PDF·XLSX → MD|companypool: 기업 Excel → output.json|BudgetN: 예산 PDF/XLSX → merged.json"
@@ -477,7 +477,7 @@ dailynews(7개), BudgetN, pjtoverview에서 공통으로 쓰는 워크플로우 
   color: "#10A37F"
 :::
 
-::: summary-box
+::: text.summary
 - title: "Vercel 공통 설정 (pjtoverview · mywiki · dailynews)"
   desc: "buildCommand: npm run build / outputDirectory: dist / rewrites: SPA fallback (/* → /index.html)"
   meta: "GitHub 연동으로 main push 시 자동 배포|프리뷰 URL은 PR마다 자동 생성"

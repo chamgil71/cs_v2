@@ -19,7 +19,7 @@ stats:
 
 Git은 코드 변경 이력을 관리하는 분산 버전 관리 시스템입니다.
 
-::: cmd-box
+::: code.command
 - title: "명령어"
   tag: "bash"
   desc: "git init"
@@ -27,7 +27,7 @@ Git은 코드 변경 이력을 관리하는 분산 버전 관리 시스템입니
 
 ### 브랜치 전략 (Git step-flow)
 
-::: workflow-flow
+::: process.track connector=arrow
 - title: |
     main
      
@@ -70,7 +70,7 @@ Git은 코드 변경 이력을 관리하는 분산 버전 관리 시스템입니
 
 코드 협업과 개발 자동화를 위한 강력한 도구들입니다.
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "Pull Request (PR)"
   tag: "협업 필수"
   desc: "변경 사항을 코드 리뷰를 거쳐 병합하는 협업 워크플로우. 코드 품질 유지의 핵심입니다."
@@ -95,7 +95,7 @@ Git은 코드 변경 이력을 관리하는 분산 버전 관리 시스템입니
 
 코드를 푸시하면 자동으로 테스트하고 배포하는 파이프라인을 구성합니다.
 
-::: workflow-flow
+::: process.track connector=arrow
 - icon: "💾"
   title: "코드 Push"
   desc: "개발자가 GitHub에 코드 업로드"
@@ -113,7 +113,7 @@ Git은 코드 변경 이력을 관리하는 분산 버전 관리 시스템입니
   desc: "서버 또는 클라우드에 자동 배포"
 :::
 
-::: cmd-box
+::: code.command
 - title: "명령어"
   tag: "bash"
   desc: |

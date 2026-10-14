@@ -18,7 +18,7 @@ stats:
 
 옵시디언은 마크다운(.md) 파일을 기반으로 동작하는 로컬 지식 관리 도구입니다. 모든 데이터는 내 컴퓨터에 저장됩니다.
 
-::: icon-grid
+::: grid.cards
 - icon: "🧠"
   title: "두 번째 뇌 (Second Brain)"
   desc: "PKM(개인 지식 관리) 방법론을 실현하는 도구. 생각과 정보를 체계적으로 수집·연결·활용할 수 있습니다."
@@ -44,7 +44,7 @@ stats:
 
 옵시디언을 강력하게 만드는 주요 기능들을 소개합니다.
 
-::: icon-grid
+::: grid.cards
 - title: "📎 백링크 (Backlinks)"
   desc: "현재 노트를 링크한 다른 노트들의 목록을 자동으로 표시합니다. \"이 개념이 어디서 언급되었는가\"를 역추적할 수 있어 지식의 맥락을 풍부하게 만들어줍니다."
 - title: "🪄 Canvas (캔버스)"
@@ -63,7 +63,7 @@ stats:
 
 연결된 노트들을 시각화하여 지식 구조를 한눈에 파악합니다.
 
-::: network-box
+::: structure.hub
 - title: "📚메인"
 - title: "AI"
 - title: "독서"
@@ -73,7 +73,7 @@ stats:
 - title: "연구"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - desc: |
     💡 그래프 뷰 활용 팁
     
@@ -95,7 +95,7 @@ stats:
 
 설정 → 커뮤니티 플러그인 → 탐색에서 설치할 수 있습니다.
 
-::: icon-grid
+::: grid.cards
 - icon: "📅"
   title: "Templater"
   tag: "커뮤니티"
@@ -159,21 +159,21 @@ stats:
 
 옵시디언을 더 잘 활용하기 위한 방법론과 노하우입니다.
 
-::: alert-box tip
+::: text.callout tip
 - desc: |
     🗂️ PARA 방법론
     
      Projects / Areas / Resources / Archives 4개 폴더로 모든 정보를 분류합니다. 가장 널리 사용되는 PKM 구조입니다.
 :::
 
-::: alert-box tip
+::: text.callout tip
 - desc: |
     🌱 Zettelkasten (제텔카스텐)
     
      각 노트는 하나의 아이디어만 담습니다. 짧고 원자적(Atomic)인 노트를 만들고 링크로 연결하면 지식이 유기적으로 성장합니다.
 :::
 
-::: alert-box tip
+::: text.callout tip
 - desc: |
     🤖 AI와 함께 쓰기
     
@@ -192,7 +192,7 @@ stats:
     - Gemini Notebook(구 NotebookLM)에 볼트의 핵심 노트를 업로드하여 대화형 질의응답 활용
 :::
 
-::: alert-box tip
+::: text.callout tip
 - desc: |
     ⚡ 속도 향상 팁
     

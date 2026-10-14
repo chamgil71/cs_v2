@@ -16,7 +16,7 @@ stats:
 
 # Manus란? — AI 에이전트의 패러다임
 
-::: workflow-flow
+::: process.track connector=arrow
 - title: "⚡ Manus 작동 방식 — \"조사해서 보고서 만들어줘\" 한 마디면"
 - icon: "💬"
   title: "목표 이해"
@@ -50,7 +50,7 @@ stats:
 
 # 핵심 기능
 
-::: icon-grid cols=2
+::: grid.cards cols=2
 - icon: "🌐"
   title: "자율 웹 브라우징"
   desc: "실제 브라우저처럼 웹사이트를 열고, 클릭하고, 로그인하고, 데이터를 수집. 사람이 하는 웹 작업의 대부분을 자동화."
@@ -68,14 +68,14 @@ stats:
   desc: "텍스트 프롬프트만으로 장면 구성·비주얼 디자인·애니메이션까지 자동화한 완성된 스토리 영상을 생성 (Basic 이상)."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 커넥터 확장:"
   desc: "Gmail·Google Calendar·Google Drive·Notion·GitHub 커넥터와 브라우저 오퍼레이터가 추가되어, 리서치 결과를 곧바로 실제 업무 도구에 반영할 수 있습니다."
 :::
 
 # 실전 활용 사례
 
-::: icon-grid
+::: grid.cards
 - icon: "📊"
   title: "시장 조사 보고서"
   desc: "\"국내 AI 스타트업 TOP 20 조사해서 Excel로 정리해줘\" → 자동으로 웹 탐색 후 완성된 파일 제공."
@@ -90,7 +90,7 @@ stats:
   desc: "경쟁사 웹사이트, 채용공고, 보도자료를 자동 수집하여 종합 분석 보고서 완성."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Manus 잘 활용하는 법:"
   desc: "구체적인 목표와 원하는 출력 형식을 명시하세요. \"~를 조사해서 항목별로 Excel 표로 만들어줘 (열: 회사명, 서비스, 가격, 특징)\" 처럼 상세할수록 정확한 결과물을 받습니다."
 :::

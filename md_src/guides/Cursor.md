@@ -20,7 +20,7 @@ Cursor는 단순한 AI 자동완성 도구(예: Copilot)를 넘어, 에디터 �
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "🎼"
   title: "다중 파일 수정 (Composer)"
   desc: "단일 파일을 넘어, 여러 파일에 걸친 대규모 기능 추가나 리팩토링을 한 번의 지시로 해결합니다."
@@ -38,14 +38,14 @@ Cursor는 단순한 AI 자동완성 도구(예: Copilot)를 넘어, 에디터 �
   desc: "격리된 클라우드 VM에서 터미널·브라우저·데스크톱까지 제어하는 에이전트가 여러 저장소를 동시에 작업하고, 완료되면 IDE로 비동기 보고합니다."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Composer — Cursor 자체 모델:"
   desc: "Cursor는 자체 개발한 프론티어 모델 Composer를 기본 탑재해 대부분의 턴을 30초 이내에 처리합니다. 필요에 따라 Claude Opus/Sonnet, GPT-5.6, Gemini 3, Grok 4.6 등 외부 모델로 언제든 전환할 수 있습니다."
 :::
 
 ### 이런 분들께 강력 추천합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "🗣️Vibe Coder (바이브 코더)"
   tag: "트렌드"
   desc: "직접 코드를 치기보다, AI에게 구조를 설명하고 리뷰하는 역할에 집중하고 싶은 분."
@@ -63,7 +63,7 @@ Cursor는 단순한 AI 자동완성 도구(예: Copilot)를 넘어, 에디터 �
 
 ### 기본 사용 흐름
 
-::: step-list
+::: process.steps
 - title: "다운로드 및 연동"
   desc: "공식 사이트에서 설치 후 첫 화면에서 'Use VS Code extensions'를 클릭해 기존 환경을 복사합니다."
 - title: "탭(Tab) 자동완성"
@@ -82,7 +82,7 @@ Cursor의 진가는 '컨텍스트 멘션(@)' 기능에서 나옵니다.
 
 ### 필수 컨텍스트 호출 패턴
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "@Files & @Folders"
   desc: "AI에게 지시할 때 `@utils.js`처럼 특정 파일을 지목하면 해당 파일의 내용만 집중적으로 참고하여 코드를 짭니다."
   meta: "정확도 200% 상승"

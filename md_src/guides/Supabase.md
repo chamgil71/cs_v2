@@ -21,7 +21,7 @@ Supabase는 데이터베이스 연동, 사용자 인증(회원가입/로그인),
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "🗃️"
   title: "자동 API 및 Database"
   desc: "대시보드에서 테이블(엑셀 시트 형태)을 만들면 CRUD 조작이 가능한 REST 및 GraphQL API가 즉시 생성됩니다."
@@ -41,7 +41,7 @@ Supabase는 데이터베이스 연동, 사용자 인증(회원가입/로그인),
 
 ### 이런 프레임워크와 찰떡궁합입니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "⚛️ React + Vite 생태계"
   tag: "프론트엔드"
   desc: "Vite로 빌드한 React 앱(대시보드 등)에 SDK를 붙여 즉각적으로 데이터를 불러오고 인증을 유지합니다."
@@ -59,7 +59,7 @@ Supabase는 데이터베이스 연동, 사용자 인증(회원가입/로그인),
 
 ### React(Vite) 앱 연결 흐름
 
-::: step-list
+::: process.steps
 - title: "프로젝트 생성"
   desc: "Supabase 대시보드에서 새 프로젝트를 생성하고 URL과 `anon_key`를 발급받습니다."
 - title: "클라이언트 설치"
@@ -85,7 +85,7 @@ Supabase는 데이터베이스 연동, 사용자 인증(회원가입/로그인),
 
 특히 예산 분석 대시보드처럼 데이터를 정밀하게 다루는 앱에서 중요한 포인트입니다.
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "Row Level Security (RLS) 활성화"
   desc: "테이블을 만들면 기본적으로 모든 접근이 차단됩니다. 반드시 \"인증된 사용자는 자신의 데이터만 Select/Insert 할 수 있다\"는 RLS 정책을 설정해야 합니다."
   meta: "데이터 유출 방지 1순위"

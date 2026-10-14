@@ -76,7 +76,7 @@ vite-api-plugin.ts (API Router)
        │
        ├─► exec: "node scripts/build-guide.mjs" ────► [HTML 가이드 출력]
        ├─► exec: "node scripts/build-presentation.mjs" ──► [슬라이드 HTML 출력]
-       └─► exec: "node scripts/md-to-pptx.mjs" ────► [PPTX 바이너리 출력]
+       └─► exec: "node scripts/md-to-pptx.mjs" ────► [PPTX 바이너리 출력]   (변환은 scripts/pptx-core/ — 브라우저 pptx-browser.ts 와 같은 코어)
                                     │
                                     ▼ (config/styles.json 읽기)
                           지정된 테마의 HSL/HEX 색상 및 
@@ -200,13 +200,13 @@ npm run build:folder -- --dir "C:/Users/me/Desktop/my-docs" --out-dir public   #
 
 전역 크기 변경 시 **`config/htmldesign.config.json` 한 곳만 수정**하면 3개 출력에 반영된다. `--font-scale`은 `htmlFont.scale` 값을 주입한다.
 
-### 4-2. 숏코드별 오버라이드 헬퍼 함수 (`scripts/shortcode-render.mjs`)
+### 4-2. 숏코드별 오버라이드 헬퍼 함수 (`scripts/shortcode-render/text.mjs` — `shortcode-render.mjs` 가 다시 내보냄)
 
 숏코드 선언부에 `title-size` / `desc-size` 인수가 있으면 해당 블록 컨테이너에  
 `style="--size-card-title:X; --size-card-p:Y"` 인라인으로 CSS 변수를 오버라이드합니다. (PPTX도 `md-to-pptx.mjs`가 동일 인자를 지원 — 배수/절대 pt)
 
 ```js
-// shortcode-render.mjs (build-guide 에서 추출된 정본 모듈)
+// shortcode-render/text.mjs (build-guide 에서 추출된 정본 모듈의 글자 도구 부분)
 
 const DEFAULT_TITLE_REM = 1.15;
 const DEFAULT_P_REM     = 0.92;
@@ -281,10 +281,10 @@ coding/_templates/slide-library/catalog/   ← 원본(정본, ppt clone 산출�
   layouts.json · shape-sets.json
         │  npm run sync:library   (scripts/sync-library.mjs, --check 로 드리프트 검사)
         ▼
-cs_v2/config/library/*.json (복사본)  →  scripts/library-map.mjs (생성본: LAYOUTS·LAYOUT_ALIASES·LAYOUT_GROUPS·SHAPE_SETS·COLOR_TOKENS)
+cs_v2/library/*.json (복사본)  →  scripts/library-map.mjs (생성본: LAYOUTS·LAYOUT_ALIASES·LAYOUT_GROUPS·SHAPE_SETS·COLOR_TOKENS)
         │
         ├─ scripts/library-names.mjs   resolveShortcode(name) · shortcodeBlockRe() · stripHeadingAttrs(md) · colorToken(name, medium) · wantsAltBg(args)
-        │     ├─ shortcode-render.mjs  renderShortcode = 이름 해석 → renderNative(고유 렌더러) → bg=alt 래퍼(.sc-bg-alt)
+        │     ├─ shortcode-render.mjs  renderShortcode = 이름 해석 → layoutArgs(카탈로그 기본값 < 블록 인수) → renderNative(옛 숏코드 분기 | shortcode-ext 기능 이름 구현) → header 머리띠 → bg=alt 래퍼(.sc-bg-alt)
         │     ├─ guide-core / presentation-core / md-to-pptx / pptx-browser   ::: 정규식 · 제목 속성 제거 (같은 함수)
         │     ├─ registry.mjs hexClean   색 이름 → PPTX 팔레트 키 (cs_v2_pptx)
         │     └─ config/shortcode-guide.ts  분류(category)·기능 이름(layout)·스니펫 첫 줄
@@ -293,11 +293,87 @@ cs_v2/config/library/*.json (복사본)  →  scripts/library-map.mjs (생성본
               └─ md-to-pptx / pptx-browser        pal.shape → helpers.cardBox(pal, {alt, radius})
 ```
 
-### 5-1. 이름 해석 규칙 (`resolveShortcode`)
-1. `NATIVE_SHORTCODES`(cs_v2 가 직접 그리는 이름, 렌더러 분기와 같음 — 테스트가 잠금)에 있으면 **그대로** — 기존 문서 출력 불변.
-2. 아니면 카탈로그에서 찾는다: 기능 이름 그대로 또는 별칭(pptgen 옛 이름 `staircase`·`c01-p01` 등) → 기능 이름.
-3. cs_v2 구현 상태가 `ready`/`fallback` 이면 그 숏코드, `markdown`/`none` 이면 `PLAIN_FALLBACK`(`summary-box`).
+### 5-1. 이름 해석 규칙 (`resolveShortcode(name, args)`) — 이름은 하나로 운영
+
+1. 내부 토큰(`slide-config`·`arrow`)은 그대로.
+2. 카탈로그에서 기능 이름을 찾는다: 기능 이름이면 그대로, 옛 이름(별칭 — cs_v2 옛 숏코드·pptgen 구현 ID)이면 **기능 이름 + `ALIAS_ARGS[옛 이름]`** 으로 정규화(블록에 쓴 인수가 우선 — `mergeArgs`). 옛 이름 사용은 `ALIAS_SEEN` 에 기록 → CLI(`build-guide`·`build-presentation`·`md-to-pptx`)가 끝에 `reportAliasUse()` 로 경고.
+3. **구현 ID 고르기**: `impl.cs_v2.variants`(예: `grid.columns` + `variant=plain` → `compare-grid`, `process.track` + `connector=arrow` → `workflow-flow`) → 없으면 `impl.cs_v2.shortcode` → 구현 상태가 `markdown`/`none` 이면 `PLAIN_FALLBACK`(카탈로그 `fallback.cs_v2`).
 4. 모르는 이름은 입력 그대로 → 렌더러가 빈 문자열(기존 동작).
+5. 반환 `{ type: 구현 ID, layout: 기능 이름, args: 정규화된 인수, status, alias }` — `renderShortcode`·`md-to-pptx`·`pptx-browser` 가 같은 결과를 쓴다(HTML·PPTX 같은 해석).
+6. **매체**: 세 번째 인수 `medium = "pptx"`(md-to-pptx·pptx-browser) 면 기능 이름 구현(HTML 전용) 대신 카탈로그 `impl.cs_v2.pptx_shortcode`(옛 숏코드 근사 — 예 `process.staircase` → `level-grid`). cs_v2 PPTX 는 빠른 근사, 정밀 PPTX 는 pptgen.
+
+### 5-0. 생성본 `library-map.mjs` 의 `LAYOUTS[이름]` (sync-library 가 만든다)
+
+`group`·`label`·`emoji`·`desc`(메뉴 기호·설명 — 가이드 패널·배치 라이브러리)·`fields`·`status`·`shortcode`·`pptx_shortcode`·`variants`(인수 → 구현 ID)·`defaults`(인수 기본값 — 렌더러가 `layoutArgs()` 로 읽음)·
+`args`(인수 표: `values`·`default`·`cs_v2`·`pptgen`·`note` — 웹 배치 라이브러리 화면)·`pptgen`(`status`·`pattern`·`theme` — pptgen 이 그리는 방법)·`aliases`(옛 이름 — 화면 검색).
+화면·렌더러·테스트가 이 생성본만 읽으므로 카탈로그를 고치면 `npm run sync:library` 한 번으로 전부 따라온다.
+
+### 5-1a. 기능 이름 구현 `scripts/shortcode-ext/` (2026-10-14, 인계서 C)
+
+예전에 "가장 가까운 숏코드"로 근사하던 36종을 모양 그대로 그리는 HTML 렌더러. 구현 ID = 기능 이름(카탈로그 `impl.cs_v2.shortcode`).
+
+| 파일 | 배치 |
+|---|---|
+| `common.mjs` | 공용 조각(`cls`·`num`·`clamp`·`glyph`·`bullets`·`pill`·`band`·`imageSlot`) + 공용 CSS(`.sx-card`·`.sx-emph`·`.sx-band`·`.sc-item-alt`…) |
+| `grid.mjs` | `grid.box-1~4`·`narrow-wide`·`wide-narrow`(+`-titled`)·`main-plus-3`·`cards-icon-3`·`circle-3`·`band-box-3`, `structure.pillars`·`groups-2x3` — 상자형 패턴은 매개변수 하나(`boxes(cols, title, circle, main)`) |
+| `process.mjs` | `process.staircase`·`growth`·`cycle-3`·`zigzag` |
+| `flows.mjs` | `process.cards-arrow-4`·`input-circles-4`·`band-columns-3`·`steps-checklist-3` |
+| `compare.mjs` | `compare.main-sub`·`balance`·`hbars`·`pair-summary`(header 를 아래 결론 띠로 — `ownHeader`) |
+| `data.mjs` | `data.bars`(scale sqrt/linear)·`data.gauge`(SVG 반원) |
+| `text.mjs` | `text.statement`·`body`·`quote`·`icon-statement`·`avatar` |
+| `media.mjs` | `media.cards-image`·`banner`·`full` — 항목 `src` 면 그림, 없으면 프롬프트를 적은 이미지 자리 |
+| `native.mjs` | 옛 숏코드가 새로 받는 인수의 CSS(`.sf-line`·`.lv-grow`·`.gf-arrow`·`.stat-card.sx-emph`·`.wf-step.active`) |
+| `index.mjs` | `EXT_RENDERERS`·`EXT_OWN_HEADER`·`headerBand`·`EXT_CSS`(→ `shortcode-styles.mjs` 의 `SHORTCODE_CSS` 끝에 한 번) |
+
+- 렌더러 시그니처 `(items, a, h)`: `items` = 표준 항목(+`_alt`), `a` = `layoutArgs(layout, args)`, `h` = `shortcode-render` 가 넘기는 텍스트 도구 `{ esc, inline, desc, meta, color }`(순환 import 회피).
+- 색·글꼴·카드 서식은 `var(--*)` 와 서식 세트 변수만(테마·셸이 값을 정함). 기본 수치는 카탈로그 `args.default`.
+- 새 배치 추가: 카탈로그에 `impl.cs_v2 = { status:"ready", shortcode:"<기능 이름>", pptx:false, pptx_shortcode:"<옛 숏코드>" }` → 해당 그룹 파일에 렌더러·CSS → `npm run sync:library` → `npm test`(`layout-ext.test.ts` 가 예시 렌더·CSS 커버리지·이스케이프를 자동 검사).
+- 옛 숏코드 분기의 새 인수(`badge`·`connector`·`emphasis`·`grow`)는 `renderNative` 안에서 `a.*` 로 읽고, 인수가 기본값이면 예전 마크업을 그대로 낸다(md_src 150개 산출물 전후 동일).
+- 항목 `tag: alt`: `markAltItems()`(library-names) 가 HTML·PPTX 세 파서에서 `_alt` 표시 → HTML `sc-item-alt` 클래스 / PPTX `helpers.isAltBlock(item, it)`.
+
+### 5-1b. 정본 렌더러·CSS 파일 나눔 (2026-10-14, 인계서 E — 200줄 규칙)
+
+바깥에서는 지금처럼 `shortcode-render.mjs`(내보내기 목록 그대로)·`shortcode-styles.mjs`(`SHORTCODE_CSS` 하나)만 import 한다. 안쪽만 나눴다.
+
+| 파일 | 담당 |
+|---|---|
+| `shortcode-render.mjs` | 입구 — `renderShortcode`(이름 해석·`layoutArgs`·머리띠·`bg=alt`) + `renderNative`(공유 값 만들기 → 기능 이름 구현 `EXT_RENDERERS` → 옛 숏코드 분기 표 순회) + 내보내기 |
+| `shortcode-render/text.mjs` | 글자 도구 — `escapeHtml`·`renderInline`·`cleanValue`·여러 줄 글/글머리·`resolveColorKeyword`·`renderDesc`·`renderNote`·크기 인수 |
+| `shortcode-render/parse.mjs` | 파서 — `parseSlideConfig`·`splitMeta`·`standardizeItem`(6대 키)·`parseShortcodeItems` |
+| `shortcode-render/{cards,lists,boxes,diagrams,sections,config}.mjs` | 옛 숏코드 분기 표 `blocks = [{ when(type), render(ctx) }]` — 예전 `if (type === …)` 하나가 항목 하나 |
+| `shortcode-styles/{cards,diagrams,tables}.mjs` | CSS 부분 — `SHORTCODE_CSS` = 세 부분 + `EXT_CSS` 를 예전 순서로 이어 붙임(문자열 동일) |
+
+- **분기 순서가 뜻이다**: `renderNative` 는 `BLOCKS`(cards → lists → boxes → diagrams → sections → config) 를 앞에서부터 보고 `when(type)` 이 맞는 첫 항목의 `render(ctx)` 결과를 쓴다. `render` 가 `undefined` 를 돌려주면 다음 항목으로(예전 if 를 빠져나가 다음 if 로 가던 것과 같음). 같은 구현 ID 가 두 번 나오면 앞의 것이 이긴다(예: `compare-grid` 는 `lists.mjs` 의 첫 항목).
+- `ctx` = 블록마다 한 번 만드는 공유 값 `{ items, alt, renderAccent, renderTextColor, renderCompareNote, cols, blockBullet, layoutAlign, gridStyle, itemBullet, badgeOf, a, args, type, body, renderNative }`(+ cols/bullet/align 정규식 결과). 다른 분기로 넘길 때는 `ctx.renderNative`(예: `compare-split` 항목 1개 → `compare-grid`).
+- **새 옛 숏코드 분기는 만들지 않는다**(새 배치는 기능 이름 구현 `shortcode-ext/` 로 — 5-1a). 고칠 때는 해당 파일의 항목만 고치고, 템플릿 문자열 안 들여쓰기는 출력에 그대로 나가므로 바꾸지 않는다.
+- 나눌 때 검증: `SHORTCODE_CSS` 문자열 동일, md_src 와 카탈로그 예시(변형·옛 이름 포함) 628블록 `renderShortcode` 출력 동일(탭 id 난수만 다름), md_src 150개 산출물 동일.
+
+### 5-1c. PPTX 공용 코어 `scripts/pptx-core/` (2026-10-14)
+
+HTML 의 guide-core·presentation-core 와 같은 구조로, MD → PPTX 변환 전체를 fs 없는 코어 하나가 갖는다.
+
+```
+md-to-pptx.mjs (CLI)          : fs 로 config·md 읽기 ─┐                         ┌─ 파일 저장(잠기면 _<시각>.pptx)
+                                                       ├─► buildPptx(md, opts) ─┤
+src/lib/pptx-browser.ts (웹)  : ?raw config·편집기 md ─┘   → { prs, D, … }      └─ prs.writeFile → 다운로드
+```
+
+| 파일 | 담당 |
+|---|---|
+| `index.mjs` | `buildPptx(raw, { styles, design, fontAliases, styleOverride, noCover, verbose, label })` — config 복사 → 테마·머리말 덮어쓰기 → 팔레트·서식 세트 → 표지·섹션·마무리. `parseJsonc` |
+| `doc.mjs` | md → 섹션·카드·블록(`#` 섹션, `##` 카드, `::: 블록`, `slide-config`) |
+| `items.mjs` | 숏코드 본문 → 항목(6대 키 표준화) |
+| `blocks.mjs` / `cards.mjs` | 마크다운 블록·카드·숏코드 항목의 높이 추정과 그리기(숏코드는 `pptx-renderers` 레지스트리) |
+| `cover.mjs` / `section.mjs` | 표지·마무리 / 섹션 슬라이드(머리 띠, 영역 넘치면 다음 장, 발표 노트) |
+| `util.mjs` | 색 정리·줄 수 추정·팔레트·글꼴 별칭 |
+
+- 함수는 이 변환의 디자인 설정 `D` 를 첫 인수로 받는다(전역 상태 없음). 섹션 `slide-config` 의 크기 덮어쓰기는 그 섹션 복사본에만.
+- 래퍼에 변환 로직을 두지 않는다. 브라우저에서만 필요한 것은 config 를 `?raw` 로 받는 것과 다운로드뿐이다.
+- 통합 때 갈라진 부분(브라우저만 `title-size`·`desc-size` 무시, 표지·마무리·오류 글자 크기 하드코딩)은 전부 CLI 쪽(config 를 읽는 쪽)으로 맞췄다. `pptx-core.test.ts` 가 브라우저 == CLI 를 잠근다.
+- 알아 둘 것: HTML 의 `standardizeItem`(shortcode-render/parse.mjs)과 PPTX 의 것(pptx-core/items.mjs)은 아직 규칙이 조금 다르다(HTML 만 `tag ← type`, `/n` 줄바꿈, 원래 키 보존). 합치면 PPTX 출력이 바뀌므로 별도 작업으로 확인 후 진행.
+
+구현 ID(`IMPL_SHORTCODES` — `shortcode-render.mjs` 분기·`pptx-renderers` 타입)는 **내부 이름**이라 문서·예시·화면에 쓰지 않는다(pptgen 의 `c01-p07` 과 같은 위치).
+md 의 옛 이름 일괄 변환: `scripts/migrate-names.mjs`(`npm run migrate:names -- <경로>`, `--check`) — 대응표는 코드가 아니라 카탈로그에서 읽고, 코드 펜스·이스케이프한 문법 예시(`\:::`) 줄도 바꾼다.
 
 ### 5-2. 서식 세트 변수 (HTML)
 | 변수 | template(기본) | 다른 세트 |

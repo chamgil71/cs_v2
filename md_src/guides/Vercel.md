@@ -21,7 +21,7 @@ Vercel은 복잡한 서버 인프라 지식 없이도 웹 애플리케이션을 
 
 ### 핵심 가치와 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "⚡"
   title: "Zero-Config 배포"
   desc: "별도의 설정 파일 없이도 프로젝트 구조를 분석하여 최적의 빌드 환경을 구성합니다."
@@ -41,7 +41,7 @@ Vercel은 복잡한 서버 인프라 지식 없이도 웹 애플리케이션을 
 
 ### 이런 상황에서 빛을 발합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "🖋️ 개발 블로그/포트폴리오"
   tag: "개인"
   desc: "Quartz나 Astro로 만든 정적 사이트를 무료로, 가장 빠르게 운영하고 싶을 때."
@@ -59,7 +59,7 @@ Vercel의 가장 큰 장점은 "설정할 것이 거의 없다"는 점입니다.
 
 ### 기본 연결 순서
 
-::: step-list
+::: process.steps
 - title: "GitHub 저장소 준비"
   desc: "배포할 소스 코드가 포함된 저장소(Repository)를 GitHub에 생성하고 Push합니다."
 - title: "Vercel 계정 연동"
@@ -76,7 +76,7 @@ Vercel의 가장 큰 장점은 "설정할 것이 거의 없다"는 점입니다.
 
 ### 효율적인 운영 패턴
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "프로덕션 배포"
   desc: "`main` 브랜치에 코드를 합치면(Merge) 실제 서비스 도메인에 즉시 반영됩니다."
   meta: "CI/CD 자동화"

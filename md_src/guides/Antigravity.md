@@ -20,7 +20,7 @@ Google Antigravity는 2026년 Gemini 3와 함께 출시된 **에이전트 우선
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "🕹️"
   title: "Agent Manager"
   desc: "여러 에이전트가 병렬로 진행 중인 작업(계획·실행·검증 단계)을 한 화면에서 관제. 각 작업의 아티팩트(계획서·스크린샷·실행 로그)를 검토 후 승인합니다."
@@ -37,7 +37,7 @@ Google Antigravity는 2026년 Gemini 3와 함께 출시된 **에이전트 우선
 
 ### 이런 분들께 강력 추천합니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "🤹 여러 작업을 동시에 굴리는 개발자"
   tag: "생산성"
   desc: "기능 구현, 버그 수정, 리팩토링을 동시에 여러 에이전트에게 맡기고 결과만 검토하고 싶은 분."
@@ -51,7 +51,7 @@ Google Antigravity는 2026년 Gemini 3와 함께 출시된 **에이전트 우선
 
 # 시작하기
 
-::: step-list
+::: process.steps
 - title: "다운로드 및 설치"
   desc: "antigravity.google 에서 macOS/Windows/Linux 데스크톱 앱을 내려받아 설치합니다."
 - title: "Google 계정 로그인"
@@ -74,7 +74,7 @@ Google Antigravity는 2026년 Gemini 3와 함께 출시된 **에이전트 우선
 | 다중 에이전트 병렬 | ✓ Agent Manager | ✓ Cloud Agents | ✓ 서브에이전트 | △ 병렬 세션 |
 | 비용 | 무료(개인) | 무료~유료 | Pro 구독/API | $10/월~ |
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Antigravity 2.0:"
   desc: "2026.05 출시된 Antigravity 2.0은 별도의 코드 에디터 화면 없이 에이전트 관리에만 집중하는 독립형 데스크톱 앱으로 재편되었습니다. 코드 편집 자체는 VS Code 등 기존 에디터와 나란히 열어 두고, Antigravity는 에이전트 오케스트레이션 역할에 집중하는 구조입니다."
 :::
@@ -83,7 +83,7 @@ Google Antigravity는 2026년 Gemini 3와 함께 출시된 **에이전트 우선
 
 Antigravity는 단독으로도 쓸 수 있지만, 같은 Google 계정으로 아래 도구와 이어지면 시너지가 커집니다.
 
-::: tool-list
+::: grid.list
 - icon: "📒"
   title: "Gemini Notebook(구 NotebookLM)"
   desc: "리서치·문서 분석 담당"

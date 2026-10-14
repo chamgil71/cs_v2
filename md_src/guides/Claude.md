@@ -16,7 +16,7 @@ stats:
 
 # 모델 선택 가이드
 
-::: icon-grid
+::: grid.cards
 - title: |
     Claude Fable 5
      최상위 티어
@@ -56,7 +56,7 @@ stats:
 
 ### 시스템 프롬프트 구성 예시 (프로젝트 → 설정 → System Prompt에 입력)
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "역할 정의 (Persona)"
   desc: "당신은 한국 정부 ICT 정책 전문가입니다. 과기부 예산 문서를 분석하고, 정책 보고서를 작성하는 데 특화되어 있습니다."
 - title: "출력 형식 (Format)"
@@ -65,7 +65,7 @@ stats:
   desc: "출처를 명시하세요. 불확실한 내용은 \"추가 확인 필요\"로 표기하세요. 1차 문서 외 추측을 배제하세요."
 :::
 
-::: console-box
+::: code.console
 - title: "실전 시스템 프롬프트 템플릿"
   desc: |
     [역할] 당신은 {직책/전문분야} 전문가입니다.
@@ -87,7 +87,7 @@ stats:
     [금지 사항] 불필요한 서문 생략, 확인되지 않은 수치 사용 금지
 :::
 
-::: icon-grid cols=2
+::: grid.cards cols=2
 - icon: "🎯"
   title: "Chain of Thought:"
 - icon: "⚡"
@@ -98,7 +98,7 @@ stats:
 
 스킬은 Claude에게 특정 작업 방식을 학습시키는 지시 문서입니다. SKILL.md 파일로 관리하며, 프로젝트에 업로드하면 자동으로 적용됩니다. Cowork Marketplace(2026.02 출시)를 통해 다른 조직이 만든 스킬을 검색·설치하는 플러그인 생태계도 함께 성장하고 있습니다.
 
-::: icon-grid
+::: grid.cards
 - icon: "📝"
   title: "HWPX 생성"
   desc: "한글 보고서 자동화"
@@ -119,21 +119,21 @@ stats:
   desc: "문서 구조 추출"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 스킬 파일 작성 팁:"
   desc: "SKILL.md에 \"언제 이 스킬을 사용하는가\"를 명확히 명시하고, 입출력 예시를 포함시키면 Claude가 자동으로 적절한 스킬을 선택합니다."
 :::
 
 # 프로젝트 (Projects) 설정
 
-::: tool-list
+::: grid.list
 - icon: "📋"
   title: "업무 자동화 프로젝트"
   desc: "반복 문서 작업 제거"
   meta: "시스템 프롬프트로 역할과 출력 형식 고정|SKILL.md 파일 업로드로 전문 기능 추가|참고 문서(예시 보고서) 컨텍스트에 유지|대화 히스토리로 맥락 지속 유지"
 :::
 
-::: tool-list
+::: grid.list
 - icon: "💻"
   title: "개발 지원 프로젝트"
   desc: "코딩 생산성 극대화"
@@ -142,7 +142,7 @@ stats:
 
 # 프로젝트 구성 3단계 🗂️
 
-::: step-flow
+::: process.track connector=none
 - icon: "1️⃣"
   title: "시스템 프롬프트"
   desc: "역할·형식·제약 조건 설정"
@@ -158,7 +158,7 @@ stats:
 
 # 연결 서비스 & 통합
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "📧"
   title: "Gmail"
   tag: "이메일 자동화"
@@ -185,12 +185,12 @@ stats:
   tag: "코드 관리"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 MCP 서버 활용:"
   desc: "Model Context Protocol로 외부 서비스와 직접 연결. Claude Code에서 claude mcp add 명령으로 추가하면 Claude가 직접 서비스를 제어할 수 있습니다. 공식 MCP 레지스트리에는 2026년 기준 2만 개에 가까운 서버가 등록되어 있습니다."
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Claude Cowork:"
   desc: "2026년 정식 출시된 Claude Cowork는 Claude Code와 같은 엔진을 공유하는 팀 협업 워크스페이스로, Claude Code용 MCP 서버와 Skill을 대부분 그대로 재사용할 수 있습니다."
 :::

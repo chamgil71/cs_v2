@@ -123,15 +123,15 @@ describe('clientCompileMarkdown — presentation 모드', () => {
 
 // ── 숏코드 렌더링 ──────────────────────────────────────────────────────
 describe('clientCompileMarkdown — 숏코드 처리', () => {
-  it('icon-grid 숏코드 → icon-grid 클래스 출력', () => {
-    const md = `:::icon-grid\n- icon: 🚀\n  title: 빠른 배포\n  desc: CI/CD 자동화\n:::`;
+  it('grid.cards(기능 이름) → icon-grid 클래스 출력', () => {
+    const md = `:::grid.cards\n- icon: 🚀\n  title: 빠른 배포\n  desc: CI/CD 자동화\n:::`;
     const html = compile(md);
     expect(html).toContain('icon-grid');
     expect(html).toContain('빠른 배포');
   });
 
-  it('alert-box 숏코드 → border-left 스타일 포함', () => {
-    const md = `:::alert-box\n- title: 주의사항\n  desc: 반드시 확인하세요\n:::`;
+  it('text.callout(기능 이름) → border-left 스타일 포함', () => {
+    const md = `:::text.callout\n- title: 주의사항\n  desc: 반드시 확인하세요\n:::`;
     const html = compile(md);
     expect(html).toContain('border-left');
     expect(html).toContain('주의사항');
@@ -170,7 +170,7 @@ describe('clientCompileMarkdown — 숏코드 처리', () => {
   });
 
   it('숏코드 XSS: desc에 스크립트 삽입 시 이스케이프', () => {
-    const md = `:::alert-box\n- title: 테스트\n  desc: <script>evil()</script>\n:::`;
+    const md = `:::text.callout\n- title: 테스트\n  desc: <script>evil()</script>\n:::`;
     const html = compile(md);
     expect(html).not.toContain('<script>evil()');
     expect(html).toContain('&lt;script&gt;');

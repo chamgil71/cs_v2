@@ -1,0 +1,51 @@
+# cs_v2 CI — PR·main 푸시마다 로컬 개발자가 돌리는 검사와 같은 것을 돌린다(CLAUDE.md 규칙 2 "정합성 테스트"·AGENTS.md Verification).
+# 단계 이름 = 무엇이 깨졌는지. 실패한 단계의 명령을 로컬에서 그대로 실행하면 같은 결과가 나온다.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22        # 개발 환경과 같은 메이저 — fs/promises glob(md-to-pptx --all)은 22 이상
+          cache: npm
+
+      - name: 의존성 설치
+        run: npm ci --no-audit --no-fund
+
+      - name: 린트 (eslint — 오류만 실패, 경고는 표시)
+        run: npm run lint
+
+      - name: 타입 검사 (tsc — app·node 설정)
+        run: npm run typecheck
+
+      - name: 테스트 (vitest — 정합성·카탈로그·배치·PPTX 코어 동치 포함)
+        run: npm test
+
+      - name: md_src 옛 배치 이름 잔존 검사
+        run: npm run migrate:names:check
+
+      - name: PPTX 왕복 변환 검증 (well-formed·재패키징)
+        run: npm run verify:pptx
+
+      - name: Vite 빌드
+        run: npm run build
+
+      - name: standalone 빌드 (웹앱 4종 — 정합성 테스트는 위에서 통과)
+        run: npm run build:standalone:fast
+
+      # 공용 카탈로그 원본은 coding 저장소(_templates/slide-library/catalog)에 있어 여기서 sync:library:check 는 못 돌린다.
+      # 생성본(scripts/library-map.mjs) == 복사본(library/) 일치는 library-catalog.test.ts 가 위 테스트 단계에서 잠근다.

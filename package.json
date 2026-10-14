@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -20,7 +21,9 @@
     "build:folder": "node scripts/build-folder.mjs",
     "verify:pptx": "node scripts/verify-pptx-roundtrip.mjs",
     "sync:library": "node scripts/sync-library.mjs",
-    "sync:library:check": "node scripts/sync-library.mjs --check"
+    "sync:library:check": "node scripts/sync-library.mjs --check",
+    "migrate:names": "node scripts/migrate-names.mjs",
+    "migrate:names:check": "node scripts/migrate-names.mjs --check"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

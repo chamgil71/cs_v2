@@ -54,7 +54,7 @@ stats:
 | `bullet=X` | 전체 | 블록 기본 불릿 기호 지정 |
 
 ```md
-\::: feature-grid cols=3 bullet=✅
+\::: grid.features cols=3 bullet=✅
 ```
 
 ---
@@ -69,7 +69,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: icon-grid cols=3
+\::: grid.cards cols=3
 - icon: "⚡"
   title: "빠른 작업"
   desc: "반복 작업을 줄이고 결과물을 빠르게 만듭니다."
@@ -82,7 +82,7 @@ stats:
 \:::
 ```
 
-::: icon-grid cols=3
+::: grid.cards cols=3
 - icon: "⚡"
   title: "빠른 작업"
   desc: "반복 작업을 줄이고 결과물을 빠르게 만듭니다."
@@ -104,7 +104,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: feature-grid cols=3
+\::: grid.features cols=3
 - icon: "🧠"
   title: "AI 자동화"
   tag: "핵심"
@@ -123,7 +123,7 @@ stats:
 \:::
 ```
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - icon: "🧠"
   title: "AI 자동화"
   tag: "핵심"
@@ -151,7 +151,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: badge-grid cols=4
+\::: grid.badges cols=4
 - icon: "🧪"
   title: "테스트"
   tag: "Vitest"
@@ -167,7 +167,7 @@ stats:
 \:::
 ```
 
-::: badge-grid cols=4
+::: grid.badges cols=4
 - icon: "🧪"
   title: "테스트"
   tag: "Vitest"
@@ -192,7 +192,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: stat-grid cols=3
+\::: data.stats cols=3
 - icon: "29종"
   title: "숏코드"
   desc: "현재 빌더가 렌더링하는 컴포넌트 수"
@@ -205,7 +205,7 @@ stats:
 \:::
 ```
 
-::: stat-grid cols=3
+::: data.stats cols=3
 - icon: "29종"
   title: "숏코드"
   desc: "현재 빌더가 렌더링하는 컴포넌트 수"
@@ -227,7 +227,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: columns-grid cols=3
+\::: grid.columns cols=3
 - title: "HTML"
   desc: "웹 가이드로 바로 열람합니다."
   note: "node scripts/build-guide.mjs guide.md"
@@ -240,7 +240,7 @@ stats:
 \:::
 ```
 
-::: columns-grid cols=3
+::: grid.columns cols=3
 - title: "HTML"
   desc: "웹 가이드로 바로 열람합니다."
   note: "node scripts/build-guide.mjs guide.md"
@@ -262,7 +262,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: columns-grid cols=2
+\::: grid.columns cols=2
 - title: "수동 HTML"
   desc: "표현 자유도는 높지만 유지보수와 PPTX 변환이 어렵습니다."
   note: "디자인 고정이 필요한 특수 페이지에 적합"
@@ -274,7 +274,7 @@ stats:
 \:::
 ```
 
-::: columns-grid cols=2
+::: grid.columns cols=2
 - title: "수동 HTML"
   desc: "표현 자유도는 높지만 유지보수와 PPTX 변환이 어렵습니다."
   note: "디자인 고정이 필요한 특수 페이지에 적합"
@@ -295,7 +295,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: plan-grid cols=3
+\::: grid.tiers cols=3
 - title: "Free"
   tag: "무료"
   meta: "기본 기능|일일 제한|커뮤니티 지원"
@@ -313,7 +313,7 @@ stats:
 \:::
 ```
 
-::: plan-grid cols=3
+::: grid.tiers cols=3
 - title: "Free"
   tag: "무료"
   meta: "기본 기능|일일 제한|커뮤니티 지원"
@@ -340,7 +340,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: level-grid
+\::: process.levels
 - title: "LEVEL 1"
   desc: "코드 자동완성"
   meta: "GitHub Copilot 인라인"
@@ -353,7 +353,7 @@ stats:
 \:::
 ```
 
-::: level-grid
+::: process.levels
 - title: "LEVEL 1"
   desc: "코드 자동완성"
   meta: "GitHub Copilot 인라인"
@@ -375,7 +375,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: icon-grid align=row
+\::: grid.cards align=row
 - icon: "📐"
   title: "계획 수립 후"
   desc: "방향이 맞는지 확인"
@@ -385,7 +385,7 @@ stats:
 \:::
 ```
 
-::: icon-grid align=row
+::: grid.cards align=row
 - icon: "📐"
   title: "계획 수립 후"
   desc: "방향이 맞는지 확인"
@@ -404,7 +404,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: step-list
+\::: process.steps
 - title: "MD 작성"
   desc: "표준 키와 숏코드로 콘텐츠를 작성합니다."
 - title: "HTML 빌드"
@@ -414,7 +414,7 @@ stats:
 \:::
 ```
 
-::: step-list
+::: process.steps
 - title: "MD 작성"
   desc: "표준 키와 숏코드로 콘텐츠를 작성합니다."
 - title: "HTML 빌드"
@@ -433,7 +433,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: icon-grid align=left
+\::: grid.cards align=left
 - icon: "📄"
   title: "문서 자동화"
   desc: "보고서와 제안서를 빠르게 생성합니다."
@@ -446,7 +446,7 @@ stats:
 \:::
 ```
 
-::: icon-grid align=left
+::: grid.cards align=left
 - icon: "📄"
   title: "문서 자동화"
   desc: "보고서와 제안서를 빠르게 생성합니다."
@@ -468,7 +468,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: chapter-list
+\::: nav.chapters
 - icon: "01"
   title: "바이브코딩이란?"
   desc: "Karpathy 발언 배경 · 전통 코딩 vs 바이브코딩 · LLM 발전"
@@ -484,7 +484,7 @@ stats:
 \:::
 ```
 
-::: chapter-list
+::: nav.chapters
 - icon: "01"
   title: "바이브코딩이란?"
   desc: "Karpathy 발언 배경 · 전통 코딩 vs 바이브코딩 · LLM 발전"
@@ -509,7 +509,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: faq-list
+\::: nav.faq
 - title: "PPTX 변환도 같은 MD를 쓰나요?"
   desc: "네. 같은 숏코드 입력을 HTML과 PPTX 렌더러가 함께 사용합니다."
 - title: "HTML을 직접 넣어야 하나요?"
@@ -517,7 +517,7 @@ stats:
 \:::
 ```
 
-::: faq-list
+::: nav.faq
 - title: "PPTX 변환도 같은 MD를 쓰나요?"
   desc: "네. 같은 숏코드 입력을 HTML과 PPTX 렌더러가 함께 사용합니다."
 - title: "HTML을 직접 넣어야 하나요?"
@@ -534,7 +534,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: tool-list
+\::: grid.list
 - icon: "💬"
   title: "ChatGPT"
   desc: "OpenAI의 대화형 AI 어시스턴트"
@@ -550,7 +550,7 @@ stats:
 \:::
 ```
 
-::: tool-list
+::: grid.list
 - icon: "💬"
   title: "ChatGPT"
   desc: "OpenAI의 대화형 AI 어시스턴트"
@@ -575,7 +575,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: workflow-flow
+\::: process.track connector=arrow
 - icon: "💡"
   title: "아이디어"
   meta: "요구사항 정리"
@@ -591,7 +591,7 @@ stats:
 \:::
 ```
 
-::: workflow-flow
+::: process.track connector=arrow
 - icon: "💡"
   title: "아이디어"
   meta: "요구사항 정리"
@@ -616,7 +616,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: git-flow
+\::: process.branch
 - title: "main"
   tag: "v2.0.0"
   meta: "숏코드 29종 완비|bullet/color 개선"
@@ -628,7 +628,7 @@ stats:
 \:::
 ```
 
-::: git-flow
+::: process.branch
 - title: "main"
   tag: "v2.0.0"
   meta: "숏코드 29종 완비|bullet/color 개선"
@@ -649,7 +649,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: step-flow
+\::: process.track connector=none
 - icon: "🧑"
   title: "사람"
   desc: "원하는 것 설명"
@@ -668,7 +668,7 @@ stats:
 \:::
 ```
 
-::: step-flow
+::: process.track connector=none
 - icon: "🧑"
   title: "사람"
   desc: "원하는 것 설명"
@@ -696,23 +696,23 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: alert-box tip
+\::: text.callout tip
 - title: "작성 팁"
   desc: "긴 본문은 desc: | 멀티라인 블록으로 작성하세요."
 \:::
 
-\::: alert-box warn
+\::: text.callout warn
 - title: "주의"
   desc: "들여쓰기가 틀어지면 숏코드 파서가 항목을 잘못 읽을 수 있습니다."
 \:::
 ```
 
-::: alert-box tip
+::: text.callout tip
 - title: "작성 팁"
   desc: "긴 본문은 desc: | 멀티라인 블록으로 작성하세요."
 :::
 
-::: alert-box warn
+::: text.callout warn
 - title: "주의"
   desc: "들여쓰기가 틀어지면 숏코드 파서가 항목을 잘못 읽을 수 있습니다."
 :::
@@ -727,14 +727,14 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: cmd-box
+\::: code.command
 - title: "HTML 빌드"
   tag: "bash"
   desc: "node scripts/build-guide.mjs md_src/showcase/showcase.md"
 \:::
 ```
 
-::: cmd-box
+::: code.command
 - title: "HTML 빌드"
   tag: "bash"
   desc: "node scripts/build-guide.mjs md_src/showcase/showcase.md"
@@ -750,7 +750,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: console-box
+\::: code.console
 - title: "가이드 생성 요청"
   desc: |
     Obsidian 가이드를 작성해줘.
@@ -759,7 +759,7 @@ stats:
 \:::
 ```
 
-::: console-box
+::: code.console
 - title: "가이드 생성 요청"
   desc: |
     Obsidian 가이드를 작성해줘.
@@ -777,7 +777,7 @@ stats:
 숏코드 입력내용
 
 ````md
-\::: editor-box
+\::: code.editor
 - title: "build-guide.mjs"
   tag: "javascript"
   desc: |
@@ -789,7 +789,7 @@ stats:
 \:::
 ````
 
-::: editor-box
+::: code.editor
 - title: "build-guide.mjs"
   tag: "javascript"
   desc: |
@@ -810,7 +810,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: network-box
+\::: structure.hub
 - title: "Creative Spark"
   color: "#EC4899"
 - title: "HTML"
@@ -825,7 +825,7 @@ stats:
 \:::
 ```
 
-::: network-box
+::: structure.hub
 - title: "Creative Spark"
   color: "#EC4899"
 - title: "HTML"
@@ -849,14 +849,14 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: summary-box
+\::: text.summary
 - title: "핵심 요약"
   desc: "숏코드 MD는 콘텐츠와 표현을 분리하여 반복 제작을 쉽게 만듭니다."
   meta: "HTML 자동 생성|PPTX 자동 생성|표준 키 사용|재사용 가능"
 \:::
 ```
 
-::: summary-box
+::: text.summary
 - title: "핵심 요약"
   desc: "숏코드 MD는 콘텐츠와 표현을 분리하여 반복 제작을 쉽게 만듭니다."
   meta: "HTML 자동 생성|PPTX 자동 생성|표준 키 사용|재사용 가능"
@@ -872,7 +872,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: compare-split
+\::: compare.pair
 - title: "Before"
   meta: "HTML 직접 편집|디자인은 자유롭지만 유지보수 어려움"
   note: "수동 관리"
@@ -882,7 +882,7 @@ stats:
 \:::
 ```
 
-::: compare-split
+::: compare.pair
 - title: "Before"
   meta: "HTML 직접 편집|디자인은 자유롭지만 유지보수 어려움"
   note: "수동 관리"
@@ -901,7 +901,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: compare-diff
+\::: compare.before-after
 - title: "나쁜 프롬프트"
   desc: "엑셀 자동화 코드 만들어줘."
 - title: "좋은 프롬프트"
@@ -909,7 +909,7 @@ stats:
 \:::
 ```
 
-::: compare-diff
+::: compare.before-after
 - title: "나쁜 프롬프트"
   desc: "엑셀 자동화 코드 만들어줘."
 - title: "좋은 프롬프트"
@@ -926,7 +926,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: part-banner
+\::: text.section
 - icon: "1부"
   title: "개념 이해"
   desc: "바이브코딩과 에이전트 코딩의 작동 원리"
@@ -940,7 +940,7 @@ stats:
 \:::
 ```
 
-::: part-banner
+::: text.section
 - icon: "1부"
   title: "개념 이해"
   desc: "바이브코딩과 에이전트 코딩의 작동 원리"
@@ -963,14 +963,14 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: takeaway-banner
+\::: text.takeaway
 - icon: "💡"
   title: "Key Takeaway"
   desc: "바이브코딩은 문법 암기가 아닌, 원하는 바를 논리적 자연어로 설명하는 역량이 본질입니다."
 \:::
 ```
 
-::: takeaway-banner
+::: text.takeaway
 - icon: "💡"
   title: "Key Takeaway"
   desc: "바이브코딩은 문법 암기가 아닌, 원하는 바를 논리적 자연어로 설명하는 역량이 본질입니다."
@@ -988,7 +988,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: summary-bar
+\::: data.summary-bar
 - icon: "29종"
   title: "Support Shortcodes"
 - icon: "8개"
@@ -998,7 +998,7 @@ stats:
 \:::
 ```
 
-::: summary-bar
+::: data.summary-bar
 - icon: "29종"
   title: "Support Shortcodes"
 - icon: "8개"
@@ -1017,7 +1017,7 @@ stats:
 숏코드 입력내용
 
 ````md
-\::: os-tabs
+\::: nav.tabs
 - title: "macOS"
   desc: |
     #### 터미널 설치
@@ -1033,7 +1033,7 @@ stats:
 \:::
 ````
 
-::: os-tabs
+::: nav.tabs
 - title: "macOS"
   desc: |
     #### 터미널 설치
@@ -1058,7 +1058,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: venn-diagram
+\::: structure.venn
 - title: "디자인"
   color: "#6366F1"
 - title: "개발"
@@ -1068,7 +1068,7 @@ stats:
 \:::
 ```
 
-::: venn-diagram
+::: structure.venn
 - title: "디자인"
   color: "#6366F1"
 - title: "개발"
@@ -1087,7 +1087,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: quadrant-chart xLabel="가격" yLabel="품질"
+\::: data.quadrant xLabel="가격" yLabel="품질"
 - title: "제품 A"
   fx: "0.3"
   fy: "0.7"
@@ -1103,7 +1103,7 @@ stats:
 \:::
 ```
 
-::: quadrant-chart xLabel="가격" yLabel="품질"
+::: data.quadrant xLabel="가격" yLabel="품질"
 - title: "제품 A"
   fx: "0.3"
   fy: "0.7"
@@ -1128,7 +1128,7 @@ stats:
 숏코드 입력내용
 
 ```md
-\::: concentric-rings
+\::: structure.rings
 - title: "AI"
   color: "#94A3B8"
 - title: "머신러닝"
@@ -1141,7 +1141,7 @@ stats:
 \:::
 ```
 
-::: concentric-rings
+::: structure.rings
 - title: "AI"
   color: "#94A3B8"
 - title: "머신러닝"
@@ -1189,7 +1189,7 @@ graph TD
 숏코드 입력내용
 
 ```md
-\::: step-list
+\::: process.steps
 - title: "기본 불릿 (SVG 체크)"
   desc: |
     첫 번째 항목
@@ -1207,7 +1207,7 @@ graph TD
 \:::
 ```
 
-::: step-list
+::: process.steps
 - title: "기본 불릿 (SVG 체크)"
   desc: |
     첫 번째 항목
@@ -1231,7 +1231,7 @@ graph TD
 숏코드 입력내용
 
 ```md
-\::: skill-list
+\::: grid.cards align=left
 - icon: "⚡"
   title: "고속 처리"
   desc: "대용량 파일도 빠르게 처리\n병렬 처리 지원\n메모리 최적화"
@@ -1243,7 +1243,7 @@ graph TD
 \:::
 ```
 
-::: skill-list
+::: grid.cards align=left
 - icon: "⚡"
   title: "고속 처리"
   desc: "대용량 파일도 빠르게 처리\n병렬 처리 지원\n메모리 최적화"
@@ -1261,7 +1261,7 @@ graph TD
 숏코드 입력내용
 
 ```md
-\::: icon-grid cols=3 bullet=✅
+\::: grid.cards cols=3 bullet=✅
 - icon: "📄"
   title: "문서화"
   desc: "자동 생성\n버전 관리\n다국어 지원"
@@ -1274,7 +1274,7 @@ graph TD
 \:::
 ```
 
-::: icon-grid cols=3 bullet=✅
+::: grid.cards cols=3 bullet=✅
 - icon: "📄"
   title: "문서화"
   desc: "자동 생성\n버전 관리\n다국어 지원"
@@ -1293,7 +1293,7 @@ graph TD
 숏코드 입력내용
 
 ```md
-\::: feature-grid cols=2
+\::: grid.features cols=2
 - icon: "🚀"
   title: "빠른 배포"
   desc: "원클릭 배포\n자동 롤백\n무중단 업데이트"
@@ -1305,7 +1305,7 @@ graph TD
 \:::
 ```
 
-::: feature-grid cols=2
+::: grid.features cols=2
 - icon: "🚀"
   title: "빠른 배포"
   desc: "원클릭 배포\n자동 롤백\n무중단 업데이트"

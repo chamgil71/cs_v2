@@ -21,7 +21,7 @@ stats:
 
 ### 한눈에 보는 핵심 기능
 
-::: icon-grid
+::: grid.cards
 - icon: "⚛️"
   title: "React Email 통합"
   desc: "복잡한 HTML/CSS 대신 React 컴포넌트와 Tailwind CSS로 이메일 템플릿을 디자인합니다."
@@ -41,7 +41,7 @@ stats:
 
 ### 이런 상황에서 필수로 사용됩니다
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: "🔔 시스템 자동 알림 메일"
   tag: "알림"
   desc: "자동화 스크립트(크롤러, 투자 분석기 등)에서 에러가 나거나 리포트가 완성됐을 때 알림을 받을 용도."
@@ -59,7 +59,7 @@ stats:
 
 ### 기본 발송 흐름 (Node.js/TypeScript 기준)
 
-::: step-list
+::: process.steps
 - title: "도메인 인증 (선택)"
   desc: "내 도메인(`@my-domain.com`)으로 보내려면 DNS에 Resend가 제공하는 TXT 레코드를 추가합니다."
 - title: "SDK 설치"
@@ -82,7 +82,7 @@ stats:
 
 # 자동화 프로젝트 적용 팁
 
-::: compare-grid cols=3
+::: grid.columns cols=3 variant=plain
 - title: "Python 크롤링 봇 연동"
   desc: "부동산 경매 리포트나 주식/배당금 분석 결과가 나오면, 파이썬용 `resend` 패키지를 이용해 요약된 데이터를 메일로 자동 전송합니다."
   meta: "데일리 자동 리포팅"

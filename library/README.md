@@ -1,4 +1,4 @@
-# config/library — 공용 배치 카탈로그 (pptgen 과 같이 쓰는 규칙)
+# library — 공용 배치 카탈로그 (pptgen 과 같이 쓰는 규칙)
 
 cs_v2 와 pptgen(coding 저장소 `_templates/myskill/pptgen`)이 **같은 배치 이름 · 같은 항목 규칙 · 같은 서식 세트 · 같은 색 이름**을 쓰게 하는 단일 출처입니다.
 한쪽에서 만든 md 를 다른 쪽에서 그대로 빌드할 수 있게 하는 것이 목적입니다.
@@ -16,13 +16,13 @@ cs_v2 와 pptgen(coding 저장소 `_templates/myskill/pptgen`)이 **같은 배�
   둘 다 손으로 고치지 않습니다.
 
 ```bash
-npm run sync:library          # 원본 → config/library/*.json 복사 + scripts/library-map.mjs 생성
+npm run sync:library          # 원본 → library/*.json 복사 + scripts/library-map.mjs 생성
 npm run sync:library:check    # 원본과 다르면 종료코드 1 (파일은 안 바꿈)
 # 원본 위치 지정: --from <폴더> 또는 환경변수 SLIDE_CATALOG
 ```
 
-- **나중에 cs_v2 로 옮길 때**: 원본을 이 폴더로 옮기고, pptgen 쪽 `config/library.json` 의 `catalog.search` 첫 줄을
-  `…/cs_v2/config/library` 로 바꾸면 됩니다(pptgen 은 이미 이 경로도 찾습니다). sync 스크립트는 방향만 바뀝니다.
+- **나중에 cs_v2 로 옮길 때**: 원본을 이 폴더로 옮기고, pptgen 쪽 `library.json` 의 `catalog.search` 첫 줄을
+  `…/cs_v2/library` 로 바꾸면 됩니다(pptgen 은 이미 이 경로도 찾습니다). sync 스크립트는 방향만 바뀝니다.
 
 ## cs_v2 에서 쓰는 방법
 
@@ -34,7 +34,7 @@ shape: elevated        # 서식 세트(없으면 styles.json 테마의 shapeSet 
 
 ## 시장 현황 {master=brand.full}      ← pptgen 용 제목 속성. cs_v2 는 지우고 읽는다
 
-::: grid.cards cols=3                 ← 기능 이름. cs_v2 고유 이름(::: icon-grid)도 그대로 동작
+::: grid.cards cols=3                 ← 기능 이름 하나로 운영(옛 이름 icon-grid 등은 읽기 호환 + 경고 — npm run migrate:names)
 - icon: "⚡"
   title: "빠름"
   desc: "설명"
@@ -47,8 +47,10 @@ shape: elevated        # 서식 세트(없으면 styles.json 테마의 shapeSet 
 :::
 ```
 
-- 이름 해석: `scripts/library-names.mjs` (`resolveShortcode`) — cs_v2 고유 이름은 그대로, 기능 이름·pptgen 옛 이름은 카탈로그로 숏코드를 찾습니다.
-  cs_v2 구현이 `fallback`(근사)인 배치는 가장 가까운 숏코드로, `markdown`/`none` 인 배치는 카탈로그 `fallback.cs_v2`(지금 `summary-box`)로 근사합니다.
+- 이름 해석: `scripts/library-names.mjs` (`resolveShortcode(name, args)`) — **이름은 기능 이름 하나로 운영**. 옛 이름(cs_v2 숏코드·pptgen 구현 ID)은 기능 이름 + `alias_args` 로 정규화한 뒤, 인수로 구현 ID 를 고릅니다(`impl.cs_v2.variants`). 옛 이름 일괄 변환: `npm run migrate:names`.
+  cs_v2 구현 ID 가 기능 이름이면(`impl.cs_v2.shortcode` = 배치 이름, 36종) `scripts/shortcode-ext/` 가 HTML 을 그리고, PPTX 는 `impl.cs_v2.pptx_shortcode`(옛 숏코드 근사)로 그립니다.
+  `fallback`(근사 — 지금 견본 2종)은 가장 가까운 구현으로, `markdown`/`none` 은 카탈로그 `fallback.cs_v2`(지금 `text.summary`)로 근사합니다.
+  배치 인수 기본값은 `args.default` 하나 — `sync:library` 가 `library-map.mjs` 의 `LAYOUTS[이름].defaults` 로 옮기고 렌더러는 `layoutArgs()` 로 읽습니다.
 - 서식 세트: `scripts/shape-set.mjs` — HTML 은 `--set-card-bg`·`--card-alt-bg`·`--card-border-width`·`--card-border-color`·`--card-shadow`·`--card-radius` 변수,
   PPTX 는 `pal.shape` → `helpers.cardBox()`. `template` 은 기존 출력과 같습니다(보조 카드색만 정함).
 - 아직 cs_v2 에 없는 것: 항목 하나만 보조색으로 바꾸는 `tag: alt`(pptgen 전용), pptgen 전용 인수(`badge`·`header`·`connector`·`emphasis`·`grow` 등 — 카탈로그 `args.*.cs_v2=false`).

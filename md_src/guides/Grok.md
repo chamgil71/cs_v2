@@ -16,7 +16,7 @@ stats:
 
 # 핵심 기능 & 강점
 
-::: icon-grid cols=2
+::: grid.cards cols=2
 - icon: "🐦"
   title: "X(트위터) 실시간 연동"
   desc: "X 플랫폼의 실시간 트렌드, 게시물, 여론을 즉시 분석. 소셜 미디어 동향 파악에서 타 AI 대비 압도적 우위. \"지금 X에서 ~에 대해 뭐라고 하는지 알려줘\""
@@ -41,7 +41,7 @@ stats:
 
 ⚡ xAI Grok만의 차별점
 
-::: feature-grid cols=3
+::: grid.features cols=3
 - title: |
     X 생태계 완전 통합
      X 계정 로그인 시 팔로우 계정의 트윗 맥락을 AI가 이해. 개인화된 소셜 분석 가능.
@@ -56,14 +56,14 @@ stats:
      Grok 기반 모델 일부 오픈소스 공개. 연구자·개발자가 자체 배포 및 파인튜닝 가능.
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Grok이 빛나는 순간:"
   desc: "\"X에서 오늘 ~에 대한 여론은?\" / \"최신 테슬라 FSD 업데이트 내용 알려줘\" / \"논란이 되는 이 주제에 대해 솔직하게 분석해줘\" — 소셜 데이터와 직설적 분석이 필요할 때 최강."
 :::
 
 # 플랜 & 접근 방법
 
-::: plan-grid cols=4
+::: grid.tiers cols=4
 - title: "무료"
   tag: "Free"
   note: "₩0"
@@ -83,14 +83,14 @@ stats:
   meta: "최상위 컴퓨팅 우선 배정|다중 에이전트 병렬 추론|가장 먼저 신기능 접근|헤비 유저·연구용"
 :::
 
-::: alert-box tip
+::: text.callout tip
 - title: "💡 Grok 4.6 — 에이전트·코딩 특화:"
   desc: "2026.08 출시된 Grok 4.6은 500K 토큰 컨텍스트와 장시간 실행되는 에이전트 작업에 초점. Cursor·Grok Build 등 외부 IDE에서도 선택 가능한 모델로 제공됩니다."
 :::
 
 # 실전 활용 팁
 
-::: icon-grid cols=2
+::: grid.cards cols=2
 - title: "\"X에서 오늘 [주제] 트렌드 분석해줘\""
 - title: "수학 문제:"
 :::

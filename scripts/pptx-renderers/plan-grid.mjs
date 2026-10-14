@@ -37,15 +37,13 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     
     slide.addShape("roundRect", {
       x: cx, y, w: cardW, h: cardH,
-      rectRadius: r,
-      fill: cardFill,
-      line: { color: cardLine, width: lineWidth }
+      ...((it.color || isFeatured) ? { rectRadius: r, fill: cardFill, line: { color: cardLine, width: lineWidth } } : helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })),
     });
     
     slide.addShape("rect", {
       x: cx, y, w: cardW, h: 0.05,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     let curY = y + c.padY;
@@ -57,7 +55,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
         x: cx + 0.12, y: curY, w: badgeW, h: badgeH,
         rectRadius: 0.06,
         fill: { color: color },
-        line: { width: 0 }
+        line: { type: "none" }
       });
       slide.addText(it.tag, {
         x: cx + 0.12, y: curY, w: badgeW, h: badgeH,
@@ -91,7 +89,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
         x: cx + 0.12, y: noteY, w: cardW - 0.24, h: 0.24,
         rectRadius: 0.04,
         fill: { color: color, transparency: 88 },
-        line: { width: 0 }
+        line: { type: "none" }
       });
       slide.addText(activeNote, {
         x: cx + 0.12, y: noteY, w: cardW - 0.24, h: 0.24,

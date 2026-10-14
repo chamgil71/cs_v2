@@ -18,7 +18,9 @@
     "build:pptx": "node scripts/md-to-pptx.mjs",
     "build:onepage": "node scripts/build-guide-hub.mjs",
     "build:folder": "node scripts/build-folder.mjs",
-    "verify:pptx": "node scripts/verify-pptx-roundtrip.mjs"
+    "verify:pptx": "node scripts/verify-pptx-roundtrip.mjs",
+    "sync:library": "node scripts/sync-library.mjs",
+    "sync:library:check": "node scripts/sync-library.mjs --check"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

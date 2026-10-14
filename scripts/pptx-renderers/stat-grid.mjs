@@ -35,15 +35,13 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     
     slide.addShape("roundRect", {
       x: cx, y: cy, w: cardW, h: cardH,
-      rectRadius: r,
-      fill: { color: pal.white },
-      line: { color: pal.border, width: 0.75 }
+      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })
     });
     
     slide.addShape("rect", {
       x: cx, y: cy, w: cardW, h: 0.04,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     const val = it.icon || it.title || "0";

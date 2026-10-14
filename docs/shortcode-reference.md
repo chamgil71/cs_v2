@@ -8,6 +8,44 @@ Creative Spark V2가 지원하는 **28종 정식 숏코드 + 14종 alias**의 �
 
 ---
 
+## 기능 이름 — 공용 배치 카탈로그 (2026-10-14)
+
+숏코드는 **기능·표현 기준 이름 `<그룹>.<형태>`** 으로도 쓸 수 있고, 새 문서는 이 이름을 권장합니다(pptgen 과 같은 이름 — 같은 md 를 양쪽에서 빌드).
+아래 본문의 고유 이름(`icon-grid` 등)은 **하위 호환으로 그대로 동작**하며 출력도 같습니다. 이름표 원본: `config/library/layouts.json`.
+
+| 그룹 | 기능 이름 ← cs_v2 고유 이름 |
+|------|------|
+| 분할·카드 (`grid`) | `grid.cards` ← icon-grid, `grid.features` ← feature-grid, `grid.badges` ← badge-grid, `grid.list` ← tool-list, `grid.tiers` ← plan-grid, `grid.columns` ← columns-grid |
+| 비교·대조 (`compare`) | `compare.pair` ← compare-split, `compare.before-after` ← before-after |
+| 순서·흐름 (`process`) | `process.track` ← step-flow, `process.steps` ← step-list, `process.levels` ← level-grid, `process.branch` ← git-flow |
+| 구조·관계 (`structure`) | `structure.hub` ← network-box, `structure.rings` ← concentric-rings, `structure.venn` ← venn-diagram |
+| 데이터·수치 (`data`) | `data.stats` ← stat-grid, `data.summary-bar` ← summary-bar, `data.quadrant` ← quadrant-chart |
+| 서술·강조 (`text`) | `text.takeaway` ← takeaway-banner, `text.callout` ← alert-box, `text.summary` ← summary-box, `text.section` ← part-banner |
+| 코드·터미널 (`code`) | `code.editor` ← editor-box, `code.console` ← console-box, `code.command` ← cmd-box |
+| 탐색·목록 (`nav`) | `nav.faq` ← faq-list, `nav.tabs` ← os-tabs, `nav.chapters` ← chapter-list |
+
+- 카탈로그에는 이 밖에도 pptgen 전용 배치(예: `process.staircase`, `structure.pillars`, `data.gauge`)가 있습니다. cs_v2 에서는 가장 가까운 숏코드로 **근사**해 그립니다(`config/library/layouts.json` 의 `impl.cs_v2.status = fallback`).
+- **색 이름**(`color:`): `primary`·`secondary`·`accent`·`accent2`·`light`·`dark`·`ink`·`gray`(옛 `main`·`sub`·`deep`·`mid`·`brand` 도 동작) 또는 `#hex`. 테마를 바꾸면 그 테마 색으로 바뀝니다.
+- **서식 세트**(frontmatter `shape:`): `template`(기본, 기존 모양)·`flat`·`soft`·`outline`·`elevated`·`tinted` — 카드 외곽선 굵기·그림자·둥글기·채움만 바꾸고 색은 테마를 따릅니다.
+- **블록 인수 `bg=alt`**: 이 블록 카드만 보조 카드색 → 한 슬라이드에 카드 배경 2종.
+
+```markdown
+---
+style: sky-blue
+shape: soft
+---
+::: grid.cards cols=3
+- icon: "⚡"
+  title: "빠름"
+  desc: "설명"
+  color: accent
+:::
+::: data.stats bg=alt
+- icon: "29%"
+  title: "성장률"
+:::
+```
+
 ## 숏코드 문법 기본 규칙
 
 ```markdown
@@ -30,6 +68,7 @@ Creative Spark V2가 지원하는 **28종 정식 숏코드 + 14종 alias**의 �
 |------|------|------|------|
 | `title-size` | 숫자(비율) 또는 CSS값 | `0.9` / `1.2rem` | 해당 블록 카드 제목 크기 오버라이드 |
 | `desc-size` | 숫자(비율) 또는 CSS값 | `0.85` / `14px` | 해당 블록 카드 설명 크기 오버라이드 |
+| `bg` | `alt` | `bg=alt` | 이 블록 카드를 서식 세트의 보조 카드색으로 (2026-10-14) |
 
 **비율 입력** (단위 없이 숫자만): 전역 기본값 대비 배율 (`0.9` = 기본의 90%)  
 **절대값 입력** (단위 포함): 해당 값 그대로 적용 (`1.2rem`, `14px` 등)  

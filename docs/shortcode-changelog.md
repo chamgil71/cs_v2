@@ -5,6 +5,38 @@
 
 ---
 
+## Phase 7 — 기능 이름(공용 배치 카탈로그) · 서식 세트 · 색 이름 통일 (2026-10-14)
+
+### 배경
+- 숏코드 이름·분류가 학습 콘텐츠(aidev·aitool 가이드) 설명용으로 시작돼 범용 문서에서 고르기 어려웠다.
+- coding 저장소의 pptgen(슬라이드 md → PPTX)과 배치 이름·항목 규칙·색 이름이 달라 같은 md 를 양쪽에서 쓸 수 없었다.
+- 테마(색)와 배치(숏코드)는 분리됐지만 카드의 그림자·외곽선 굵기·보조 카드색 같은 도형 서식이 CSS·렌더러에 박혀 있었다.
+
+### 변경 1 — 기능 이름 `<그룹>.<형태>` (하위 호환)
+- 공용 카탈로그(`config/library/layouts.json`, 원본 coding `_templates/slide-library/catalog`) 66종. cs_v2 28종 숏코드가 모두 기능 이름을 가진다(예: `icon-grid` → `grid.cards`, `compare-split` → `compare.pair`, `step-flow` → `process.track`, `alert-box` → `text.callout`).
+- 고유 이름·기존 alias 는 해석하지 않고 그대로 동작(기존 문서 마크업 동일). pptgen 전용 배치·옛 이름은 가장 가까운 숏코드로 근사.
+- `:::` 이름에 `.` 허용(4개 파서 공통 정규식 `shortcodeBlockRe`). pptgen md v2 제목 속성 `## 제목 {master=…}` 은 지우고 읽음.
+- 가이드 패널·삽입 메뉴 분류를 카탈로그 그룹 8개(분할·카드/비교·대조/순서·흐름/구조·관계/데이터·수치/서술·강조/코드·터미널/탐색·목록)로 교체 — 이전엔 "데이터 다이어그램" 분류가 필터 버튼에 없어 venn 등이 분류로 안 보이던 문제도 함께 해소. 삽입 메뉴의 하드코딩 optgroup 을 데이터 기반으로 교체.
+
+### 변경 2 — 서식 세트 (`shape:` · `bg=alt`)
+- `template`(기본, 기존 모양)·`flat`·`soft`·`outline`·`elevated`·`tinted`. 모양만 정하고 색은 테마 색 이름으로 → 테마를 따른다.
+- 고르는 곳: 카탈로그 기본 → `styles.json` 테마 `shapeSet` → frontmatter `shape:`. 블록 인수 `bg=alt` 로 보조 카드색.
+- HTML: 카드 CSS 가 `--set-card-bg`·`--card-alt-bg`·`--card-border-width`·`--card-border-color`·`--card-shadow`·`--card-radius` 를 먼저 읽음. PPTX: `helpers.cardBox()`.
+
+### 변경 3 — 색 이름 통일
+- 항목 `color:` 의 이름을 카탈로그 `color_tokens` 하나로: `primary·secondary·accent·accent2·light·dark·ink·gray` (+ 옛 `main·sub·deep·mid·brand`). HTML(`resolveColorKeyword`)·PPTX(`hexClean`)·pptgen 이 같은 표를 읽음. 예전엔 `accent` 를 PPTX 가 몰라 검정(000000)으로 칠했다.
+
+### 변경 4 — PPTX 선 없음 버그 수정
+- `line: { width: 0 }` 이 pptxgenjs 에서 1pt `#333333` 테두리가 되던 문제(카드 상단 띠·배지·헤더 바 등 49곳) → `line: { type: "none" }`.
+
+### 변경 5 — `::: slide-config` 여러 줄 값 규칙 통일
+- `key: |` 다음 들여쓴 줄(pptgen 방식)과 한 줄 `\n` 리터럴(cs_v2 방식)을 **양쪽 모두** 줄바꿈으로 읽는다. 공용 파서 `parseSlideConfig`(shortcode-render.mjs)를 md-to-pptx·pptx-browser 가 같이 쓴다(이전엔 `notes: |` 가 `"|"` 한 글자로 읽혀 발표스크립트가 사라졌다).
+
+### 검증
+- `npm test` 204 → 288(신규 `library-catalog.test.ts` 83), 기존 문서 4종(가이드·프레젠테이션) 마크업 비교 동일, standalone 4종 빌드 + 헤드리스(기능 이름·`bg=alt`·elevated 그림자·다크/라이트) 확인, PPTX LibreOffice 렌더 확인.
+
+---
+
 ## Phase 6 — 데이터 다이어그램 3종 이식 · 발표스크립트(notes) · Mermaid 지원 (2026-09-01)
 
 ### 배경

@@ -13,6 +13,8 @@ import { marked } from "marked";
 // [HTML 통합] 프레젠테이션도 가이드와 동일한 공유 숏코드 렌더러+CSS 사용 (단일 출처 — shortcode-styles.mjs 한 곳만 고치면 3종 HTML 반영)
 import { renderShortcode as renderShortcodeShared } from "./shortcode-render.mjs";
 import { SHORTCODE_CSS } from "./shortcode-styles.mjs";
+import { shortcodeBlockRe, stripHeadingAttrs } from "./library-names.mjs";
+import { shapeSetCss, pickShapeSet } from "./shape-set.mjs";
 
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -186,7 +188,8 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
   for (const doc of docList) {
     const raw = String(doc?.raw ?? "").replace(/\r\n/g, "\n");
     const basename = doc?.basename || "";
-    const { data: fm, content } = matter(raw);
+    const { data: fm, content: rawContent } = matter(raw);
+    const content = stripHeadingAttrs(rawContent);   // pptgen md v2 제목 속성 {master=…} 제거
 
     const sanitizeTitle = (t) => {
       let clean = String(t ?? "").trim();
@@ -207,7 +210,7 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
     const style = STYLES[styleKey] || STYLES["emerald"];
 
     // Parse shortcodes
-    let processedContent = content.replace(/^:::\s*([A-Za-z0-9_-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$/gm, (_, type, args, body) => {
+    let processedContent = content.replace(shortcodeBlockRe(), (_, type, args, body) => {
       const html = renderShortcodeShared(type, body, args);
       return html ? `\n${html.replace(/\n\s+/g, '\n')}\n` : "";
     });
@@ -719,7 +722,7 @@ export function buildPresentationHtml(docs, { styles, config, htmlConfig, style:
   /* ── 공유 숏코드 컴포넌트 CSS (정본: shortcode-styles.mjs — 가이드/클라이언트와 단일 출처) ──
      슬라이드 :root 의 다크 테마 변수 위에서 렌더된다. 라이트 토글은 body.light-mode 변수로 처리. */
 ${SHORTCODE_CSS}
-
+${shapeSetCss(pickShapeSet(mainStyle.shapeSet, mainFm?.shape))}
   /* ── TOC Sidebar ── */
   .toc-toggle-btn {
     position: fixed;

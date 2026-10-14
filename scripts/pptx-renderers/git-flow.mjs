@@ -59,7 +59,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     slide.addShape("rect", {
       x: lineStartX, y: lineY - 0.015, w: lineW, h: 0.03,
       fill: { color: color, transparency: 60 },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     // 4. 커밋들 그리기
@@ -94,7 +94,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
           x: commitX - 0.4, y: lineY - 0.38, w: 1.0, h: 0.2,
           rectRadius: 0.04,
           fill: { color: color },
-          line: { width: 0 }
+          line: { type: "none" }
         });
         slide.addText(tag, {
           x: commitX - 0.4, y: lineY - 0.38, w: 1.0, h: 0.2,

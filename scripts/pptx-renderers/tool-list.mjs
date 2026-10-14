@@ -34,9 +34,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     
     slide.addShape("roundRect", {
       x, y: curY, w, h: cardH,
-      rectRadius: r,
-      fill: { color: pal.white },
-      line: { color: pal.border, width: 0.75 }
+      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })
     });
     
     const sideW = 2.2;
@@ -44,12 +42,12 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
       x, y: curY, w: sideW, h: cardH,
       rectRadius: r,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     slide.addShape("rect", {
       x: x + sideW - 0.08, y: curY, w: 0.08, h: cardH,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     let cx = x + 0.12;
@@ -73,7 +71,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
         x: x + 0.15, y: curY + baseTcH - 0.38, w: sideW - 0.3, h: 0.2,
         rectRadius: 0.04,
         fill: { color: pal.white, transparency: 85 },
-        line: { width: 0 }
+        line: { type: "none" }
       });
       slide.addText(it.tag, {
         x: x + 0.15, y: curY + baseTcH - 0.38, w: sideW - 0.3, h: 0.2,

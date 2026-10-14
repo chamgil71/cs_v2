@@ -45,7 +45,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     slide.addShape("rect", {
       x, y: curY, w: 0.06, h: rowH,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     // Q 질문 부분

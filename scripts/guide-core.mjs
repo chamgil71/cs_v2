@@ -16,6 +16,8 @@ import {
   renderShortcode,
 } from "./shortcode-render.mjs";
 import { SHORTCODE_CSS } from "./shortcode-styles.mjs";
+import { shortcodeBlockRe, stripHeadingAttrs } from "./library-names.mjs";
+import { shapeSetCss, pickShapeSet } from "./shape-set.mjs";
 
 export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverride, mermaidScript } = {}) {
   // 환경 비의존: config 3종 주입 (정본 build-guide 의 모듈 전역과 동일 역할)
@@ -34,7 +36,8 @@ export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverr
   const sz = HTML_CONFIG?.htmlSize?.guide || {};
 
   const raw = String((doc && typeof doc === "object") ? (doc.raw ?? "") : (doc ?? "")).replace(/\r\n/g, "\n");
-  const { data: fm, content } = matter(raw);
+  const { data: fm, content: rawContent } = matter(raw);
+  const content = stripHeadingAttrs(rawContent);   // pptgen md v2 제목 속성 {master=…} 제거
   
   const sanitizeTitle = (t) => {
     let clean = String(t ?? "").trim();
@@ -56,7 +59,7 @@ export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverr
   const radiusVal = CONFIG?.slide?.globalRadius || 0.08;
   const cssRadius = radiusVal > 0 ? `${Math.round(radiusVal * 150)}px` : "0px";
 
-  let processedContent = content.replace(/^:::\s*([A-Za-z0-9_-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$/gm, (_, type, rawArgs, body) => {
+  let processedContent = content.replace(shortcodeBlockRe(), (_, type, rawArgs, body) => {
     let html = renderShortcode(type, body, rawArgs);
     if (!html) return "";
     // title-size / desc-size arg가 있으면 해당 숏코드에만 CSS 변수 오버라이드
@@ -224,7 +227,7 @@ export function buildHtml(doc, { styles, config, htmlConfig, style: __styleOverr
   .mermaid svg, pre.mermaid svg { max-width: 100%; height: auto; }
 
 ${SHORTCODE_CSS}
-</style>
+${shapeSetCss(pickShapeSet(style.shapeSet, fm.shape))}</style>
 ${hasMermaid ? (mermaidScript ? `<script>${mermaidScript}</script>` : `<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>`) + `\n<script>mermaid.initialize({ startOnLoad: true, theme: "default" });</script>` : ""}
 </head>
 <body>

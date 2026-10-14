@@ -269,3 +269,54 @@ CSS 변수는 상속되므로 래퍼 `<div>`에 설정하면 내부 모든 자�
 
 `calc(... * var(--font-scale))` 패턴은 기존 내비게이션/히어로 영역에서만 사용하며,  
 숏코드 카드 내부는 `var(--size-card-title)` / `var(--size-card-p)` 변수를 그대로 사용합니다.
+
+---
+
+## 5. 공용 배치 카탈로그 연결 (2026-10-14) — `library-names.mjs` · `shape-set.mjs`
+
+pptgen(coding 저장소 `_templates/myskill/pptgen`)과 cs_v2 가 **같은 배치 이름·항목 규칙·색 이름·서식 세트**를 쓰도록 한 연결 층입니다.
+
+```
+coding/_templates/slide-library/catalog/   ← 원본(정본, ppt clone 산출물과 같이 관리)
+  layouts.json · shape-sets.json
+        │  npm run sync:library   (scripts/sync-library.mjs, --check 로 드리프트 검사)
+        ▼
+cs_v2/config/library/*.json (복사본)  →  scripts/library-map.mjs (생성본: LAYOUTS·LAYOUT_ALIASES·LAYOUT_GROUPS·SHAPE_SETS·COLOR_TOKENS)
+        │
+        ├─ scripts/library-names.mjs   resolveShortcode(name) · shortcodeBlockRe() · stripHeadingAttrs(md) · colorToken(name, medium) · wantsAltBg(args)
+        │     ├─ shortcode-render.mjs  renderShortcode = 이름 해석 → renderNative(고유 렌더러) → bg=alt 래퍼(.sc-bg-alt)
+        │     ├─ guide-core / presentation-core / md-to-pptx / pptx-browser   ::: 정규식 · 제목 속성 제거 (같은 함수)
+        │     ├─ registry.mjs hexClean   색 이름 → PPTX 팔레트 키 (cs_v2_pptx)
+        │     └─ config/shortcode-guide.ts  분류(category)·기능 이름(layout)·스니펫 첫 줄
+        └─ scripts/shape-set.mjs        pickShapeSet(테마 shapeSet, fm.shape) · shapeSetCss(name) · shapeSetPptx(name, pal)
+              ├─ guide-core / presentation-core   SHORTCODE_CSS 뒤에 `:root, body {…}` 변수 묶음
+              └─ md-to-pptx / pptx-browser        pal.shape → helpers.cardBox(pal, {alt, radius})
+```
+
+### 5-1. 이름 해석 규칙 (`resolveShortcode`)
+1. `NATIVE_SHORTCODES`(cs_v2 가 직접 그리는 이름, 렌더러 분기와 같음 — 테스트가 잠금)에 있으면 **그대로** — 기존 문서 출력 불변.
+2. 아니면 카탈로그에서 찾는다: 기능 이름 그대로 또는 별칭(pptgen 옛 이름 `staircase`·`c01-p01` 등) → 기능 이름.
+3. cs_v2 구현 상태가 `ready`/`fallback` 이면 그 숏코드, `markdown`/`none` 이면 `PLAIN_FALLBACK`(`summary-box`).
+4. 모르는 이름은 입력 그대로 → 렌더러가 빈 문자열(기존 동작).
+
+### 5-2. 서식 세트 변수 (HTML)
+| 변수 | template(기본) | 다른 세트 |
+|---|---|---|
+| `--card-alt-bg` | 보조 카드색 토큰(`secondary-light`) | 세트의 `card_alt.fill` |
+| `--set-card-bg` | (넣지 않음 → `--card-bg`) | 세트의 `card.fill` |
+| `--card-border-width` / `--card-border-color` | (넣지 않음 → `1px` / `--border`) | `outline.width_pt`(px 환산) / `outline.color` |
+| `--card-shadow` | (넣지 않음 → `--shadow`) | `shadow`(soft·medium·strong 의 css) |
+| `--card-radius` | (넣지 않음 → `--radius`) | `card.radius`(sm·md·lg px) |
+
+- `:root, body` 두 곳에 넣는 이유: 프레젠테이션 셸은 `body.light-mode` 에서 `--card-bg` 를 바꾼다 → 세트 변수가 body 에서 다시 계산돼야 라이트/다크 모두 맞는 색.
+- 색 토큰의 cs_v2 값은 `color-mix(… var(--card-bg))` 형태라 다크/라이트 어느 셸에서도 읽히는 색이 된다.
+- 새 카드형 숏코드 CSS 는 `background: var(--set-card-bg, var(--card-bg, #fff))`, `border: var(--card-border-width, 1px) solid var(--card-border-color, var(--border))`, `box-shadow: var(--card-shadow, var(--shadow))`, `border-radius: var(--card-radius, var(--radius))` 를 쓴다.
+
+### 5-3. PPTX 카드 서식 (`helpers.cardBox`)
+- 색 강조가 없는 흰 카드(icon-grid·feature-grid·columns·compare-grid·stat-grid·tool-list·tabs·steps·summary-box·plan-grid 기본 카드)는 `...helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })` 로 그린다.
+- template 이면 `{ fill: 흰색, line: { color: pal.border, width: 0.75 } }` — 기존과 같다. 다른 세트는 채움·선·그림자(`shadow`)·둥글기를 세트에서.
+- ⚠️ **선 없음은 `line: { type: "none" }`**. pptxgenjs 는 `line: { width: 0 }` 을 `width || 1` 로 처리해 1pt `#333333` 테두리를 그린다(2026-10-14 전 렌더러 교체, 테스트로 금지).
+
+### 5-4. 카탈로그를 바꿀 때
+원본(`slide-library/catalog`)을 고친 뒤 `npm run sync:library` → `npm test`(`library-catalog.test.ts` 가 생성본·복사본 일치, 66종 HTML·PPTX 커버리지를 확인) → 코어/렌더러가 바뀌었으면 `npm run build:standalone`.
+

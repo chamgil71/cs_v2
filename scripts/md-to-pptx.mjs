@@ -12,6 +12,9 @@ import { marked } from "marked";
 import pptxgen from "pptxgenjs";
 import { glob } from "node:fs/promises";
 import { pptxRegistry, helpers } from "./pptx-renderers/registry.mjs";
+import { parseSlideConfig } from "./shortcode-render.mjs";
+import { shortcodeBlockRe, stripHeadingAttrs, resolveShortcode } from "./library-names.mjs";
+import { shapeSetPptx, pickShapeSet } from "./shape-set.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -232,14 +235,14 @@ function estimateLines(text, widthInch, fontSize) {
 
 function parseContentParts(content) {
   const parts = [];
-  const re = /^:::\s*([A-Za-z0-9_-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$/gm;
+  const re = shortcodeBlockRe();   // 이름에 "." 허용(기능 이름) — library-names.mjs 단일 출처
   let lastIndex = 0;
   let match;
   while ((match = re.exec(content)) !== null) {
     if (match.index > lastIndex) {
       parts.push({ kind: "md", src: content.slice(lastIndex, match.index) });
     }
-    parts.push({ kind: "shortcode", scType: match[1], args: match[2] || "", rawBody: match[3], items: parseShortcodeItems(match[3]) });
+    parts.push({ kind: "shortcode", scType: resolveShortcode(match[1]).type, args: match[2] || "", rawBody: match[3], items: parseShortcodeItems(match[3]) });
     lastIndex = match.index + match[0].length;
   }
   if (lastIndex < content.length) {
@@ -285,7 +288,8 @@ function tokenToBlock(tok) {
 
 function buildSlideData(mdPath, styleOverride) {
   const raw = readFileSync(mdPath, "utf8").replace(/\r\n/g, "\n");
-  const { data: fm, content } = matter(raw);
+  const { data: fm, content: rawContent } = matter(raw);
+  const content = stripHeadingAttrs(rawContent);   // pptgen md v2 제목 속성 {master=…} 제거
   const styleKey = styleOverride || fm.style || "emerald";
   const style = STYLES[styleKey] || STYLES["emerald"];
   const parts = parseContentParts(content);
@@ -323,16 +327,8 @@ function buildSlideData(mdPath, styleOverride) {
       if (!currentSection) { sectionNum++; currentSection = { num: sectionNum, title: "", items: [] }; }
       closeCard();
       if (part.scType === "slide-config") {
-        currentSection.config = currentSection.config || {};
-        const lines = (part.rawBody || "").split(/\r?\n/);
-        for (const line of lines) {
-          const m = line.match(/^\s*(?:-\s*)?([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
-          if (m) {
-            const key = m[1].trim();
-            const val = cleanValue(m[2]);
-            currentSection.config[key] = val;
-          }
-        }
+        // 공용 파서 — `key: |` 여러 줄 값과 `\n` 리터럴 둘 다 줄바꿈 (pptgen 과 같은 규칙)
+        currentSection.config = { ...(currentSection.config || {}), ...parseSlideConfig(part.rawBody) };
       } else {
         currentSection.items.push({ type: part.scType, args: part.args || "", items: part.items });
       }
@@ -458,7 +454,9 @@ function makePalette(style) {
     brandLight: hexClean(style.brandLight) || "EEF2FF",
     border:     hexClean(style.border)     || "D8DCFB",
     bgDark:     p.bgDark,
+    brandMid:   hexClean(style.brandMid)   || hexClean(style.brand) || "6366F1",
     white:      p.white,
+    bgLight:    hexClean(style.bg)         || p.white,
     text:       p.text,
     text2:      p.text2,
     muted:      p.muted      || "8892B0",
@@ -509,8 +507,8 @@ function renderBlock(slide, block, x, y, w, pal) {
   if (block.type === "blockquote") {
     const lines = estimateLines(block.text, w - c.quoteBarW - 0.12, c.bodySize);
     const h = Math.max(0.38, (c.bodySize / 72) * 1.7 * lines + 0.15);
-    slide.addShape("rect", { x, y, w: c.quoteBarW, h, fill: { color: pal.brand }, line: { width: 0 } });
-    slide.addShape("rect", { x: x + c.quoteBarW, y, w: w - c.quoteBarW, h, fill: { color: pal.brandLight }, line: { width: 0 } });
+    slide.addShape("rect", { x, y, w: c.quoteBarW, h, fill: { color: pal.brand }, line: { type: "none" } });
+    slide.addShape("rect", { x: x + c.quoteBarW, y, w: w - c.quoteBarW, h, fill: { color: pal.brandLight }, line: { type: "none" } });
     slide.addText(block.text, {
       x: x + c.quoteBarW + 0.1, y: y + 0.06, w: w - c.quoteBarW - 0.14, h: h - 0.1,
       fontSize: c.bodySize, color: pal.brandDeep || pal.brandDark, fontFace: font, italic: true, valign: "middle", wrap: true,
@@ -667,7 +665,7 @@ function renderCover(prs, fm, pal) {
   // 4. 레이아웃에 따른 렌더링
   if (layout === "full-brand") {
     slide.background = { color: pal.brand };
-    slide.addShape("rect", { x: 0, y: sh - 0.12, w: sw, h: 0.12, fill: { color: pal.white }, line: { width: 0 } });
+    slide.addShape("rect", { x: 0, y: sh - 0.12, w: sw, h: 0.12, fill: { color: pal.white }, line: { type: "none" } });
     
     let ty = dc.titleY - 0.2;
     if (fm.logo) {
@@ -693,7 +691,7 @@ function renderCover(prs, fm, pal) {
       ty += 0.5;
     }
   } else {
-    slide.addShape("rect", { x: dc.accentBarX, y: dc.accentBarY, w: dc.accentBarW, h: dc.accentBarH, fill: { color: accent }, line: { width: 0 } });
+    slide.addShape("rect", { x: dc.accentBarX, y: dc.accentBarY, w: dc.accentBarW, h: dc.accentBarH, fill: { color: accent }, line: { type: "none" } });
     
     let ty = dc.titleY;
     if (fm.logo) {
@@ -761,11 +759,11 @@ function renderSectionSlide(prs, section, pal, verbose) {
 
     function initSlideHeader(slide, pageNum) {
       slide.background = { color: hexClean(slideBg) || "FFFFFF" };
-      slide.addShape("rect", { x: 0, y: dh.y, w: sw, h: dh.h, fill: { color: slidePal.bgDark }, line: { width: 0 } });
+      slide.addShape("rect", { x: 0, y: dh.y, w: sw, h: dh.h, fill: { color: slidePal.bgDark }, line: { type: "none" } });
       
       const nbs = dh.numBoxSize;
       const nby = dh.y + (dh.h - nbs) / 2;
-      slide.addShape("roundRect", { x: dh.paddingX, y: nby, w: nbs, h: nbs, rectRadius: 0.1, fill: { color: slidePal.brand }, line: { width: 0 } });
+      slide.addShape("roundRect", { x: dh.paddingX, y: nby, w: nbs, h: nbs, rectRadius: 0.1, fill: { color: slidePal.brand }, line: { type: "none" } });
       slide.addText(String(section.num), { x: dh.paddingX, y: nby, w: nbs, h: nbs, fontSize: dh.numFontSize, bold: true, color: slidePal.white, fontFace: fontTitle, align: "center", valign: "middle" });
       
       const displayTitle = section.title + (pageNum > 1 ? " (계속)" : "");
@@ -860,6 +858,7 @@ export async function convertMdToPptx(mdPath, opts = {}) {
       pal.brandLight = "F0F7FF"; // Prevent 8-digit hex, use 6-digit pastel blue
     }
   }
+  pal.shape = shapeSetPptx(pickShapeSet(style.shapeSet, fm.shape), pal, { baseBorderWidth: D.card.borderWidth });   // 서식 세트 → helpers.cardBox (brandColor 반영 뒤)
 
   if (verbose) {
     console.log(`  📄 ${basename(mdPath)}  style: ${styleKey}`);

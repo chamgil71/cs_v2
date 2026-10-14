@@ -102,7 +102,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     slide.addShape("rect", {
       x: subX, y: subY, w: subW, h: 0.04,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     slide.addText(node.title || "", {

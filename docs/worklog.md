@@ -257,3 +257,25 @@
 - **`hub.config.json` 3개 갱신**: `guides`/`claudeguide`는 `category` 미지정 문서 46개가 style-폴백 경로를 타므로 카테고리 키를 새 style명으로 교체(라벨/색/webdev/uncategorized는 그대로). `study`는 처음부터 이 세션에서 `category`를 명시 부여했으므로 `ai-usage`/`ai-tools`/`my-projects`라는 **진짜 의미 있는 카테고리 id**로 재작성(색상 이름에서 완전히 독립) — 사용자가 지적한 "JSON만 봐서 어떤 파일인지 모른다" 문제 해소.
 - 검증: `npm test`(204/204), `node scripts/sync-guides-index.mjs`로 `src/data/guides.json` 재생성(6개 카테고리·42개 가이드, 카운트 일치 확인), `build-folder.mjs --all`로 guides(42)/claudeguide(4)/study(3) 3개 폴더 전부 무오류 재빌드, `showcase.md` 3종도 재빌드, 빌드된 HTML에서 개명 전후 브랜드 색상 hex 값이 정확히 동일함을 grep으로 확인(`terracotta`=`#D97757`, `emerald`=`#10A37F` — 개명이 시각적 산출물을 전혀 바꾸지 않았음 재확인), Chrome에서 `study-onepage.html`(카테고리 id가 `AI-USAGE`/`AI-TOOLS`/`MY-PROJECTS`로 읽기 쉽게 표시됨)·`guides-onepage.html`(6개 카테고리 pill·42개 가이드 정상, 히어로 문구 무변경 확인 — 폴백 하위호환 실증) 둘 다 스크린샷으로 확인. 코드/문서 전역 재검색(`grep`)으로 옛 키 잔존 0건 확인(역사 기록용 `docs/report/`·`docs/worklog.md`·`CLAUDE.md`의 "이전 키" 매핑 컬럼·이슈 이력 표는 의도적으로 보존).
 - 다음 계획: 이번 세션(19~20) 변경분을 포함해 전체 최종 검수 후 커밋. 변경 파일이 스크립트 다수 + config 3종 + md_src 49개 파일 + 문서 다수로 매우 많이 쌓여 있음 — 커밋 시 논리 단위로 나눌지 한 번에 묶을지도 사용자와 상의 필요.
+
+## 2026-10-14 — 세션 21: 공용 배치 카탈로그 연결(pptgen 과 라이브러리 규칙 통일) · 서식 세트 · 색 이름 · PPTX 선 없음 버그
+
+사용자 요청: "cs_v2 와 pptgen 은 라이브러리 규칙이 동일해야", "학습콘텐츠용으로 만든 이름·그룹을 기능과 표현에 따라 범용으로 조정", "테마와 도형배치는 분리됐지만 도형 속성(그림자·외곽선 굵기 등)이 빠졌다 — 기본 테마를 따르되 그림자·외곽선·한 슬라이드 내 도형 배경색 2종", "카탈로그는 우선 slide-library 에 두되 cs_v2 로 통합(폴더 이동·연결)을 고려".
+
+- **공용 카탈로그 연결**: `config/library/`(layouts.json·shape-sets.json 복사본 + README) · `scripts/sync-library.mjs`(원본 → 복사 + `library-map.mjs` 생성, `--check`) · `npm run sync:library(:check)`.
+- **이름**: `scripts/library-names.mjs` — 기능 이름·별칭 해석, `:::` 정규식(점 허용) 4개 파서 공유, 제목 속성 제거, 색 이름(`colorToken`). `renderShortcode` = 해석 → `renderNative` → `bg=alt` 래퍼. md-to-pptx·pptx-browser 도 같은 해석.
+- **분류**: `config/shortcode-guide.ts` 가 분류·기능 이름을 카탈로그에서 가져오고 스니펫 첫 줄을 기능 이름으로. `MarkdownCompiler.tsx` 의 하드코딩 optgroup·분류 버튼을 데이터 기반으로(이전엔 "데이터 다이어그램" 분류 버튼이 빠져 있었음).
+- **서식 세트**: `scripts/shape-set.mjs` + `shortcode-styles.mjs` 카드 규칙 변수화 + PPTX `helpers.cardBox`/`isAltBlock` + 팔레트 `bgLight`·`brandMid`.
+- **발견·수정한 기존 버그**: ① PPTX `line: { width: 0 }` 49곳이 1pt 짙은 테두리로 출력(pptxgenjs `width || 1`) → `type: "none"`. ② PPTX 가 색 이름 `accent` 를 몰라 검정으로 칠함 → 색 이름 표 통일.
+- **slide-config 여러 줄 규칙 통일**: `notes: |`(pptgen)·`\n`(cs_v2) 둘 다 읽는 공용 `parseSlideConfig` — 이전엔 `notes: |` 가 "|" 로 읽혀 발표스크립트가 사라졌음.
+- 검증: `npm test` 288/288, 기존 md(가이드 3개+showcase) 가이드·프레젠테이션 마크업 변경 전후 동일(CSS 만 변수화), `npm run build:standalone` 4종, 헤드리스로 standalone 모듈2 미리보기(기능 이름·제목 속성·`bg=alt`·elevated 그림자)와 프레젠테이션 다크/라이트 카드색, LibreOffice 로 PPTX 세트별(template·elevated·tinted) 렌더 확인. pptgen 견본(`examples/all-layouts.md`, 기능 이름 46종)을 cs_v2 3종으로 빌드 무오류.
+- 남은 것: 항목 단위 `tag: alt`(pptgen 전용), pptgen 전용 인수(badge·header·connector·emphasis·grow)의 cs_v2 구현, 카탈로그 원본의 cs_v2 이동(지금은 경로만 준비).
+
+## 2026-10-14 — 세션 22: 하드코딩 점검 · 이름 통일 결정 · CLI 인계
+
+- **공용 md 의 종형·횡형 HTML 확인**: 가트너 v2 예시·pptgen `all-layouts.md` 를 `build-guide`·`build-presentation`·`md-to-pptx` 로 — 잔존 `:::`·제목 속성 없음, 헤드리스 화면 확인. (cs_v2 미지원 인수 `header=` 머리띠는 HTML 에 안 나옴 — 다음 작업 C)
+- **하드코딩 제거**: 카드 테두리 0.75pt → `pptdesign.config.json card.borderWidth`, 근사 숏코드 정책 → 카탈로그 `fallback.cs_v2`. template PPTX XML 변경 전후 동일, `npm test` 289.
+- **점검으로 확인한 남은 하드코딩·층 혼재**: pptgen v2 렌더러 수치 약 290개, cs_v2 `config/library`(라이브러리가 설정 폴더에), `shortcode-guide.ts` 설명 데이터, 미사용 `config/layout.json`.
+- **사용자 결정**: 이름은 기능 이름 하나로 운영(옛 이름은 읽기 호환 별칭). 모양이 다른 옛 이름 2종(`compare-grid`·`workflow-flow`)은 렌더러를 읽어 확인 후 인수(`variant=plain`·`connector=arrow`)로 옮기는 설계 확정.
+- **CLI 인계**: 남은 작업(이름 통일·이전 도구, cs_v2 미구현 기능, 카탈로그 example 단일 출처 → slide-library views·cs_v2 웹 라이브러리 화면, dev API → pptgen, 층 정리·200줄 분리)은 coding `_templates/skillreview/다음작업_CLI인계.md` 순서대로.
+

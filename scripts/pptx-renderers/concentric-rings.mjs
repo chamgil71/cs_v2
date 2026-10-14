@@ -53,7 +53,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     const chipX = x + i * chipW;
     slide.addShape("ellipse", {
       x: chipX, y: legendY + 0.06, w: 0.12, h: 0.12,
-      fill: { color }, line: { width: 0 }
+      fill: { color }, line: { type: "none" }
     });
     slide.addText(it.title || "", {
       x: chipX + 0.16, y: legendY, w: chipW - 0.16, h: 0.24,

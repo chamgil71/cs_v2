@@ -56,13 +56,13 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
       x, y: curY, w, h: titleBarH,
       rectRadius: r,
       fill: { color: "1E293B" }, // 약간 밝은 어두운 회색
-      line: { width: 0 }
+      line: { type: "none" }
     });
     // 타이틀바 하단 둥근 모서리 덮어쓰기 (아래 둥근 부분 깎아내기)
     slide.addShape("rect", {
       x, y: curY + titleBarH - 0.08, w, h: 0.08,
       fill: { color: "1E293B" },
-      line: { width: 0 }
+      line: { type: "none" }
     });
 
     // 3. 맥 OS 윈도우 도트 3개 그리기
@@ -73,7 +73,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
         x: x + 0.14 + idx * 0.15, y: dotY,
         w: 0.08, h: 0.08,
         fill: { color },
-        line: { width: 0 }
+        line: { type: "none" }
       });
     });
 
@@ -96,7 +96,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     slide.addShape("rect", {
       x, y: contentY, w: lineNumW, h: contentH,
       fill: { color: "0D1321", transparency: 20 },
-      line: { width: 0 }
+      line: { type: "none" }
     });
 
     // 라인 번호 텍스트 생성 (1\n2\n3\n...)

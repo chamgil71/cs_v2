@@ -13,6 +13,12 @@ import { marked } from 'marked';
 import pptxgen from 'pptxgenjs';
 // @ts-ignore
 import { pptxRegistry, helpers } from '../../scripts/pptx-renderers/registry.mjs';
+// @ts-ignore — 순수 JS 공유 모듈
+import { parseSlideConfig } from '../../scripts/shortcode-render.mjs';
+// @ts-ignore
+import { shortcodeBlockRe, stripHeadingAttrs, resolveShortcode } from '../../scripts/library-names.mjs';
+// @ts-ignore
+import { shapeSetPptx, pickShapeSet } from '../../scripts/shape-set.mjs';
 
 // ────────────────────────────────────────────────────────────────
 //  설정 로드 (JSONC → JSON)
@@ -161,12 +167,12 @@ function parseShortcodeItems(src) {
 
 function parseContentParts(content) {
   const parts = [];
-  const re = /^:::\s*([A-Za-z0-9_-]+)(?:[ \t]+([^\r\n]+))?[ \t]*\r?\n([\s\S]*?)(?:\r?\n|^):::[ \t]*$/gm;
+  const re = shortcodeBlockRe();   // 이름에 "." 허용(기능 이름) — library-names.mjs 단일 출처
   let lastIndex = 0;
   let match;
   while ((match = re.exec(content)) !== null) {
     if (match.index > lastIndex) parts.push({ kind: 'md', src: content.slice(lastIndex, match.index) });
-    parts.push({ kind: 'shortcode', scType: match[1], args: match[2] || '', rawBody: match[3], items: parseShortcodeItems(match[3]) });
+    parts.push({ kind: 'shortcode', scType: resolveShortcode(match[1]).type, args: match[2] || '', rawBody: match[3], items: parseShortcodeItems(match[3]) });
     lastIndex = match.index + match[0].length;
   }
   if (lastIndex < content.length) parts.push({ kind: 'md', src: content.slice(lastIndex) });
@@ -200,7 +206,8 @@ function tokenToBlock(tok) {
 
 function buildSlideDataFromContent(mdContent, styleOverride) {
   const raw = mdContent.replace(/\r\n/g, '\n');
-  const { data: fm, content } = matter(raw);
+  const { data: fm, content: rawContent } = matter(raw);
+  const content = stripHeadingAttrs(rawContent);   // pptgen md v2 제목 속성 {master=…} 제거
   const styleKey = styleOverride || fm.style || 'emerald';
   const style = STYLES[styleKey] || STYLES['emerald'];
   const parts = parseContentParts(content);
@@ -232,11 +239,8 @@ function buildSlideDataFromContent(mdContent, styleOverride) {
       if (!currentSection) { sectionNum++; currentSection = { num: sectionNum, title: '', items: [] }; }
       closeCard();
       if (part.scType === 'slide-config') {
-        currentSection.config = currentSection.config || {};
-        for (const line of (part.rawBody || '').split(/\r?\n/)) {
-          const m = line.match(/^\s*(?:-\s*)?([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
-          if (m) currentSection.config[m[1].trim()] = cleanValue(m[2]);
-        }
+        // 공용 파서 — `key: |` 여러 줄 값과 `\n` 리터럴 둘 다 줄바꿈 (pptgen 과 같은 규칙)
+        currentSection.config = { ...(currentSection.config || {}), ...parseSlideConfig(part.rawBody) };
       } else {
         currentSection.items.push({ type: part.scType, args: part.args || '', items: part.items });
       }
@@ -323,7 +327,9 @@ function makePalette(style) {
     brandLight: hexClean(style.brandLight) || 'EEF2FF',
     border:     hexClean(style.border)     || 'D8DCFB',
     bgDark:     p.bgDark,
+    brandMid:   hexClean(style.brandMid)   || hexClean(style.brand) || "6366F1",
     white:      p.white,
+    bgLight:    hexClean(style.bg)         || p.white,
     text:       p.text,
     text2:      p.text2,
     muted:      p.muted      || '8892B0',
@@ -369,8 +375,8 @@ function renderBlock(slide, block, x, y, w, pal) {
   if (block.type === 'blockquote') {
     const lines = estimateLines(block.text, w - c.quoteBarW - 0.12, c.bodySize);
     const h = Math.max(0.38, (c.bodySize / 72) * 1.7 * lines + 0.15);
-    slide.addShape('rect', { x, y, w: c.quoteBarW, h, fill: { color: pal.brand }, line: { width: 0 } });
-    slide.addShape('rect', { x: x + c.quoteBarW, y, w: w - c.quoteBarW, h, fill: { color: pal.brandLight }, line: { width: 0 } });
+    slide.addShape('rect', { x, y, w: c.quoteBarW, h, fill: { color: pal.brand }, line: { type: "none" } });
+    slide.addShape('rect', { x: x + c.quoteBarW, y, w: w - c.quoteBarW, h, fill: { color: pal.brandLight }, line: { type: "none" } });
     slide.addText(block.text, { x: x + c.quoteBarW + 0.1, y: y + 0.06, w: w - c.quoteBarW - 0.14, h: h - 0.1, fontSize: c.bodySize, color: pal.brandDeep || pal.brandDark, fontFace: font, italic: true, valign: 'middle', wrap: true });
     return h + c.gap;
   }
@@ -476,7 +482,7 @@ function renderCover(prs, fm, pal) {
 
   if (layout === 'full-brand') {
     slide.background = { color: pal.brand };
-    slide.addShape('rect', { x: 0, y: sh - 0.12, w: sw, h: 0.12, fill: { color: pal.white }, line: { width: 0 } });
+    slide.addShape('rect', { x: 0, y: sh - 0.12, w: sw, h: 0.12, fill: { color: pal.white }, line: { type: "none" } });
     let ty = dc.titleY - 0.2;
     if (fm.logo) slide.addText(fm.logo, { x: 1.0, y: ty - 0.85, w: 1.0, h: 0.75, fontSize: dc.logoFontSize + 4, align: 'left', valign: 'middle' });
     const titleH = 1.3 + (titleLines - 1) * 0.7;
@@ -491,7 +497,7 @@ function renderCover(prs, fm, pal) {
     ty += titleH;
     if (fm.subtitle) slide.addText(fm.subtitle, { x: 1.0, y: ty, w: sw - 2.0, h: 0.4, fontSize: dc.subtitleFontSize, color: pal.muted, fontFace: font });
   } else {
-    slide.addShape('rect', { x: dc.accentBarX, y: dc.accentBarY, w: dc.accentBarW, h: dc.accentBarH, fill: { color: accent }, line: { width: 0 } });
+    slide.addShape('rect', { x: dc.accentBarX, y: dc.accentBarY, w: dc.accentBarW, h: dc.accentBarH, fill: { color: accent }, line: { type: "none" } });
     let ty = dc.titleY;
     if (fm.logo) slide.addText(fm.logo, { x: dc.titleX, y: ty - 0.85, w: 0.85, h: 0.75, fontSize: dc.logoFontSize, align: 'left', valign: 'middle' });
     const titleH = 1.2 + (titleLines - 1) * 0.7;
@@ -533,9 +539,9 @@ function renderSectionSlide(prs, section, pal, verbose = false) {
 
     function initSlideHeader(slide, pageNum) {
       slide.background = { color: hexClean(slideBg) || 'FFFFFF' };
-      slide.addShape('rect', { x: 0, y: dh.y, w: sw, h: dh.h, fill: { color: slidePal.bgDark }, line: { width: 0 } });
+      slide.addShape('rect', { x: 0, y: dh.y, w: sw, h: dh.h, fill: { color: slidePal.bgDark }, line: { type: "none" } });
       const nbs = dh.numBoxSize, nby = dh.y + (dh.h - nbs) / 2;
-      slide.addShape('roundRect', { x: dh.paddingX, y: nby, w: nbs, h: nbs, rectRadius: 0.1, fill: { color: slidePal.brand }, line: { width: 0 } });
+      slide.addShape('roundRect', { x: dh.paddingX, y: nby, w: nbs, h: nbs, rectRadius: 0.1, fill: { color: slidePal.brand }, line: { type: "none" } });
       slide.addText(String(section.num), { x: dh.paddingX, y: nby, w: nbs, h: nbs, fontSize: dh.numFontSize, bold: true, color: slidePal.white, fontFace: fontTitle, align: 'center', valign: 'middle' });
       slide.addText(section.title + (pageNum > 1 ? ' (계속)' : ''), { x: dh.paddingX + nbs + 0.15, y: dh.y, w: sw - dh.paddingX - nbs - 0.25, h: dh.h, fontSize: dh.titleFontSize, bold: true, color: slidePal.white, fontFace: fontTitle, valign: 'middle' });
     }
@@ -603,11 +609,12 @@ export async function convertMdToPptxBrowser(
     throw err;
   }
 
-  const pal = makePalette(style);
+  const pal: any = makePalette(style);
   if (fm.brandColor) {
     const cb = hexClean(fm.brandColor);
     if (cb) { pal.brand = cb; pal.brandDark = cb; pal.brandDeep = cb; pal.brandLight = 'F0F7FF'; }
   }
+  pal.shape = shapeSetPptx(pickShapeSet(style.shapeSet, fm.shape), pal, { baseBorderWidth: D.card.borderWidth });   // 서식 세트 → helpers.cardBox (brandColor 반영 뒤)
 
   const prs = new pptxgen();
   if (D.slide.layout && D.slide.widthIn && D.slide.heightIn) {

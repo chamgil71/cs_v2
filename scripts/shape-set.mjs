@@ -45,7 +45,7 @@ export function shapeSetCss(name) {
       ...(rad != null ? [`--card-radius: ${rad}px;`] : []),
     );
   }
-  return `  /* 서식 세트: ${key} (config/library/shape-sets.json) */\n  :root, body { ${vars.join(" ")} }\n`;
+  return `  /* 서식 세트: ${key} (library/shape-sets.json) */\n  :root, body { ${vars.join(" ")} }\n`;
 }
 
 /**

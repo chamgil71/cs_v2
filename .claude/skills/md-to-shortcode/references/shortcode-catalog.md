@@ -1,7 +1,7 @@
 ---
 title: (md-to-shortcode) 숏코드 카탈로그 — 자체 완결 백업
 type: 참조
-연결: "cs_v2 안에서는 docs/shortcode-reference.md 와 config/library/layouts.json(공용 카탈로그)이 authoritative. 이 파일은 cs_v2 밖에서 쓸 때의 백업 — 공용 카탈로그에서 다시 만든다(가이드 데이터 config/shortcode-guide.ts 기준)."
+연결: "cs_v2 안에서는 docs/shortcode-reference.md 와 library/layouts.json(공용 카탈로그)이 authoritative. 이 파일은 cs_v2 밖에서 쓸 때의 백업 — 공용 카탈로그에서 다시 만든다(가이드 데이터 config/shortcode-guide.ts 기준)."
 기준일: 2026-10-14 (이름은 기능 이름 하나로 운영 — cs_v2 가 직접 그리는 64종, 견본 2종은 근사)
 ---
 
@@ -30,110 +30,110 @@ type: 참조
 
 | 기능 이름 | 용도 | 필드 | 배치 인수(기본값) |
 |---|---|---|---|
-| `grid.cards` | 아이콘+제목+설명 카드 격자. align 으로 모양 변형: center(기본) / left(왼쪽 아이콘) / row(수평 배열). | cols (속성), bullet (속성), align=center\|left\|row (속성), icon, title, desc, color (선택) | cols=1~6 (항목 수에 맞춤) · align=center\|left\|row (center) · badge=icon\|number\|none (icon) · header=문자열 |
-| `grid.features` | 태그 배지 및 아이콘이 포함된 다채로운 핵심 피처 카드 그리드입니다. | cols (속성), icon, title, desc, tag, color (선택) | cols=1~6 (항목 수에 맞춤) · header=문자열 |
-| `grid.badges` | 여러 장점이나 키워드를 작은 배지 칩으로 콤팩트하게 나열합니다. | icon, title, tag, color (선택) | cols=1~6 (항목 수에 맞춤) |
-| `grid.list` | 사용 도구나 스펙의 강점을 헤더(아이콘, 제목, 부제)와 기능 목록 형태로 렌더링합니다. | icon, title, desc, tag, meta (목록 구분선 \|) | — |
-| `grid.tiers` | 추천 요금제(tag=Best)나 상품 가격/기능 구성품 스펙을 카드 형태로 비교합니다. | title, tag, meta (목록 구분선 \|), featured (true 시 강조), color (선택), note (하단 설명) | cols=1~6 (항목 수에 맞춤) |
-| `grid.columns` | 가로 다단 카드 격자. variant=plain 이면 상단 색 띠 없는 담백한 카드(비교 용도). | cols (속성: cols=2), variant=card\|plain (속성), title, desc, note (팁박스), color (선택) | cols=1~6 (항목 수에 맞춤) · header=문자열 · variant=card\|plain (card) |
-| `grid.main-plus-3` | 큰 칸 1 + 세로 작은 칸 3 | title, meta, desc | header=문자열 |
-| `grid.cards-icon-3` | 카드 3열(알약 제목·원·설명) | title, meta, desc | header=문자열 |
-| `grid.wide-narrow-titled` | 넓은 칸 + 좁은 칸(알약 제목) | title, meta, desc | header=문자열 |
-| `grid.narrow-wide-titled` | 좁은 칸 + 넓은 칸(알약 제목) | title, meta, desc | header=문자열 |
-| `grid.box-1` | 빈 상자 1(본문 전체) | title, meta, desc | header=문자열 |
-| `grid.box-2` | 빈 상자 2 균등 | title, meta, desc | header=문자열 |
-| `grid.box-3` | 빈 상자 3 균등 | title, meta, desc | header=문자열 |
-| `grid.box-4` | 빈 상자 4 균등 | title, meta, desc | header=문자열 |
-| `grid.narrow-wide` | 좁은 칸 + 넓은 칸 | title, meta, desc | header=문자열 |
-| `grid.wide-narrow` | 넓은 칸 + 좁은 칸 | title, meta, desc | header=문자열 |
-| `grid.circle-3` | 큰 원 3 | title, meta, desc | header=문자열 |
-| `grid.band-box-3` | 머리띠 + 상자 3 | title, meta, desc | header=문자열 |
+| `grid.cards` | 아이콘+제목+설명 카드 격자. align 으로 모양 변형: center(기본) / left(왼쪽 아이콘) / row(수평 배열). | icon 아이콘 키 또는 이모지 · title 제목 · desc 설명 · color 카드 강조색(선택) | cols=1~6 (항목 수에 맞춤) · align=center\|left\|row (center) · badge=icon\|number\|none (icon) · header=문자열 |
+| `grid.features` | 태그 배지 및 아이콘이 포함된 다채로운 핵심 피처 카드 그리드입니다. | icon 아이콘(선택) · title 제목 · tag 오른쪽 위 꼬리표 · desc 설명 | cols=1~6 (항목 수에 맞춤) · header=문자열 |
+| `grid.badges` | 여러 장점이나 키워드를 작은 배지 칩으로 콤팩트하게 나열합니다. | icon 아이콘 · title 이름 · tag 꼬리표 | cols=1~6 (항목 수에 맞춤) |
+| `grid.list` | 사용 도구나 스펙의 강점을 헤더(아이콘, 제목, 부제)와 기능 목록 형태로 렌더링합니다. | icon 아이콘 · title 이름 · desc 한 줄 설명 · tag 꼬리표 · meta 글머리(｜ 구분) | — |
+| `grid.tiers` | 추천 요금제(tag=Best)나 상품 가격/기능 구성품 스펙을 카드 형태로 비교합니다. | title 등급 이름 · tag 꼬리표(가격·Best 등) · meta 구성 목록(｜ 구분) · featured true = 강조 카드 · note 아래 설명 | cols=1~6 (항목 수에 맞춤) |
+| `grid.columns` | 가로 다단 카드 격자. variant=plain 이면 상단 색 띠 없는 담백한 카드(비교 용도). | title 제목 · desc 설명 · note 아래 팁 상자 · color 카드 강조색 | cols=1~6 (항목 수에 맞춤) · header=문자열 · variant=card\|plain (card) |
+| `grid.main-plus-3` | 큰 칸 하나(핵심)와 오른쪽에 세로로 쌓은 작은 칸 셋. 핵심 하나를 크게 두고 보조 항목 셋을 곁들일 때. | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.cards-icon-3` | 카드 3열 — 알약 제목, 원 안의 짧은 말(desc), 아래 글머리. 세 축을 같은 무게로 보여 줄 때. | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.wide-narrow-titled` | 넓은 칸 + 좁은 칸, 칸마다 알약 제목. 주 내용과 보조 내용을 나란히. | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.narrow-wide-titled` | 좁은 칸 + 넓은 칸, 칸마다 알약 제목. 짧은 요약 옆에 긴 설명을 둘 때. | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.box-1` | 본문 전체를 차지하는 상자 하나 — 제목과 글머리. 한 가지 메시지를 넓게. | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.box-2` | 같은 크기 상자 2개 — 제목과 글머리. 대등한 두 항목(기회/위험 등). | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.box-3` | 같은 크기 상자 3개 — 제목과 글머리. 대등한 세 축(사람·프로세스·기술 등). | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.box-4` | 같은 크기 상자 4개 — 제목과 글머리. 4단계 순환이나 네 영역. | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.narrow-wide` | 좁은 칸 + 넓은 칸. 요약과 설명을 좌우로. | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.wide-narrow` | 넓은 칸 + 좁은 칸. 설명과 요약을 좌우로. | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.circle-3` | 큰 원 3개 — 원 안에 제목, 아래 글머리. 세 개념을 상징적으로. | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
+| `grid.band-box-3` | 위 머리띠(header 인수) + 상자 3개. 상위 메시지 아래 세 축을 펼칠 때. | title 소제목(상자 첫 줄) · meta 글머리(｜ 구분) · desc 글머리로 이어 붙임 | header=문자열 |
 
 ## 비교·대조 (`compare`)
 
 | 기능 이름 | 용도 | 필드 | 배치 인수(기본값) |
 |---|---|---|---|
-| `compare.pair` | 두 대상을 좌우로 2단 분할 배치하여 전후 관계나 상세 비교를 렌더링합니다. | title, desc, meta (구분선 \| 목록) | — |
-| `compare.before-after` | AS-IS(구형)와 TO-BE(신형)를 ❌/✅ 레이블로 단순 명확하게 전후 대조합니다. | title, desc | — |
-| `compare.main-sub` | 비대칭 2분할(주 / 부) | title, desc, meta | ratio=0.5~0.75 (0.64) |
-| `compare.balance` | 천칭 균형 비교 | icon, title, desc | — |
-| `compare.hbars` | 가로 막대 스택 비교 | icon, title, desc, tag | emphasis=last\|first\|none\|<번호> (none) |
-| `compare.pair-summary` | 좌우 비교 + 하단 결론 띠 | title, desc, meta | header=문자열 |
+| `compare.pair` | 두 대상을 좌우로 2단 분할 배치하여 전후 관계나 상세 비교를 렌더링합니다. | title 쪽 이름 · desc 설명 · meta 글머리(｜ 구분) · color 쪽 색 | — |
+| `compare.before-after` | AS-IS(구형)와 TO-BE(신형)를 ❌/✅ 레이블로 단순 명확하게 전후 대조합니다. | title 상태 이름 · desc 설명 | — |
+| `compare.main-sub` | 비대칭 2분할 — 주 칸이 크고 부 칸이 작다(ratio 인수). 핵심 주장과 보조 정보를 함께. | title 쪽 이름 · desc 설명 · meta 글머리 | ratio=0.5~0.75 (0.64) |
+| `compare.balance` | 천칭 위 두 쪽 — 균형·절충 관계(속도 대 안전 등)를 보여 줄 때. | icon 아이콘 · title 쪽 이름 · desc 설명 | — |
+| `compare.hbars` | 가로 막대를 쌓아 단계별 확장을 비교(뒤로 갈수록 넓어짐). emphasis 로 강조 막대. | icon 아이콘 · title 이름 · desc 설명 · tag highlight = 강조 | emphasis=last\|first\|none\|<번호> (none) |
+| `compare.pair-summary` | 좌우 비교 칸 + 아래 결론 띠(header 인수). 비교 끝에 한 줄 결론. | title 칸 이름(알약) · desc 설명 · meta 글머리(｜ 구분) | header=문자열 |
 
 ## 순서·흐름 (`process`)
 
 | 기능 이름 | 용도 | 필드 | 배치 인수(기본값) |
 |---|---|---|---|
-| `process.track` | 단계별 흐름을 가로로 표현. connector=line(기본) 이면 단계 사이 가는 선, arrow 면 화살표로 이은 단계, none 이면 연결 없음(화살표는 type: arrow 항목). tag:active 또는 emphasis=last\|first\|번호 로 강조, badge=number\|none 으로 원 칸 변경, meta 로 도구/코멘트. | connector=arrow\|line\|none (속성), icon, title, desc, meta (도구/코멘트), tag (active 시 강조), color (선택) | connector=arrow\|line\|none (line) · badge=icon\|number\|none (icon) · emphasis=last\|first\|none\|<번호> (none) |
-| `process.steps` | 1, 2, 3... 순번이 자동으로 매겨진 단계식 지침과 부연 설명을 노출합니다. | title, desc, color (선택) | badge=icon\|number\|none (number) |
-| `process.staircase` | 계단식 단계(뒤로 갈수록 높아짐) | icon, title, desc, meta, tag | grow=1.0~1.6 (1.35) · emphasis=last\|first\|none\|<번호> (last) · caption=문자열 |
-| `process.levels` | 난이도·성숙도·역량 구간을 카드 격자로 비교. tag:highlight 로 강조 카드 지정. | title (레벨명), desc, color (선택), tag (highlight 시 강조) | cols=1~6 (항목 수에 맞춤) · grow=1.0~1.6 (1.0) · emphasis=last\|first\|none\|<번호> (none) |
-| `process.branch` | Git 브랜치나 버전 릴리즈 흐름을 노드형 다이어그램으로 가시화합니다. | title, tag, meta, color (선택) | connector=arrow\|line\|none (line) |
-| `process.growth` | 성장 서사(이전 → 이후 패널) | title, desc, icon | — |
-| `process.cycle-3` | 삼각 순환 | icon, title, desc | — |
-| `process.zigzag` | 지그재그 로드맵 | icon, title, desc | emphasis=last\|first\|none\|<번호> (none) |
-| `process.cards-arrow-4` | 카드 4단계 + 화살표(원·하단 목록) | title, desc, meta | header=문자열 |
-| `process.input-circles-4` | 입력 상자 → 원 4단계 → 하단 흐름 | title, desc, meta | header=문자열 |
-| `process.band-columns-3` | 머리띠 + 3열(원·전→후 비교) | title, desc, meta | header=문자열 |
-| `process.steps-checklist-3` | 머리띠 + 3단계 + 체크 목록 | title, desc, meta | header=문자열 |
+| `process.track` | 단계별 흐름을 가로로 표현. connector=line(기본) 이면 단계 사이 가는 선, arrow 면 화살표로 이은 단계, none 이면 연결 없음(화살표는 type: arrow 항목). tag:active 또는 emphasis=last\|first\|번호 로 강조, badge=number\|none 으로 원 칸 변경, meta 로 도구/코멘트. | icon 아이콘 · title 단계 · desc 설명 · meta 도구·코멘트 · tag active = 강조 | connector=arrow\|line\|none (line) · badge=icon\|number\|none (icon) · emphasis=last\|first\|none\|<번호> (none) |
+| `process.steps` | 1, 2, 3... 순번이 자동으로 매겨진 단계식 지침과 부연 설명을 노출합니다. | title 단계 · desc 설명 · color 번호색 | badge=icon\|number\|none (number) |
+| `process.staircase` | 뒤로 갈수록 높아지는 계단 — 진화·성장 단계. grow(높이 배율)·emphasis·caption, meta = 시점. | icon 아이콘 · title 단계 · desc 설명 · meta 시점 · tag highlight = 강조 | grow=1.0~1.6 (1.35) · emphasis=last\|first\|none\|<번호> (last) · caption=문자열 |
+| `process.levels` | 난이도·성숙도·역량 구간을 카드 격자로 비교. tag:highlight 로 강조 카드 지정. | title 수준 · desc 설명 · tag highlight = 강조 · color 색 | cols=1~6 (항목 수에 맞춤) · grow=1.0~1.6 (1.0) · emphasis=last\|first\|none\|<번호> (none) |
+| `process.branch` | Git 브랜치나 버전 릴리즈 흐름을 노드형 다이어그램으로 가시화합니다. | title 단계 · tag 갈래 이름 · meta 설명 · color 갈래 색 | connector=arrow\|line\|none (line) |
+| `process.growth` | 이전 → 이후 두 패널로 성장 서사를 보여 줌. icon = 수치(1억 → 8억). | title 상태 · desc 설명 · icon 수치 | — |
+| `process.cycle-3` | 세 단계가 돌아가는 삼각 순환(기록 → 학습 → 적용). | icon 아이콘 · title 단계 · desc 설명 | — |
+| `process.zigzag` | 위·아래로 번갈아 놓인 노드를 잇는 지그재그 로드맵. emphasis 로 현재 단계. | icon 아이콘 · title 단계 · desc 설명 | emphasis=last\|first\|none\|<번호> (none) |
+| `process.cards-arrow-4` | 카드 4단계를 화살표로 잇고, 카드마다 알약 제목·원(desc)·글머리 목록. | title 단계 이름 · desc 원 안 글(짧게) · meta 글머리(｜ 구분) | header=문자열 |
+| `process.input-circles-4` | 원 4단계를 화살표로 잇고 아래 흐름 띠. 원 안에 단계 이름과 짧은 말, 아래 글머리. | title 단계 이름 · desc 원 안 글(짧게) · meta 글머리(｜ 구분) | header=문자열 |
+| `process.band-columns-3` | 머리띠 + 3열 — 열마다 번호 원·제목·전 → 후 짝(meta 를 짝으로 읽음). 변화 비교. | title 열 이름 · desc 번호 원 글 · meta 전 \| 후 \| 전 \| 후 … (짝으로 읽어 전 → 후 줄) | header=문자열 |
+| `process.steps-checklist-3` | 머리띠 + 3단계 — 단계마다 번호 원·제목·체크 목록. | title 단계 이름 · desc 번호 원 글 · meta 체크 목록(｜ 구분) | header=문자열 |
 
 ## 구조·관계 (`structure`)
 
 | 기능 이름 | 용도 | 필드 | 배치 인수(기본값) |
 |---|---|---|---|
-| `structure.hub` | 여러 개념 간의 연계성 또는 네트워크 연결 관계를 시각화합니다. | title, meta, color (선택) | — |
-| `structure.pillars` | 기반 위 기둥 | title, desc, icon | — |
-| `structure.rings` | A⊃B⊃C 같은 계층적 포함관계 표현. 항목은 바깥(큰 범주)에서 안쪽(구체적 범주) 순서로 작성. | title (범주명), color, icon (마지막 항목에만 — 중심 아이콘) | — |
-| `structure.venn` | 두 영역이 겹칠 때 새로운 가치/의미가 발생함을 표현. 항목 3개 고정 순서(왼쪽 원 / 오른쪽 원 / 교집합 캡션). | [0]title,color (왼쪽 원) · [1]title,color (오른쪽 원) · [2]icon,desc (교집합, 선택) | — |
-| `structure.groups-2x3` | 2그룹 × 원 3 | title, desc, meta | — |
+| `structure.hub` | 여러 개념 간의 연계성 또는 네트워크 연결 관계를 시각화합니다. | title 첫 항목 = 중심, 나머지 = 주변 · meta 관계 설명 · icon 아이콘 · color 색 | — |
+| `structure.pillars` | 기반 위에 선 기둥 — 첫 항목이 기반(아래 띠), 나머지가 기둥. | title 첫 항목 = 기반, 나머지 = 기둥 · desc 설명 · icon 아이콘 | — |
+| `structure.rings` | A⊃B⊃C 같은 계층적 포함관계 표현. 항목은 바깥(큰 범주)에서 안쪽(구체적 범주) 순서로 작성. | title 범주 · color 색 · icon 마지막 항목 = 중심 아이콘 | — |
+| `structure.venn` | 두 영역이 겹칠 때 새로운 가치/의미가 발생함을 표현. 항목 3개 고정 순서(왼쪽 원 / 오른쪽 원 / 교집합 캡션). | title [0] 왼쪽 원 · [1] 오른쪽 원 · desc [2] 교집합 설명 · icon [2] 교집합 아이콘 · color 원 색 | — |
+| `structure.groups-2x3` | 두 그룹 × 원 여러 개 — 그룹마다 알약 제목·설명, meta 를 원으로. | title 그룹 이름(알약) · desc 설명 · meta 원(｜ 구분, 3~4개) | — |
 
 ## 데이터·수치 (`data`)
 
 | 기능 이름 | 용도 | 필드 | 배치 인수(기본값) |
 |---|---|---|---|
-| `data.stats` | 수치 데이터(icon)와 통계 지표 정보(title, desc)를 상단 바 보더와 함께 시각화합니다. | icon (수치), title, desc, color (선택) | cols=1~6 (항목 수에 맞춤) · emphasis=last\|first\|none\|<번호> (none) |
-| `data.summary-bar` | 수치 통계나 단위 성과들을 가로형 바 형태로 간결하게 나열합니다. | icon, title | — |
-| `data.bars` | 막대그래프(극단 대비) | title, icon, tag | scale=linear\|sqrt (sqrt) · emphasis=last\|first\|none\|<번호> (none) |
-| `data.quadrant` | 두 축(X/Y) 기준으로 여러 항목의 상대 위치를 비교. 축 라벨은 블록 인수로 지정. | 블록 인수 xLabel="..." yLabel="..." · title, color, fx/fy (0~1 비율) | xLabel=문자열 · yLabel=문자열 |
-| `data.gauge` | 반원 게이지(위치·비율) | title, icon, desc | left=문자열 · right=문자열 |
+| `data.stats` | 수치 데이터(icon)와 통계 지표 정보(title, desc)를 상단 바 보더와 함께 시각화합니다. | icon 수치(예: 53%) · title 지표 이름 · desc 설명 · color 색 | cols=1~6 (항목 수에 맞춤) · emphasis=last\|first\|none\|<번호> (none) |
+| `data.summary-bar` | 수치 통계나 단위 성과들을 가로형 바 형태로 간결하게 나열합니다. | icon 수치 · title 이름 | — |
+| `data.bars` | 가로 막대그래프 — 값(icon)의 극단 대비를 sqrt 척도로 읽히게(scale 인수). emphasis 로 강조 막대. | title 이름 · icon 값(숫자) · tag highlight = 강조 | scale=linear\|sqrt (sqrt) · emphasis=last\|first\|none\|<번호> (none) |
+| `data.quadrant` | 두 축(X/Y) 기준으로 여러 항목의 상대 위치를 비교. 축 라벨은 블록 인수로 지정. | title 점 이름 · fx 가로 위치 0~1 · fy 세로 위치 0~1 · color 색 | xLabel=문자열 · yLabel=문자열 |
+| `data.gauge` | 반원 게이지 — 값(icon, 0~100)의 위치·비율. left/right 인수로 호 양 끝 이름. | title 이름 · icon 값(0~100) · desc 설명 | left=문자열 · right=문자열 |
 
 ## 서술·강조 (`text`)
 
 | 기능 이름 | 용도 | 필드 | 배치 인수(기본값) |
 |---|---|---|---|
-| `text.statement` | 텍스트 전용(중앙 문장·요약·질문) | title, desc, meta | — |
-| `text.body` | 일반 문단·글머리(숏코드 없이 쓴 본문) | desc | — |
-| `text.quote` | 인물 핵심 발언(얼굴·발언·하단 카드) | title, meta, icon, desc | — |
-| `text.takeaway` | 강조하고 싶은 핵심 교훈이나 테이크어웨이 메시지를 한 줄 배너로 노출합니다. | icon, title, desc | — |
-| `text.callout` | 팁·정보·주의·위험·성공 알림 상자. 종류는 첫 인수 또는 variant= (tip\|info\|warning\|danger\|success). | variant (첫 인수 가능), title, desc, color (선택) | variant=tip\|info\|warning\|danger\|success (info) |
-| `text.summary` | 가이드 마지막 단에 배치하여 내용을 정리하고, 하단에 다량의 태그 칩을 덧붙입니다. | title, desc, meta (칩 구분선 \|), color (선택) | — |
-| `text.section` | 긴 문서나 슬라이드 중 단원/파트의 구분을 나누는 가로 대형 단막 배너입니다. | icon, title, desc, tag | — |
-| `text.icon-statement` | 단일 아이콘 강조 | icon, title, desc | — |
-| `text.avatar` | 인물 이니셜 아바타(보조) | icon, title, desc | — |
+| `text.statement` | 중앙에 큰 문장 하나(+보조 문장·요약 칩). 블록 없이 쓴 일반 문단과 같은 뜻. | title 중앙 문장 · desc 보조 문장 · meta 요약 줄(｜ 구분) | — |
+| `text.body` | 일반 문단·글머리 — 숏코드 없이 쓴 본문을 블록으로 쓸 때(bullet 이 있으면 글머리). | desc 문단 또는 글머리 한 줄 | — |
+| `text.quote` | 인물의 핵심 발언 — 이니셜 원·발언·출처, 아래 맥락 카드. | title 발언 · meta 시기·출처 · icon 이니셜 · desc 하단 카드 | — |
+| `text.takeaway` | 강조하고 싶은 핵심 교훈이나 테이크어웨이 메시지를 한 줄 배너로 노출합니다. | icon 아이콘 · title 머리말 · desc 메시지 | — |
+| `text.callout` | 팁·정보·주의·위험·성공 알림 상자. 종류는 첫 인수 또는 variant= (tip\|info\|warning\|danger\|success). | title 제목 · desc 내용 · color 색 | variant=tip\|info\|warning\|danger\|success (info) |
+| `text.summary` | 가이드 마지막 단에 배치하여 내용을 정리하고, 하단에 다량의 태그 칩을 덧붙입니다. | title 제목 · desc 설명 · meta 칩(｜ 구분) | — |
+| `text.section` | 긴 문서나 슬라이드 중 단원/파트의 구분을 나누는 가로 대형 단막 배너입니다. | icon 아이콘 · title 구역 이름 · desc 설명 · tag 꼬리표 | — |
+| `text.icon-statement` | 큰 아이콘 하나와 문장 — 한 가지 메시지를 아이콘으로 강조. | icon 아이콘 · title 문장 · desc 보조 | — |
+| `text.avatar` | 인물 이니셜 원 + 이름·소속(보조 요소). | icon 이니셜 · title 이름 · desc 소속 | — |
 
 ## 코드·터미널 (`code`)
 
 | 기능 이름 | 용도 | 필드 | 배치 인수(기본값) |
 |---|---|---|---|
-| `code.editor` | 코드 에디터 창(예: VS Code)의 외형을 흉내 낸 다크 에뮬레이터 블록입니다. | title (파일명), tag (언어), desc (코드 내용, 멀티라인 \| 지원) | — |
-| `code.console` | 시스템 명령어나 스크립트 실행 결과를 출력하는 콘솔화면 블록입니다. | title, tag, desc (멀티라인 \| 지원) | — |
-| `code.command` | 실행해야 하는 명령어(CLI)를 안내하는 터미널 모형 박스입니다. | title, tag, desc | — |
+| `code.editor` | 코드 에디터 창(예: VS Code)의 외형을 흉내 낸 다크 에뮬레이터 블록입니다. | title 파일 이름 · tag 언어 · desc 코드(여러 줄) | — |
+| `code.console` | 시스템 명령어나 스크립트 실행 결과를 출력하는 콘솔화면 블록입니다. | title 제목 · tag 꼬리표 · desc 출력(여러 줄) | — |
+| `code.command` | 실행해야 하는 명령어(CLI)를 안내하는 터미널 모형 박스입니다. | title 설명 · tag 셸 · desc 명령 | — |
 
 ## 탐색·목록 (`nav`)
 
 | 기능 이름 | 용도 | 필드 | 배치 인수(기본값) |
 |---|---|---|---|
-| `nav.faq` | 질문(title)과 그에 답하는 답변(desc) 형태의 아코디언 질문-답변 리스트입니다. | title, desc | — |
-| `nav.tabs` | Windows / macOS 등 플랫폼별 조치 방법이나 다중 탭을 리스트로 안내합니다. | title, desc | — |
-| `nav.chapters` | 시리즈 부(Part) 하위에 속한 세부 챕터를 번호·제목·설명·구분 배지로 목록화합니다. | icon (챕터번호), title, desc, tag (개념/도구/사례/가이드/실습/주의/핵심) | — |
+| `nav.faq` | 질문(title)과 그에 답하는 답변(desc) 형태의 아코디언 질문-답변 리스트입니다. | title 질문 · desc 답변 | — |
+| `nav.tabs` | Windows / macOS 등 플랫폼별 조치 방법이나 다중 탭을 리스트로 안내합니다. | title 탭 이름 · desc 내용 | — |
+| `nav.chapters` | 시리즈 부(Part) 하위에 속한 세부 챕터를 번호·제목·설명·구분 배지로 목록화합니다. | icon 번호 · title 제목 · desc 설명 · tag 종류(개념·도구·사례…) | — |
 
 ## 이미지 혼합 (`media`)
 
 | 기능 이름 | 용도 | 필드 | 배치 인수(기본값) |
 |---|---|---|---|
-| `media.cards-image` | 정보 카드 N + 이미지 | title, desc | side=left\|right (right) |
-| `media.banner` | 하단 이미지 배너 | title | — |
-| `media.full` | 이미지 자리(전면) | desc | — |
+| `media.cards-image` | 정보 카드 N개 + 이미지(side 인수로 이미지 쪽). 항목 src 가 있으면 그 그림, 없으면 이미지 자리. | title 카드 제목 · desc 설명 | side=left\|right (right) |
+| `media.banner` | 위 핵심 문장 두세 줄 + 아래 넓은 이미지 띠. | title 글머리 | — |
+| `media.full` | 본문 전체 이미지 자리 — desc 에 이미지 프롬프트, src 가 있으면 그림. | desc 이미지 프롬프트 | — |
 
 # 변형은 인수로
 

@@ -1,7 +1,7 @@
 /**
  * layout-library.ts — 웹 "배치 라이브러리" 화면(모듈 1)의 데이터 도구.
  *
- * 화면이 보여 주는 모든 값은 공용 배치 카탈로그(config/library → scripts/library-map.mjs 생성본)에서 온다:
+ * 화면이 보여 주는 모든 값은 공용 배치 카탈로그(library → scripts/library-map.mjs 생성본)에서 온다:
  * 배치 이름·그룹·칸·인수·예시·구현 상태(cs_v2/pptgen)·서식 세트. 이 파일은 그것을 화면용으로 고르고 미리보기 md 를 만들 뿐이다.
  * 같은 예시를 pptgen `node lib/run.js layout-views`(views/layouts.pptx)도 쓴다 — 웹과 pptx 미리보기가 같은 출처.
  */
@@ -12,6 +12,8 @@ export type LayoutEntry = {
   name: string;
   group: string;
   label: string;
+  emoji: string;
+  desc: string;
   fields: Record<string, string>;
   status: string;
   shortcode: string | null;

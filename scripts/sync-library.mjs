@@ -3,13 +3,13 @@
  * sync-library.mjs — 공용 배치 카탈로그(slide-library/catalog)를 cs_v2 로 가져온다.
  *
  * 공용 카탈로그는 pptgen 과 cs_v2 가 같은 배치 이름·항목 규칙·서식 세트를 쓰게 하는 단일 출처다.
- * 현재 정본 위치는 coding 저장소 `_templates/slide-library/catalog/` 이고, 나중에 cs_v2 `config/library/`
- * 로 옮긴다(그때는 이 스크립트의 방향만 바뀐다 — config/library/README.md 참조).
+ * 현재 정본 위치는 coding 저장소 `_templates/slide-library/catalog/` 이고, 나중에 cs_v2 `library/`
+ * 로 옮긴다(그때는 이 스크립트의 방향만 바뀐다 — library/README.md 참조).
  *
  *   node scripts/sync-library.mjs [--from <카탈로그 폴더>] [--check]
  *
  * 하는 일
- *   1) layouts.json · shape-sets.json 을 config/library/ 로 복사(내용 그대로)
+ *   1) layouts.json · shape-sets.json 을 library/ 로 복사(내용 그대로)
  *   2) scripts/library-map.mjs 생성 — 브라우저·Node 어디서나 import 되는 순수 객체 모듈
  *      (JSON import 속성 차이 회피. 손으로 고치지 말 것: 카탈로그를 고치고 다시 sync)
  *   --check : 복사본·생성본이 카탈로그와 다르면 종료코드 1 (CI·테스트용, 파일은 안 바꾼다)
@@ -30,7 +30,7 @@ const CANDIDATES = [
   "C:/coding/_templates/slide-library/catalog",
 ].filter(Boolean);
 const SRC = CANDIDATES.find((d) => existsSync(join(d, "layouts.json")));
-const LIB = join(ROOT, "config", "library");
+const LIB = join(ROOT, "library");   // 최상위 library/ — 설정(config/)과 라이브러리(재사용 정의) 층 분리(2026-10-14, 인계서 E)
 if (!SRC) {
   console.error(`카탈로그를 찾지 못했습니다. --from 또는 SLIDE_CATALOG 로 지정하세요.\n  찾은 곳: ${CANDIDATES.join("\n           ")}`);
   process.exit(2);
@@ -53,7 +53,7 @@ for (const [name, e] of Object.entries(layouts.layouts)) {
   // args = 인수 표(웹 배치 라이브러리 화면 — 값·기본값·도구별 지원·설명), pptgen = pptgen 구현 요약(같은 배치를 pptgen 이 어떻게 그리는지)
   const args = Object.fromEntries(Object.entries(e.args || {}).map(([k, a]) => [k, { values: a.values, default: a.default ?? "", cs_v2: !!a.cs_v2, pptgen: !!a.pptgen, note: a.note || "" }]));
   const p = (e.impl || {}).pptgen || {};
-  L[name] = { group: e.group, label: e.label, fields: e.fields || {}, status: c.status || "none", shortcode: c.shortcode || null,
+  L[name] = { group: e.group, label: e.label, emoji: e.emoji || "", desc: e.desc || "", fields: e.fields || {}, status: c.status || "none", shortcode: c.shortcode || null,
     pptx_shortcode: c.pptx_shortcode || null, variants: c.variants || [], defaults, args,
     pptgen: { status: p.status || "none", pattern: p.pattern || null, theme: p.theme || null }, aliases: e.aliases || [] };
   for (const a of e.aliases || []) ALIAS[a] = name;

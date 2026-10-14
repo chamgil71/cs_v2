@@ -16,15 +16,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 /**
- * 공용 배치 카탈로그(config/library) 연결 테스트.
+ * 공용 배치 카탈로그(library) 연결 테스트.
  * pptgen 과 cs_v2 가 같은 배치 이름(<그룹>.<형태>)·같은 서식 세트를 쓴다는 약속을 cs_v2 쪽에서 잠근다.
  * 깨지면: 카탈로그를 바꾸고 `npm run sync:library` 를 안 했거나, 렌더러/이름표가 카탈로그와 어긋난 것.
  */
 const ROOT = path.resolve(__dirname, '../..');
 const BODY = '- icon: "⚡"\n  title: "하나"\n  desc: "설명"\n  meta: "A|B"\n- icon: "🧠"\n  title: "둘"\n  desc: "설명"\n- icon: "✅"\n  title: "셋"\n  desc: "설명"';
 
-describe('카탈로그 — 생성본(library-map.mjs) == 복사본(config/library/layouts.json)', () => {
-  const json = JSON.parse(fs.readFileSync(path.join(ROOT, 'config/library/layouts.json'), 'utf8'));
+describe('카탈로그 — 생성본(library-map.mjs) == 복사본(library/layouts.json)', () => {
+  const json = JSON.parse(fs.readFileSync(path.join(ROOT, 'library/layouts.json'), 'utf8'));
   it('배치 이름 집합이 같다', () => {
     expect(Object.keys(LAYOUTS).sort()).toEqual(Object.keys(json.layouts).sort());
   });
@@ -36,7 +36,7 @@ describe('카탈로그 — 생성본(library-map.mjs) == 복사본(config/librar
     }
   });
   it('서식 세트 생성본 == 복사본', () => {
-    const sets = JSON.parse(fs.readFileSync(path.join(ROOT, 'config/library/shape-sets.json'), 'utf8'));
+    const sets = JSON.parse(fs.readFileSync(path.join(ROOT, 'library/shape-sets.json'), 'utf8'));
     expect(SHAPE_SETS).toEqual(sets);
   });
 });

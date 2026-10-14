@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { LAYOUT_ENTRIES, GROUP_KEYS, SHAPE_SET_NAMES, DEFAULT_SHAPE_SET, implSummary, pptgenSummary, exampleVariants, snippetOf, previewMd, matches } from '../lib/layout-library';
 import { clientCompileMarkdown, BUNDLED_STYLES } from '../lib/client-compiler';
+import { SHORTCODE_DOCS } from '../../config/shortcode-guide';
 // @ts-ignore — 순수 JS 생성 모듈
 import { LAYOUTS } from '../../scripts/library-map.mjs';
 
@@ -30,6 +31,21 @@ describe('배치 라이브러리 — 카탈로그 그대로', () => {
     expect(find('icon-grid')).toEqual(['grid.cards']);   // 옛 이름으로도 찾는다
     expect(find('계단')).toContain('process.staircase');
     expect(find('')).toHaveLength(66);
+  });
+});
+
+describe('설명은 카탈로그 하나에서 (emoji·desc → 가이드 패널·배치 라이브러리)', () => {
+  it('66종 모두 emoji·desc 가 있다', () => {
+    expect(LAYOUT_ENTRIES.filter((e) => !e.emoji || !e.desc).map((e) => e.name)).toEqual([]);
+  });
+  it('가이드 패널(SHORTCODE_DOCS)의 설명·이름 = 카탈로그 값, 칸 안내는 fields·args 에서', () => {
+    for (const d of SHORTCODE_DOCS) {
+      const e = LAYOUT_ENTRIES.find((x) => x.name === d.key)!;
+      expect(d.desc).toBe(e.desc);
+      expect(d.name).toBe(`${e.emoji} ${e.label} (${e.name})`);
+      for (const f of Object.keys(e.fields)) expect(d.fields).toContain(f);
+    }
+    expect(SHORTCODE_DOCS.find((d) => d.key === 'process.staircase')!.fields).toContain('인수 grow=1.0~1.6(1.35)');
   });
 });
 

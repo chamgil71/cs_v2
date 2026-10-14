@@ -22,9 +22,9 @@
 | 숏코드 HTML 렌더링 | `scripts/shortcode-render.mjs` (정본 단일 모듈) + 기능 이름 배치 `scripts/shortcode-ext/*`(그 모듈이 부름) | build-guide/presentation/client 에 각각 렌더러 중복 ❌ |
 | 배치 인수 기본값(grow·emphasis·badge·connector…) | 카탈로그 `args.default` → `library-map.mjs` `defaults` → `layoutArgs()` | 렌더러에 `grow \|\| 1.35` 같은 기본 수치 ❌ |
 | 숏코드 컴포넌트 CSS | `scripts/shortcode-styles.mjs` (`var(--*)` 기반) | 셸마다 컴포넌트 CSS 따로 작성 ❌ |
-| 숏코드 가이드/삽입 스니펫 | `config/shortcode-guide.ts` (단일 출처) | 가이드패널·insertShortcode 에 스니펫 중복 ❌ |
-| 배치 이름·그룹·별칭·색 이름 | `config/library/layouts.json` (공용 카탈로그 복사본 → `scripts/library-map.mjs` 생성본, 해석은 `scripts/library-names.mjs`) | 렌더러/메뉴에 `"main"→brand` 같은 색 이름 표·그룹 라벨 직접 작성 ❌ (pptgen 과 어긋남) |
-| 카드 서식(외곽선·그림자·둥글기·보조 카드색) | `config/library/shape-sets.json` → `scripts/shape-set.mjs` | CSS 에 `border: 1px solid`·`box-shadow` 를 변수 없이 새로 추가 ❌, PPTX 카드에 `line:{color:pal.border,width:0.75}` 직접 작성 ❌ → `helpers.cardBox()` ✅ |
+| 숏코드 가이드/삽입 스니펫 | `config/shortcode-guide.ts` (단일 출처 — 목록·기호·설명·칸 안내·스니펫은 카탈로그 `emoji`·`desc`·`fields`·`args`·`example` 에서 만든다) | 가이드패널·insertShortcode 에 스니펫 중복 ❌, 배치 설명 문구를 코드에 직접 작성 ❌ |
+| 배치 이름·그룹·별칭·색 이름 | `library/layouts.json` (공용 카탈로그 복사본 → `scripts/library-map.mjs` 생성본, 해석은 `scripts/library-names.mjs`) | 렌더러/메뉴에 `"main"→brand` 같은 색 이름 표·그룹 라벨 직접 작성 ❌ (pptgen 과 어긋남) |
+| 카드 서식(외곽선·그림자·둥글기·보조 카드색) | `library/shape-sets.json` → `scripts/shape-set.mjs` | CSS 에 `border: 1px solid`·`box-shadow` 를 변수 없이 새로 추가 ❌, PPTX 카드에 `line:{color:pal.border,width:0.75}` 직접 작성 ❌ → `helpers.cardBox()` ✅ |
 
 - **크기 캐스케이드 우선순위**: `config 기본 → styles.json(스타일별 선택) → frontmatter(문서) → 숏코드 블록 인자(title-size=/desc-size=)`. 뒤로 갈수록 우선.
 - 새 수치가 필요하면 **먼저 적절한 config 파일에 키를 추가**하고 코드는 그 키를 읽는다. 부득이한 폴백 리터럴은 `D.x?.y ?? 기본값` 형태로만 허용.
@@ -102,8 +102,8 @@ cs_v2/
 │   ├── md-to-pptx.mjs             # MD → PPTX 변환 CLI (Universal Schema 기반)
 │   ├── library-names.mjs          # [단일 출처] 공용 배치 카탈로그 이름 해석(기능 이름·별칭→숏코드)·::: 블록 정규식·제목 속성 제거·색 이름
 │   ├── shape-set.mjs              # [단일 출처] 서식 세트 → HTML CSS 변수 / PPTX 카드 서식(pal.shape → helpers.cardBox)
-│   ├── library-map.mjs            # [자동 생성 — 손으로 고치지 않음] config/library 카탈로그의 import 용 생성본
-│   ├── sync-library.mjs           # 공용 카탈로그 원본(coding/_templates/slide-library/catalog) → config/library 복사 + library-map 생성
+│   ├── library-map.mjs            # [자동 생성 — 손으로 고치지 않음] library 카탈로그의 import 용 생성본
+│   ├── sync-library.mjs           # 공용 카탈로그 원본(coding/_templates/slide-library/catalog) → library 복사 + library-map 생성
 │   ├── migrate-names.mjs          # md 의 옛 배치 이름 → 기능 이름 + 인수 (npm run migrate:names, --check)
 │   ├── build-publish.mjs          # md_src 전체 폴더를 public/에 일괄 빌드하는 독립 유틸(더 이상 GUI에서 호출되지 않음 — 2026-09-02부터 웹 GUI의 "가이드 컬렉션에 저장" 옵션은 build-folder.mjs를 씀. 수동 실행은 여전히 가능)
 │   ├── build-standalone.mjs       # 스탠드얼론 빌드 (npm run build:standalone)
@@ -139,9 +139,8 @@ cs_v2/
 │   ├── pptdesign.config.json      # PPTX 레이아웃·폰트 크기 기본값 (JSONC, 수치 단일 출처)
 │   ├── htmldesign.config.json     # HTML 폰트·크기 토큰 (JSONC, htmlSize guide/presentation 프로파일 + scale)
 │   ├── font-aliases.json          # 폰트 alias → 실제 폰트명 매핑
-│   ├── shortcode-guide.ts         # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, MarkdownCompiler가 import — 분류·기능 이름은 카탈로그에서)
-│   ├── library/                   # 공용 배치 카탈로그 복사본 — layouts.json(배치 66종·그룹·색 이름) + shape-sets.json(서식 세트 6종). pptgen 과 같은 규칙. README.md 참조
-│   └── layout.json                # 슬라이드 레이아웃
+│   └── shortcode-guide.ts         # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, MarkdownCompiler가 import — 분류·기능 이름·설명은 카탈로그에서)
+├── library/                       # [라이브러리 층] 공용 배치 카탈로그 복사본 — layouts.json(배치 66종·그룹·색 이름·예시) + shape-sets.json(서식 세트 6종). pptgen 과 같은 규칙. README.md 참조 (2026-10-14 config/ 에서 분리 — config 는 사람이 고르는 설정값만)
 ├── md_src/                        # 마크다운 원본 소스
 │   ├── claudeguide/               # Claude 가이드 문서
 │   ├── guides/                    # AI 툴별 가이드 문서 (30+ 파일)
@@ -241,7 +240,7 @@ npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 
 ### 이름은 하나로 — 기능 이름 (2026-10-14, pptgen 과 같은 규칙)
 
-**정식 이름은 공용 카탈로그의 기능 이름 `<그룹>.<형태>` 하나뿐이다**(pptgen 과 같음, 단일 출처 `config/library/layouts.json` — `npm run sync:library`).
+**정식 이름은 공용 카탈로그의 기능 이름 `<그룹>.<형태>` 하나뿐이다**(pptgen 과 같음, 단일 출처 `library/layouts.json` — `npm run sync:library`).
 학습 콘텐츠용으로 붙였던 옛 숏코드 이름(`icon-grid`·`compare-grid`…)은 **읽기 호환 별칭**이자 렌더러 안의 **구현 ID**일 뿐이며, 문서·스니펫·화면·md_src 에 쓰지 않는다(md_src 466곳 이전 완료, 테스트가 잔존을 막음).
 
 | 그룹 | 기능 이름 (cs_v2 가 직접 그리는 64종 — 굵게 = 2026-10-14 C 단계에서 근사 → 전용 HTML) |
@@ -435,7 +434,7 @@ done:
 
 ```bash
 npm test          # vitest run (src/__tests__/ 하위 전체, 482개)
-npm run sync:library        # 공용 배치 카탈로그 원본 → config/library + scripts/library-map.mjs
+npm run sync:library        # 공용 배치 카탈로그 원본 → library + scripts/library-map.mjs
 npm run sync:library:check  # 원본과 다르면 종료코드 1
 npm run test:watch
 ```
@@ -447,7 +446,7 @@ npm run test:watch
 - `wcag.test.ts` (18개): `getContrast()`, `getLuminance()` 계산 검증
 - `layout-library.test.ts` (72개): 웹 배치 라이브러리 데이터 — 화면 목록 = 카탈로그 66종(순서 그대로), 직접 64·근사 2, 옛 이름 검색, 예시 66종×변형이 가이드·슬라이드 코어로 그려지고 `:::` 가 남지 않음
 - `layout-ext.test.ts` (54개): 기능 이름 배치 전용 HTML(카탈로그 예시·변형 렌더, `sx-*` 클래스 CSS 커버리지, 이스케이프), 배치 인수(기본값 = 카탈로그), 항목 `tag: alt`(HTML·PPTX), 브라우저 PPTX 발표스크립트
-- `library-catalog.test.ts` (151개): 공용 배치 카탈로그 — 생성본(library-map)==복사본(config/library), 기능 이름 66종이 전부 HTML·PPTX 로 그려짐, 옛 이름 42개 = 기능 이름+인수와 출력 동일, 변형(인수 → 구현 ID), md_src 옛 이름 0, callout 인수 파싱, `.` 이름 블록·제목 속성 제거, 서식 세트(template=기존 서식, 색은 테마 변수만), `bg=alt`, PPTX `line:{width:0}` 금지
+- `library-catalog.test.ts` (151개): 공용 배치 카탈로그 — 생성본(library-map)==복사본(library), 기능 이름 66종이 전부 HTML·PPTX 로 그려짐, 옛 이름 42개 = 기능 이름+인수와 출력 동일, 변형(인수 → 구현 ID), md_src 옛 이름 0, callout 인수 파싱, `.` 이름 블록·제목 속성 제거, 서식 세트(template=기존 서식, 색은 테마 변수만), `bg=alt`, PPTX `line:{width:0}` 금지
 
 ---
 
@@ -477,7 +476,7 @@ npm run test:watch
 | VisualAdjuster/SubUtilities 테마 목록에 `"$comment"`가 가짜 테마로 표시됨 (2026-09-01) | `config/styles.json`의 JSONC 주석 관용구 `"$comment"` 키를, `/api/list-styles`(vite-api-plugin.ts)와 브라우저 standalone 폴백 `BUNDLED_STYLES`(client-compiler.ts)가 필터 없이 그대로 `Object.entries()`로 순회 → 두 컴포넌트 모두 이를 실제 테마 카드로 렌더 | 두 ingestion 지점에서 `$`-접두 키를 응답/번들 전에 제외(단일 지점 수정으로 모든 소비처 자동 해소). `/api/save-styles`는 클라이언트가 `$comment`를 더 이상 보내지 않으므로, 저장 시 기존 파일의 `$`-키를 읽어 병합해 보존 |
 | `VisualAdjuster.tsx`(657L)·`SubUtilities.tsx`(1065L)가 200라인 제한(development_style.md) 위반 (2026-09-01) | God Component — 각각 3개의 독립 패널/섹션을 단일 파일에 상태+렌더링 함께 보유 | VisualAdjuster: 상태·핸들러를 `useThemeEditor`/`useThemeMutations` 훅으로, 3패널을 `visual-adjuster/*` 서브컴포넌트로 분리 → 컴포넌트는 48라인 조합 셸로 축소. SubUtilities: 섹션별 상태가 완전 독립임을 확인 후 `sub-utilities/*` 3개 자기완결 컴포넌트(+PPTX XML 스캔/치환 로직은 `lib/pptx-color-remap.ts`로 분리)로 나눔 → 컴포넌트는 13라인 조합 셸로 축소. 전 파일 200라인 이하 확인, 204/204 테스트 통과, standalone 4종 빌드+헤드리스 검증 완료 |
 | `build-guide-hub.mjs` 홈 화면이 사이드바에 비해 초라함(히어로·검색·필터 없음) (2026-09-02) | 이 오프라인 허브는 원본 `c:\ai\creative-spark`의 React 홈페이지(`src/pages/Index.tsx`, 히어로+검색+카테고리 pill+카드형 그리드, shadcn/ui 기반 — 실제로 `aitoolguide-ms.netlify.app`에 배포되어 있던 화면)를 이식하지 않고 처음부터 새로 만든 vanilla-JS SPA라, 사이드바만 갖추고 홈 화면은 원본보다 훨씬 단순한 채로 남아 있었음 | `build-guide-hub.mjs`의 `showHome()`을 히어로(배지+그라디언트 타이틀+실시간 검색+CTA)·카테고리 pill(카운트 포함)·카드 그리드(상단 강조 바+hover 화살표)+홈 푸터로 재작성해 원본 디자인을 vanilla JS로 재현. 겸사겸사 `sync-guides-index.mjs`와 중복돼 있던 `STYLE_META`/`CATEGORY_ORDER`를 `scripts/guide-categories.mjs` 단일 출처로 추출(드리프트 방지) — 이 과정에서 41개 가이드 기준으로 갱신되지 않고 있던 `src/data/guides.json`(19개 가이드 기준 stale 데이터)도 재동기화됨 |
-| 기능 이름(`grid.cards`)·서식 세트 도입 — pptgen 과 라이브러리 규칙 통일 (2026-10-14) | cs_v2 숏코드 이름·분류가 학습 콘텐츠(aidev·aitool) 설명용으로 붙어 범용성이 낮았고, pptgen 과 배치 이름·항목 규칙·색 이름이 달라 같은 md 를 양쪽에서 빌드할 수 없었음. 테마(색)와 배치(숏코드)는 분리됐지만 도형 서식(그림자·외곽선 굵기·보조 카드색)이 CSS/렌더러에 박혀 있었음 | 공용 카탈로그(`config/library/`, 원본 coding `_templates/slide-library/catalog`) 도입 + `library-names.mjs`(이름·정규식·색 이름 단일 출처) + `shape-set.mjs`(서식 세트) + `shortcode-guide.ts` 분류를 카탈로그 그룹으로. 고유 이름 비해석으로 기존 문서 마크업 동일(가이드·프레젠테이션 4종 비교 SAME), 테스트 204→288 |
+| 기능 이름(`grid.cards`)·서식 세트 도입 — pptgen 과 라이브러리 규칙 통일 (2026-10-14) | cs_v2 숏코드 이름·분류가 학습 콘텐츠(aidev·aitool) 설명용으로 붙어 범용성이 낮았고, pptgen 과 배치 이름·항목 규칙·색 이름이 달라 같은 md 를 양쪽에서 빌드할 수 없었음. 테마(색)와 배치(숏코드)는 분리됐지만 도형 서식(그림자·외곽선 굵기·보조 카드색)이 CSS/렌더러에 박혀 있었음 | 공용 카탈로그(`library/`, 원본 coding `_templates/slide-library/catalog`) 도입 + `library-names.mjs`(이름·정규식·색 이름 단일 출처) + `shape-set.mjs`(서식 세트) + `shortcode-guide.ts` 분류를 카탈로그 그룹으로. 고유 이름 비해석으로 기존 문서 마크업 동일(가이드·프레젠테이션 4종 비교 SAME), 테스트 204→288 |
 | PPTX 에 "선 없음" 도형마다 1pt 짙은 회색 테두리 (2026-10-14 발견, 이전부터 존재) | 렌더러·변환기 49곳(pptx-renderers 37 + md-to-pptx·pptx-browser 12)이 `line: { width: 0 }` 으로 선을 없애려 했으나 pptxgenjs 는 `width || 1` 로 처리해 `<a:ln w="12700"><srgbClr 333333>` 을 씀(카드 상단 색 띠·배지·헤더 바 등에 검은 테두리) | 전부 pptxgenjs 공식 표기 `line: { type: "none" }` 로 교체 + 재발 방지 테스트(`library-catalog.test.ts`) |
 | cs_v2 에 없는 배치·인수 — 카탈로그 38종을 "가장 가까운 숏코드"로 근사 (2026-10-14, 인계서 C) | 계단·기둥·게이지·막대·천칭·인용·이미지·회사 패턴 상자 등이 cs_v2 렌더러가 없어 모양이 다른 숏코드(level-grid·columns-grid·stat-grid…)로 그려졌고, pptgen 이 받는 인수(badge·emphasis·grow·header·caption·connector=line)와 항목 `tag: alt` 를 cs_v2 가 무시 | 기능 이름 구현 `scripts/shortcode-ext/`(그룹별 7파일 + 공용, `var(--*)`·서식 세트 변수만, CSS 는 SHORTCODE_CSS 로 합침) 36종 + 기존 분기에 인수 추가(기본값은 카탈로그 `args.default` → `layoutArgs()`, 기본값이면 예전 마크업 그대로). PPTX 는 카탈로그 `pptx_shortcode` 로 예전 근사 유지. md_src 150개 산출물 전후 동일, 66종 예시 가이드·슬라이드(라이트/다크) 헤드리스 확인. 테스트 355→410 |
 | 브라우저 PPTX 에 발표스크립트 없음 (2026-10-14 발견) | `pptx-browser.ts` 가 `slide-config notes` 를 읽기만 하고 `addNotes` 를 부르지 않음(CLI `md-to-pptx.mjs` 만 넣음) | CLI 와 같게 섹션 첫 페이지에 `addNotes` + 실제 PPTX 노트 슬라이드 확인 테스트(`layout-ext.test.ts`) |

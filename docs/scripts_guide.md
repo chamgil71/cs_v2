@@ -281,7 +281,7 @@ coding/_templates/slide-library/catalog/   ← 원본(정본, ppt clone 산출�
   layouts.json · shape-sets.json
         │  npm run sync:library   (scripts/sync-library.mjs, --check 로 드리프트 검사)
         ▼
-cs_v2/config/library/*.json (복사본)  →  scripts/library-map.mjs (생성본: LAYOUTS·LAYOUT_ALIASES·LAYOUT_GROUPS·SHAPE_SETS·COLOR_TOKENS)
+cs_v2/library/*.json (복사본)  →  scripts/library-map.mjs (생성본: LAYOUTS·LAYOUT_ALIASES·LAYOUT_GROUPS·SHAPE_SETS·COLOR_TOKENS)
         │
         ├─ scripts/library-names.mjs   resolveShortcode(name) · shortcodeBlockRe() · stripHeadingAttrs(md) · colorToken(name, medium) · wantsAltBg(args)
         │     ├─ shortcode-render.mjs  renderShortcode = 이름 해석 → layoutArgs(카탈로그 기본값 < 블록 인수) → renderNative(옛 숏코드 분기 | shortcode-ext 기능 이름 구현) → header 머리띠 → bg=alt 래퍼(.sc-bg-alt)
@@ -304,7 +304,7 @@ cs_v2/config/library/*.json (복사본)  →  scripts/library-map.mjs (생성본
 
 ### 5-0. 생성본 `library-map.mjs` 의 `LAYOUTS[이름]` (sync-library 가 만든다)
 
-`group`·`label`·`fields`·`status`·`shortcode`·`pptx_shortcode`·`variants`(인수 → 구현 ID)·`defaults`(인수 기본값 — 렌더러가 `layoutArgs()` 로 읽음)·
+`group`·`label`·`emoji`·`desc`(메뉴 기호·설명 — 가이드 패널·배치 라이브러리)·`fields`·`status`·`shortcode`·`pptx_shortcode`·`variants`(인수 → 구현 ID)·`defaults`(인수 기본값 — 렌더러가 `layoutArgs()` 로 읽음)·
 `args`(인수 표: `values`·`default`·`cs_v2`·`pptgen`·`note` — 웹 배치 라이브러리 화면)·`pptgen`(`status`·`pattern`·`theme` — pptgen 이 그리는 방법)·`aliases`(옛 이름 — 화면 검색).
 화면·렌더러·테스트가 이 생성본만 읽으므로 카탈로그를 고치면 `npm run sync:library` 한 번으로 전부 따라온다.
 

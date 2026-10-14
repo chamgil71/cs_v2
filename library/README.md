@@ -1,4 +1,4 @@
-# config/library — 공용 배치 카탈로그 (pptgen 과 같이 쓰는 규칙)
+# library — 공용 배치 카탈로그 (pptgen 과 같이 쓰는 규칙)
 
 cs_v2 와 pptgen(coding 저장소 `_templates/myskill/pptgen`)이 **같은 배치 이름 · 같은 항목 규칙 · 같은 서식 세트 · 같은 색 이름**을 쓰게 하는 단일 출처입니다.
 한쪽에서 만든 md 를 다른 쪽에서 그대로 빌드할 수 있게 하는 것이 목적입니다.
@@ -16,13 +16,13 @@ cs_v2 와 pptgen(coding 저장소 `_templates/myskill/pptgen`)이 **같은 배�
   둘 다 손으로 고치지 않습니다.
 
 ```bash
-npm run sync:library          # 원본 → config/library/*.json 복사 + scripts/library-map.mjs 생성
+npm run sync:library          # 원본 → library/*.json 복사 + scripts/library-map.mjs 생성
 npm run sync:library:check    # 원본과 다르면 종료코드 1 (파일은 안 바꿈)
 # 원본 위치 지정: --from <폴더> 또는 환경변수 SLIDE_CATALOG
 ```
 
-- **나중에 cs_v2 로 옮길 때**: 원본을 이 폴더로 옮기고, pptgen 쪽 `config/library.json` 의 `catalog.search` 첫 줄을
-  `…/cs_v2/config/library` 로 바꾸면 됩니다(pptgen 은 이미 이 경로도 찾습니다). sync 스크립트는 방향만 바뀝니다.
+- **나중에 cs_v2 로 옮길 때**: 원본을 이 폴더로 옮기고, pptgen 쪽 `library.json` 의 `catalog.search` 첫 줄을
+  `…/cs_v2/library` 로 바꾸면 됩니다(pptgen 은 이미 이 경로도 찾습니다). sync 스크립트는 방향만 바뀝니다.
 
 ## cs_v2 에서 쓰는 방법
 

@@ -247,7 +247,8 @@ PPTX의 모든 폰트 크기·레이아웃 수치의 home. 주요 섹션:
 ### 6.5 shortcode-guide.ts — 가이드/삽입 데이터 (단일 출처)
 `MarkdownCompiler`의 가이드 패널 표시 + `insertShortcode()` 삽입 스니펫이 **모두 이 배열을 참조**. 25개 항목(`key`, `name`, `category`, `desc`, `fields`, `snippet`). 멀티라인 스니펫은 템플릿 리터럴.
 
-### 6.6 layout.json — 슬라이드 레이아웃 오프셋
+### 6.6 (삭제됨) layout.json
+아무 코드도 읽지 않던 `config/layout.json`(옛 V2.0 컴포넌트 좌표 초안)은 2026-10-14 삭제했다. PPTX 수치는 `pptdesign.config.json`, 배치 이름·인수·예시는 최상위 `library/`(공용 카탈로그 복사본).
 
 ---
 

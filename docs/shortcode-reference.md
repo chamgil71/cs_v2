@@ -2,7 +2,7 @@
 
 > **이름은 기능 이름 하나로 운영합니다(2026-10-14).** 배치 이름은 pptgen 과 같은 공용 카탈로그의 `<그룹>.<형태>`(예: `grid.cards`, `process.track`)이고,
 > 모양 변형은 인수(`align`·`variant`·`connector`…)로 고릅니다. 예전 숏코드 이름(`icon-grid` 등)은 읽기 호환 별칭으로만 남아 있습니다(맨 아래 표).
-> 이 문서는 cs_v2 가 직접 그리는 **64종**(구현 상태 `ready` — 옛 숏코드 28종은 그룹별 절, 2026-10-14 에 추가한 36종은 「기능 이름 배치」 절)을 카탈로그 그룹 순서로 정리합니다. 카탈로그 전체 66종의 이름·인수: `config/library/layouts.json`.
+> 이 문서는 cs_v2 가 직접 그리는 **64종**(구현 상태 `ready` — 옛 숏코드 28종은 그룹별 절, 2026-10-14 에 추가한 36종은 「기능 이름 배치」 절)을 카탈로그 그룹 순서로 정리합니다. 카탈로그 전체 66종의 이름·인수: `library/layouts.json`.
 > 변경 이력 상세: [shortcode-changelog.md](./shortcode-changelog.md)
 
 ---
@@ -1487,7 +1487,7 @@ Part 하위의 챕터 번호·제목·설명·구분 배지 목록화.
 | `workflow-flow` | `process.track connector=arrow` |
 | `workflow-strip` | `process.track connector=arrow` |
 
-pptgen 옛 구현 ID(`staircase`·`hub-spoke`·`c01-p07` 등)도 같은 방식으로 받습니다 — 전체 표는 공용 카탈로그 `config/library/layouts.json` 의 `aliases`·`alias_args`.
+pptgen 옛 구현 ID(`staircase`·`hub-spoke`·`c01-p07` 등)도 같은 방식으로 받습니다 — 전체 표는 공용 카탈로그 `library/layouts.json` 의 `aliases`·`alias_args`.
 
 ---
 

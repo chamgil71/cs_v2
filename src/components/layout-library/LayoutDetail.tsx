@@ -16,7 +16,8 @@ export default function LayoutDetail({ entry: e, args }: Props) {
       <div>
         <div className="text-[11px] text-blue-600 font-bold">{groupLabel(e.group)} · <code>{e.group}</code></div>
         <h3 className="text-base font-bold text-slate-800"><code>{e.name}</code></h3>
-        <p className="text-slate-500">{e.label}</p>
+        <p className="text-slate-500">{e.emoji} {e.label}</p>
+        {e.desc && <p className="text-slate-700 mt-1 leading-relaxed">{e.desc}</p>}
       </div>
       <dl className="grid grid-cols-[88px_1fr] gap-y-1 gap-x-2">
         <dt className="text-slate-400">cs_v2 HTML</dt><dd className="text-slate-700">{s.html}</dd>

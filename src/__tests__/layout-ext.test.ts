@@ -145,7 +145,7 @@ describe('브라우저 PPTX — 발표스크립트(notes) 누락 수정', () => 
 
 describe('카탈로그 기본값 생성본', () => {
   it('library-map 에 defaults·pptx_shortcode 가 있다(카탈로그와 같음)', () => {
-    const json = JSON.parse(fs.readFileSync(path.join(ROOT, 'config/library/layouts.json'), 'utf8'));
+    const json = JSON.parse(fs.readFileSync(path.join(ROOT, 'library/layouts.json'), 'utf8'));
     for (const [k, v] of Object.entries<any>(json.layouts)) {
       const d = Object.fromEntries(Object.entries<any>(v.args || {}).filter(([, a]) => a.default !== '' && a.default != null).map(([a, x]) => [a, String(x.default)]));
       expect(LAYOUTS[k].defaults, k).toEqual(d);

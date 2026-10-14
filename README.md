@@ -77,7 +77,7 @@ sequenceDiagram
   - `scripts/md-to-pptx.mjs`: 마크다운 ➡️ PowerPoint PPTX 파일 빌드. (폰트·크기 수치는 `config/pptdesign.config.json` 에서 로드 — 하드코딩 없음)
   - `scripts/pptx-analyzer.js` & `spec-parser.js`: PPTX XML 구조 압축 해제 및 디자인 사양 데이터 추출/치환 코어.
   - `scripts/pptx-renderers/`: 각 개별 숏코드(git-flow, editor-box 등)의 PPTX 네이티브 드로잉 코어 렌더러 모듈들.
-  - `scripts/library-names.mjs` / `scripts/shape-set.mjs` **(공용 배치 카탈로그 연결)**: pptgen 과 같은 배치 이름(`grid.cards` 등)·색 이름을 cs_v2 숏코드로 해석하고, 서식 세트(외곽선·그림자·둥글기·보조 카드색)를 HTML 변수/PPTX 카드 서식으로 바꿉니다. 원본 카탈로그는 `config/library/`(복사본) — `npm run sync:library`. 상세: [`config/library/README.md`](config/library/README.md)
+  - `scripts/library-names.mjs` / `scripts/shape-set.mjs` **(공용 배치 카탈로그 연결)**: pptgen 과 같은 배치 이름(`grid.cards` 등)·색 이름을 cs_v2 숏코드로 해석하고, 서식 세트(외곽선·그림자·둥글기·보조 카드색)를 HTML 변수/PPTX 카드 서식으로 바꿉니다. 원본 카탈로그는 `library/`(복사본) — `npm run sync:library`. 상세: [`library/README.md`](library/README.md)
 
 ---
 
@@ -170,8 +170,8 @@ cs_v2/
 │   ├── md-to-pptx.mjs      # 마크다운 ➡️ PPTX 컴파일 엔진 (config 폰트 로드, npm run build:pptx)
 │   ├── library-names.mjs   # 공용 배치 카탈로그 이름 해석(기능 이름·별칭 → 숏코드) + ::: 블록 정규식·제목 속성 제거·색 이름 단일 출처
 │   ├── shape-set.mjs       # 서식 세트 → HTML CSS 변수 / PPTX 카드 서식(pal.shape)
-│   ├── library-map.mjs     # [자동 생성] config/library 카탈로그의 import 용 생성본 (손으로 고치지 않음)
-│   ├── sync-library.mjs    # 공용 카탈로그 원본 → config/library 복사 + library-map.mjs 생성 (npm run sync:library)
+│   ├── library-map.mjs     # [자동 생성] library 카탈로그의 import 용 생성본 (손으로 고치지 않음)
+│   ├── sync-library.mjs    # 공용 카탈로그 원본 → library 복사 + library-map.mjs 생성 (npm run sync:library)
 │   ├── migrate-names.mjs   # md 의 옛 배치 이름 → 기능 이름(+인수) 일괄 변환 (npm run migrate:names, --check)
 │   └── pptx-renderers/     # 숏코드별 PPTX 드로잉 렌더러 모듈 + registry.mjs
 ├── docs/                   # V2.0 공식 마스터 문서 보관 공간
@@ -188,9 +188,8 @@ cs_v2/
 │   ├── pptdesign.config.json  # PPTX 레이아웃·폰트 크기 기본값 (수치 단일 출처)
 │   ├── htmldesign.config.json # HTML 폰트·크기 토큰 (guide/presentation 프로파일)
 │   ├── font-aliases.json   # 폰트 alias → 실제 폰트명 매핑
-│   ├── shortcode-guide.ts  # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, 분류·기능 이름은 카탈로그에서)
-│   ├── library/            # 공용 배치 카탈로그 복사본(layouts.json 66종·shape-sets.json 6종) — pptgen 과 같은 규칙
-│   └── layout.json         # PPTX 분석 가공 오프셋 보관 JSON
+│   └── shortcode-guide.ts  # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, 분류·기능 이름은 카탈로그에서)
+├── library/                # [라이브러리 층] 공용 배치 카탈로그 복사본(layouts.json 66종·shape-sets.json 6종) — pptgen 과 같은 규칙(npm run sync:library)
 ├── src/__tests__/          # Vitest — shortcode-conformance(정합성 130) + library-catalog(카탈로그 151) + layout-ext(배치 인수 54) + layout-library(배치 라이브러리 72) 등 482건
 ├── md_src/                 # 마크다운 원천 소스 보관 폴더 (하위 폴더마다 hub.config.json 선택적 배치)
 ├── public/                 # [산출물, gitignore] 웹 GUI "가이드 컬렉션 저장" 시 Vite 개발서버가 서빙하는 재빌드 위치

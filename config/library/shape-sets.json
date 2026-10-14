@@ -1,0 +1,177 @@
+{
+ "schema": 1,
+ "_doc": "공용 서식 세트(도형 서식 층) — pptgen 과 cs_v2 가 같은 이름으로 카드의 채움·보조 카드색·외곽선·그림자·둥글기를 고른다. 세트는 '모양'만 정하고 색은 테마 색 이름(tokens)으로만 가리킨다 → 테마를 바꾸면 같은 세트가 그 테마 색으로 다시 칠해진다(테마와 따로 놀지 않는다). 'template' 은 테마(회사 템플릿 등)가 가진 원래 서식을 그대로 쓴다는 뜻 — 기본값. 고르는 곳: 머리말/조합 shape=<세트>, 블록 인수 bg=alt(보조 카드색), 항목 tag: alt. 규칙: catalog/README.md '서식 세트'.",
+ "updated": "2026-10-14",
+ "default": "template",
+ "tokens": {
+  "_doc": "세트가 쓰는 색 이름 → 매체별 실제 색. pptgen = 테마 팔레트 키(왼쪽이 없으면 \"|\" 뒤), cs_v2 = CSS 값(테마 변수 기반 — 다크/라이트 셸 모두에서 읽히도록 카드 바탕 var(--card-bg) 에 섞는다), cs_v2_pptx = cs_v2 PPTX 팔레트 키(md-to-pptx makePalette).",
+  "white": {
+   "pptgen": "white",
+   "cs_v2": "var(--card-bg, #fff)",
+   "cs_v2_pptx": "white"
+  },
+  "surface": {
+   "pptgen": "cardBg",
+   "cs_v2": "color-mix(in srgb, var(--text, #1A1A2E) 4%, var(--card-bg, #fff))",
+   "cs_v2_pptx": "bgLight"
+  },
+  "primary": {
+   "pptgen": "main",
+   "cs_v2": "var(--brand)",
+   "cs_v2_pptx": "brand"
+  },
+  "secondary": {
+   "pptgen": "sub",
+   "cs_v2": "var(--brand-dark)",
+   "cs_v2_pptx": "brandDark"
+  },
+  "primary-light": {
+   "pptgen": "lightMain|cardBg",
+   "cs_v2": "color-mix(in srgb, var(--brand) 10%, var(--card-bg, #fff))",
+   "cs_v2_pptx": "brandLight"
+  },
+  "secondary-light": {
+   "pptgen": "lightSub|cardBg",
+   "cs_v2": "color-mix(in srgb, var(--brand-dark) 6%, var(--card-bg, #fff))",
+   "cs_v2_pptx": "bgLight"
+  },
+  "accent-light": {
+   "pptgen": "lightAccent2|cardBg",
+   "cs_v2": "color-mix(in srgb, var(--brand) 16%, var(--card-bg, #fff))",
+   "cs_v2_pptx": "brandLight"
+  },
+  "border": {
+   "pptgen": "lightMain|gray",
+   "cs_v2": "var(--border)",
+   "cs_v2_pptx": "border"
+  },
+  "ink": {
+   "pptgen": "textDark",
+   "cs_v2": "var(--text)",
+   "cs_v2_pptx": "text"
+  }
+ },
+ "radius": {
+  "none": {
+   "in": 0,
+   "px": 0
+  },
+  "sm": {
+   "in": 0.06,
+   "px": 6
+  },
+  "md": {
+   "in": 0.14,
+   "px": 12
+  },
+  "lg": {
+   "in": 0.24,
+   "px": 20
+  }
+ },
+ "shadow": {
+  "none": null,
+  "soft": {
+   "blur_pt": 10,
+   "dist_pt": 3,
+   "alpha": 0.12,
+   "css": "0 3px 10px rgba(0,0,0,0.10)"
+  },
+  "medium": {
+   "blur_pt": 16,
+   "dist_pt": 5,
+   "alpha": 0.18,
+   "css": "0 6px 18px rgba(0,0,0,0.14)"
+  },
+  "strong": {
+   "blur_pt": 24,
+   "dist_pt": 8,
+   "alpha": 0.24,
+   "css": "0 10px 30px rgba(0,0,0,0.20)"
+  }
+ },
+ "sets": {
+  "template": {
+   "label": "테마 원래 서식(회사 템플릿 등 — 기본). 외곽선·그림자·둥글기는 테마 그대로, 보조 카드색만 card_alt 로 정한다",
+   "inherit": true,
+   "card_alt": {
+    "fill": "secondary-light"
+   }
+  },
+  "flat": {
+   "label": "평면 — 얇은 외곽선, 그림자 없음",
+   "card": {
+    "fill": "white",
+    "radius": "sm"
+   },
+   "card_alt": {
+    "fill": "primary-light"
+   },
+   "outline": {
+    "width_pt": 0.75,
+    "color": "border"
+   },
+   "shadow": "none"
+  },
+  "soft": {
+   "label": "부드러운 그림자 — 외곽선 없음",
+   "card": {
+    "fill": "white",
+    "radius": "md"
+   },
+   "card_alt": {
+    "fill": "secondary-light"
+   },
+   "outline": {
+    "width_pt": 0,
+    "color": "border"
+   },
+   "shadow": "soft"
+  },
+  "outline": {
+   "label": "윤곽 강조 — 대표색 외곽선",
+   "card": {
+    "fill": "white",
+    "radius": "md"
+   },
+   "card_alt": {
+    "fill": "primary-light"
+   },
+   "outline": {
+    "width_pt": 1.5,
+    "color": "primary"
+   },
+   "shadow": "none"
+  },
+  "elevated": {
+   "label": "떠 있는 카드 — 큰 그림자",
+   "card": {
+    "fill": "white",
+    "radius": "lg"
+   },
+   "card_alt": {
+    "fill": "surface"
+   },
+   "outline": {
+    "width_pt": 0,
+    "color": "border"
+   },
+   "shadow": "medium"
+  },
+  "tinted": {
+   "label": "옅은 색 카드 — 대표색 옅은 바탕",
+   "card": {
+    "fill": "primary-light",
+    "radius": "md"
+   },
+   "card_alt": {
+    "fill": "secondary-light"
+   },
+   "outline": {
+    "width_pt": 0,
+    "color": "border"
+   },
+   "shadow": "none"
+  }
+ }
+}

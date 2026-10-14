@@ -74,16 +74,14 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 외곽 카드
     slide.addShape("roundRect", {
       x: cx, y: cy, w: cardW, h: maxCardH,
-      rectRadius: r,
-      fill: { color: pal.white },
-      line: { color: pal.border, width: 0.75 }
+      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })
     });
     
     // 카드 상단 컬러 바
     slide.addShape("rect", {
       x: cx, y: cy, w: cardW, h: 0.04,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     let ty = cy + 0.12;
@@ -96,7 +94,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
         x: cx + 0.12, y: ty, w: badgeW, h: badgeH,
         rectRadius: 0.04,
         fill: { color: pal.brandLight },
-        line: { width: 0 }
+        line: { type: "none" }
       });
       slide.addText(it.tag, {
         x: cx + 0.12, y: ty, w: badgeW, h: badgeH,

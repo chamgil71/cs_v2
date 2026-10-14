@@ -52,7 +52,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     slide.addShape("rect", {
       x: cx, y, w: stepW, h: 0.04,
       fill: { color: baseColor },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     // 이모지 / 아이콘

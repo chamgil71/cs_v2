@@ -71,16 +71,14 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 외곽 카드
     slide.addShape("roundRect", {
       x: cx, y: cy, w: cardW, h: maxCardH,
-      rectRadius: r,
-      fill: cardBg,
-      line: { color: it.color ? color : pal.border, width: 0.75 }
+      ...(it.color ? { rectRadius: r, fill: cardBg, line: { color: color, width: 0.75 } } : helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })),
     });
     
     // 상단 얇은 바
     slide.addShape("rect", {
       x: cx, y: cy, w: cardW, h: 0.04,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     let blockY = cy + c.padY;
@@ -115,7 +113,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
         x: cx + 0.12, y: blockY, w: cardW - 0.24, h: mBoxH,
         rectRadius: 0.05,
         fill: { color: color, transparency: 88 },
-        line: { width: 0 }
+        line: { type: "none" }
       });
       
       let bulletY = blockY + 0.05;

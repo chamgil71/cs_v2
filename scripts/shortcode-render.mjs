@@ -5,6 +5,7 @@
  * 색상은 resolveColorKeyword 가 CSS 변수(var(--brand) 등)로 반환하므로 스타일 객체가 불필요하다.
  */
 import { marked } from "marked";
+import { resolveShortcode, wantsAltBg, colorToken } from "./library-names.mjs";
 
 function escapeHtml(s) {
   return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -200,13 +201,8 @@ function renderMultiLineText(text, defaultTag = "p", customBullet = null, bullet
 
 function resolveColorKeyword(color) {
   if (!color) return "";
-  const lower = String(color).trim().toLowerCase();
-  if (lower === "main" || lower === "brand") return "var(--brand)";
-  if (lower === "sub" || lower === "branddark" || lower === "brand-dark") return "var(--brand-dark)";
-  if (lower === "deep" || lower === "branddeep" || lower === "brand-deep") return "var(--brand-deep)";
-  if (lower === "mid" || lower === "brandmid" || lower === "brand-mid") return "var(--brand-mid)";
-  if (lower === "light" || lower === "brandlight" || lower === "brand-light") return "var(--brand-light)";
-  return color;
+  // 색 이름 → CSS 변수: 공용 카탈로그 color_tokens (pptgen 과 같은 이름 — primary·accent… / 옛 main·sub·deep·mid·light 도 별칭)
+  return colorToken(color, "cs_v2") || color;
 }
 
 // 텍스트성 desc/note 통일 렌더러 (코드블록 제외 모든 숏코드에 사용)
@@ -245,7 +241,18 @@ function buildSizeOverrideStyle(argsStr) {
 }
 // ─────────────────────────────────────────────────────────────────
 
+/**
+ * 숏코드 진입점 — 이름 해석(공용 카탈로그) + 블록 공통 인수 처리 후 cs_v2 렌더러에 넘긴다.
+ *  - 이름: cs_v2 고유 이름은 그대로, 기능 이름(grid.cards)·pptgen 옛 이름은 카탈로그로 숏코드를 찾는다 (library-names.mjs)
+ *  - bg=alt: 이 블록의 카드만 서식 세트의 보조 카드색(--card-alt-bg)으로 — 레이아웃에 영향 없는 display:contents 래퍼
+ */
 function renderShortcode(type, body, args) {
+  const { type: native } = resolveShortcode(type);
+  const html = renderNative(native, body, args);
+  return html && wantsAltBg(args) ? `<div class="sc-bg-alt">${html}</div>` : html;
+}
+
+function renderNative(type, body, args) {
   const items = parseShortcodeItems(body);
   if (!items.length) return "";
 
@@ -481,7 +488,7 @@ function renderShortcode(type, body, args) {
 
   // 10. compare-split (구 compare-2col)
   if (type === "compare-split") {
-    if (items.length < 2) return renderShortcode("compare-grid", body, args);
+    if (items.length < 2) return renderNative("compare-grid", body, args);
     return `<div class="compare-2col">${items.slice(0, 2).map((it, idx) => {
       const isLeft = idx === 0;
       const classes = isLeft ? "c2-card c2-left" : "c2-card c2-right";

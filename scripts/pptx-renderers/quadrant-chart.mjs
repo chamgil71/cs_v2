@@ -49,11 +49,11 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
   // 격자선(가로/세로 중앙) — line 도형 대신 얇은 rect 로 그려 음수 extent 위험 자체를 없앤다
   slide.addShape("rect", {
     x: plotX, y: plotY + plotH / 2, w: plotW, h: 0.01,
-    fill: { color: pal.border }, line: { width: 0 }
+    fill: { color: pal.border }, line: { type: "none" }
   });
   slide.addShape("rect", {
     x: plotX + plotW / 2, y: plotY, w: 0.01, h: plotH,
-    fill: { color: pal.border }, line: { width: 0 }
+    fill: { color: pal.border }, line: { type: "none" }
   });
 
   if (yLabel) {

@@ -35,7 +35,7 @@ const downloadFile = (content: string, filename: string, contentType: string) =>
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };
-import { SHORTCODE_DOCS } from "../../config/shortcode-guide";
+import { SHORTCODE_DOCS, SHORTCODE_CATEGORIES } from "../../config/shortcode-guide";
 
 export default function MarkdownCompiler() {
   const { toast } = useToast();
@@ -525,44 +525,14 @@ ${doc.snippet}
                 className="bg-blue-50/50 border border-blue-200 text-blue-800 rounded px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer hover:bg-blue-600 hover:text-white transition-colors"
               >
                 <option value="" disabled>선택 삽입...</option>
-                <optgroup label="📋 비교 & 대조 (Compare & Diff)">
-                  <option value="compare-split">⚖️ 2단 대조 비교 (compare-split)</option>
-                  <option value="compare-diff">🔍 Before/After 대조 (compare-diff)</option>
-                  <option value="compare-grid">📋 비교 그리드 (compare-grid)</option>
-                  <option value="columns-grid">🗂️ 다단 정보 카드 그리드 (columns-grid)</option>
-                </optgroup>
-                <optgroup label="🖥️ 코드 & 터미널 (Code & Command)">
-                  <option value="editor-box">🖥️ 에디터 시뮬레이션 (editor-box)</option>
-                  <option value="console-box">💻 콘솔 출력 (console-box)</option>
-                  <option value="cmd-box">⌨️ 터미널 명령어 (cmd-box)</option>
-                </optgroup>
-                <optgroup label="🕸️ 시각 자료 & 흐름 (Visuals & Flows)">
-                  <option value="network-box">🕸️ 네트워크 다이어그램 (network-box)</option>
-                  <option value="git-flow">🔧 Git Flow 흐름도 (git-flow)</option>
-                  <option value="workflow-flow">🔄 가로 워크플로우 (workflow-flow)</option>
-                  <option value="step-flow">➡️ 가로 이정표 흐름도 (step-flow)</option>
-                </optgroup>
-                <optgroup label="🧩 콘텐츠 그리드 (Content Grids)">
-                  <option value="icon-grid">🧩 아이콘 카드 그리드 (icon-grid)</option>
-                  <option value="feature-grid">⭐ 핵심 기능 카드 그리드 (feature-grid)</option>
-                  <option value="tool-list">🧰 도구 목록 (tool-list)</option>
-                  <option value="plan-grid">💳 요금제 카드 그리드 (plan-grid)</option>
-                  <option value="badge-grid">🏷️ 배지 칩 그리드 (badge-grid)</option>
-                  <option value="stat-grid">📊 통계 지표 그리드 (stat-grid)</option>
-                  <option value="skill-list">🎯 스킬 리스트 (skill-list)</option>
-                </optgroup>
-                <optgroup label="📢 정보 & 알림 (Info & Highlights)">
-                  <option value="alert-box">⚠️ 경고/알림 박스 (alert-box)</option>
-                  <option value="summary-box">📝 하단 요약 박스 (summary-box)</option>
-                  <option value="takeaway-banner">💡 핵심 테이크어웨이 (takeaway-banner)</option>
-                  <option value="part-banner">🚩 파트/챕터 시작 배너 (part-banner)</option>
-                  <option value="summary-bar">📈 하단 수치 요약 바 (summary-bar)</option>
-                </optgroup>
-                <optgroup label="🔢 구조 & 내비게이션 (Structure & Nav)">
-                  <option value="step-list">🔢 순서형 단계 리스트 (step-list)</option>
-                  <option value="faq-list">❓ FAQ 아코디언 (faq-list)</option>
-                  <option value="os-tabs">📁 OS/탭 전환 (os-tabs)</option>
-                </optgroup>
+                {/* 그룹·이름은 공용 배치 카탈로그에서(config/shortcode-guide.ts) — 하드코딩 금지 */}
+                {SHORTCODE_CATEGORIES.map((cat) => (
+                  <optgroup key={cat} label={cat}>
+                    {SHORTCODE_DOCS.filter((d) => d.category === cat).map((d) => (
+                      <option key={d.key} value={d.key}>{d.name}</option>
+                    ))}
+                  </optgroup>
+                ))}
               </select>
               <button
                 type="button"
@@ -937,7 +907,7 @@ ${doc.snippet}
             <div className="border-b border-slate-100 px-6 py-3 bg-white flex flex-col md:flex-row gap-3 items-center justify-between">
               {/* Category tabs */}
               <div className="flex flex-wrap gap-1">
-                {["전체", "비교 & 대조", "코드 & 터미널", "시각 자료 & 흐름", "콘텐츠 그리드", "정보 & 알림", "구조 & 내비게이션"].map((cat) => (
+                {["전체", ...SHORTCODE_CATEGORIES].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
@@ -971,6 +941,7 @@ ${doc.snippet}
                   const matchesCat = selectedCategory === "전체" || doc.category === selectedCategory;
                   const matchesSearch = doc.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                                         doc.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                        doc.layout.toLowerCase().includes(searchQuery.toLowerCase()) ||
                                         doc.desc.toLowerCase().includes(searchQuery.toLowerCase());
                   return matchesCat && matchesSearch;
                 }).map((doc) => (

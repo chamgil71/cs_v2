@@ -44,14 +44,14 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     slide.addShape("rect", {
       x, y: curY, w, h: headerH,
       fill: { color: "1E293B" },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     // 헤더 장식 바 하단 둥글기 깎기
     slide.addShape("rect", {
       x, y: curY + headerH - 0.08, w, h: 0.08,
       fill: { color: "1E293B" },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     // 헤더 라벨 텍스트 (예: Terminal)

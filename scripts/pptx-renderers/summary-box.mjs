@@ -44,9 +44,9 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
   // 1. 요약 박스 본체 그리기
   slide.addShape("roundRect", {
     x, y, w, h: topH,
-    rectRadius: r,
-    fill: it.color ? { color: color, transparency: 95 } : { color: pal.white },
-    line: { color: it.color ? color : pal.border, width: 0.75 }
+    ...(it.color
+      ? { rectRadius: r, fill: { color: color, transparency: 95 }, line: { color: color, width: 0.75 } }
+      : helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })),
   });
   
   let curY = y + c.padY;

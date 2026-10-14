@@ -1,0 +1,3122 @@
+{
+ "schema": 1,
+ "_doc": "공용 배치 카탈로그 — pptgen(pptx)과 cs_v2(HTML·슬라이드·pptx)가 같은 이름·같은 항목 구조로 본문 배치를 부르게 하는 단일 출처. 규칙: catalog/README.md. 항목 구조는 cs_v2 Universal Schema(icon·title·desc·tag·meta·color + note·featured·fx·fy). impl.<매체>.status: ready(그림) · planned(카탈로그만) · fallback(가장 가까운 것으로 대신 — shortcode 가 대신할 숏코드) · markdown(숏코드 없이 일반 문단) · none(지원 안 함). 옛 이름은 aliases 로 계속 통한다.",
+ "updated": "2026-10-14",
+ "groups": {
+  "grid": "분할·카드 — 관계 없는 대등한 N개를 칸·카드로 나란히",
+  "compare": "비교·대조 — 둘 이상을 맞대어 차이를 보임",
+  "process": "순서·흐름 — 단계·시간·성장·분기",
+  "structure": "구조·관계 — 중심-주변, 기반-기둥, 포함, 교집합, 그룹",
+  "data": "데이터·수치 — 숫자·비율·위치가 주인공",
+  "text": "서술·강조 — 한 문장·인용·알림·요약이 주인공",
+  "code": "코드·터미널 — 코드·명령·실행 결과",
+  "nav": "탐색·목록 — 목차·탭·질문답변처럼 문서를 훑게 하는 목록",
+  "media": "이미지 혼합 — 이미지가 칸의 절반 이상",
+  "sample": "견본 — 원본 내용이 박힌 참고용(재사용 비권장)"
+ },
+ "item_fields": {
+  "icon": "아이콘 키(라이브러리) · 이모지 · 수치(stat 계열)",
+  "title": "제목",
+  "desc": "설명(여러 줄 — '|' 블록)",
+  "tag": "꼬리표 · highlight/active = 강조 · alt = 보조 카드색(서식 세트 card_alt)",
+  "meta": "글머리·칩(' | ' 구분)",
+  "color": "색 — 색 이름(color_tokens: primary·secondary·accent·accent2·light·dark·ink·gray) 권장, #hex 허용",
+  "note": "아래 팁·설명",
+  "featured": "true = 강조 카드",
+  "fx": "가로 위치 0~1(사분면)",
+  "fy": "세로 위치 0~1(사분면)"
+ },
+ "color_tokens": {
+  "_doc": "항목 color 에 쓰는 색 이름 → 매체별 실제 색. 같은 이름이면 pptgen·cs_v2 가 같은 역할의 테마 색을 쓴다. #hex 도 허용. pptgen = 테마 팔레트 키, cs_v2 = CSS 값, cs_v2_pptx = cs_v2 PPTX 팔레트 키.",
+  "primary": {
+   "pptgen": "main",
+   "cs_v2": "var(--brand)",
+   "cs_v2_pptx": "brand",
+   "aliases": [
+    "main",
+    "brand"
+   ]
+  },
+  "secondary": {
+   "pptgen": "sub",
+   "cs_v2": "var(--brand-dark)",
+   "cs_v2_pptx": "brandDark",
+   "aliases": [
+    "sub",
+    "brand-dark",
+    "branddark"
+   ]
+  },
+  "accent": {
+   "pptgen": "accent1",
+   "cs_v2": "var(--brand-mid)",
+   "cs_v2_pptx": "brandMid",
+   "aliases": [
+    "accent1",
+    "mid",
+    "brand-mid",
+    "brandmid"
+   ]
+  },
+  "accent2": {
+   "pptgen": "accent2",
+   "cs_v2": "var(--brand-deep)",
+   "cs_v2_pptx": "brandDeep",
+   "aliases": [
+    "deep",
+    "brand-deep",
+    "branddeep"
+   ]
+  },
+  "light": {
+   "pptgen": "lightMain",
+   "cs_v2": "var(--brand-light)",
+   "cs_v2_pptx": "brandLight",
+   "aliases": [
+    "brand-light",
+    "brandlight"
+   ]
+  },
+  "dark": {
+   "pptgen": "dark",
+   "cs_v2": "var(--text)",
+   "cs_v2_pptx": "text",
+   "aliases": []
+  },
+  "ink": {
+   "pptgen": "textDark",
+   "cs_v2": "var(--text)",
+   "cs_v2_pptx": "text",
+   "aliases": []
+  },
+  "gray": {
+   "pptgen": "gray",
+   "cs_v2": "var(--text-3)",
+   "cs_v2_pptx": "muted",
+   "aliases": []
+  }
+ },
+ "layouts": {
+  "grid.cards": {
+   "group": "grid",
+   "label": "아이콘 카드 격자(아이콘·제목·설명)",
+   "fields": {
+    "icon": "아이콘 키 또는 이모지",
+    "title": "제목",
+    "desc": "설명",
+    "color": "카드 강조색(선택)"
+   },
+   "items": "2~8",
+   "args": {
+    "cols": {
+     "values": "1~6",
+     "default": "항목 수에 맞춤",
+     "pptgen": true,
+     "cs_v2": true
+    },
+    "align": {
+     "values": "center|left|row",
+     "default": "center",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "left=왼쪽 아이콘, row=가로 한 줄형"
+    },
+    "badge": {
+     "values": "icon|number|none",
+     "default": "icon",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "카드·노드의 원 칸에 아이콘/번호/없음"
+    },
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "본문 위 머리띠 한 줄"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "icon-grid",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "icon-grid",
+    "skill-list",
+    "checkpoint-grid"
+   ]
+  },
+  "grid.features": {
+   "group": "grid",
+   "label": "기능 카드(제목·태그·설명)",
+   "fields": {
+    "icon": "아이콘(선택)",
+    "title": "제목",
+    "tag": "오른쪽 위 꼬리표",
+    "desc": "설명"
+   },
+   "items": "2~6",
+   "args": {
+    "cols": {
+     "values": "1~6",
+     "default": "항목 수에 맞춤",
+     "pptgen": true,
+     "cs_v2": true
+    },
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "본문 위 머리띠 한 줄"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "feature-grid",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "feature-grid"
+   ]
+  },
+  "grid.badges": {
+   "group": "grid",
+   "label": "작은 칩 묶음(이름·꼬리표)",
+   "fields": {
+    "icon": "아이콘",
+    "title": "이름",
+    "tag": "꼬리표"
+   },
+   "items": "3~12",
+   "args": {
+    "cols": {
+     "values": "1~6",
+     "default": "항목 수에 맞춤",
+     "pptgen": true,
+     "cs_v2": true
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "badge-grid",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "badge-grid"
+   ]
+  },
+  "grid.list": {
+   "group": "grid",
+   "label": "머리띠 목록 카드(이름·설명·글머리)",
+   "fields": {
+    "icon": "아이콘",
+    "title": "이름",
+    "desc": "한 줄 설명",
+    "tag": "꼬리표",
+    "meta": "글머리(｜ 구분)"
+   },
+   "items": "1~4",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "tool-list",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "tool-list",
+    "tool-box"
+   ]
+  },
+  "grid.tiers": {
+   "group": "grid",
+   "label": "등급·선택지 카드(강조 1개)",
+   "fields": {
+    "title": "등급 이름",
+    "tag": "꼬리표(가격·Best 등)",
+    "meta": "구성 목록(｜ 구분)",
+    "featured": "true = 강조 카드",
+    "note": "아래 설명"
+   },
+   "items": "2~4",
+   "args": {
+    "cols": {
+     "values": "1~6",
+     "default": "항목 수에 맞춤",
+     "pptgen": true,
+     "cs_v2": true
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "plan-grid",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "plan-grid"
+   ]
+  },
+  "grid.columns": {
+   "group": "grid",
+   "label": "다단 정보 카드(제목·설명·팁)",
+   "fields": {
+    "title": "제목",
+    "desc": "설명",
+    "note": "아래 팁 상자",
+    "color": "카드 강조색"
+   },
+   "items": "2~4",
+   "args": {
+    "cols": {
+     "values": "1~6",
+     "default": "항목 수에 맞춤",
+     "pptgen": true,
+     "cs_v2": true
+    },
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "본문 위 머리띠 한 줄"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "columns-grid",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "columns-grid",
+    "compare-grid"
+   ]
+  },
+  "grid.main-plus-3": {
+   "group": "grid",
+   "label": "큰 칸 1 + 세로 작은 칸 3",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p01",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p01"
+   ]
+  },
+  "grid.cards-icon-3": {
+   "group": "grid",
+   "label": "카드 3열(알약 제목·원·설명)",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p03",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p03"
+   ]
+  },
+  "grid.wide-narrow-titled": {
+   "group": "grid",
+   "label": "넓은 칸 + 좁은 칸(알약 제목)",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p04",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p04"
+   ]
+  },
+  "grid.narrow-wide-titled": {
+   "group": "grid",
+   "label": "좁은 칸 + 넓은 칸(알약 제목)",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p05",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p05"
+   ]
+  },
+  "grid.box-1": {
+   "group": "grid",
+   "label": "빈 상자 1(본문 전체)",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p11",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p11"
+   ]
+  },
+  "grid.box-2": {
+   "group": "grid",
+   "label": "빈 상자 2 균등",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p12",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p12"
+   ]
+  },
+  "grid.box-3": {
+   "group": "grid",
+   "label": "빈 상자 3 균등",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p13",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p13"
+   ]
+  },
+  "grid.box-4": {
+   "group": "grid",
+   "label": "빈 상자 4 균등",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p14",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p14"
+   ]
+  },
+  "grid.narrow-wide": {
+   "group": "grid",
+   "label": "좁은 칸 + 넓은 칸",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p15",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p15"
+   ]
+  },
+  "grid.wide-narrow": {
+   "group": "grid",
+   "label": "넓은 칸 + 좁은 칸",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p16",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p16"
+   ]
+  },
+  "grid.circle-3": {
+   "group": "grid",
+   "label": "큰 원 3",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p17",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p17"
+   ]
+  },
+  "grid.band-box-3": {
+   "group": "grid",
+   "label": "머리띠 + 상자 3",
+   "fields": {
+    "title": "소제목(상자 첫 줄)",
+    "meta": "글머리(｜ 구분)",
+    "desc": "글머리로 이어 붙임"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸(머리띠 등)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p18",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p18"
+   ]
+  },
+  "compare.pair": {
+   "group": "compare",
+   "label": "좌우 2단 비교(제목·설명·글머리)",
+   "fields": {
+    "title": "쪽 이름",
+    "desc": "설명",
+    "meta": "글머리(｜ 구분)",
+    "color": "쪽 색"
+   },
+   "items": "2",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "legacy": "split-2box"
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "compare-split",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "compare-split",
+    "split-2box"
+   ]
+  },
+  "compare.before-after": {
+   "group": "compare",
+   "label": "전·후 대조(❌ → ✅)",
+   "fields": {
+    "title": "상태 이름",
+    "desc": "설명"
+   },
+   "items": "2",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "before-after",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "before-after",
+    "compare-diff",
+    "compare-before-after"
+   ]
+  },
+  "compare.main-sub": {
+   "group": "compare",
+   "label": "비대칭 2분할(주 / 부)",
+   "fields": {
+    "title": "쪽 이름",
+    "desc": "설명",
+    "meta": "글머리"
+   },
+   "items": "2",
+   "args": {
+    "ratio": {
+     "values": "0.5~0.75",
+     "default": "0.64",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "주 칸 비율"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "legacy": "asymmetric-split"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "compare-split",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "asymmetric-split"
+   ]
+  },
+  "compare.balance": {
+   "group": "compare",
+   "label": "천칭 균형 비교",
+   "fields": {
+    "icon": "아이콘",
+    "title": "쪽 이름",
+    "desc": "설명"
+   },
+   "items": "2",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "compare-split",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "balance-beam"
+   ]
+  },
+  "compare.hbars": {
+   "group": "compare",
+   "label": "가로 막대 스택 비교",
+   "fields": {
+    "icon": "아이콘",
+    "title": "이름",
+    "desc": "설명",
+    "tag": "highlight = 강조"
+   },
+   "items": "2~6",
+   "args": {
+    "emphasis": {
+     "values": "last|first|none|<번호>",
+     "default": "배치마다",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "legacy": "stacked-bars"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "tool-list",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "stacked-bars"
+   ]
+  },
+  "compare.pair-summary": {
+   "group": "compare",
+   "label": "좌우 비교 + 하단 결론 띠",
+   "fields": {
+    "title": "칸",
+    "meta": "글머리"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p08",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "compare-split",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p08"
+   ]
+  },
+  "process.track": {
+   "group": "process",
+   "label": "단계 흐름(아이콘 노드·연결)",
+   "fields": {
+    "icon": "아이콘",
+    "title": "단계",
+    "desc": "설명",
+    "meta": "도구·코멘트",
+    "tag": "active = 강조"
+   },
+   "items": "2~6",
+   "args": {
+    "connector": {
+     "values": "arrow|line|none",
+     "default": "배치마다",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "항목 사이 연결"
+    },
+    "badge": {
+     "values": "icon|number|none",
+     "default": "icon",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "카드·노드의 원 칸에 아이콘/번호/없음"
+    },
+    "emphasis": {
+     "values": "last|first|none|<번호>",
+     "default": "배치마다",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "legacy": "flow-track"
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "step-flow",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "step-flow",
+    "workflow-flow",
+    "workflow-strip",
+    "flow",
+    "flow-track"
+   ]
+  },
+  "process.steps": {
+   "group": "process",
+   "label": "번호 단계 목록(세로)",
+   "fields": {
+    "title": "단계",
+    "desc": "설명",
+    "color": "번호색"
+   },
+   "items": "2~6",
+   "args": {
+    "badge": {
+     "values": "icon|number|none",
+     "default": "icon",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "카드·노드의 원 칸에 아이콘/번호/없음"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "step-list",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "step-list"
+   ]
+  },
+  "process.staircase": {
+   "group": "process",
+   "label": "계단식 단계(뒤로 갈수록 높아짐)",
+   "fields": {
+    "icon": "아이콘",
+    "title": "단계",
+    "desc": "설명",
+    "meta": "시점",
+    "tag": "highlight = 강조"
+   },
+   "items": "2~6",
+   "args": {
+    "grow": {
+     "values": "1.0~1.6",
+     "default": "1.35",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "한 단마다 높이 배율(1.0 = 같은 높이)"
+    },
+    "emphasis": {
+     "values": "last|first|none|<번호>",
+     "default": "배치마다",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+    },
+    "caption": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "아래 캡션 상자"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "legacy": "staircase"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "level-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "staircase"
+   ]
+  },
+  "process.levels": {
+   "group": "process",
+   "label": "수준·단계 스펙트럼 카드",
+   "fields": {
+    "title": "수준",
+    "desc": "설명",
+    "tag": "highlight = 강조",
+    "color": "색"
+   },
+   "items": "2~6",
+   "args": {
+    "cols": {
+     "values": "1~6",
+     "default": "항목 수에 맞춤",
+     "pptgen": false,
+     "cs_v2": true
+    },
+    "grow": {
+     "values": "1.0~1.6",
+     "default": "1.0",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "뒤 카드일수록 높게"
+    },
+    "emphasis": {
+     "values": "last|first|none|<번호>",
+     "default": "배치마다",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "level-grid",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "level-grid"
+   ]
+  },
+  "process.branch": {
+   "group": "process",
+   "label": "분기 흐름(커밋·브랜치 같은 갈래 단계)",
+   "fields": {
+    "title": "단계",
+    "tag": "갈래 이름",
+    "meta": "설명",
+    "color": "갈래 색"
+   },
+   "items": "2~8",
+   "args": {
+    "connector": {
+     "values": "arrow|line|none",
+     "default": "배치마다",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "항목 사이 연결"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "git-flow",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "git-flow",
+    "git-flow-strip"
+   ]
+  },
+  "process.growth": {
+   "group": "process",
+   "label": "성장 서사(이전 → 이후 패널)",
+   "fields": {
+    "title": "상태",
+    "desc": "설명",
+    "icon": "수치"
+   },
+   "items": "2",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "legacy": "growth-panel"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "before-after",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "growth-panel"
+   ]
+  },
+  "process.cycle-3": {
+   "group": "process",
+   "label": "삼각 순환",
+   "fields": {
+    "icon": "아이콘",
+    "title": "단계",
+    "desc": "설명"
+   },
+   "items": "3",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "legacy": "triangle-cycle"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "step-flow",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "triangle-cycle"
+   ]
+  },
+  "process.zigzag": {
+   "group": "process",
+   "label": "지그재그 로드맵",
+   "fields": {
+    "icon": "아이콘",
+    "title": "단계",
+    "desc": "설명"
+   },
+   "items": "3~7",
+   "args": {
+    "emphasis": {
+     "values": "last|first|none|<번호>",
+     "default": "배치마다",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "legacy": "zigzag-path"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "step-flow",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "zigzag-path"
+   ]
+  },
+  "process.cards-arrow-4": {
+   "group": "process",
+   "label": "카드 4단계 + 화살표(원·하단 목록)",
+   "fields": {
+    "title": "칸",
+    "meta": "글머리"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p02",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "step-flow",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p02"
+   ]
+  },
+  "process.input-circles-4": {
+   "group": "process",
+   "label": "입력 상자 → 원 4단계 → 하단 흐름",
+   "fields": {
+    "title": "칸",
+    "meta": "글머리"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p06",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "step-flow",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p06"
+   ]
+  },
+  "process.band-columns-3": {
+   "group": "process",
+   "label": "머리띠 + 3열(원·전→후 비교)",
+   "fields": {
+    "title": "칸",
+    "meta": "글머리"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p07",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "step-flow",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p07"
+   ]
+  },
+  "process.steps-checklist-3": {
+   "group": "process",
+   "label": "머리띠 + 3단계 + 체크 목록",
+   "fields": {
+    "title": "칸",
+    "meta": "글머리"
+   },
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "고정 칸"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p10",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "step-flow",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p10"
+   ]
+  },
+  "structure.hub": {
+   "group": "structure",
+   "label": "중심-주변(허브·스포크)",
+   "fields": {
+    "title": "첫 항목 = 중심, 나머지 = 주변",
+    "meta": "관계 설명",
+    "icon": "아이콘",
+    "color": "색"
+   },
+   "items": "3~7",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "legacy": "hub-spoke"
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "network-box",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "network-box",
+    "hub-spoke"
+   ]
+  },
+  "structure.pillars": {
+   "group": "structure",
+   "label": "기반 위 기둥",
+   "fields": {
+    "title": "첫 항목 = 기반, 나머지 = 기둥",
+    "desc": "설명",
+    "icon": "아이콘"
+   },
+   "items": "3~6",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "legacy": "pillars-on-base"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "pillars-on-base"
+   ]
+  },
+  "structure.rings": {
+   "group": "structure",
+   "label": "동심원 포함관계(바깥 → 안)",
+   "fields": {
+    "title": "범주",
+    "color": "색",
+    "icon": "마지막 항목 = 중심 아이콘"
+   },
+   "items": "2~5",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "concentric-rings",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "concentric-rings"
+   ]
+  },
+  "structure.venn": {
+   "group": "structure",
+   "label": "벤 다이어그램(두 원 + 교집합)",
+   "fields": {
+    "title": "[0] 왼쪽 원 · [1] 오른쪽 원",
+    "desc": "[2] 교집합 설명",
+    "icon": "[2] 교집합 아이콘",
+    "color": "원 색"
+   },
+   "items": "2~3",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "venn-diagram",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "venn-diagram",
+    "venn"
+   ]
+  },
+  "structure.groups-2x3": {
+   "group": "structure",
+   "label": "2그룹 × 원 3",
+   "fields": {
+    "title": "칸",
+    "meta": "글머리"
+   },
+   "args": {},
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p09",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p09"
+   ]
+  },
+  "data.stats": {
+   "group": "data",
+   "label": "통계 패널(큰 수치·이름·설명)",
+   "fields": {
+    "icon": "수치(예: 53%)",
+    "title": "지표 이름",
+    "desc": "설명",
+    "color": "색"
+   },
+   "items": "2~4",
+   "args": {
+    "cols": {
+     "values": "1~6",
+     "default": "항목 수에 맞춤",
+     "pptgen": true,
+     "cs_v2": true
+    },
+    "emphasis": {
+     "values": "last|first|none|<번호>",
+     "default": "배치마다",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "legacy": "stat-row"
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "stat-grid",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "stat-grid",
+    "stat-row"
+   ]
+  },
+  "data.summary-bar": {
+   "group": "data",
+   "label": "수치 요약 띠(한 줄)",
+   "fields": {
+    "icon": "수치",
+    "title": "이름"
+   },
+   "items": "2~6",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "summary-bar",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "summary-bar"
+   ]
+  },
+  "data.bars": {
+   "group": "data",
+   "label": "막대그래프(극단 대비)",
+   "fields": {
+    "title": "이름",
+    "icon": "값(숫자)",
+    "tag": "highlight = 강조"
+   },
+   "items": "2~8",
+   "args": {
+    "scale": {
+     "values": "linear|sqrt",
+     "default": "sqrt",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "막대 길이 척도"
+    },
+    "emphasis": {
+     "values": "last|first|none|<번호>",
+     "default": "배치마다",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "legacy": "bar-chart"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "stat-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "bar-chart"
+   ]
+  },
+  "data.quadrant": {
+   "group": "data",
+   "label": "사분면 위치 차트",
+   "fields": {
+    "title": "점 이름",
+    "fx": "가로 위치 0~1",
+    "fy": "세로 위치 0~1",
+    "color": "색"
+   },
+   "items": "2~8",
+   "args": {
+    "xLabel": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": true
+    },
+    "yLabel": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": true
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "legacy": "quadrant-chart"
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "quadrant-chart",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "quadrant-chart"
+   ]
+  },
+  "data.gauge": {
+   "group": "data",
+   "label": "반원 게이지(위치·비율)",
+   "fields": {
+    "title": "이름",
+    "icon": "값(0~100)",
+    "desc": "설명"
+   },
+   "items": "1~3",
+   "args": {
+    "left": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "호 양 끝 이름"
+    },
+    "right": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "호 양 끝 이름"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "legacy": "gauge-arc"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "stat-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "gauge-arc"
+   ]
+  },
+  "sample.chart-pair": {
+   "group": "sample",
+   "label": "견본: 막대 차트 2개(원본 내용 포함)",
+   "fields": {
+    "title": "칸"
+   },
+   "args": {},
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p19",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "stat-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "c01-p19"
+   ]
+  },
+  "text.statement": {
+   "group": "text",
+   "label": "텍스트 전용(중앙 문장·요약·질문)",
+   "fields": {
+    "title": "중앙 문장",
+    "desc": "보조 문장",
+    "meta": "요약 줄(｜ 구분)"
+   },
+   "items": "1~3",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "legacy": "text-only"
+    },
+    "cs_v2": {
+     "status": "markdown",
+     "fit": "직접",
+     "note": "숏코드 없이 일반 문단"
+    }
+   },
+   "aliases": [
+    "text-only"
+   ]
+  },
+  "text.body": {
+   "group": "text",
+   "label": "일반 문단·글머리(숏코드 없이 쓴 본문)",
+   "fields": {
+    "desc": "문단 또는 글머리 한 줄"
+   },
+   "items": "1~8",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "markdown",
+     "fit": "직접",
+     "note": "블록 밖 일반 마크다운"
+    }
+   },
+   "aliases": []
+  },
+  "text.quote": {
+   "group": "text",
+   "label": "인물 핵심 발언(얼굴·발언·하단 카드)",
+   "fields": {
+    "title": "발언",
+    "meta": "시기·출처",
+    "icon": "이니셜",
+    "desc": "하단 카드"
+   },
+   "items": "1",
+   "args": {},
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "legacy": "quote-hero",
+     "frame": true
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "takeaway-banner",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "quote-hero"
+   ]
+  },
+  "text.takeaway": {
+   "group": "text",
+   "label": "핵심 메시지 띠",
+   "fields": {
+    "icon": "아이콘",
+    "title": "머리말",
+    "desc": "메시지"
+   },
+   "items": "1",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "takeaway-banner",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "takeaway-banner",
+    "takeaway"
+   ]
+  },
+  "text.callout": {
+   "group": "text",
+   "label": "알림 상자(팁·주의·위험·정보)",
+   "fields": {
+    "title": "제목",
+    "desc": "내용",
+    "color": "색"
+   },
+   "items": "1~3",
+   "args": {
+    "variant": {
+     "values": "tip|warning|caution|info",
+     "default": "info",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "cs_v2 는 첫 인수로(::: alert-box tip)"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "alert-box",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "alert-box"
+   ]
+  },
+  "text.summary": {
+   "group": "text",
+   "label": "요약 상자(제목·설명·칩)",
+   "fields": {
+    "title": "제목",
+    "desc": "설명",
+    "meta": "칩(｜ 구분)"
+   },
+   "items": "1~3",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "summary-box",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "summary-box",
+    "bottom-list"
+   ]
+  },
+  "text.section": {
+   "group": "text",
+   "label": "구역 머리 띠(파트 표시)",
+   "fields": {
+    "icon": "아이콘",
+    "title": "구역 이름",
+    "desc": "설명",
+    "tag": "꼬리표"
+   },
+   "items": "1",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "part-banner",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "part-banner",
+    "part-deck"
+   ]
+  },
+  "text.icon-statement": {
+   "group": "text",
+   "label": "단일 아이콘 강조",
+   "fields": {
+    "icon": "아이콘",
+    "title": "문장",
+    "desc": "보조"
+   },
+   "items": "1",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "takeaway-banner",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "icon-caption"
+   ]
+  },
+  "text.avatar": {
+   "group": "text",
+   "label": "인물 이니셜 아바타(보조)",
+   "fields": {
+    "icon": "이니셜",
+    "title": "이름",
+    "desc": "소속"
+   },
+   "items": "1",
+   "args": {},
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "none"
+    }
+   },
+   "aliases": [
+    "initial-avatar"
+   ]
+  },
+  "code.editor": {
+   "group": "code",
+   "label": "코드 편집기 창",
+   "fields": {
+    "title": "파일 이름",
+    "tag": "언어",
+    "desc": "코드(여러 줄)"
+   },
+   "items": "1",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "editor-box",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "editor-box"
+   ]
+  },
+  "code.console": {
+   "group": "code",
+   "label": "실행 결과 콘솔",
+   "fields": {
+    "title": "제목",
+    "tag": "꼬리표",
+    "desc": "출력(여러 줄)"
+   },
+   "items": "1",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "console-box",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "console-box"
+   ]
+  },
+  "code.command": {
+   "group": "code",
+   "label": "명령 한 줄",
+   "fields": {
+    "title": "설명",
+    "tag": "셸",
+    "desc": "명령"
+   },
+   "items": "1~4",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "cmd-box",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "cmd-box"
+   ]
+  },
+  "nav.faq": {
+   "group": "nav",
+   "label": "질문·답변 목록",
+   "fields": {
+    "title": "질문",
+    "desc": "답변"
+   },
+   "items": "2~6",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "faq-list",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "faq-list"
+   ]
+  },
+  "nav.tabs": {
+   "group": "nav",
+   "label": "탭(같은 주제의 갈래별 내용)",
+   "fields": {
+    "title": "탭 이름",
+    "desc": "내용"
+   },
+   "items": "2~4",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "os-tabs",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "os-tabs"
+   ]
+  },
+  "nav.chapters": {
+   "group": "nav",
+   "label": "장 목록(번호·제목·설명·종류)",
+   "fields": {
+    "icon": "번호",
+    "title": "제목",
+    "desc": "설명",
+    "tag": "종류(개념·도구·사례…)"
+   },
+   "items": "2~8",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "chapter-list",
+     "fit": "직접",
+     "pptx": true
+    }
+   },
+   "aliases": [
+    "chapter-list"
+   ]
+  },
+  "media.cards-image": {
+   "group": "media",
+   "label": "정보 카드 N + 이미지",
+   "fields": {
+    "title": "카드 제목",
+    "desc": "설명"
+   },
+   "items": "1~4",
+   "args": {
+    "side": {
+     "values": "left|right",
+     "default": "right",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "이미지 쪽"
+    },
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "columns-grid",
+     "fit": "근사"
+    }
+   },
+   "aliases": [
+    "box-image-split"
+   ]
+  },
+  "media.banner": {
+   "group": "media",
+   "label": "하단 이미지 배너",
+   "fields": {
+    "title": "글머리"
+   },
+   "items": "1~5",
+   "args": {
+    "bg": {
+     "values": "base|alt",
+     "default": "base",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+    },
+    "title-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    },
+    "desc-size": {
+     "values": "비율(0.9) 또는 CSS 값",
+     "default": "",
+     "pptgen": false,
+     "cs_v2": true,
+     "note": "cs_v2 공통 — 카드 제목/설명 크기"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "none"
+    }
+   },
+   "aliases": [
+    "bottom-image-banner"
+   ]
+  },
+  "media.full": {
+   "group": "media",
+   "label": "이미지 자리(전면)",
+   "fields": {
+    "desc": "이미지 프롬프트"
+   },
+   "items": "0~1",
+   "args": {},
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "none"
+    }
+   },
+   "aliases": [
+    "placeholder"
+   ]
+  },
+  "sample.infographic-2": {
+   "group": "sample",
+   "label": "견본: 2단 인포그래픽(원본 내용 포함)",
+   "fields": {
+    "title": "칸"
+   },
+   "args": {},
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": true,
+     "pattern": "c01-p20",
+     "theme": "company-01"
+    },
+    "cs_v2": {
+     "status": "none"
+    }
+   },
+   "aliases": [
+    "c01-p20"
+   ]
+  }
+ }
+}

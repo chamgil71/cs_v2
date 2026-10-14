@@ -76,7 +76,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     slide.addShape("rect", {
       x: cx, y, w: colW, h: 0.05,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     let curY = y + c.padY;
@@ -121,7 +121,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
         x: cx + c.padX, y: noteY, w: colW - c.padX * 2, h: noteH,
         rectRadius: 0.06,
         fill: { color: color },
-        line: { width: 0 }
+        line: { type: "none" }
       });
       
       slide.addText(noteText, {

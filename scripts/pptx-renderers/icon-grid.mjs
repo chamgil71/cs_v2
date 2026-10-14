@@ -74,9 +74,9 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 외곽 카드
     slide.addShape("roundRect", {
       x: cx, y: cy, w: cardW, h: maxCardH,
-      rectRadius: r,
-      fill: hasColor ? { color: color, transparency: 95 } : { color: pal.white },
-      line: { color: color || pal.border, width: 0.75 }
+      ...(hasColor
+        ? { rectRadius: r, fill: { color: color, transparency: 95 }, line: { color: color, width: 0.75 } }
+        : helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })),
     });
     
     // 색상이 있을 경우 상단 장식 미니 라인
@@ -84,7 +84,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
       slide.addShape("rect", {
         x: cx, y: cy, w: cardW, h: 0.04,
         fill: { color: color },
-        line: { width: 0 }
+        line: { type: "none" }
       });
     }
     

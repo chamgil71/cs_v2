@@ -3,6 +3,8 @@
  * PPTX 숏코드 렌더러 레지스트리 및 공통 헬퍼 주입
  */
 
+import { colorToken } from "../library-names.mjs";
+
 // 1. 공통 유틸리티 헬퍼 정의
 export const helpers = {
   splitMeta(meta) {
@@ -17,10 +19,9 @@ export const helpers = {
     if (!hex) return null;
     const lower = (hex + "").trim().toLowerCase();
     if (pal) {
-      if (lower === "main" || lower === "brand") return this.hexClean(pal.brand);
-      if (lower === "sub" || lower === "branddark" || lower === "brand-dark") return this.hexClean(pal.brandDark);
-      if (lower === "deep" || lower === "branddeep" || lower === "brand-deep") return this.hexClean(pal.brandDeep);
-      if (lower === "light" || lower === "brandlight" || lower === "brand-light") return this.hexClean(pal.brandLight);
+      // 색 이름 → 팔레트 키: 공용 카탈로그 color_tokens (HTML·pptgen 과 같은 이름)
+      const key = colorToken(lower, "cs_v2_pptx");
+      if (key && pal[key]) return this.hexClean(pal[key]);
       if (lower === "border") return this.hexClean(pal.border);
     }
     hex = (hex + "").replace(/^["']|["']$/g, "").replace(/^#/, "");
@@ -48,6 +49,21 @@ export const helpers = {
     if (!args) return defaultValue;
     const match = String(args).match(new RegExp(`\\b${key}\\s*=\\s*["']?([^\\s"']+)["']?`));
     return match ? match[1] : defaultValue;
+  },
+
+  // 카드 서식 — 공용 서식 세트(pal.shape, scripts/shape-set.mjs)를 반영한 roundRect 옵션 묶음.
+  //   template 세트(기본)이면 렌더러의 원래 서식(흰 채움 + 테두리 0.75pt, 그림자 없음) 그대로 → 기존 출력과 같다.
+  //   alt=true 면 채움만 서식 세트의 보조 카드색(블록 인수 bg=alt). 색 강조(it.color) 카드는 호출하는 쪽이 자기 서식을 쓴다.
+  cardBox(pal, { alt = false, radius } = {}) {
+    const s = pal && pal.shape;
+    const fill = { color: alt && s ? s.altFill : (s && !s.inherit ? s.fill : pal.white) };
+    if (!s || s.inherit) return { rectRadius: radius, fill, line: { color: pal.border, width: 0.75 } };
+    return { rectRadius: s.radius ?? radius, fill, line: { ...s.line }, ...(s.shadow ? { shadow: { ...s.shadow } } : {}) };
+  },
+
+  // 블록 인수 bg=alt 인가 (보조 카드색)
+  isAltBlock(item) {
+    return /(?:^|\s)bg=["']?alt\b/.test(String((item && item.args) || ""));
   },
 
   // 연결선 전용 안전 그리기 — slide.addShape("line", {w, h, ...})에 음수 w/h를 그대로 넘기면

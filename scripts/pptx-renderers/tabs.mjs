@@ -30,23 +30,21 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 1. 탭 상자 외곽 둥근 사각형
     slide.addShape("roundRect", {
       x, y: curY, w, h: totalH,
-      rectRadius: r,
-      fill: { color: pal.white },
-      line: { color: pal.border, width: 0.75 }
+      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })
     });
     
     // 2. 탭 상단 바 배경
     slide.addShape("rect", {
       x, y: curY, w, h: 0.35,
       fill: { color: pal.brandLight },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     // 탭 하단 브랜드 액센트 라인
     slide.addShape("rect", {
       x, y: curY + 0.31, w, h: 0.04,
       fill: { color: pal.brand },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     // 탭 라벨 텍스트

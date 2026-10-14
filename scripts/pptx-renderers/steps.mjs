@@ -26,9 +26,9 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 1. 단계 카드 외곽 둥근 사각형
     slide.addShape("roundRect", {
       x, y: cy, w, h: stepH,
-      rectRadius: r,
-      fill: it.color ? { color: color, transparency: 92 } : { color: pal.white },
-      line: { color: it.color ? color : pal.border, width: 0.75 }
+      ...(it.color
+        ? { rectRadius: r, fill: { color: color, transparency: 92 }, line: { color: color, width: 0.75 } }
+        : helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })),
     });
     
     // 2. 왼쪽 번호 동그라미 뱃지
@@ -38,7 +38,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
       x: x + 0.15, y: ny, w: numSize, h: numSize,
       rectRadius: 0.1,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     // 번호 텍스트 (아이콘에 숫자가 명시되어 있다면 해당 문자로 렌더링, 없으면 인덱스)

@@ -65,12 +65,12 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
       x, y: curY, w: barW * 3.5, h: boxH,
       rectRadius: r,
       fill: { color: ac.bar },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     slide.addShape("rect", {
       x: x + barW, y: curY, w: barW * 2.5, h: boxH,
       fill: { color: ac.bar },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     let textY = curY + c.padY;

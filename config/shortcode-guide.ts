@@ -1,22 +1,38 @@
 /**
  * shortcode-guide.ts — 숏코드 가이드 패널 + 삽입 툴바 공용 데이터 (단일 출처).
- * MarkdownCompiler 의 가이드 패널 표시와 insertShortcode 삽입 스니펫이 모두 이 배열을 참조한다.
+ * MarkdownCompiler 의 가이드 패널 표시와 insertShortcode 삽입 스니펫·삽입 메뉴가 모두 이 배열을 참조한다.
  * 스니펫은 들여쓰기가 의미를 가지므로 템플릿 리터럴로 그대로 작성한다. (입력 문법 변경 시 여기만 수정)
+ *
+ * [공용 배치 카탈로그 연결] 분류(category)와 기능 이름(layout)은 여기 쓰지 않고 카탈로그(config/library,
+ * 생성본 scripts/library-map.mjs)에서 가져온다 — pptgen 과 같은 그룹·이름. 학습 콘텐츠용 옛 분류
+ * ("콘텐츠 그리드"·"정보 & 알림" 등)는 기능·표현 기준 그룹(분할·카드 / 비교·대조 / 순서·흐름 …)으로 바뀌었다.
+ * 스니펫 첫 줄의 고유 이름(::: compare-split)은 같은 출력을 내는 기능 이름(::: compare.pair)으로 바꿔 넣는다.
+ * 고유 이름은 하위 호환으로 계속 동작한다(scripts/library-names.mjs).
  */
-export interface ShortcodeDoc {
+// @ts-ignore — 순수 JS 생성 모듈
+import { LAYOUTS, LAYOUT_ALIASES, LAYOUT_GROUPS } from "../scripts/library-map.mjs";
+
+interface RawDoc {
   key: string;
   name: string;
-  category: string;
   desc: string;
   fields: string;
   snippet: string;
 }
 
-export const SHORTCODE_DOCS: ShortcodeDoc[] = [
+export interface ShortcodeDoc extends RawDoc {
+  /** 카탈로그 기능 이름 (예: compare.pair) — 고유 이름이 대응하는 배치 */
+  layout: string;
+  /** 카탈로그 그룹 키 (grid·compare·process·structure·data·text·code·nav·media) */
+  group: string;
+  /** 그룹 표시 이름 (예: "비교·대조") */
+  category: string;
+}
+
+const RAW_DOCS: RawDoc[] = [
   {
     key: "compare-split",
     name: "⚖️ 2단 대조 비교 (compare-split)",
-    category: "비교 & 대조",
     desc: "두 대상을 좌우로 2단 분할 배치하여 전후 관계나 상세 비교를 렌더링합니다.",
     fields: "title, desc, meta (구분선 | 목록)",
     snippet: `::: compare-split
@@ -31,7 +47,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "before-after",
     name: "🔍 Before/After 전후 대조 (before-after)",
-    category: "비교 & 대조",
     desc: "AS-IS(구형)와 TO-BE(신형)를 ❌/✅ 레이블로 단순 명확하게 전후 대조합니다. (compare-diff 는 호환 별칭)",
     fields: "title, desc",
     snippet: `::: before-after
@@ -44,7 +59,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "columns-grid",
     name: "🗂️ 다단 정보 카드 그리드 (columns-grid)",
-    category: "비교 & 대조",
     desc: "가로 다단 카드 격자. 일반 다단 정보 배치뿐 아니라 compare-grid 대체 비교 용도로도 사용합니다.",
     fields: "cols (속성: cols=2), title, desc, note (팁박스), color (선택)",
     snippet: `::: columns-grid cols=2
@@ -59,7 +73,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "editor-box",
     name: "🖥️ 에디터 시뮬레이션 (editor-box)",
-    category: "코드 & 터미널",
     desc: "코드 에디터 창(예: VS Code)의 외형을 흉내 낸 다크 에뮬레이터 블록입니다.",
     fields: "title (파일명), tag (언어), desc (코드 내용, 멀티라인 | 지원)",
     snippet: `::: editor-box
@@ -73,7 +86,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "console-box",
     name: "💻 콘솔 출력 (console-box)",
-    category: "코드 & 터미널",
     desc: "시스템 명령어나 스크립트 실행 결과를 출력하는 콘솔화면 블록입니다.",
     fields: "title, tag, desc (멀티라인 | 지원)",
     snippet: `::: console-box
@@ -86,7 +98,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "cmd-box",
     name: "⌨️ 터미널 명령어 (cmd-box)",
-    category: "코드 & 터미널",
     desc: "실행해야 하는 명령어(CLI)를 안내하는 터미널 모형 박스입니다.",
     fields: "title, tag, desc",
     snippet: `::: cmd-box
@@ -98,7 +109,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "network-box",
     name: "🕸️ 네트워크 다이어그램 (network-box)",
-    category: "시각 자료 & 흐름",
     desc: "여러 개념 간의 연계성 또는 네트워크 연결 관계를 시각화합니다.",
     fields: "title, meta, color (선택)",
     snippet: `::: network-box
@@ -113,7 +123,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "git-flow",
     name: "🔧 Git Flow 흐름도 (git-flow)",
-    category: "시각 자료 & 흐름",
     desc: "Git 브랜치나 버전 릴리즈 흐름을 노드형 다이어그램으로 가시화합니다.",
     fields: "title, tag, meta, color (선택)",
     snippet: `::: git-flow
@@ -130,7 +139,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "step-flow",
     name: "➡️ 가로 이정표 흐름도 (step-flow)",
-    category: "시각 자료 & 흐름",
     desc: "단계별 흐름을 가로로 표현. tag:active 로 현재 단계 강조. meta 필드로 도구/코멘트 추가 가능. (workflow-flow 는 호환 별칭)",
     fields: "icon, title, desc, meta (도구/코멘트), tag (active 시 강조), color (선택)",
     snippet: `::: step-flow
@@ -148,7 +156,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "icon-grid",
     name: "🧩 아이콘 카드 그리드 (icon-grid)",
-    category: "콘텐츠 그리드",
     desc: "아이콘+제목+설명 카드 격자. align 옵션으로 레이아웃 변형: center(기본) / left(좌측 아이콘, 구 skill-list) / row(수평 배열, 구 checkpoint-grid).",
     fields: "cols (속성), bullet (속성), align=center|left|row (속성), icon, title, desc, color (선택)",
     snippet: `::: icon-grid cols=3
@@ -163,7 +170,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "feature-grid",
     name: "⭐ 핵심 기능 카드 그리드 (feature-grid)",
-    category: "콘텐츠 그리드",
     desc: "태그 배지 및 아이콘이 포함된 다채로운 핵심 피처 카드 그리드입니다.",
     fields: "cols (속성), icon, title, desc, tag, color (선택)",
     snippet: `::: feature-grid cols=2
@@ -180,7 +186,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "tool-list",
     name: "🧰 도구 목록 (tool-list)",
-    category: "콘텐츠 그리드",
     desc: "사용 도구나 스펙의 강점을 헤더(아이콘, 제목, 부제)와 기능 목록 형태로 렌더링합니다.",
     fields: "icon, title, desc, tag, meta (목록 구분선 |)",
     snippet: `::: tool-list
@@ -193,7 +198,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "plan-grid",
     name: "💳 요금제 카드 그리드 (plan-grid)",
-    category: "콘텐츠 그리드",
     desc: "추천 요금제(tag=Best)나 상품 가격/기능 구성품 스펙을 카드 형태로 비교합니다.",
     fields: "title, tag, meta (목록 구분선 |), featured (true 시 강조), color (선택), note (하단 설명)",
     snippet: `::: plan-grid
@@ -210,7 +214,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "badge-grid",
     name: "🏷️ 배지 칩 그리드 (badge-grid)",
-    category: "콘텐츠 그리드",
     desc: "여러 장점이나 키워드를 작은 배지 칩으로 콤팩트하게 나열합니다.",
     fields: "icon, title, tag, color (선택)",
     snippet: `::: badge-grid
@@ -225,7 +228,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "stat-grid",
     name: "📊 통계 지표 그리드 (stat-grid)",
-    category: "콘텐츠 그리드",
     desc: "수치 데이터(icon)와 통계 지표 정보(title, desc)를 상단 바 보더와 함께 시각화합니다.",
     fields: "icon (수치), title, desc, color (선택)",
     snippet: `::: stat-grid
@@ -240,7 +242,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "alert-box",
     name: "⚠️ 경고/알림 박스 (alert-box)",
-    category: "정보 & 알림",
     desc: "주의(warning), 팁(tip), 위험(caution) 등의 알림이나 조언 메시지 박스를 렌더링합니다.",
     fields: "title, desc, color (선택)",
     snippet: `::: alert-box tip
@@ -251,7 +252,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "summary-box",
     name: "📝 하단 요약 박스 (summary-box)",
-    category: "정보 & 알림",
     desc: "가이드 마지막 단에 배치하여 내용을 정리하고, 하단에 다량의 태그 칩을 덧붙입니다.",
     fields: "title, desc, meta (칩 구분선 |), color (선택)",
     snippet: `::: summary-box
@@ -263,7 +263,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "takeaway-banner",
     name: "💡 핵심 테이크어웨이 (takeaway-banner)",
-    category: "정보 & 알림",
     desc: "강조하고 싶은 핵심 교훈이나 테이크어웨이 메시지를 한 줄 배너로 노출합니다.",
     fields: "icon, title, desc",
     snippet: `::: takeaway-banner
@@ -275,7 +274,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "part-banner",
     name: "🚩 파트/챕터 시작 배너 (part-banner)",
-    category: "정보 & 알림",
     desc: "긴 문서나 슬라이드 중 단원/파트의 구분을 나누는 가로 대형 단막 배너입니다.",
     fields: "icon, title, desc, tag",
     snippet: `::: part-banner
@@ -288,7 +286,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "summary-bar",
     name: "📈 하단 수치 요약 바 (summary-bar)",
-    category: "정보 & 알림",
     desc: "수치 통계나 단위 성과들을 가로형 바 형태로 간결하게 나열합니다.",
     fields: "icon, title",
     snippet: `::: summary-bar
@@ -301,7 +298,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "step-list",
     name: "🔢 순서형 단계 리스트 (step-list)",
-    category: "구조 & 내비게이션",
     desc: "1, 2, 3... 순번이 자동으로 매겨진 단계식 지침과 부연 설명을 노출합니다.",
     fields: "title, desc, color (선택)",
     snippet: `::: step-list
@@ -314,7 +310,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "faq-list",
     name: "❓ FAQ 아코디언 (faq-list)",
-    category: "구조 & 내비게이션",
     desc: "질문(title)과 그에 답하는 답변(desc) 형태의 아코디언 질문-답변 리스트입니다.",
     fields: "title, desc",
     snippet: `::: faq-list
@@ -325,7 +320,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "os-tabs",
     name: "📁 OS/탭 전환 (os-tabs)",
-    category: "구조 & 내비게이션",
     desc: "Windows / macOS 등 플랫폼별 조치 방법이나 다중 탭을 리스트로 안내합니다.",
     fields: "title, desc",
     snippet: `::: os-tabs
@@ -338,7 +332,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "chapter-list",
     name: "📚 챕터 목록 (chapter-list)",
-    category: "구조 & 내비게이션",
     desc: "시리즈 부(Part) 하위에 속한 세부 챕터를 번호·제목·설명·구분 배지로 목록화합니다.",
     fields: "icon (챕터번호), title, desc, tag (개념/도구/사례/가이드/실습/주의/핵심)",
     snippet: `::: chapter-list
@@ -355,7 +348,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "level-grid",
     name: "📶 레벨 스펙트럼 (level-grid)",
-    category: "구조 & 내비게이션",
     desc: "난이도·성숙도·역량 구간을 카드 격자로 비교. tag:highlight 로 강조 카드 지정.",
     fields: "title (레벨명), desc, color (선택), tag (highlight 시 강조)",
     snippet: `::: level-grid
@@ -371,7 +363,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "venn-diagram",
     name: "⭕ 벤 다이어그램 (venn-diagram)",
-    category: "데이터 다이어그램",
     desc: "두 영역이 겹칠 때 새로운 가치/의미가 발생함을 표현. 항목 3개 고정 순서(왼쪽 원 / 오른쪽 원 / 교집합 캡션).",
     fields: "[0]title,color (왼쪽 원) · [1]title,color (오른쪽 원) · [2]icon,desc (교집합, 선택)",
     snippet: `::: venn-diagram
@@ -386,7 +377,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "quadrant-chart",
     name: "📍 사분면 차트 (quadrant-chart)",
-    category: "데이터 다이어그램",
     desc: "두 축(X/Y) 기준으로 여러 항목의 상대 위치를 비교. 축 라벨은 블록 인수로 지정.",
     fields: "블록 인수 xLabel=\"...\" yLabel=\"...\" · title, color, fx/fy (0~1 비율)",
     snippet: `::: quadrant-chart xLabel="가격" yLabel="품질"
@@ -403,7 +393,6 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
   {
     key: "concentric-rings",
     name: "🎯 동심원 포함관계 (concentric-rings)",
-    category: "데이터 다이어그램",
     desc: "A⊃B⊃C 같은 계층적 포함관계 표현. 항목은 바깥(큰 범주)에서 안쪽(구체적 범주) 순서로 작성.",
     fields: "title (범주명), color, icon (마지막 항목에만 — 중심 아이콘)",
     snippet: `::: concentric-rings
@@ -419,3 +408,27 @@ export const SHORTCODE_DOCS: ShortcodeDoc[] = [
 :::`
   }
 ];
+
+const groupLabel = (g: string) => String((LAYOUT_GROUPS as Record<string, string>)[g] || g).split(" — ")[0];
+
+export const SHORTCODE_DOCS: ShortcodeDoc[] = RAW_DOCS.map((d) => {
+  const layout: string = (LAYOUT_ALIASES as Record<string, string>)[d.key] || d.key;
+  const entry = (LAYOUTS as Record<string, { group: string; shortcode: string | null }>)[layout];
+  const group = entry ? entry.group : "etc";
+  // 기능 이름이 이 숏코드와 같은 출력을 낼 때만(카탈로그의 대표 숏코드) 스니펫·표시 이름을 기능 이름으로
+  const same = !!entry && entry.shortcode === d.key;
+  const shown = same ? layout : d.key;
+  return {
+    ...d,
+    name: d.name.replace(/\(([^)]*)\)\s*$/, same ? `(${layout} · 구 ${d.key})` : "($1)"),
+    snippet: d.snippet.replace(new RegExp(`^::: ${d.key}(?=[ \\n])`), `::: ${shown}`),
+    layout,
+    group,
+    category: groupLabel(group),
+  };
+});
+
+/** 가이드 패널 분류 버튼·삽입 메뉴 그룹 순서 = 카탈로그 그룹 순서 (실제로 숏코드가 있는 그룹만) */
+export const SHORTCODE_CATEGORIES: string[] = Object.keys(LAYOUT_GROUPS as Record<string, string>)
+  .filter((g) => SHORTCODE_DOCS.some((d) => d.group === g))
+  .map(groupLabel);

@@ -70,16 +70,14 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 외곽 카드 그리기
     slide.addShape("roundRect", {
       x: cx, y: cy, w: cardW, h: maxCardH,
-      rectRadius: r,
-      fill: { color: pal.white },
-      line: { color: pal.border, width: 0.75 }
+      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })
     });
     
     // 상단 컬러 바
     slide.addShape("rect", {
       x: cx, y: cy, w: cardW, h: 0.04,
       fill: { color: color },
-      line: { width: 0 }
+      line: { type: "none" }
     });
     
     // 타이틀 (문법 또는 강조 키워드)
@@ -119,7 +117,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
         x: cx + 0.12, y: blockY, w: cardW - 0.24, h: mBoxH,
         rectRadius: 0.04,
         fill: { color: color, transparency: 96 },
-        line: { width: 0 }
+        line: { type: "none" }
       });
       slide.addText(example, {
         x: cx + 0.16, y: blockY, w: cardW - 0.32, h: mBoxH,

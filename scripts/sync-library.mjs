@@ -48,7 +48,10 @@ const ALIAS_ARGS = {};   // 옛 이름 → 그 이름이 뜻하던 인수(모양
 const EXAMPLES = {};     // 배치 → { args, body, more } (가이드 스니펫·웹 라이브러리 화면의 단일 출처)
 for (const [name, e] of Object.entries(layouts.layouts)) {
   const c = (e.impl || {}).cs_v2 || {};
-  L[name] = { group: e.group, label: e.label, fields: e.fields || {}, status: c.status || "none", shortcode: c.shortcode || null, variants: c.variants || [] };
+  // defaults = 인수 기본값(빈 값 제외) — 렌더러는 블록 인수 > 이 값 순서로 읽는다(수치를 코드에 두지 않음)
+  const defaults = Object.fromEntries(Object.entries(e.args || {}).filter(([, a]) => a.default !== "" && a.default != null).map(([k, a]) => [k, String(a.default)]));
+  L[name] = { group: e.group, label: e.label, fields: e.fields || {}, status: c.status || "none", shortcode: c.shortcode || null,
+    pptx_shortcode: c.pptx_shortcode || null, variants: c.variants || [], defaults };
   for (const a of e.aliases || []) ALIAS[a] = name;
   Object.assign(ALIAS_ARGS, e.alias_args || {});
   if (e.example) EXAMPLES[name] = e.example;

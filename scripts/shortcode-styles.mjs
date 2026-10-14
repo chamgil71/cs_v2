@@ -8,6 +8,8 @@
  * --card-border-width·--card-border-color·--card-shadow·--card-radius, scripts/shape-set.mjs)를 먼저 읽고,
  * 없으면(template 세트) 원래 값으로 떨어진다 → 기본 출력은 예전과 같다.
  */
+import { EXT_CSS } from "./shortcode-ext/index.mjs";
+
 export const SHORTCODE_CSS = `
   /* 공통 카드 스타일 */
   .card-top-bar { height: 4px; background: var(--brand); position: absolute; top: 0; left: 0; right: 0; }
@@ -462,4 +464,6 @@ export const SHORTCODE_CSS = `
   .ta-text p {
     margin: 0;
   }
+  /* 기능 이름 배치(근사였던 배치의 전용 모양) + 기존 숏코드의 새 배치 인수 — scripts/shortcode-ext/* (CSS 도 여기로 합쳐 단일 출처) */
+${EXT_CSS}
 `;

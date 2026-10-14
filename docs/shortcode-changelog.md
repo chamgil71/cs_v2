@@ -5,6 +5,36 @@
 
 ---
 
+## Phase 9 — cs_v2 에 없던 배치·인수 추가: 근사 36종 전용 HTML + pptgen 과 같은 배치 인수 (2026-10-14)
+
+### 배경
+- 공용 카탈로그 66종 중 38종(계단·기둥·게이지·막대·천칭·인용·이미지·회사 패턴 상자 등)은 cs_v2 렌더러가 없어 모양이 다른 숏코드로 "근사"되었고, pptgen 이 받는 배치 인수(`badge`·`emphasis`·`grow`·`header`·`caption`·`connector=line`)와 항목 `tag: alt` 를 cs_v2 가 무시했다(인계서 C).
+
+### 변경 1 — 기능 이름 구현 36종 (`scripts/shortcode-ext/`)
+- 구현 ID = 기능 이름. 그룹별 파일(grid·process·flows·compare·data·text·media) + 공용 조각, 각 200줄 이하. CSS 는 `var(--*)`·서식 세트 변수만 쓰고 `SHORTCODE_CSS` 끝에 한 번 합쳐진다(숏코드 CSS 단일 출처 유지).
+- 상자형 회사 패턴 12종은 매개변수 하나(`boxes(cols, title, circle, main)`)로, 단계형 4종은 `flows.mjs` 로 묶었다.
+- PPTX 는 카탈로그 `impl.cs_v2.pptx_shortcode`(예전 근사 그대로) — `resolveShortcode(name, args, "pptx")`. 정밀 PPTX 는 pptgen 몫(역할 분담).
+- 남은 근사: 견본 2종(`sample.chart-pair`·`sample.infographic-2`).
+
+### 변경 2 — 배치 인수 (기본값 = 카탈로그 `args.default`)
+| 인수 | 배치 |
+|---|---|
+| `badge=icon\|number\|none` | `grid.cards`·`process.track`·`process.steps`(기본 number) |
+| `connector=line\|arrow\|none` | `process.track`(기본 line — 새로 그림)·`process.branch` |
+| `emphasis=last\|first\|none\|<번호>` | `process.track`·`process.levels`·`data.stats` + 새 배치(staircase 기본 last·zigzag·bars·hbars) |
+| `grow` | `process.levels`(기본 1.0)·`process.staircase`(기본 1.35) |
+| `header` | `grid.cards`·`grid.features`·`grid.columns`·패턴 — 본문 위 머리띠(`compare.pair-summary` 는 아래 결론 띠) |
+| 항목 `tag: alt` | 모든 카드형 — 그 카드만 보조 카드색(HTML `sc-item-alt`, PPTX `helpers.isAltBlock(item, it)`) |
+
+- 카탈로그의 "배치마다" 기본값을 실제 값으로 확정(pptgen 렌더러와 같게). `sync:library` 가 `LAYOUTS[이름].defaults` 로 옮기고 렌더러는 `layoutArgs()` 로 읽는다 — 코드에 기본 수치 없음.
+- 인수가 기본값이면 예전 마크업 그대로 → md_src 150개 산출물(가이드·프레젠테이션·PPTX) 전후 동일.
+
+### 변경 3 — 브라우저 PPTX 발표스크립트
+- `pptx-browser.ts` 가 `slide-config notes` 를 노트에 넣지 않던 문제 수정(CLI 와 같게).
+
+### 테스트
+- `layout-ext.test.ts`(54) 새로 — 36종 예시·변형 렌더, `sx-*` 클래스 CSS 커버리지, 이스케이프, 인수별 동작, `tag: alt`, 브라우저 PPTX 노트. 전체 355 → 410.
+
 ## Phase 8 — 이름은 하나로: 옛 숏코드 이름을 기능 이름 + 인수로 (2026-10-14)
 
 ### 배경

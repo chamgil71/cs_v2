@@ -368,6 +368,11 @@ npm test                        # 전체 148건
 
 ## 12. 확장 가이드 — 새 숏코드 추가 절차
 
+> **2026-10-14 부터 새 배치는 기능 이름으로 추가한다**: 공용 카탈로그(coding `_templates/slide-library/catalog/layouts.json`)에 배치를 먼저 정의하고
+> `impl.cs_v2 = { status: "ready", shortcode: "<기능 이름>", pptx_shortcode: "<가까운 옛 숏코드>" }` → `scripts/shortcode-ext/<그룹>.mjs` 에 렌더러 `(items, a, h)` + CSS
+> → `npm run sync:library` → `npm test`(`layout-ext.test.ts` 가 예시 렌더·CSS 커버리지·이스케이프를 자동 검사). 기본 수치는 카탈로그 `args.default`(`layoutArgs`).
+> 아래 1~8 은 옛 숏코드 분기(구현 ID)를 고칠 때의 절차다.
+
 1. **HTML 렌더러**: `scripts/shortcode-render.mjs`에 `type === "new"` 분기 추가 (클래스 기반 출력, 색상은 `resolveColorKeyword`).
 2. **HTML CSS**: `scripts/shortcode-styles.mjs`에 컴포넌트 CSS 추가 (`var(--*)` 사용, 카드 배경 `var(--card-bg, #fff)`).
 3. **PPTX 렌더러**: `scripts/pptx-renderers/new.mjs` 작성 (`type`/`estimateHeight`/`render`), `registry.mjs` 자동 등록 확인. 폰트 크기는 `D.<comp>.*` (config) 참조.
@@ -383,7 +388,7 @@ npm test                        # 전체 148건
 
 | 영역 | 경로 |
 |------|------|
-| 정본 HTML 렌더러 | `scripts/shortcode-render.mjs` |
+| 정본 HTML 렌더러 | `scripts/shortcode-render.mjs` + 기능 이름 배치 `scripts/shortcode-ext/*` |
 | 정본 HTML CSS | `scripts/shortcode-styles.mjs` |
 | 가이드 HTML 셸 | `scripts/build-guide.mjs` |
 | 슬라이드 HTML 셸 | `scripts/build-presentation.mjs` |

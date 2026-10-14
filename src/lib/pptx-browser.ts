@@ -16,7 +16,7 @@ import { pptxRegistry, helpers } from '../../scripts/pptx-renderers/registry.mjs
 // @ts-ignore — 순수 JS 공유 모듈
 import { parseSlideConfig } from '../../scripts/shortcode-render.mjs';
 // @ts-ignore
-import { shortcodeBlockRe, stripHeadingAttrs, resolveShortcode } from '../../scripts/library-names.mjs';
+import { shortcodeBlockRe, stripHeadingAttrs, resolveShortcode, markAltItems } from '../../scripts/library-names.mjs';
 // @ts-ignore
 import { shapeSetPptx, pickShapeSet } from '../../scripts/shape-set.mjs';
 
@@ -172,8 +172,8 @@ function parseContentParts(content) {
   let match;
   while ((match = re.exec(content)) !== null) {
     if (match.index > lastIndex) parts.push({ kind: 'md', src: content.slice(lastIndex, match.index) });
-    const r = resolveShortcode(match[1], match[2] || '');   // 기능 이름 + 정규화된 인수 → cs_v2 구현 ID
-    parts.push({ kind: 'shortcode', scType: r.type, args: r.args, rawBody: match[3], items: parseShortcodeItems(match[3]) });
+    const r = resolveShortcode(match[1], match[2] || '', 'pptx');   // 기능 이름 + 정규화된 인수 → cs_v2 구현 ID
+    parts.push({ kind: 'shortcode', scType: r.type, args: r.args, rawBody: match[3], items: markAltItems(parseShortcodeItems(match[3])) });
     lastIndex = match.index + match[0].length;
   }
   if (lastIndex < content.length) parts.push({ kind: 'md', src: content.slice(lastIndex) });
@@ -548,6 +548,12 @@ function renderSectionSlide(prs, section, pal, verbose = false) {
     }
 
     initSlideHeader(currentSlide, pageCount);
+
+    // 발표스크립트(speaker notes) — ::: slide-config 의 notes: 필드. CLI(md-to-pptx.mjs)와 같게 섹션 첫 페이지에만 붙인다.
+    if (section.config && section.config.notes) {
+      currentSlide.addNotes(String(section.config.notes).replace(/\\n/g, '\n'));
+    }
+
     let curY = D.slide.bodyTopY;
 
     for (const item of section.items) {

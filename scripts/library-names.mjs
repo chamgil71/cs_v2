@@ -41,7 +41,8 @@ export const shortcodeBlockRe = () => new RegExp(SHORTCODE_BLOCK_SOURCE, "gm");
 /** 숏코드 블록이 아닌 내부 토큰 — 이름 해석 없이 그대로 */
 const INTERNAL = new Set(["slide-config", "arrow"]);
 
-/** cs_v2 구현 ID — shortcode-render.mjs 분기 = 카탈로그 impl.cs_v2.shortcode·variants 가 가리키는 값(정합성 테스트가 잠근다) */
+/** cs_v2 구현 ID(옛 숏코드 분기) — shortcode-render.mjs 분기 = 카탈로그 impl.cs_v2.shortcode·variants·pptx_shortcode 가 가리키는 값(정합성 테스트가 잠근다).
+ *  2026-10-14 부터 새 배치는 구현 ID = 기능 이름(scripts/shortcode-ext/ — HTML 전용, PPTX 는 pptx_shortcode 로 근사) */
 export const IMPL_SHORTCODES = new Set([
   "icon-grid", "feature-grid", "badge-grid", "stat-grid", "tool-list", "plan-grid",
   "columns-grid", "compare-grid", "compare-split", "before-after", "step-flow", "workflow-flow", "step-list", "level-grid", "git-flow",
@@ -72,11 +73,12 @@ export const ALIAS_SEEN = new Map();
 
 /**
  * 블록 이름 + 인수 → cs_v2 가 그릴 구현.
+ * @param medium "html"(기본) | "pptx" — PPTX 는 HTML 전용 구현 대신 pptx_shortcode
  * @returns {{ type: string, layout: string|null, args: string, status: string, known: boolean, alias: string|null }}
  *   type   = cs_v2 구현 ID(모르는 이름이면 입력 그대로 → 렌더러가 빈 문자열: 기존 동작)
  *   layout = 기능 이름, args = 정규화된 인수 문자열(옛 이름 인수 포함), alias = 옛 이름으로 썼으면 그 이름
  */
-export function resolveShortcode(name, args = "") {
+export function resolveShortcode(name, args = "", medium = "html") {
   const raw = String(name || "").trim();
   if (INTERNAL.has(raw)) return { type: raw, layout: null, args: String(args || ""), status: "internal", known: true, alias: null };
   const layout = LAYOUTS[raw] ? raw : LAYOUT_ALIASES[raw] || null;
@@ -86,7 +88,9 @@ export function resolveShortcode(name, args = "") {
   if (alias) ALIAS_SEEN.set(alias, `${layout}${alias && ALIAS_ARGS[alias] ? " " + mergeArgs("", ALIAS_ARGS[alias]) : ""}`);
   const e = LAYOUTS[layout], keys = argKeys(merged);
   const variant = (e.variants || []).find((v) => Object.entries(v.when || {}).every(([k, val]) => keys[k] === String(val)));
+  // PPTX: 기능 이름 구현(HTML 전용)이면 카탈로그 pptx_shortcode(근사) — cs_v2 PPTX 는 빠른 근사, 정밀 PPTX 는 pptgen 몫
   const type = variant ? variant.shortcode
+    : medium === "pptx" && e.pptx_shortcode ? e.pptx_shortcode
     : e.shortcode && (e.status === "ready" || e.status === "fallback") ? e.shortcode : PLAIN_FALLBACK;
   return { type, layout, args: merged, status: e.status, known: true, alias };
 }
@@ -113,3 +117,31 @@ export function stripHeadingAttrs(md) {
 
 /** 블록 인수 문자열에서 bg=alt (보조 카드색) 여부 */
 export const wantsAltBg = (args) => /(?:^|\s)bg=["']?alt\b/.test(String(args || ""));
+
+/**
+ * 배치 인수 = 카탈로그 기본값(LAYOUTS[layout].defaults) < 블록 인수. 렌더러는 이 객체만 읽는다(기본 수치를 코드에 두지 않음).
+ * layout 이 없으면(옛 경로·내부 토큰) 블록 인수만.
+ */
+export function layoutArgs(layout, args) {
+  return { ...((LAYOUTS[layout] || {}).defaults || {}), ...argKeys(args) };
+}
+
+/**
+ * 강조할 항목 — pptgen U.emphOf 와 같은 규칙: 항목 tag(highlight·active·best·강조)·featured 가 있으면 그것,
+ * 없으면 emphasis 인수(last|first|none|<번호>).
+ */
+export const EMPH_TAG = /^(highlight|active|best|강조)$/i;
+export function emphOf(items, emphasis = "none") {
+  const tagged = items.map((it) => EMPH_TAG.test(String(it.tag || "").trim()) || it.featured === "true");
+  if (tagged.some(Boolean)) return tagged;
+  const e = String(emphasis || "none");
+  return items.map((_, i) => (e === "last" ? i === items.length - 1 : e === "first" ? i === 0 : String(i + 1) === e));
+}
+
+/**
+ * 항목 tag: alt → 그 카드만 서식 세트의 보조 카드색(블록 bg=alt 의 항목판). tag 는 비워 배지로 그리지 않는다.
+ * HTML(shortcode-render)·PPTX(md-to-pptx·pptx-browser) 세 파서가 같이 부른다 — _alt 표시는 여기 한 곳.
+ */
+export function markAltItems(items) {
+  return items.map((it) => (/^alt$/i.test(String(it.tag || "").trim()) ? { ...it, tag: "", _alt: true } : it));
+}

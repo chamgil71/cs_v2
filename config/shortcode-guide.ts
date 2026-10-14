@@ -40,7 +40,7 @@ const LAYOUT_DESC: Record<string, { title: string; desc: string; fields: string 
   "code.command": { title: "⌨️ 터미널 명령어", desc: "실행해야 하는 명령어(CLI)를 안내하는 터미널 모형 박스입니다.", fields: "title, tag, desc" },
   "structure.hub": { title: "🕸️ 네트워크 다이어그램", desc: "여러 개념 간의 연계성 또는 네트워크 연결 관계를 시각화합니다.", fields: "title, meta, color (선택)" },
   "process.branch": { title: "🔧 Git Flow 흐름도", desc: "Git 브랜치나 버전 릴리즈 흐름을 노드형 다이어그램으로 가시화합니다.", fields: "title, tag, meta, color (선택)" },
-  "process.track": { title: "➡️ 가로 이정표 흐름도", desc: "단계별 흐름을 가로로 표현. connector=arrow 면 화살표로 이은 단계, none 이면 연결 없음(화살표는 type: arrow 항목). tag:active 로 현재 단계 강조, meta 로 도구/코멘트.", fields: "connector=arrow|line|none (속성), icon, title, desc, meta (도구/코멘트), tag (active 시 강조), color (선택)" },
+  "process.track": { title: "➡️ 가로 이정표 흐름도", desc: "단계별 흐름을 가로로 표현. connector=line(기본) 이면 단계 사이 가는 선, arrow 면 화살표로 이은 단계, none 이면 연결 없음(화살표는 type: arrow 항목). tag:active 또는 emphasis=last|first|번호 로 강조, badge=number|none 으로 원 칸 변경, meta 로 도구/코멘트.", fields: "connector=arrow|line|none (속성), icon, title, desc, meta (도구/코멘트), tag (active 시 강조), color (선택)" },
   "grid.cards": { title: "🧩 아이콘 카드 그리드", desc: "아이콘+제목+설명 카드 격자. align 으로 모양 변형: center(기본) / left(왼쪽 아이콘) / row(수평 배열).", fields: "cols (속성), bullet (속성), align=center|left|row (속성), icon, title, desc, color (선택)" },
   "grid.features": { title: "⭐ 핵심 기능 카드 그리드", desc: "태그 배지 및 아이콘이 포함된 다채로운 핵심 피처 카드 그리드입니다.", fields: "cols (속성), icon, title, desc, tag, color (선택)" },
   "grid.list": { title: "🧰 도구 목록", desc: "사용 도구나 스펙의 강점을 헤더(아이콘, 제목, 부제)와 기능 목록 형태로 렌더링합니다.", fields: "icon, title, desc, tag, meta (목록 구분선 |)" },

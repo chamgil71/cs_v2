@@ -46,7 +46,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     x, y, w, h: topH,
     ...(it.color
       ? { rectRadius: r, fill: { color: color, transparency: 95 }, line: { color: color, width: 0.75 } }
-      : helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })),
+      : helpers.cardBox(pal, { alt: helpers.isAltBlock(item, it), radius: r })),
   });
   
   let curY = y + c.padY;

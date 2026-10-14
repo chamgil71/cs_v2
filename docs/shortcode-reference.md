@@ -2,7 +2,7 @@
 
 > **이름은 기능 이름 하나로 운영합니다(2026-10-14).** 배치 이름은 pptgen 과 같은 공용 카탈로그의 `<그룹>.<형태>`(예: `grid.cards`, `process.track`)이고,
 > 모양 변형은 인수(`align`·`variant`·`connector`…)로 고릅니다. 예전 숏코드 이름(`icon-grid` 등)은 읽기 호환 별칭으로만 남아 있습니다(맨 아래 표).
-> 이 문서는 cs_v2 가 직접 그리는 **28종**(구현 상태 `ready`)을 카탈로그 그룹 순서로 정리합니다. 카탈로그 전체 66종의 이름·인수: `config/library/layouts.json`.
+> 이 문서는 cs_v2 가 직접 그리는 **64종**(구현 상태 `ready` — 옛 숏코드 28종은 그룹별 절, 2026-10-14 에 추가한 36종은 「기능 이름 배치」 절)을 카탈로그 그룹 순서로 정리합니다. 카탈로그 전체 66종의 이름·인수: `config/library/layouts.json`.
 > 변경 이력 상세: [shortcode-changelog.md](./shortcode-changelog.md)
 
 ---
@@ -11,20 +11,22 @@
 
 배치 이름은 **`<그룹>.<형태>`** 하나입니다(pptgen 과 같은 이름 — 같은 md 를 양쪽에서 빌드). 그룹은 "무엇이 주인공인가"로 정합니다.
 
-| 그룹 | 주인공 | 이 문서의 배치 |
+| 그룹 | 주인공 | 배치 (cs_v2 가 직접 그리는 64종) |
 |------|------|------|
-| 분할·카드 (`grid`) | 대등한 N개 | `grid.cards` `grid.features` `grid.badges` `grid.list` `grid.tiers` `grid.columns` |
-| 비교·대조 (`compare`) | 둘의 차이 | `compare.pair` `compare.before-after` |
-| 순서·흐름 (`process`) | 단계·시간·분기 | `process.track` `process.steps` `process.levels` `process.branch` |
-| 구조·관계 (`structure`) | 관계 모양 | `structure.hub` `structure.rings` `structure.venn` |
-| 데이터·수치 (`data`) | 숫자·위치 | `data.stats` `data.summary-bar` `data.quadrant` |
-| 서술·강조 (`text`) | 한 문장·알림·요약 | `text.takeaway` `text.callout` `text.summary` `text.section` |
+| 분할·카드 (`grid`) | 대등한 N개 | `grid.cards` `grid.features` `grid.badges` `grid.list` `grid.tiers` `grid.columns` `grid.main-plus-3` `grid.cards-icon-3` `grid.wide-narrow-titled` `grid.narrow-wide-titled` `grid.box-1` `grid.box-2` `grid.box-3` `grid.box-4` `grid.narrow-wide` `grid.wide-narrow` `grid.circle-3` `grid.band-box-3` |
+| 비교·대조 (`compare`) | 둘의 차이 | `compare.pair` `compare.before-after` `compare.main-sub` `compare.balance` `compare.hbars` `compare.pair-summary` |
+| 순서·흐름 (`process`) | 단계·시간·분기 | `process.track` `process.steps` `process.staircase` `process.levels` `process.branch` `process.growth` `process.cycle-3` `process.zigzag` `process.cards-arrow-4` `process.input-circles-4` `process.band-columns-3` `process.steps-checklist-3` |
+| 구조·관계 (`structure`) | 관계 모양 | `structure.hub` `structure.pillars` `structure.rings` `structure.venn` `structure.groups-2x3` |
+| 데이터·수치 (`data`) | 숫자·위치 | `data.stats` `data.summary-bar` `data.bars` `data.quadrant` `data.gauge` |
+| 서술·강조 (`text`) | 한 문장·알림·요약 | `text.statement` `text.body` `text.quote` `text.takeaway` `text.callout` `text.summary` `text.section` `text.icon-statement` `text.avatar` |
 | 코드·터미널 (`code`) | 코드·명령 | `code.editor` `code.console` `code.command` |
 | 탐색·목록 (`nav`) | 골라 보는 목록 | `nav.faq` `nav.tabs` `nav.chapters` |
+| 이미지 혼합 (`media`) | 이미지 | `media.cards-image` `media.banner` `media.full` |
 
 이름 규칙 전체(문법·형태 어휘·새 배치 추가 절차): 공용 카탈로그 README(coding 저장소 `_templates/slide-library/catalog/README.md` 1절).
 
-- 카탈로그에는 이 밖에도 pptgen 전용 배치(예: `process.staircase`, `structure.pillars`, `data.gauge`)가 있습니다. cs_v2 에서는 가장 가까운 숏코드로 **근사**해 그립니다(`config/library/layouts.json` 의 `impl.cs_v2.status = fallback`).
+- 2026-10-14(C 단계)부터 예전 pptgen 전용이던 배치(`process.staircase`, `structure.pillars`, `data.gauge`, 회사 패턴 상자 등 36종)도 cs_v2 가 HTML 로 모양 그대로 그립니다(아래 「기능 이름 배치」 절). cs_v2 PPTX 는 이들을 가까운 숏코드로 빠르게 근사하고(`impl.cs_v2.pptx_shortcode`), 정밀 PPTX 는 pptgen 이 그립니다. 견본 2종(`sample.*`)만 HTML 도 근사.
+- **항목 `tag: alt`**: 그 카드만 보조 카드색(블록 `bg=alt` 의 항목판).
 - **색 이름**(`color:`): `primary`·`secondary`·`accent`·`accent2`·`light`·`dark`·`ink`·`gray`(옛 `main`·`sub`·`deep`·`mid`·`brand` 도 동작) 또는 `#hex`. 테마를 바꾸면 그 테마 색으로 바뀝니다.
 - **서식 세트**(frontmatter `shape:`): `template`(기본, 기존 모양)·`flat`·`soft`·`outline`·`elevated`·`tinted` — 카드 외곽선 굵기·그림자·둥글기·채움만 바꾸고 색은 테마를 따릅니다.
 - **블록 인수 `bg=alt`**: 이 블록 카드만 보조 카드색 → 한 슬라이드에 카드 배경 2종.
@@ -88,8 +90,8 @@ shape: soft
 
 | 구분 | 수량 | 설명 |
 |------|------|------|
-| 기능 이름 (cs_v2 가 직접 그림) | **28종** | 이 문서의 각 절 — HTML·PPTX 모두 |
-| 기능 이름 (근사로 그림) | **38종** | 카탈로그의 나머지(pptgen 은 직접 그림) — cs_v2 는 가장 가까운 배치로 |
+| 기능 이름 (cs_v2 가 직접 그림) | **64종** | HTML 은 모두 모양 그대로. PPTX 는 28종이 같은 모양, 36종은 가까운 숏코드로 근사(정밀 PPTX 는 pptgen) |
+| 기능 이름 (근사로 그림) | **2종** | 견본 `sample.chart-pair`·`sample.infographic-2` |
 | 옛 이름(읽기 호환 별칭) | 42개(cs_v2) | 새 문서에 쓰지 않음 — `npm run migrate:names` |
 | 내부 특수 토큰 | **2종** | `arrow` (`process.track` 안의 화살표 항목), `slide-config` (슬라이드 설정 — `bg`/`color`/`titleSize`/`bodySize`/**`notes`**(발표스크립트 — `key: \|` 여러 줄 또는 `\n`, PPTX 노트로만 반영)) |
 
@@ -99,9 +101,25 @@ shape: soft
 |------|------|------|
 | `grid.cards` | `align=center`(기본) · `left` · `row` | 아이콘 중앙 카드 / 왼쪽 아이콘 배경박스 / 아이콘+글 수평 |
 | `grid.columns` | `variant=card`(기본) · `plain` | 상단 색 띠 있는 다단 카드 / 띠 없는 담백한 카드(비교용) |
-| `process.track` | `connector=arrow` · `none` (`line` 은 구현 예정 — 지금은 `none` 으로 그림) | 화살표로 이은 단계 / 연결 없음(화살표는 `type: arrow` 항목) |
+| `process.track` | `connector=line`(기본) · `arrow` · `none` | 단계 사이 가는 선 / 화살표로 이은 단계 / 연결 없음(화살표는 `type: arrow` 항목) |
 | `text.callout` | 첫 인수 또는 `variant=` — `tip`·`info`·`warning`·`danger`·`success` | 알림 종류 |
 | 모든 배치 | `bg=alt` | 이 블록 카드를 서식 세트의 보조 카드색으로 |
+
+### 배치 인수 (pptgen 과 같은 이름·뜻, 기본값은 공용 카탈로그 `args.default`)
+
+| 인수 | 값 | 받는 배치 | 뜻 |
+|---|---|---|---|
+| `badge` | `icon`·`number`·`none` | `grid.cards` `process.track` `process.steps`(기본 number) | 원 칸에 아이콘 / 01·02 번호 / 없음 |
+| `connector` | `line`·`arrow`·`none` | `process.track` `process.branch` | 항목 사이 연결(기본 line) |
+| `emphasis` | `last`·`first`·`none`·`<번호>` | `process.track` `process.levels` `process.staircase`(기본 last) `process.zigzag` `data.stats` `data.bars` `compare.hbars` | 강조 항목 — 항목 `tag: highlight`/`active` 가 우선 |
+| `grow` | `1.0`~`1.6` | `process.levels`(기본 1.0) `process.staircase`(기본 1.35) | 뒤 칸일수록 높이 배율 |
+| `header` | 문자열 | `grid.cards` `grid.features` `grid.columns` 와 상자·단계 패턴 | 본문 위 머리띠(`compare.pair-summary` 는 아래 결론 띠) |
+| `caption` | 문자열 | `process.staircase` | 아래 캡션 상자 |
+| `ratio` | `0.5`~`0.75` | `compare.main-sub`(기본 0.64) | 주 칸 비율 |
+| `scale` | `sqrt`·`linear` | `data.bars`(기본 sqrt) | 막대 길이 척도(극단 대비) |
+| `left`·`right` | 문자열 | `data.gauge` | 호 양 끝 이름 |
+| `side` | `left`·`right` | `media.cards-image`(기본 right) | 이미지 쪽 |
+| 항목 `tag: alt` | — | 모든 카드형 | 그 카드만 보조 카드색 |
 
 ```markdown
 ::: grid.cards align=left cols=2
@@ -836,6 +854,589 @@ Part 하위의 챕터 번호·제목·설명·구분 배지 목록화.
 
 ---
 
+## 기능 이름 배치 — 예전 "근사" 36종의 전용 HTML (2026-10-14)
+
+> 아래 예시는 공용 카탈로그 `example` 에서 만든 것입니다(pptgen 견본과 같음). 렌더러: `scripts/shortcode-ext/*`. PPTX 열의 숏코드는 cs_v2 PPTX 가 대신 쓰는 근사(정밀 PPTX 는 pptgen).
+
+### `grid.main-plus-3` — 큰 칸 1 + 세로 작은 칸 3
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.main-plus-3
+- title: "핵심 전략"
+  meta: "AI 우선 설계 | 데이터 기반 의사결정"
+- title: "실행 체계"
+  meta: "전담 조직 | 분기별 점검"
+- title: "확산 방안"
+  meta: "사례 공유 | 교육 확대"
+:::
+```
+
+### `grid.cards-icon-3` — 카드 3열(알약 제목·원·설명)
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.cards-icon-3
+- title: "구축"
+  desc: "AI 개발 플랫폼"
+  meta: "슈퍼컴퓨팅 | 기밀 컴퓨팅"
+- title: "결합"
+  desc: "멀티에이전트"
+  meta: "특화 모델 | 피지컬 AI"
+- title: "신뢰"
+  desc: "선제적 보안"
+  meta: "출처 검증 | 보안 플랫폼"
+:::
+```
+
+### `grid.wide-narrow-titled` — 넓은 칸 + 좁은 칸(알약 제목)
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.wide-narrow-titled
+- title: "현황"
+  meta: "도입 기업 증가 | 활용 범위 확대 | 투자 확대"
+- title: "과제"
+  meta: "전문 인력 | 데이터 품질"
+:::
+```
+
+### `grid.narrow-wide-titled` — 좁은 칸 + 넓은 칸(알약 제목)
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.narrow-wide-titled
+- title: "목표"
+  meta: "업무 자동화 30%"
+- title: "추진 방안"
+  meta: "업무 진단 | 시범 적용 | 전사 확산"
+:::
+```
+
+### `grid.box-1` — 빈 상자 1(본문 전체)
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.box-1
+- title: "핵심 메시지"
+  meta: "AI 경쟁력은 모델 성능만이 아니라 구축·실행·통제를 함께 설계하는 데서 나온다"
+:::
+```
+
+### `grid.box-2` — 빈 상자 2 균등
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.box-2
+- title: "기회"
+  meta: "생산성 향상 | 새 서비스"
+- title: "위험"
+  meta: "보안 사고 | 품질 편차"
+:::
+```
+
+### `grid.box-3` — 빈 상자 3 균등
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.box-3
+- title: "사람"
+  meta: "역량 교육 | 역할 재설계"
+- title: "프로세스"
+  meta: "업무 진단 | 자동화"
+- title: "기술"
+  meta: "플랫폼 | 데이터"
+:::
+```
+
+### `grid.box-4` — 빈 상자 4 균등
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.box-4
+- title: "계획"
+  meta: "목표 설정"
+- title: "실행"
+  meta: "시범 적용"
+- title: "점검"
+  meta: "성과 측정"
+- title: "개선"
+  meta: "확산·보완"
+:::
+```
+
+### `grid.narrow-wide` — 좁은 칸 + 넓은 칸
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.narrow-wide
+- title: "요약"
+  meta: "세 가지 축"
+- title: "설명"
+  meta: "구축 기반 | 지능형 결합 | 보안·신뢰"
+:::
+```
+
+### `grid.wide-narrow` — 넓은 칸 + 좁은 칸
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.wide-narrow
+- title: "설명"
+  meta: "구축 기반 | 지능형 결합 | 보안·신뢰"
+- title: "요약"
+  meta: "세 가지 축"
+:::
+```
+
+### `grid.circle-3` — 큰 원 3
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.circle-3
+- title: "구축"
+- title: "결합"
+- title: "신뢰"
+:::
+```
+
+### `grid.band-box-3` — 머리띠 + 상자 3
+
+**필드**: `title` 소제목(상자 첫 줄) · `meta` 글머리(｜ 구분) · `desc` 글머리로 이어 붙임  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: grid.band-box-3 header="구축 기반 → 지능형 실행 → 보안·신뢰·주권"
+- title: "THE ARCHITECT · 구축 기반"
+  meta: "AI 네이티브 개발 플랫폼 | AI 슈퍼컴퓨팅 플랫폼 | 기밀 컴퓨팅"
+- title: "THE SYNTHESIST · 지능형 결합"
+  meta: "멀티에이전트 시스템 | 도메인 특화 언어 모델 | 피지컬 AI"
+- title: "THE VANGUARD · 보안·신뢰·주권"
+  meta: "선제적 사이버 보안 | 디지털 출처 검증 | AI 보안 플랫폼"
+:::
+```
+
+### `compare.main-sub` — 비대칭 2분할(주 / 부)
+
+**필드**: `title` 쪽 이름 · `desc` 설명 · `meta` 글머리  
+**인수**: `ratio`=0.5~0.75 (기본 0.64)  
+**PPTX(cs_v2)**: `compare-split` 근사
+
+```markdown
+::: compare.main-sub ratio=0.66
+- title: 핵심 전략
+  desc: 모델이 아니라 시스템으로 경쟁한다
+  meta: 구축 | 연결 | 신뢰
+- title: 보조
+  desc: 단기 과제
+:::
+```
+
+### `compare.balance` — 천칭 균형 비교
+
+**필드**: `icon` 아이콘 · `title` 쪽 이름 · `desc` 설명  
+**PPTX(cs_v2)**: `compare-split` 근사
+
+```markdown
+::: compare.balance
+- title: 속도
+  desc: 빠르게 도입한다
+- title: 안전
+  desc: 위험을 통제한다
+:::
+```
+
+### `compare.hbars` — 가로 막대 스택 비교
+
+**필드**: `icon` 아이콘 · `title` 이름 · `desc` 설명 · `tag` highlight = 강조  
+**인수**: `emphasis`=last\|first\|none\|<번호> (기본 none)  
+**PPTX(cs_v2)**: `tool-list` 근사
+
+```markdown
+::: compare.hbars emphasis=last
+- title: 챗봇
+  desc: 질문에 답만 한다
+- title: 코파일럿
+  desc: 사람 옆에서 돕는다
+- title: 에이전트
+  desc: 목표만 주면 스스로 실행한다
+:::
+```
+
+### `compare.pair-summary` — 좌우 비교 + 하단 결론 띠
+
+**필드**: `title` 칸 이름(알약) · `desc` 설명 · `meta` 글머리(｜ 구분)  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `compare-split` 근사
+
+```markdown
+::: compare.pair-summary header="도입 전과 후"
+- title: "도입 전"
+  desc: "수작업 중심"
+- title: "도입 후"
+  desc: "자동화 중심"
+:::
+```
+
+### `process.staircase` — 계단식 단계(뒤로 갈수록 높아짐)
+
+**필드**: `icon` 아이콘 · `title` 단계 · `desc` 설명 · `meta` 시점 · `tag` highlight = 강조  
+**인수**: `grow`=1.0~1.6 (기본 1.35) · `emphasis`=last\|first\|none\|<번호> (기본 last) · `caption`=문자열  
+**PPTX(cs_v2)**: `level-grid` 근사
+
+```markdown
+::: process.staircase grow=1.5 caption="세대 전환 간격이 짧아졌다"
+- title: 챗봇
+  desc: 질문에 답한다
+  meta: 2022
+- title: 추론자
+  desc: 단계적으로 푼다
+  meta: 2024
+- title: 에이전트
+  desc: 스스로 실행한다
+  meta: 2026
+:::
+```
+
+### `process.growth` — 성장 서사(이전 → 이후 패널)
+
+**필드**: `title` 상태 · `desc` 설명 · `icon` 수치  
+**PPTX(cs_v2)**: `before-after` 근사
+
+```markdown
+::: process.growth
+- icon: 1억
+  title: 2023 사용자
+- icon: 8억
+  title: 2026 사용자
+:::
+```
+
+### `process.cycle-3` — 삼각 순환
+
+**필드**: `icon` 아이콘 · `title` 단계 · `desc` 설명  
+**PPTX(cs_v2)**: `step-flow` 근사
+
+```markdown
+::: process.cycle-3
+- title: 기록
+  desc: 데이터를 모은다
+- title: 학습
+  desc: 모델을 개선한다
+- title: 적용
+  desc: 현장에 쓴다
+:::
+```
+
+### `process.zigzag` — 지그재그 로드맵
+
+**필드**: `icon` 아이콘 · `title` 단계 · `desc` 설명  
+**인수**: `emphasis`=last\|first\|none\|<번호> (기본 none)  
+**PPTX(cs_v2)**: `step-flow` 근사
+
+```markdown
+::: process.zigzag
+- title: 도입
+- title: 확산
+- title: 정착
+- title: 고도화
+- title: 혁신
+:::
+```
+
+### `process.cards-arrow-4` — 카드 4단계 + 화살표(원·하단 목록)
+
+**필드**: `title` 단계 이름 · `desc` 원 안 글(짧게) · `meta` 글머리(｜ 구분)  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `step-flow` 근사
+
+```markdown
+::: process.cards-arrow-4
+- title: "진단"
+  desc: "업무 분석"
+  meta: "인터뷰 | 데이터 수집 | 병목 파악 | 우선순위"
+- title: "설계"
+  desc: "모델 선정"
+  meta: "요구사항 | 아키텍처 | 보안 검토 | 예산"
+- title: "구축"
+  desc: "시범 적용"
+  meta: "개발 | 연동 | 테스트 | 교육"
+- title: "확산"
+  desc: "전사 적용"
+  meta: "운영 | 모니터링 | 개선 | 공유"
+:::
+```
+
+### `process.input-circles-4` — 입력 상자 → 원 4단계 → 하단 흐름
+
+**필드**: `title` 단계 이름 · `desc` 원 안 글(짧게) · `meta` 글머리(｜ 구분)  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `step-flow` 근사
+
+```markdown
+::: process.input-circles-4
+- title: "1단계"
+  desc: "수집"
+  meta: "원천 데이터 | 정제 | 저장"
+- title: "2단계"
+  desc: "분석"
+  meta: "패턴 | 예측 | 시각화"
+- title: "3단계"
+  desc: "적용"
+  meta: "자동화 | 추천 | 알림"
+- title: "4단계"
+  desc: "개선"
+  meta: "피드백 | 재학습 | 확산"
+:::
+```
+
+### `process.band-columns-3` — 머리띠 + 3열(원·전→후 비교)
+
+**필드**: `title` 열 이름 · `desc` 번호 원 글 · `meta` 전 | 후 | 전 | 후 … (짝으로 읽어 전 → 후 줄)  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `step-flow` 근사
+
+```markdown
+::: process.band-columns-3 header="세 가지 변화"
+- title: "업무"
+  desc: "1"
+  meta: "수작업 | 자동화 | 개인 경험 | 데이터 근거 | 느린 처리 | 실시간 처리"
+- title: "조직"
+  desc: "2"
+  meta: "부서 단위 | 협업 단위 | 위계 | 역할 | 연간 계획 | 상시 조정"
+- title: "고객"
+  desc: "3"
+  meta: "일괄 응대 | 맞춤 응대 | 대기 | 즉시 | 사후 대응 | 선제 대응"
+:::
+```
+
+### `process.steps-checklist-3` — 머리띠 + 3단계 + 체크 목록
+
+**필드**: `title` 단계 이름 · `desc` 번호 원 글 · `meta` 체크 목록(｜ 구분)  
+**인수**: `header`=문자열  
+**PPTX(cs_v2)**: `step-flow` 근사
+
+```markdown
+::: process.steps-checklist-3 header="도입 3단계"
+- title: "준비"
+  desc: "1"
+  meta: "목표 설정 | 데이터 점검"
+- title: "시범"
+  desc: "2"
+  meta: "한 부서 적용 | 성과 측정"
+- title: "확산"
+  desc: "3"
+  meta: "전사 적용 | 운영 체계"
+:::
+```
+
+### `structure.pillars` — 기반 위 기둥
+
+**필드**: `title` 첫 항목 = 기반, 나머지 = 기둥 · `desc` 설명 · `icon` 아이콘  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: structure.pillars
+- title: 데이터 기반
+- title: 개발
+- title: 운영
+- title: 보안
+:::
+```
+
+### `structure.groups-2x3` — 2그룹 × 원 3
+
+**필드**: `title` 그룹 이름(알약) · `desc` 설명 · `meta` 원(｜ 구분, 3~4개)  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: structure.groups-2x3
+- title: "내부 역량"
+  desc: "사람과 조직"
+  meta: "교육 | 인재 | 문화 | 리더십"
+- title: "외부 협력"
+  desc: "생태계"
+  meta: "파트너 | 공급망 | 학계 | 정부"
+:::
+```
+
+### `data.bars` — 막대그래프(극단 대비)
+
+**필드**: `title` 이름 · `icon` 값(숫자) · `tag` highlight = 강조  
+**인수**: `scale`=linear\|sqrt (기본 sqrt) · `emphasis`=last\|first\|none\|<번호> (기본 none)  
+**PPTX(cs_v2)**: `stat-grid` 근사
+
+```markdown
+::: data.bars
+- title: 전화기
+  icon: 75년
+- title: 인터넷
+  icon: 7년
+- title: 챗GPT
+  icon: 2개월
+  tag: highlight
+:::
+```
+
+### `data.gauge` — 반원 게이지(위치·비율)
+
+**필드**: `title` 이름 · `icon` 값(0~100) · `desc` 설명  
+**인수**: `left`=문자열 · `right`=문자열  
+**PPTX(cs_v2)**: `stat-grid` 근사
+
+```markdown
+::: data.gauge left="신중" right="낙관"
+- title: 학계
+  icon: 30
+- title: 산업계
+  icon: 75
+:::
+```
+
+### `text.statement` — 텍스트 전용(중앙 문장·요약·질문)
+
+**필드**: `title` 중앙 문장 · `desc` 보조 문장 · `meta` 요약 줄(｜ 구분)  
+**PPTX(cs_v2)**: `summary-box` 근사
+
+```markdown
+::: text.statement
+- title: 모델이 아니라 시스템이 경쟁력이다
+  desc: 구축 · 실행 · 신뢰를 함께 설계한다
+  meta: 구축 | 실행 | 신뢰
+:::
+```
+
+### `text.body` — 일반 문단·글머리(숏코드 없이 쓴 본문)
+
+**필드**: `desc` 문단 또는 글머리 한 줄  
+**PPTX(cs_v2)**: `summary-box` 근사
+
+```markdown
+::: text.body
+- desc: "블록 밖에 쓴 일반 문단은 이 배치로 그린다."
+- desc: "글머리로 쓴 줄은 글머리로 남는다."
+  bullet: "y"
+:::
+```
+
+### `text.quote` — 인물 핵심 발언(얼굴·발언·하단 카드)
+
+**필드**: `title` 발언 · `meta` 시기·출처 · `icon` 이니셜 · `desc` 하단 카드  
+**PPTX(cs_v2)**: `takeaway-banner` 근사
+
+```markdown
+::: text.quote
+- title: 우리는 모델이 아니라 시스템을 만든다
+  meta: 2026.10 · 기조연설
+  icon: DA
+- title: 맥락
+  desc: 에이전트 시대의 경쟁
+- title: 의미
+  desc: 통합 설계가 핵심
+:::
+```
+
+### `text.icon-statement` — 단일 아이콘 강조
+
+**필드**: `icon` 아이콘 · `title` 문장 · `desc` 보조  
+**PPTX(cs_v2)**: `takeaway-banner` 근사
+
+```markdown
+::: text.icon-statement
+- icon: robot
+  title: 에이전트가 일을 끝낸다
+  desc: 사람은 목표와 검토에 집중한다
+:::
+```
+
+### `text.avatar` — 인물 이니셜 아바타(보조)
+
+**필드**: `icon` 이니셜 · `title` 이름 · `desc` 소속  
+**PPTX(cs_v2)**: `summary-box` 근사
+
+```markdown
+::: text.avatar
+- icon: SH
+  title: 신○○
+  desc: 정보통신산업진흥원
+:::
+```
+
+### `media.cards-image` — 정보 카드 N + 이미지
+
+**필드**: `title` 카드 제목 · `desc` 설명  
+**인수**: `side`=left\|right (기본 right)  
+**PPTX(cs_v2)**: `columns-grid` 근사
+
+```markdown
+::: media.cards-image
+- title: 현장 적용
+  desc: 공장·물류
+- title: 사무 적용
+  desc: 문서·메일
+:::
+```
+
+### `media.banner` — 하단 이미지 배너
+
+**필드**: `title` 글머리  
+**PPTX(cs_v2)**: `summary-box` 근사
+
+```markdown
+::: media.banner
+- title: 이미지가 주인공인 슬라이드
+- title: 위에는 핵심 문장 두세 줄
+:::
+```
+
+### `media.full` — 이미지 자리(전면)
+
+**필드**: `desc` 이미지 프롬프트  
+**PPTX(cs_v2)**: `summary-box` 근사
+
+```markdown
+::: media.full
+- title: "현장 사진"
+  desc: "a wide photo of a modern factory floor with collaborative robots, natural light"
+:::
+```
+
+---
+
 ## 옛 이름(읽기 호환 별칭) → 기능 이름
 
 이름은 **기능 이름 하나로 운영**합니다. 아래 옛 이름은 예전 문서를 읽기 위한 별칭일 뿐이고, 빌드는 받는 즉시 오른쪽 이름 + 인수로 바꿔 그립니다(출력 같음).
@@ -892,20 +1493,20 @@ pptgen 옛 구현 ID(`staircase`·`hub-spoke`·`c01-p07` 등)도 같은 방식�
 
 ## HTML·PPTX 지원 현황
 
-cs_v2 구현 상태가 `ready` 인 배치(이 문서의 각 절)는 HTML·PPTX 모두 그립니다(`src/__tests__/` 커버리지 테스트가 잠금). 그 밖의 카탈로그 배치는 가장 가까운 배치로 **근사**합니다.
+cs_v2 구현 상태가 `ready` 인 64종은 HTML(종형·횡형)을 모양 그대로 그립니다. cs_v2 PPTX 는 옛 숏코드 28종이 같은 모양, 기능 이름 구현 36종은 `pptx_shortcode` 근사입니다(`src/__tests__/` 커버리지 테스트가 잠금). 정밀 PPTX 는 pptgen.
 
-| 그룹 | ready (HTML·PPTX) | 근사(fallback) |
-|---|---|---|
-| 분할·카드 | `grid.cards` `grid.features` `grid.badges` `grid.list` `grid.tiers` `grid.columns` | `grid.main-plus-3` `grid.cards-icon-3` `grid.wide-narrow-titled` `grid.narrow-wide-titled` `grid.box-1` `grid.box-2` `grid.box-3` `grid.box-4` `grid.narrow-wide` `grid.wide-narrow` `grid.circle-3` `grid.band-box-3` |
-| 비교·대조 | `compare.pair` `compare.before-after` | `compare.main-sub` `compare.balance` `compare.hbars` `compare.pair-summary` |
-| 순서·흐름 | `process.track` `process.steps` `process.levels` `process.branch` | `process.staircase` `process.growth` `process.cycle-3` `process.zigzag` `process.cards-arrow-4` `process.input-circles-4` `process.band-columns-3` `process.steps-checklist-3` |
-| 구조·관계 | `structure.hub` `structure.rings` `structure.venn` | `structure.pillars` `structure.groups-2x3` |
-| 데이터·수치 | `data.stats` `data.summary-bar` `data.quadrant` | `data.bars` `data.gauge` |
-| 서술·강조 | `text.takeaway` `text.callout` `text.summary` `text.section` | `text.statement` `text.body` `text.quote` `text.icon-statement` `text.avatar` |
-| 코드·터미널 | `code.editor` `code.console` `code.command` | - |
-| 탐색·목록 | `nav.faq` `nav.tabs` `nav.chapters` | - |
-| 이미지 혼합 | - | `media.cards-image` `media.banner` `media.full` |
-| 견본 | - | `sample.chart-pair` `sample.infographic-2` |
+| 그룹 | HTML·PPTX 같은 모양 | HTML 모양 그대로 · PPTX 근사 | 근사 |
+|---|---|---|---|
+| 분할·카드 | `grid.cards` `grid.features` `grid.badges` `grid.list` `grid.tiers` `grid.columns` | `grid.main-plus-3` `grid.cards-icon-3` `grid.wide-narrow-titled` `grid.narrow-wide-titled` `grid.box-1` `grid.box-2` `grid.box-3` `grid.box-4` `grid.narrow-wide` `grid.wide-narrow` `grid.circle-3` `grid.band-box-3` | - |
+| 비교·대조 | `compare.pair` `compare.before-after` | `compare.main-sub` `compare.balance` `compare.hbars` `compare.pair-summary` | - |
+| 순서·흐름 | `process.track` `process.steps` `process.levels` `process.branch` | `process.staircase` `process.growth` `process.cycle-3` `process.zigzag` `process.cards-arrow-4` `process.input-circles-4` `process.band-columns-3` `process.steps-checklist-3` | - |
+| 구조·관계 | `structure.hub` `structure.rings` `structure.venn` | `structure.pillars` `structure.groups-2x3` | - |
+| 데이터·수치 | `data.stats` `data.summary-bar` `data.quadrant` | `data.bars` `data.gauge` | - |
+| 서술·강조 | `text.takeaway` `text.callout` `text.summary` `text.section` | `text.statement` `text.body` `text.quote` `text.icon-statement` `text.avatar` | - |
+| 코드·터미널 | `code.editor` `code.console` `code.command` | - | - |
+| 탐색·목록 | `nav.faq` `nav.tabs` `nav.chapters` | - | - |
+| 이미지 혼합 | - | `media.cards-image` `media.banner` `media.full` | - |
+| 견본 | - | - | `sample.chart-pair` `sample.infographic-2` |
 
 ---
 

@@ -5,7 +5,8 @@
  * 색상은 resolveColorKeyword 가 CSS 변수(var(--brand) 등)로 반환하므로 스타일 객체가 불필요하다.
  */
 import { marked } from "marked";
-import { resolveShortcode, wantsAltBg, colorToken, argKeys } from "./library-names.mjs";
+import { resolveShortcode, wantsAltBg, colorToken, argKeys, layoutArgs, emphOf, markAltItems } from "./library-names.mjs";
+import { EXT_RENDERERS, EXT_OWN_HEADER, headerBand } from "./shortcode-ext/index.mjs";
 
 // text.callout 종류 별칭 — 카탈로그 values(tip|info|warning|danger|success)의 warning 을 기존 CSS 클래스(alert-warn)로
 const CALLOUT_ALIAS = { warning: "warn", caution: "warn" };
@@ -267,16 +268,21 @@ function buildSizeOverrideStyle(argsStr) {
  * 숏코드 진입점 — 이름 해석(공용 카탈로그) + 블록 공통 인수 처리 후 cs_v2 렌더러에 넘긴다.
  *  - 이름: 기능 이름(grid.cards) 하나로 운영 — 옛 이름은 기능 이름 + 인수로 정규화한 뒤 구현 ID 를 고른다 (library-names.mjs)
  *  - bg=alt: 이 블록의 카드만 서식 세트의 보조 카드색(--card-alt-bg)으로 — 레이아웃에 영향 없는 display:contents 래퍼
+ *  - 배치 인수 a = 카탈로그 기본값 < 블록 인수(layoutArgs) — badge·connector·emphasis·grow 같은 기본 수치는 카탈로그에만 둔다
+ *  - header 인수: 본문 위 머리띠(스스로 그리는 배치 제외)
  */
 function renderShortcode(type, body, args) {
   const r = resolveShortcode(type, args);   // 기능 이름 + 정규화된 인수 → cs_v2 구현 ID
-  const html = renderNative(r.type, body, r.args);
+  const a = layoutArgs(r.layout, r.args);
+  let html = renderNative(r.type, body, r.args, a);
+  if (html && a.header && !EXT_OWN_HEADER.has(r.type)) html = headerBand(a.header, { inline: renderInline }) + html;
   return html && wantsAltBg(r.args) ? `<div class="sc-bg-alt">${html}</div>` : html;
 }
 
-function renderNative(type, body, args) {
-  const items = parseShortcodeItems(body);
+function renderNative(type, body, args, a = argKeys(args)) {
+  const items = markAltItems(parseShortcodeItems(body));   // 항목 tag: alt → _alt (그 카드만 보조 카드색)
   if (!items.length) return "";
+  const alt = (it) => (it._alt ? " sc-item-alt" : "");
 
   const renderAccent = (color) => {
     if (!color) return "";
@@ -325,6 +331,15 @@ function renderNative(type, body, args) {
   // 아이템 bullet 필드가 없으면 블록 레벨 bullet 사용
   const itemBullet = (it) => it.bullet || blockBullet || null;
 
+  // 기능 이름 구현(shortcode-ext/*) — 예전 "근사" 배치를 모양 그대로. h = 텍스트 도구(순환 import 회피)
+  if (EXT_RENDERERS[type]) {
+    const h = { esc: escapeHtml, inline: renderInline, meta: splitMeta, color: resolveColorKeyword,
+      desc: (it) => renderDesc(it.desc, itemBullet(it), it.color) };
+    return EXT_RENDERERS[type](items, a, h);
+  }
+  // 원 칸 글자 — badge=icon(기본: 아이콘) | number(01·02…) | none(그리지 않음 → null)
+  const badgeOf = (it, i, dflt = "") => a.badge === "none" ? null : a.badge === "number" ? String(i + 1).padStart(2, "0") : (it.icon || dflt);
+
   // 1. icon-grid (align=center|left|row) + feature-grid + badge-grid + stat-grid
   //    align=left  → skill-list 느낌 (좌측 아이콘 배경박스)
   //    align=row   → checkpoint-grid 느낌 (아이콘 좌, 텍스트 우 수평)
@@ -349,16 +364,18 @@ function renderNative(type, body, args) {
                     : isRowLayout   ? "checkpoint-grid"
                     : "icon-grid";
 
-    return `<div class="${wrapClass}" ${gridStyle}>${items.map(it => {
+    const statEmph = isStat ? emphOf(items, a.emphasis) : [];
+    const cardBadge = (it, i, dflt) => (isBadge || isFeat || isStat) ? (it.icon || dflt) : badgeOf(it, i, dflt);   // badge 인수는 grid.cards 만
+    return `<div class="${wrapClass}" ${gridStyle}>${items.map((it, i) => {
       if (isBadge) {
-        return `<div class="badge-item" ${renderAccent(it.color)}>
+        return `<div class="badge-item${alt(it)}" ${renderAccent(it.color)}>
           <div class="badge-icon">${escapeHtml(it.icon)}</div>
           <div class="badge-title" style="color: var(--text);">${escapeHtml(it.title)}</div>
           <div class="badge-tag">${escapeHtml(it.tag)}</div>
         </div>`;
       }
       if (isStat) {
-        return `<div class="stat-card" ${it.color ? `style="border-top: 3px solid ${it.color};"` : `style="border-top: 3px solid var(--brand);"`}>
+        return `<div class="stat-card${alt(it)}${statEmph[i] ? " sx-emph" : ""}" ${it.color ? `style="border-top: 3px solid ${it.color};"` : `style="border-top: 3px solid var(--brand);"`}>
           <div class="stat-val" ${it.color ? `style="color:${it.color}"` : ""}>${escapeHtml(it.icon || it.title)}</div>
           ${it.icon ? `<div class="stat-name">${escapeHtml(it.title)}</div>` : ""}
           ${it.desc ? `<div class="stat-note">${renderDesc(it.desc, itemBullet(it), it.color)}</div>` : ""}
@@ -366,21 +383,24 @@ function renderNative(type, body, args) {
       }
       if (isSkillLayout) {
         // align=left : 작은 아이콘 좌측 배경박스, 제목+설명 우측
-        return `<div class="skill-item" ${renderAccent(it.color)}>
-          <div class="skill-icon" ${it.color ? `style="background:${it.color}22; color:${it.color};"` : ""}>${escapeHtml(it.icon)}</div>
+        const b = cardBadge(it, i, "");
+        return `<div class="skill-item${alt(it)}" ${renderAccent(it.color)}>
+          ${b === null ? "" : `<div class="skill-icon" ${it.color ? `style="background:${it.color}22; color:${it.color};"` : ""}>${escapeHtml(b)}</div>`}
           <div class="skill-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
           <div class="skill-desc">${renderDesc(it.desc, itemBullet(it), it.color)}</div>
         </div>`;
       }
       if (isRowLayout) {
         // align=row : 아이콘 좌 + 텍스트 우 수평 배열
-        return `<div class="checkpoint-item">
-          <div class="ci-icon">${escapeHtml(it.icon || "📐")}</div>
+        const b = cardBadge(it, i, "📐");
+        return `<div class="checkpoint-item${alt(it)}">
+          ${b === null ? "" : `<div class="ci-icon">${escapeHtml(b)}</div>`}
           <div class="ci-text"><strong>${escapeHtml(it.title || "")}</strong>${it.desc ? `<br>${escapeHtml(it.desc)}` : ""}</div>
         </div>`;
       }
       // 기본(center): icon-grid 또는 feature-grid
-      return `<div class="${isFeat ? 'feature-card' : 'icon-card'}" ${renderAccent(it.color)}>
+      const cb = cardBadge(it, i, "");
+      return `<div class="${isFeat ? 'feature-card' : 'icon-card'}${alt(it)}" ${renderAccent(it.color)}>
         ${isFeat && it.color ? `<div class="card-top-bar" style="background-color:${resolveColorKeyword(it.color)}"></div>` : ''}
         ${it.tag ? `<span class="feature-tag" ${it.color ? `style="background:${resolveColorKeyword(it.color)}; color:#fff;"` : ""}>${escapeHtml(it.tag)}</span>` : ""}
         ${isFeat ? `
@@ -388,7 +408,7 @@ function renderNative(type, body, args) {
             ${it.icon ? `<span class="fc-icon">${escapeHtml(it.icon)}</span>` : ""}${renderMultiLineText(it.title, "")}
           </div>
         ` : `
-          <div class="icon-card-icon" style="color: var(--brand);">${escapeHtml(it.icon)}</div>
+          ${cb === null ? "" : `<div class="icon-card-icon" style="color: var(--brand);">${escapeHtml(cb)}</div>`}
           <div class="icon-card-title" style="color: var(--text);">${renderMultiLineText(it.title, "")}</div>
         `}
         ${renderDesc(it.desc, itemBullet(it), it.color)}
@@ -401,7 +421,7 @@ function renderNative(type, body, args) {
       const resColor = resolveColorKeyword(it.color);
       const grad = resColor ? (resColor.startsWith("var(") ? `linear-gradient(135deg, ${resColor}, color-mix(in srgb, ${resColor} 80%, black))` : `linear-gradient(135deg, ${resColor}, ${resColor}CC)`) : `var(--brand-gradient)`;
       const metaItems = splitMeta(it.meta);
-      return `<div class="tool-card">
+      return `<div class="tool-card${alt(it)}">
         <div class="tc-header" style="background: ${grad}; color: #fff;">
           <div class="tc-icon">${escapeHtml(it.icon)}</div>
           <div class="tc-content">
@@ -417,20 +437,23 @@ function renderNative(type, body, args) {
 
   // 3. workflow-flow (alias → step-flow 스타일로 렌더, 시각적 wf-* 클래스 유지)
   if (type === "workflow-flow" || type === "workflow-strip") {
-    return `<div class="workflow-flow">${items.map((it, idx) => `
-      <div class="wf-step" ${renderAccent(it.color)}>
-        <div class="wf-icon" ${it.color ? `style="background:${it.color}; color:#fff;"` : ""}>${escapeHtml(it.icon)}</div>
+    const emph = emphOf(items, a.emphasis);
+    return `<div class="workflow-flow">${items.map((it, idx) => { const b = badgeOf(it, idx); return `
+      <div class="wf-step${alt(it)}${emph[idx] ? " active" : ""}" ${renderAccent(it.color)}>
+        ${b === null ? "" : `<div class="wf-icon" ${it.color ? `style="background:${it.color}; color:#fff;"` : ""}>${escapeHtml(b)}</div>`}
         <div class="wf-name" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
         <div class="wf-tool">${escapeHtml(it.meta)}</div>
         ${idx < items.length - 1 ? `<div class="wf-arrow">→</div>` : ""}
-      </div>`).join("")}</div>`;
+      </div>`; }).join("")}</div>`;
   }
 
   // 4. step-list (구 steps)
   if (type === "step-list") {
+    // badge 기본 number(카탈로그) — 번호는 1·2·3(예전 그대로), icon 이면 아이콘(없으면 번호), none 이면 원 없음
+    const stepBadge = (it, idx) => a.badge === "none" ? null : a.badge === "icon" && it.icon ? it.icon : String(idx + 1);
     return `<div class="step-list">${items.map((it, idx) => `
-      <div class="step-item" ${renderAccent(it.color)}>
-        <div class="step-num" ${it.color ? `style="background:${it.color}"` : ""}>${idx + 1}</div>
+      <div class="step-item${alt(it)}" ${renderAccent(it.color)}>
+        ${stepBadge(it, idx) === null ? "" : `<div class="step-num" ${it.color ? `style="background:${it.color}"` : ""}>${escapeHtml(stepBadge(it, idx))}</div>`}
         <div class="step-content">
           <div class="step-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
           ${renderDesc(it.desc, itemBullet(it), it.color)}
@@ -443,7 +466,7 @@ function renderNative(type, body, args) {
     return `<div class="compare-grid" ${gridStyle}>${items.map(it => {
       const activeNote = it.note || it.meta;
       return `
-      <div class="compare-card" ${renderAccent(it.color)}>
+      <div class="compare-card${alt(it)}" ${renderAccent(it.color)}>
         <div class="compare-card-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
         ${renderDesc(it.desc, itemBullet(it), it.color)}
         ${activeNote ? renderCompareNote(activeNote, it.color) : ""}
@@ -461,7 +484,7 @@ function renderNative(type, body, args) {
       const topBarStyle = resColor ? `style="background:${resColor};"` : "";
       const metaItems = splitMeta(it.meta);
       
-      return `<div class="plan-card ${highlight}" ${style}>
+      return `<div class="plan-card ${highlight}${alt(it)}" ${style}>
         <div class="card-top-bar" ${topBarStyle}></div>
         ${it.tag ? `<div class="plan-badge" ${topBarStyle}>${escapeHtml(it.tag)}</div>` : ""}
         <div class="plan-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
@@ -488,7 +511,7 @@ function renderNative(type, body, args) {
     return `<div class="columns-grid" ${gridStyle}>${items.map(it => {
       const activeNote = it.note || it.meta;
       return `
-      <div class="column-card" ${renderAccent(it.color)}>
+      <div class="column-card${alt(it)}" ${renderAccent(it.color)}>
         <div class="card-top-bar" ${it.color ? `style="background:${resolveColorKeyword(it.color)}"` : ""}></div>
         <div class="col-title" ${renderTextColor(it.color)}>${escapeHtml(it.title)}</div>
         ${renderDesc(it.desc, itemBullet(it), it.color)}
@@ -501,7 +524,7 @@ function renderNative(type, body, args) {
   if (type === "summary-box" || type === "bottom-list") {
     const it = items[0];
     const chips = splitMeta(it.meta);
-    return `<div class="summary-box" ${renderAccent(it.color)}>
+    return `<div class="summary-box${alt(it)}" ${renderAccent(it.color)}>
       <div class="bl-title" ${renderTextColor(it.color)}>${renderInline(it.title)}</div>
       ${renderDesc(it.desc, itemBullet(it), it.color)}
       ${chips.length ? `<div class="bl-chips">${chips.map(c => `<span class="bl-chip" ${it.color ? `style="background:${it.color}15; color:${it.color}"` : ""}>${escapeHtml(c)}</span>`).join('')}</div>` : ""}
@@ -513,7 +536,7 @@ function renderNative(type, body, args) {
     if (items.length < 2) return renderNative("compare-grid", body, args);
     return `<div class="compare-2col">${items.slice(0, 2).map((it, idx) => {
       const isLeft = idx === 0;
-      const classes = isLeft ? "c2-card c2-left" : "c2-card c2-right";
+      const classes = (isLeft ? "c2-card c2-left" : "c2-card c2-right") + alt(it);
       const metaItems = splitMeta(it.meta);
       const metaHtml = metaItems.length ? `<ul class="c2-list">${metaItems.map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>` : "";
       const descHtml = it.desc ? `<div class="c2-desc">${renderDesc(it.desc, itemBullet(it), it.color)}</div>` : "";
@@ -576,7 +599,7 @@ function renderNative(type, body, args) {
   // 14. faq-list (구 faq-accordion)
   if (type === "faq-list") {
     return `<div class="faq-list">${items.map(it => `
-      <div class="faq-item">
+      <div class="faq-item${alt(it)}">
         <button class="faq-q" onclick="this.closest('.faq-item').classList.toggle('open')">
           <span>${escapeHtml(it.title)}</span>
           <span class="faq-arrow">▼</span>
@@ -608,7 +631,8 @@ function renderNative(type, body, args) {
         
         const labelHtml = tag ? `<span class="commit-label" style="background:${color};">${escapeHtml(tag)}</span>` : "";
         const descHtml = meta ? `<span class="commit-desc">${escapeHtml(meta)}</span>` : "";
-        const lineHtml = idx < count - 1 ? `<div class="commit-line-segment" style="background:${color};"></div>` : "";
+        // connector: line(기본 — 카탈로그) | arrow(끝에 화살촉) | none(이음선 없음)
+        const lineHtml = idx < count - 1 && a.connector !== "none" ? `<div class="commit-line-segment${a.connector === "arrow" ? " gf-arrow" : ""}" style="background:${color};${a.connector === "arrow" ? ` color:${color};` : ""}"></div>` : "";
         
         return `
           <div class="commit" style="border-color:${color};">
@@ -792,7 +816,7 @@ function renderNative(type, body, args) {
     };
 
     return `<div class="chapter-list">${items.map(it => `
-      <div class="chapter-item">
+      <div class="chapter-item${alt(it)}">
         <span class="chapter-num">${escapeHtml(it.icon)}</span>
         <div class="chapter-title">
           <strong>${escapeHtml(it.title)}</strong>
@@ -819,14 +843,20 @@ function renderNative(type, body, args) {
 
   // 22. step-flow (구 flow 호환 + meta 필드 지원)
   //     meta 필드를 사용하면 workflow-flow 스타일처럼 도구/코멘트를 표시할 수 있음
+  //     connector: line(기본 — 카탈로그) = 단계 사이 가는 선 | none = 선 없음(화살표는 type: arrow 항목으로). arrow 는 workflow-flow 구현
+  //     badge: icon | number | none, emphasis: 항목 tag(active·highlight) 또는 last|first|<번호>
   if (type === "step-flow" || type === "flow") {
-    return `<div class="step-flow">${items.map(it => {
-      if (it.type === "arrow" || it.title === "→" || it.icon === "→") {
+    const isArrow = (it) => it.type === "arrow" || it.title === "→" || it.icon === "→";
+    const steps = items.filter((it) => !isArrow(it)), emph = emphOf(steps, a.emphasis);
+    const line = a.connector === "line" && steps.length === items.length;   // 화살표 항목을 직접 넣었으면 선은 긋지 않는다
+    return `<div class="step-flow${line ? " sf-line" : ""}">${items.map(it => {
+      if (isArrow(it)) {
         return `<div class="step-flow-arrow">${escapeHtml(it.icon || "→")}</div>`;
       }
-      const activeClass = it.tag === "active" ? "active" : "";
-      return `<div class="step-flow-step ${activeClass}">
-        <div class="fs-icon">${escapeHtml(it.icon)}</div>
+      const k = steps.indexOf(it), b = badgeOf(it, k);
+      const activeClass = emph[k] ? "active" : "";
+      return `<div class="step-flow-step ${activeClass}${alt(it)}">
+        ${b === null ? "" : `<div class="fs-icon">${escapeHtml(b)}</div>`}
         <div class="fs-title">${escapeHtml(it.title)}</div>
         ${it.meta ? `<div class="fs-meta" style="font-size:0.75rem;color:var(--text-3);margin-top:4px;">${escapeHtml(it.meta)}</div>` : ""}
         <div class="fs-sub">${renderDesc(it.desc, itemBullet(it), it.color)}</div>
@@ -835,10 +865,13 @@ function renderNative(type, body, args) {
   }
 
   // 23. [NEW] level-grid (레벨 스펙트럼)
+  //     grow: 뒤 카드일수록 높게(1.0 = 같은 높이, 카탈로그 기본), emphasis: 항목 tag(highlight) 또는 last|first|<번호>
   if (type === "level-grid") {
-    return `<div class="level-grid">${items.map(it => {
-      const activeClass = it.tag === "highlight" || it.featured === "true" ? "highlight" : "";
-      return `<div class="level-card ${activeClass}">
+    const emph = emphOf(items, a.emphasis), n = items.length;
+    const grow = Math.min(1.6, Math.max(1.0, parseFloat(a.grow) || 1.0));
+    return `<div class="level-grid${grow > 1 ? " lv-grow" : ""}">${items.map((it, i) => {
+      const activeClass = emph[i] ? "highlight" : "";
+      return `<div class="level-card ${activeClass}${alt(it)}"${grow > 1 ? ` style="--lv-k:${Math.pow(grow, i - (n - 1)).toFixed(3)}"` : ""}>
         <div class="level-num">${escapeHtml(it.title)}</div>
         <div class="level-name">${renderDesc(it.desc, itemBullet(it), it.color)}</div>
         <div class="level-tool">${escapeHtml(it.meta)}</div>

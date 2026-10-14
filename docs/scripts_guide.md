@@ -284,7 +284,7 @@ coding/_templates/slide-library/catalog/   ← 원본(정본, ppt clone 산출�
 cs_v2/config/library/*.json (복사본)  →  scripts/library-map.mjs (생성본: LAYOUTS·LAYOUT_ALIASES·LAYOUT_GROUPS·SHAPE_SETS·COLOR_TOKENS)
         │
         ├─ scripts/library-names.mjs   resolveShortcode(name) · shortcodeBlockRe() · stripHeadingAttrs(md) · colorToken(name, medium) · wantsAltBg(args)
-        │     ├─ shortcode-render.mjs  renderShortcode = 이름 해석 → renderNative(고유 렌더러) → bg=alt 래퍼(.sc-bg-alt)
+        │     ├─ shortcode-render.mjs  renderShortcode = 이름 해석 → layoutArgs(카탈로그 기본값 < 블록 인수) → renderNative(옛 숏코드 분기 | shortcode-ext 기능 이름 구현) → header 머리띠 → bg=alt 래퍼(.sc-bg-alt)
         │     ├─ guide-core / presentation-core / md-to-pptx / pptx-browser   ::: 정규식 · 제목 속성 제거 (같은 함수)
         │     ├─ registry.mjs hexClean   색 이름 → PPTX 팔레트 키 (cs_v2_pptx)
         │     └─ config/shortcode-guide.ts  분류(category)·기능 이름(layout)·스니펫 첫 줄
@@ -300,6 +300,30 @@ cs_v2/config/library/*.json (복사본)  →  scripts/library-map.mjs (생성본
 3. **구현 ID 고르기**: `impl.cs_v2.variants`(예: `grid.columns` + `variant=plain` → `compare-grid`, `process.track` + `connector=arrow` → `workflow-flow`) → 없으면 `impl.cs_v2.shortcode` → 구현 상태가 `markdown`/`none` 이면 `PLAIN_FALLBACK`(카탈로그 `fallback.cs_v2`).
 4. 모르는 이름은 입력 그대로 → 렌더러가 빈 문자열(기존 동작).
 5. 반환 `{ type: 구현 ID, layout: 기능 이름, args: 정규화된 인수, status, alias }` — `renderShortcode`·`md-to-pptx`·`pptx-browser` 가 같은 결과를 쓴다(HTML·PPTX 같은 해석).
+6. **매체**: 세 번째 인수 `medium = "pptx"`(md-to-pptx·pptx-browser) 면 기능 이름 구현(HTML 전용) 대신 카탈로그 `impl.cs_v2.pptx_shortcode`(옛 숏코드 근사 — 예 `process.staircase` → `level-grid`). cs_v2 PPTX 는 빠른 근사, 정밀 PPTX 는 pptgen.
+
+### 5-1a. 기능 이름 구현 `scripts/shortcode-ext/` (2026-10-14, 인계서 C)
+
+예전에 "가장 가까운 숏코드"로 근사하던 36종을 모양 그대로 그리는 HTML 렌더러. 구현 ID = 기능 이름(카탈로그 `impl.cs_v2.shortcode`).
+
+| 파일 | 배치 |
+|---|---|
+| `common.mjs` | 공용 조각(`cls`·`num`·`clamp`·`glyph`·`bullets`·`pill`·`band`·`imageSlot`) + 공용 CSS(`.sx-card`·`.sx-emph`·`.sx-band`·`.sc-item-alt`…) |
+| `grid.mjs` | `grid.box-1~4`·`narrow-wide`·`wide-narrow`(+`-titled`)·`main-plus-3`·`cards-icon-3`·`circle-3`·`band-box-3`, `structure.pillars`·`groups-2x3` — 상자형 패턴은 매개변수 하나(`boxes(cols, title, circle, main)`) |
+| `process.mjs` | `process.staircase`·`growth`·`cycle-3`·`zigzag` |
+| `flows.mjs` | `process.cards-arrow-4`·`input-circles-4`·`band-columns-3`·`steps-checklist-3` |
+| `compare.mjs` | `compare.main-sub`·`balance`·`hbars`·`pair-summary`(header 를 아래 결론 띠로 — `ownHeader`) |
+| `data.mjs` | `data.bars`(scale sqrt/linear)·`data.gauge`(SVG 반원) |
+| `text.mjs` | `text.statement`·`body`·`quote`·`icon-statement`·`avatar` |
+| `media.mjs` | `media.cards-image`·`banner`·`full` — 항목 `src` 면 그림, 없으면 프롬프트를 적은 이미지 자리 |
+| `native.mjs` | 옛 숏코드가 새로 받는 인수의 CSS(`.sf-line`·`.lv-grow`·`.gf-arrow`·`.stat-card.sx-emph`·`.wf-step.active`) |
+| `index.mjs` | `EXT_RENDERERS`·`EXT_OWN_HEADER`·`headerBand`·`EXT_CSS`(→ `shortcode-styles.mjs` 의 `SHORTCODE_CSS` 끝에 한 번) |
+
+- 렌더러 시그니처 `(items, a, h)`: `items` = 표준 항목(+`_alt`), `a` = `layoutArgs(layout, args)`, `h` = `shortcode-render` 가 넘기는 텍스트 도구 `{ esc, inline, desc, meta, color }`(순환 import 회피).
+- 색·글꼴·카드 서식은 `var(--*)` 와 서식 세트 변수만(테마·셸이 값을 정함). 기본 수치는 카탈로그 `args.default`.
+- 새 배치 추가: 카탈로그에 `impl.cs_v2 = { status:"ready", shortcode:"<기능 이름>", pptx:false, pptx_shortcode:"<옛 숏코드>" }` → 해당 그룹 파일에 렌더러·CSS → `npm run sync:library` → `npm test`(`layout-ext.test.ts` 가 예시 렌더·CSS 커버리지·이스케이프를 자동 검사).
+- 옛 숏코드 분기의 새 인수(`badge`·`connector`·`emphasis`·`grow`)는 `renderNative` 안에서 `a.*` 로 읽고, 인수가 기본값이면 예전 마크업을 그대로 낸다(md_src 150개 산출물 전후 동일).
+- 항목 `tag: alt`: `markAltItems()`(library-names) 가 HTML·PPTX 세 파서에서 `_alt` 표시 → HTML `sc-item-alt` 클래스 / PPTX `helpers.isAltBlock(item, it)`.
 
 구현 ID(`IMPL_SHORTCODES` — `shortcode-render.mjs` 분기·`pptx-renderers` 타입)는 **내부 이름**이라 문서·예시·화면에 쓰지 않는다(pptgen 의 `c01-p07` 과 같은 위치).
 md 의 옛 이름 일괄 변환: `scripts/migrate-names.mjs`(`npm run migrate:names -- <경로>`, `--check`) — 대응표는 코드가 아니라 카탈로그에서 읽고, 코드 펜스·이스케이프한 문법 예시(`\:::`) 줄도 바꾼다.

@@ -48,7 +48,9 @@ shape: elevated        # 서식 세트(없으면 styles.json 테마의 shapeSet 
 ```
 
 - 이름 해석: `scripts/library-names.mjs` (`resolveShortcode(name, args)`) — **이름은 기능 이름 하나로 운영**. 옛 이름(cs_v2 숏코드·pptgen 구현 ID)은 기능 이름 + `alias_args` 로 정규화한 뒤, 인수로 구현 ID 를 고릅니다(`impl.cs_v2.variants`). 옛 이름 일괄 변환: `npm run migrate:names`.
-  cs_v2 구현이 `fallback`(근사)인 배치는 가장 가까운 숏코드로, `markdown`/`none` 인 배치는 카탈로그 `fallback.cs_v2`(지금 `text.summary`)로 근사합니다.
+  cs_v2 구현 ID 가 기능 이름이면(`impl.cs_v2.shortcode` = 배치 이름, 36종) `scripts/shortcode-ext/` 가 HTML 을 그리고, PPTX 는 `impl.cs_v2.pptx_shortcode`(옛 숏코드 근사)로 그립니다.
+  `fallback`(근사 — 지금 견본 2종)은 가장 가까운 구현으로, `markdown`/`none` 은 카탈로그 `fallback.cs_v2`(지금 `text.summary`)로 근사합니다.
+  배치 인수 기본값은 `args.default` 하나 — `sync:library` 가 `library-map.mjs` 의 `LAYOUTS[이름].defaults` 로 옮기고 렌더러는 `layoutArgs()` 로 읽습니다.
 - 서식 세트: `scripts/shape-set.mjs` — HTML 은 `--set-card-bg`·`--card-alt-bg`·`--card-border-width`·`--card-border-color`·`--card-shadow`·`--card-radius` 변수,
   PPTX 는 `pal.shape` → `helpers.cardBox()`. `template` 은 기존 출력과 같습니다(보조 카드색만 정함).
 - 아직 cs_v2 에 없는 것: 항목 하나만 보조색으로 바꾸는 `tag: alt`(pptgen 전용), pptgen 전용 인수(`badge`·`header`·`connector`·`emphasis`·`grow` 등 — 카탈로그 `args.*.cs_v2=false`).

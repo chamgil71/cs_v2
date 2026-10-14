@@ -4,7 +4,9 @@ import { renderShortcode } from '../../scripts/shortcode-render.mjs';
 // @ts-ignore
 import { pptxRegistry, helpers } from '../../scripts/pptx-renderers/registry.mjs';
 // @ts-ignore
-import { LAYOUTS, LAYOUT_ALIASES, ALIAS_ARGS, IMPL_SHORTCODES, resolveShortcode, stripHeadingAttrs, shortcodeBlockRe } from '../../scripts/library-names.mjs';
+import { LAYOUTS, LAYOUT_ALIASES, ALIAS_ARGS, IMPL_SHORTCODES, PLAIN_FALLBACK, resolveShortcode, stripHeadingAttrs, shortcodeBlockRe } from '../../scripts/library-names.mjs';
+// @ts-ignore
+import { EXT_RENDERERS } from '../../scripts/shortcode-ext/index.mjs';
 // @ts-ignore
 import { shapeSetCss, shapeSetPptx, pickShapeSet } from '../../scripts/shape-set.mjs';
 // @ts-ignore
@@ -30,6 +32,7 @@ describe('카탈로그 — 생성본(library-map.mjs) == 복사본(config/librar
     for (const [k, v] of Object.entries<any>(json.layouts)) {
       expect(LAYOUTS[k].shortcode, k).toBe(v.impl?.cs_v2?.shortcode || null);
       expect(LAYOUTS[k].status, k).toBe(v.impl?.cs_v2?.status || 'none');
+      expect(LAYOUTS[k].pptx_shortcode, k).toBe(v.impl?.cs_v2?.pptx_shortcode || null);
     }
   });
   it('서식 세트 생성본 == 복사본', () => {
@@ -41,18 +44,26 @@ describe('카탈로그 — 생성본(library-map.mjs) == 복사본(config/librar
 describe('카탈로그 — 모든 기능 이름이 HTML·PPTX 로 그려진다', () => {
   for (const name of Object.keys(LAYOUTS)) {
     it(`${name} → ${resolveShortcode(name).type}`, () => {
-      const r = resolveShortcode(name);
-      expect(IMPL_SHORTCODES.has(r.type), `${name}: 구현 ID ${r.type} 가 cs_v2 렌더러 분기가 아님`).toBe(true);
+      const r = resolveShortcode(name), p = resolveShortcode(name, '', 'pptx');
+      expect(IMPL_SHORTCODES.has(r.type) || !!EXT_RENDERERS[r.type], `${name}: 구현 ID ${r.type} 가 cs_v2 렌더러에 없음`).toBe(true);
       const html = renderShortcode(name, BODY, '');
       expect(html, `${name}: 빈 출력`).toBeTruthy();
       expect(html).not.toContain('undefined');
-      expect(pptxRegistry.has(r.type), `${name}: PPTX 렌더러 없음 (${r.type})`).toBe(true);
+      expect(html).not.toContain('NaN');
+      // PPTX 는 HTML 전용 구현(기능 이름) 대신 카탈로그 pptx_shortcode(빠른 근사) — 옛 숏코드 PPTX 렌더러가 있어야 한다
+      expect(IMPL_SHORTCODES.has(p.type), `${name}: PPTX 구현 ID ${p.type} 가 옛 숏코드가 아님`).toBe(true);
+      expect(pptxRegistry.has(p.type), `${name}: PPTX 렌더러 없음 (${p.type})`).toBe(true);
     });
   }
-  it('카탈로그가 가리키는 구현 ID(shortcode·variants·fallback)는 전부 렌더러에 있다', () => {
-    const ids = Object.values<any>(LAYOUTS).flatMap((e) => [e.shortcode, ...(e.variants || []).map((v: any) => v.shortcode)]).filter(Boolean);
-    expect(ids.filter((t) => !IMPL_SHORTCODES.has(t))).toEqual([]);
-    expect(IMPL_SHORTCODES.has(resolveShortcode('text.avatar').type)).toBe(true);
+  it('카탈로그가 가리키는 구현 ID(shortcode·variants·pptx_shortcode)는 전부 렌더러에 있다', () => {
+    const ids = Object.values<any>(LAYOUTS).flatMap((e) => [e.shortcode, e.pptx_shortcode, ...(e.variants || []).map((v: any) => v.shortcode)]).filter(Boolean);
+    expect(ids.filter((t) => !IMPL_SHORTCODES.has(t) && !EXT_RENDERERS[t])).toEqual([]);
+    expect(Object.values<any>(LAYOUTS).map((e) => e.pptx_shortcode).filter((t) => t && !IMPL_SHORTCODES.has(t))).toEqual([]);
+    expect(resolveShortcode('text.avatar', '', 'pptx').type).toBe(PLAIN_FALLBACK);   // 예전(none) PPTX 근사 그대로
+  });
+  it('기능 이름 구현(shortcode-ext) == 카탈로그에서 구현 ID 가 기능 이름인 배치', () => {
+    const own = Object.entries<any>(LAYOUTS).filter(([k, e]) => e.shortcode === k).map(([k]) => k).sort();
+    expect(Object.keys(EXT_RENDERERS).sort()).toEqual(own);
   });
   it('구현 ID 표의 모든 항목이 실제로 그려진다(표 = 렌더러 분기)', () => {
     expect([...IMPL_SHORTCODES].filter((t: any) => !renderNativeOk(t))).toEqual([]);
@@ -87,7 +98,8 @@ describe('이름은 하나로 — 옛 이름은 기능 이름 + 인수로 정규
     expect(resolveShortcode('workflow-flow', 'connector=none').type).toBe('step-flow');
   });
   it('pptgen 옛 이름(구현 ID)도 받아준다', () => {
-    expect(resolveShortcode('staircase')).toMatchObject({ layout: 'process.staircase', type: 'level-grid' });
+    expect(resolveShortcode('staircase')).toMatchObject({ layout: 'process.staircase', type: 'process.staircase' });
+    expect(resolveShortcode('staircase', '', 'pptx').type).toBe('level-grid');
     expect(resolveShortcode('c01-p01').layout).toBe('grid.main-plus-3');
   });
   it('md_src 에 옛 이름이 남아 있지 않다(npm run migrate:names)', () => {

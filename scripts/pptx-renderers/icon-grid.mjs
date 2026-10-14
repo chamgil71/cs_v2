@@ -76,7 +76,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
       x: cx, y: cy, w: cardW, h: maxCardH,
       ...(hasColor
         ? { rectRadius: r, fill: { color: color, transparency: 95 }, line: { color: color, width: 0.75 } }
-        : helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })),
+        : helpers.cardBox(pal, { alt: helpers.isAltBlock(item, it), radius: r })),
     });
     
     // 색상이 있을 경우 상단 장식 미니 라인

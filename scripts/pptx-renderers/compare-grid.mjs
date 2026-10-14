@@ -71,7 +71,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 외곽 카드
     slide.addShape("roundRect", {
       x: cx, y: cy, w: cardW, h: maxCardH,
-      ...(it.color ? { rectRadius: r, fill: cardBg, line: { color: color, width: 0.75 } } : helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })),
+      ...(it.color ? { rectRadius: r, fill: cardBg, line: { color: color, width: 0.75 } } : helpers.cardBox(pal, { alt: helpers.isAltBlock(item, it), radius: r })),
     });
     
     // 상단 얇은 바

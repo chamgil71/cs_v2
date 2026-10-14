@@ -61,9 +61,9 @@ export const helpers = {
     return { rectRadius: s.radius ?? radius, fill, line: { ...s.line }, ...(s.shadow ? { shadow: { ...s.shadow } } : {}) };
   },
 
-  // 블록 인수 bg=alt 인가 (보조 카드색)
-  isAltBlock(item) {
-    return /(?:^|\s)bg=["']?alt\b/.test(String((item && item.args) || ""));
+  // 보조 카드색인가 — 블록 인수 bg=alt, 또는 그 항목 tag: alt(파서가 _alt 로 표시 — library-names.mjs markAltItems)
+  isAltBlock(item, it) {
+    return !!(it && it._alt) || /(?:^|\s)bg=["']?alt\b/.test(String((item && item.args) || ""));
   },
 
   // 연결선 전용 안전 그리기 — slide.addShape("line", {w, h, ...})에 음수 w/h를 그대로 넘기면

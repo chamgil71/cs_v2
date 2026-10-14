@@ -289,3 +289,13 @@
 - 검증: 이전 전후 150개 산출물 비교(HTML 동일·PPTX 의도 2곳), `npm test` 355, standalone 빌드.
 - 다음: 인계서 C(cs_v2 미구현 기능 — `connector=line`·`badge`·`emphasis`·`grow`·`header`·`tag: alt`, 근사 배치 HTML 렌더러), D(미리보기), E(층 정리).
 
+## 2026-10-14 — 세션 24: cs_v2 에 없던 배치·인수 추가 (CLI 인계서 C 단계)
+
+- **카탈로그(coding)**: 근사·없음이던 36종을 `impl.cs_v2 = { status: ready, shortcode: <기능 이름>, pptx_shortcode: <예전 근사> }` 로, "배치마다" 기본값을 실제 값으로(pptgen 과 같게), cs_v2 가 새로 받는 인수 플래그 `cs_v2: true`, 패턴 칸 뜻(`desc` = 원 안 글 등) 보강. `sync:library` 가 `defaults`·`pptx_shortcode` 를 생성본에 넣음.
+- **기능 이름 구현** `scripts/shortcode-ext/`(8파일, 각 200줄 이하): 상자형 패턴·계단·성장·삼각 순환·지그재그·단계 패턴·주/부·천칭·가로 막대·결론 띠·막대그래프·게이지(SVG)·문장·본문·인용·아이콘 문장·아바타·이미지 자리. CSS 는 `SHORTCODE_CSS` 로 합침.
+- **기존 숏코드 인수**: `badge`·`connector=line`·`emphasis`·`grow`·`header`, 항목 `tag: alt`(HTML·PPTX). 기본값이면 예전 마크업.
+- **PPTX**: `resolveShortcode(…, "pptx")` → `pptx_shortcode`(예전 근사 유지), `markAltItems` + `helpers.isAltBlock(item, it)`, 브라우저 PPTX 발표스크립트 누락 수정.
+- **검증**: md_src 150개 산출물 전후 동일, 66종 예시(pptgen `examples/all-layouts.md`) 가이드·슬라이드 라이트/다크 헤드리스 스크린샷 확인(막대 대비·순환 표시·천칭 중복 글자·인용 배경 4곳 고침), `npm test` 410, `build:standalone`·`build`, pptgen `--plan` 부족 항목 없음(목차 알림만).
+- **문서**: CLAUDE.md(규칙 표·구조·이름 절·지원 현황·이슈 2행), README, scripts_guide 5-1a, guide, shortcode-reference(64종·배치 인수 표·「기능 이름 배치」 절 — 카탈로그 example 에서 생성), changelog Phase 9, 스킬 참조 카탈로그 재생성.
+- 다음: 인계서 D(미리보기 — pptgen previews-all·cs_v2 웹 배치 라이브러리 화면), E(층 정리, 사용자 확인 후).
+

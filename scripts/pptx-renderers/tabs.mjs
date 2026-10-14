@@ -30,7 +30,7 @@ export function render(slide, item, x, y, w, pal, D, helpers) {
     // 1. 탭 상자 외곽 둥근 사각형
     slide.addShape("roundRect", {
       x, y: curY, w, h: totalH,
-      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item), radius: r })
+      ...helpers.cardBox(pal, { alt: helpers.isAltBlock(item, it), radius: r })
     });
     
     // 2. 탭 상단 바 배경

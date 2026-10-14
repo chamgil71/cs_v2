@@ -154,6 +154,7 @@ cs_v2/
 │   ├── pptx-analyzer.js    # PPTX XML 구조 파싱 코어 엔진
 │   ├── spec-parser.js      # PPTX 디자인 스펙 데이터 파서
 │   ├── shortcode-render.mjs   # [정본] 숏코드 → HTML 공유 렌더러 (3개 HTML 출력 공용)
+│   ├── shortcode-ext/         # [정본] 기능 이름 배치 HTML 36종(계단·기둥·게이지·막대·인용·이미지·회사 패턴 상자…) + CSS
 │   ├── shortcode-styles.mjs   # [정본] 숏코드 컴포넌트 CSS (var(--*) 테마 독립)
 │   ├── guide-core.mjs      # 정본 코어: MD → 가이드 HTML (fs/path 비의존, CLI+client 공유)
 │   ├── presentation-core.mjs # 정본 코어: MD → 16:9 슬라이드 HTML (fs/path 비의존, CLI+client 공유)
@@ -176,7 +177,7 @@ cs_v2/
 │   ├── docs_index.md       # 문서 시스템 종합 안내 홈
 │   ├── guide.md            # 사용자 기능 설명서
 │   ├── scripts_guide.md    # 개발자 변환 코어 엔진 설명서
-│   ├── shortcode-reference.md # 숏코드 레퍼런스 (기능 이름 28종 + 옛 이름 표)
+│   ├── shortcode-reference.md # 숏코드 레퍼런스 (기능 이름 64종 + 배치 인수 + 옛 이름 표)
 │   ├── shortcode-changelog.md # 숏코드 변경 이력
 │   ├── worklog.md          # 세션별 작업 로그 (누적, 시점 기록)
 │   ├── report/             # 코드 점검·분석 보고서 (시점 기록)
@@ -189,7 +190,7 @@ cs_v2/
 │   ├── shortcode-guide.ts  # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, 분류·기능 이름은 카탈로그에서)
 │   ├── library/            # 공용 배치 카탈로그 복사본(layouts.json 66종·shape-sets.json 6종) — pptgen 과 같은 규칙
 │   └── layout.json         # PPTX 분석 가공 오프셋 보관 JSON
-├── src/__tests__/          # Vitest — shortcode-conformance(정합성 130) + library-catalog(카탈로그 150) 등 355건
+├── src/__tests__/          # Vitest — shortcode-conformance(정합성 130) + library-catalog(카탈로그 151) + layout-ext(배치 인수 54) 등 410건
 ├── md_src/                 # 마크다운 원천 소스 보관 폴더 (하위 폴더마다 hub.config.json 선택적 배치)
 ├── public/                 # [산출물, gitignore] 웹 GUI "가이드 컬렉션 저장" 시 Vite 개발서버가 서빙하는 재빌드 위치
 ├── publish/                # [산출물, gitignore] CLI 빌드 파이프라인(build-folder.mjs 등)의 기본 출력 위치
@@ -220,8 +221,8 @@ cs_v2/
   - **디자인 시스템 자동 등록**: 조율이 완료된 나만의 커스텀 배색 테마를 원하는 영문 ID로 지정하여 `config/styles.json`에 원클릭으로 신규 등록(추가)할 수 있습니다.
   - **프리셋 복원**: 페이퍼로지 오리지널(블루), AI 챗봇(그린) 등 누락된 대표 배색 프리셋을 목록에 추가하여 즉시 불러와 커스텀 시작점으로 활용할 수 있도록 보강했습니다.
 
-### 3. 🧩 전체 숏코드 선택 삽입 에디터 툴바 (기능 이름 28종 — 공용 카탈로그 66종 중 cs_v2 직접 구현)
-* **개선**: V2 컴파일러와 PPTX 변환기가 직접 그리는 **28종 배치** 전체를 드롭다운으로 제공합니다. 이름은 공용 배치 카탈로그의 **기능 이름 하나**(`grid.cards`, `compare.pair`…)로 운영하며(2026-10-14), 메뉴·스니펫도 카탈로그(pptgen 과 같은 예시)에서 나옵니다. 옛 이름(`icon-grid`…)으로 쓴 문서는 빌드 시 경고가 나오고 `npm run migrate:names` 로 일괄 변환합니다.
+### 3. 🧩 전체 숏코드 선택 삽입 에디터 툴바 (기능 이름 64종 — 공용 카탈로그 66종 중 cs_v2 직접 구현)
+* **개선**: V2 컴파일러가 직접 그리는 **64종 배치** 전체를 드롭다운으로 제공합니다(2026-10-14 C 단계: 예전 "근사" 36종 — 계단·기둥·게이지·막대·천칭·인용·이미지 자리·회사 패턴 상자 — 을 전용 HTML 로. PPTX 는 그중 28종이 같은 모양, 나머지는 가까운 숏코드로 빠르게 근사하고 정밀 PPTX 는 pptgen). pptgen 과 같은 배치 인수(`badge`·`connector`·`emphasis`·`grow`·`header`·`caption`…)와 항목 `tag: alt`(그 카드만 보조 카드색)도 받습니다. 이름은 공용 배치 카탈로그의 **기능 이름 하나**(`grid.cards`, `compare.pair`…)로 운영하며(2026-10-14), 메뉴·스니펫도 카탈로그(pptgen 과 같은 예시)에서 나옵니다. 옛 이름(`icon-grid`…)으로 쓴 문서는 빌드 시 경고가 나오고 `npm run migrate:names` 로 일괄 변환합니다.
 * **단일 출처 데이터**: 가이드 패널 설명과 삽입 스니펫은 `config/shortcode-guide.ts` **한 파일**에서 관리됩니다(중복 제거). 숏코드 설명/예시 수정 시 이 파일만 고치면 가이드 패널·삽입 버튼에 동시 반영됩니다.
 * **기능·표현별 그룹 구성**: 학습 콘텐츠용 옛 분류(콘텐츠 그리드·정보 & 알림 등) 대신 카탈로그 그룹(분할·카드 / 비교·대조 / 순서·흐름 / 구조·관계 / 데이터·수치 / 서술·강조 / 코드·터미널 / 탐색·목록)으로 정리되며(pptgen 과 같음), 선택 삽입 시 YAML 규격 템플릿이 커서 위치에 자동 삽입됩니다.
 

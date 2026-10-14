@@ -25,7 +25,14 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "icon-grid",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "cols": "항목 수에 맞춤",
+   "align": "center",
+   "badge": "icon",
+   "bg": "base"
+  }
  },
  "grid.features": {
   "group": "grid",
@@ -38,7 +45,12 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "feature-grid",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "cols": "항목 수에 맞춤",
+   "bg": "base"
+  }
  },
  "grid.badges": {
   "group": "grid",
@@ -50,7 +62,12 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "badge-grid",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "cols": "항목 수에 맞춤",
+   "bg": "base"
+  }
  },
  "grid.list": {
   "group": "grid",
@@ -64,7 +81,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "tool-list",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "grid.tiers": {
   "group": "grid",
@@ -78,7 +99,12 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "plan-grid",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "cols": "항목 수에 맞춤",
+   "bg": "base"
+  }
  },
  "grid.columns": {
   "group": "grid",
@@ -91,6 +117,7 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "columns-grid",
+  "pptx_shortcode": null,
   "variants": [
    {
     "when": {
@@ -98,7 +125,12 @@ export const LAYOUTS = {
     },
     "shortcode": "compare-grid"
    }
-  ]
+  ],
+  "defaults": {
+   "cols": "항목 수에 맞춤",
+   "bg": "base",
+   "variant": "card"
+  }
  },
  "grid.main-plus-3": {
   "group": "grid",
@@ -108,9 +140,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.main-plus-3",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.cards-icon-3": {
   "group": "grid",
@@ -120,9 +154,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.cards-icon-3",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.wide-narrow-titled": {
   "group": "grid",
@@ -132,9 +168,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.wide-narrow-titled",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.narrow-wide-titled": {
   "group": "grid",
@@ -144,9 +182,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.narrow-wide-titled",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.box-1": {
   "group": "grid",
@@ -156,9 +196,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.box-1",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.box-2": {
   "group": "grid",
@@ -168,9 +210,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.box-2",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.box-3": {
   "group": "grid",
@@ -180,9 +224,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.box-3",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.box-4": {
   "group": "grid",
@@ -192,9 +238,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.box-4",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.narrow-wide": {
   "group": "grid",
@@ -204,9 +252,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.narrow-wide",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.wide-narrow": {
   "group": "grid",
@@ -216,9 +266,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.wide-narrow",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.circle-3": {
   "group": "grid",
@@ -228,9 +280,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.circle-3",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "grid.band-box-3": {
   "group": "grid",
@@ -240,9 +294,11 @@ export const LAYOUTS = {
    "meta": "글머리(｜ 구분)",
    "desc": "글머리로 이어 붙임"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "grid.band-box-3",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "compare.pair": {
   "group": "compare",
@@ -255,7 +311,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "compare-split",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "compare.before-after": {
   "group": "compare",
@@ -266,7 +326,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "before-after",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "compare.main-sub": {
   "group": "compare",
@@ -276,9 +340,14 @@ export const LAYOUTS = {
    "desc": "설명",
    "meta": "글머리"
   },
-  "status": "fallback",
-  "shortcode": "compare-split",
-  "variants": []
+  "status": "ready",
+  "shortcode": "compare.main-sub",
+  "pptx_shortcode": "compare-split",
+  "variants": [],
+  "defaults": {
+   "ratio": "0.64",
+   "bg": "base"
+  }
  },
  "compare.balance": {
   "group": "compare",
@@ -288,9 +357,13 @@ export const LAYOUTS = {
    "title": "쪽 이름",
    "desc": "설명"
   },
-  "status": "fallback",
-  "shortcode": "compare-split",
-  "variants": []
+  "status": "ready",
+  "shortcode": "compare.balance",
+  "pptx_shortcode": "compare-split",
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "compare.hbars": {
   "group": "compare",
@@ -301,20 +374,28 @@ export const LAYOUTS = {
    "desc": "설명",
    "tag": "highlight = 강조"
   },
-  "status": "fallback",
-  "shortcode": "tool-list",
-  "variants": []
+  "status": "ready",
+  "shortcode": "compare.hbars",
+  "pptx_shortcode": "tool-list",
+  "variants": [],
+  "defaults": {
+   "emphasis": "none",
+   "bg": "base"
+  }
  },
  "compare.pair-summary": {
   "group": "compare",
   "label": "좌우 비교 + 하단 결론 띠",
   "fields": {
-   "title": "칸",
-   "meta": "글머리"
+   "title": "칸 이름(알약)",
+   "desc": "설명",
+   "meta": "글머리(｜ 구분)"
   },
-  "status": "fallback",
-  "shortcode": "compare-split",
-  "variants": []
+  "status": "ready",
+  "shortcode": "compare.pair-summary",
+  "pptx_shortcode": "compare-split",
+  "variants": [],
+  "defaults": {}
  },
  "process.track": {
   "group": "process",
@@ -328,6 +409,7 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "step-flow",
+  "pptx_shortcode": null,
   "variants": [
    {
     "when": {
@@ -335,7 +417,13 @@ export const LAYOUTS = {
     },
     "shortcode": "workflow-flow"
    }
-  ]
+  ],
+  "defaults": {
+   "connector": "line",
+   "badge": "icon",
+   "emphasis": "none",
+   "bg": "base"
+  }
  },
  "process.steps": {
   "group": "process",
@@ -347,7 +435,12 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "step-list",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "badge": "number",
+   "bg": "base"
+  }
  },
  "process.staircase": {
   "group": "process",
@@ -359,9 +452,15 @@ export const LAYOUTS = {
    "meta": "시점",
    "tag": "highlight = 강조"
   },
-  "status": "fallback",
-  "shortcode": "level-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "process.staircase",
+  "pptx_shortcode": "level-grid",
+  "variants": [],
+  "defaults": {
+   "grow": "1.35",
+   "emphasis": "last",
+   "bg": "base"
+  }
  },
  "process.levels": {
   "group": "process",
@@ -374,7 +473,14 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "level-grid",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "cols": "항목 수에 맞춤",
+   "grow": "1.0",
+   "emphasis": "none",
+   "bg": "base"
+  }
  },
  "process.branch": {
   "group": "process",
@@ -387,7 +493,12 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "git-flow",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "connector": "line",
+   "bg": "base"
+  }
  },
  "process.growth": {
   "group": "process",
@@ -397,9 +508,13 @@ export const LAYOUTS = {
    "desc": "설명",
    "icon": "수치"
   },
-  "status": "fallback",
-  "shortcode": "before-after",
-  "variants": []
+  "status": "ready",
+  "shortcode": "process.growth",
+  "pptx_shortcode": "before-after",
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "process.cycle-3": {
   "group": "process",
@@ -409,9 +524,13 @@ export const LAYOUTS = {
    "title": "단계",
    "desc": "설명"
   },
-  "status": "fallback",
-  "shortcode": "step-flow",
-  "variants": []
+  "status": "ready",
+  "shortcode": "process.cycle-3",
+  "pptx_shortcode": "step-flow",
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "process.zigzag": {
   "group": "process",
@@ -421,53 +540,70 @@ export const LAYOUTS = {
    "title": "단계",
    "desc": "설명"
   },
-  "status": "fallback",
-  "shortcode": "step-flow",
-  "variants": []
+  "status": "ready",
+  "shortcode": "process.zigzag",
+  "pptx_shortcode": "step-flow",
+  "variants": [],
+  "defaults": {
+   "emphasis": "none",
+   "bg": "base"
+  }
  },
  "process.cards-arrow-4": {
   "group": "process",
   "label": "카드 4단계 + 화살표(원·하단 목록)",
   "fields": {
-   "title": "칸",
-   "meta": "글머리"
+   "title": "단계 이름",
+   "desc": "원 안 글(짧게)",
+   "meta": "글머리(｜ 구분)"
   },
-  "status": "fallback",
-  "shortcode": "step-flow",
-  "variants": []
+  "status": "ready",
+  "shortcode": "process.cards-arrow-4",
+  "pptx_shortcode": "step-flow",
+  "variants": [],
+  "defaults": {}
  },
  "process.input-circles-4": {
   "group": "process",
   "label": "입력 상자 → 원 4단계 → 하단 흐름",
   "fields": {
-   "title": "칸",
-   "meta": "글머리"
+   "title": "단계 이름",
+   "desc": "원 안 글(짧게)",
+   "meta": "글머리(｜ 구분)"
   },
-  "status": "fallback",
-  "shortcode": "step-flow",
-  "variants": []
+  "status": "ready",
+  "shortcode": "process.input-circles-4",
+  "pptx_shortcode": "step-flow",
+  "variants": [],
+  "defaults": {}
  },
  "process.band-columns-3": {
   "group": "process",
   "label": "머리띠 + 3열(원·전→후 비교)",
   "fields": {
-   "title": "칸",
-   "meta": "글머리"
+   "title": "열 이름",
+   "desc": "번호 원 글",
+   "meta": "전 | 후 | 전 | 후 … (짝으로 읽어 전 → 후 줄)"
   },
-  "status": "fallback",
-  "shortcode": "step-flow",
-  "variants": []
+  "status": "ready",
+  "shortcode": "process.band-columns-3",
+  "pptx_shortcode": "step-flow",
+  "variants": [],
+  "defaults": {}
  },
  "process.steps-checklist-3": {
   "group": "process",
   "label": "머리띠 + 3단계 + 체크 목록",
   "fields": {
-   "title": "칸",
-   "meta": "글머리"
+   "title": "단계 이름",
+   "desc": "번호 원 글",
+   "meta": "체크 목록(｜ 구분)"
   },
-  "status": "fallback",
-  "shortcode": "step-flow",
-  "variants": []
+  "status": "ready",
+  "shortcode": "process.steps-checklist-3",
+  "pptx_shortcode": "step-flow",
+  "variants": [],
+  "defaults": {}
  },
  "structure.hub": {
   "group": "structure",
@@ -480,7 +616,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "network-box",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "structure.pillars": {
   "group": "structure",
@@ -490,9 +630,13 @@ export const LAYOUTS = {
    "desc": "설명",
    "icon": "아이콘"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "structure.pillars",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "structure.rings": {
   "group": "structure",
@@ -504,7 +648,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "concentric-rings",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "structure.venn": {
   "group": "structure",
@@ -517,18 +665,25 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "venn-diagram",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "structure.groups-2x3": {
   "group": "structure",
   "label": "2그룹 × 원 3",
   "fields": {
-   "title": "칸",
-   "meta": "글머리"
+   "title": "그룹 이름(알약)",
+   "desc": "설명",
+   "meta": "원(｜ 구분, 3~4개)"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "structure.groups-2x3",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {}
  },
  "data.stats": {
   "group": "data",
@@ -541,7 +696,13 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "stat-grid",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "cols": "항목 수에 맞춤",
+   "emphasis": "none",
+   "bg": "base"
+  }
  },
  "data.summary-bar": {
   "group": "data",
@@ -552,7 +713,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "summary-bar",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "data.bars": {
   "group": "data",
@@ -562,9 +727,15 @@ export const LAYOUTS = {
    "icon": "값(숫자)",
    "tag": "highlight = 강조"
   },
-  "status": "fallback",
-  "shortcode": "stat-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "data.bars",
+  "pptx_shortcode": "stat-grid",
+  "variants": [],
+  "defaults": {
+   "scale": "sqrt",
+   "emphasis": "none",
+   "bg": "base"
+  }
  },
  "data.quadrant": {
   "group": "data",
@@ -577,7 +748,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "quadrant-chart",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "data.gauge": {
   "group": "data",
@@ -587,9 +762,13 @@ export const LAYOUTS = {
    "icon": "값(0~100)",
    "desc": "설명"
   },
-  "status": "fallback",
-  "shortcode": "stat-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "data.gauge",
+  "pptx_shortcode": "stat-grid",
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "sample.chart-pair": {
   "group": "sample",
@@ -599,7 +778,9 @@ export const LAYOUTS = {
   },
   "status": "fallback",
   "shortcode": "stat-grid",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {}
  },
  "text.statement": {
   "group": "text",
@@ -609,9 +790,13 @@ export const LAYOUTS = {
    "desc": "보조 문장",
    "meta": "요약 줄(｜ 구분)"
   },
-  "status": "markdown",
-  "shortcode": null,
-  "variants": []
+  "status": "ready",
+  "shortcode": "text.statement",
+  "pptx_shortcode": "summary-box",
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "text.body": {
   "group": "text",
@@ -619,9 +804,13 @@ export const LAYOUTS = {
   "fields": {
    "desc": "문단 또는 글머리 한 줄"
   },
-  "status": "markdown",
-  "shortcode": null,
-  "variants": []
+  "status": "ready",
+  "shortcode": "text.body",
+  "pptx_shortcode": "summary-box",
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "text.quote": {
   "group": "text",
@@ -632,9 +821,11 @@ export const LAYOUTS = {
    "icon": "이니셜",
    "desc": "하단 카드"
   },
-  "status": "fallback",
-  "shortcode": "takeaway-banner",
-  "variants": []
+  "status": "ready",
+  "shortcode": "text.quote",
+  "pptx_shortcode": "takeaway-banner",
+  "variants": [],
+  "defaults": {}
  },
  "text.takeaway": {
   "group": "text",
@@ -646,7 +837,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "takeaway-banner",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "text.callout": {
   "group": "text",
@@ -658,7 +853,12 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "alert-box",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "variant": "info",
+   "bg": "base"
+  }
  },
  "text.summary": {
   "group": "text",
@@ -670,7 +870,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "summary-box",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "text.section": {
   "group": "text",
@@ -683,7 +887,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "part-banner",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "text.icon-statement": {
   "group": "text",
@@ -693,9 +901,13 @@ export const LAYOUTS = {
    "title": "문장",
    "desc": "보조"
   },
-  "status": "fallback",
-  "shortcode": "takeaway-banner",
-  "variants": []
+  "status": "ready",
+  "shortcode": "text.icon-statement",
+  "pptx_shortcode": "takeaway-banner",
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "text.avatar": {
   "group": "text",
@@ -705,9 +917,11 @@ export const LAYOUTS = {
    "title": "이름",
    "desc": "소속"
   },
-  "status": "none",
-  "shortcode": null,
-  "variants": []
+  "status": "ready",
+  "shortcode": "text.avatar",
+  "pptx_shortcode": "summary-box",
+  "variants": [],
+  "defaults": {}
  },
  "code.editor": {
   "group": "code",
@@ -719,7 +933,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "editor-box",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "code.console": {
   "group": "code",
@@ -731,7 +949,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "console-box",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "code.command": {
   "group": "code",
@@ -743,7 +965,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "cmd-box",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "nav.faq": {
   "group": "nav",
@@ -754,7 +980,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "faq-list",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "nav.tabs": {
   "group": "nav",
@@ -765,7 +995,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "os-tabs",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "nav.chapters": {
   "group": "nav",
@@ -778,7 +1012,11 @@ export const LAYOUTS = {
   },
   "status": "ready",
   "shortcode": "chapter-list",
-  "variants": []
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "media.cards-image": {
   "group": "media",
@@ -787,9 +1025,14 @@ export const LAYOUTS = {
    "title": "카드 제목",
    "desc": "설명"
   },
-  "status": "fallback",
-  "shortcode": "columns-grid",
-  "variants": []
+  "status": "ready",
+  "shortcode": "media.cards-image",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {
+   "side": "right",
+   "bg": "base"
+  }
  },
  "media.banner": {
   "group": "media",
@@ -797,9 +1040,13 @@ export const LAYOUTS = {
   "fields": {
    "title": "글머리"
   },
-  "status": "none",
-  "shortcode": null,
-  "variants": []
+  "status": "ready",
+  "shortcode": "media.banner",
+  "pptx_shortcode": "summary-box",
+  "variants": [],
+  "defaults": {
+   "bg": "base"
+  }
  },
  "media.full": {
   "group": "media",
@@ -807,9 +1054,11 @@ export const LAYOUTS = {
   "fields": {
    "desc": "이미지 프롬프트"
   },
-  "status": "none",
-  "shortcode": null,
-  "variants": []
+  "status": "ready",
+  "shortcode": "media.full",
+  "pptx_shortcode": "summary-box",
+  "variants": [],
+  "defaults": {}
  },
  "sample.infographic-2": {
   "group": "sample",
@@ -817,9 +1066,11 @@ export const LAYOUTS = {
   "fields": {
    "title": "칸"
   },
-  "status": "none",
-  "shortcode": null,
-  "variants": []
+  "status": "fallback",
+  "shortcode": "grid.box-2",
+  "pptx_shortcode": "summary-box",
+  "variants": [],
+  "defaults": {}
  }
 };
 export const LAYOUT_ALIASES = {

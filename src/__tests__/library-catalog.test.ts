@@ -1,13 +1,8 @@
 import { describe, it, expect } from 'vitest';
-// @ts-ignore — 순수 JS 공유 모듈
 import { renderShortcode } from '../../scripts/shortcode-render.mjs';
-// @ts-ignore
 import { pptxRegistry } from '../../scripts/pptx-renderers/registry.mjs';
-// @ts-ignore
 import { LAYOUTS, LAYOUT_ALIASES, ALIAS_ARGS, IMPL_SHORTCODES, PLAIN_FALLBACK, resolveShortcode, stripHeadingAttrs, shortcodeBlockRe } from '../../scripts/library-names.mjs';
-// @ts-ignore
 import { EXT_RENDERERS } from '../../scripts/shortcode-ext/index.mjs';
-// @ts-ignore
 import { SHAPE_SETS } from '../../scripts/library-map.mjs';
 import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
 import fs from 'node:fs';

@@ -5,7 +5,6 @@ import './buffer-polyfill';
 //   presentation 모드 → scripts/presentation-core.mjs (build-presentation 과 공유)
 // → standalone(브라우저) 출력 == server(CLI) 출력 을 코드 레벨에서 보장. (docs/plan/presentation-stabilization.md §3)
 // 크기 토큰 단일 출처: config/htmldesign.config.json (Node 의 loadJsonWithComments 와 동일하게 주석 제거 후 파싱)
-// @ts-ignore — Vite ?raw 로 원문 문자열 import
 import htmlDesignRaw from '../../config/htmldesign.config.json?raw';
 const HTML_DESIGN: any = (() => {
   try { return JSON.parse(String(htmlDesignRaw).replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '')); }
@@ -13,15 +12,10 @@ const HTML_DESIGN: any = (() => {
 })();
 
 // [Step 2] 프레젠테이션은 환경 비의존 코어(build-presentation 와 공유)로 생성 → standalone==server.
-// @ts-ignore — 순수 JS 코어 모듈
 import { buildPresentationHtml } from '../../scripts/presentation-core.mjs';
-// @ts-ignore — 가이드 HTML 코어 (build-guide 와 공유, standalone==server)
 import { buildHtml as buildGuideHtml } from '../../scripts/guide-core.mjs';
-// @ts-ignore — pptdesign config(globalRadius 등) 주입용 원문 import
 import pptDesignRaw from '../../config/pptdesign.config.json?raw';
-// @ts-ignore — 전체 styles.json 번들 (스탠드얼론도 서버와 동일한 폰트/색 사용 — FALLBACK_STYLES 의 폰트 키 누락으로 serif 폴백되던 문제 해소)
 import stylesRaw from '../../config/styles.json?raw';
-// @ts-ignore — mermaid 원문(3.3MB). 코어가 문서에 mermaid 블록이 있을 때만 인라인한다 — CDN 의존 시 오프라인 원칙 위반이므로 서버(build-guide/presentation)와 동일하게 로컬 번들을 씀.
 import mermaidScriptRaw from '../../node_modules/mermaid/dist/mermaid.min.js?raw';
 const PPT_DESIGN: any = (() => {
   try { return JSON.parse(String(pptDesignRaw).replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '')); }

@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import ThemePresetSelector from './ThemePresetSelector';
 import PaletteBuilderForm from './PaletteBuilderForm';
 import PaletteLivePreview from './PaletteLivePreview';
+import type { ThemeFormShape } from './theme-form';
 
 const FALLBACK_PRESET_THEMES = [
   {
@@ -47,7 +48,7 @@ const FALLBACK_PRESET_THEMES = [
 export default function ThemePresetBuilder() {
   const { toast } = useToast();
   const [presetThemes, setPresetThemes] = useState<any[]>(FALLBACK_PRESET_THEMES);
-  const [themeForm, setThemeForm] = useState({
+  const [themeForm, setThemeForm] = useState<ThemeFormShape>({
     label: '커스텀 추천 테마',
     brand: '#2789F5', brandDark: '#1E71CE', brandDeep: '#0F478F', brandLight: '#F0F7FF', brandMid: '#C7CCFB',
     border: '#D2E5FA', bg: '#FAFBFD',

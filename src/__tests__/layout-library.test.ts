@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { LAYOUT_ENTRIES, GROUP_KEYS, SHAPE_SET_NAMES, DEFAULT_SHAPE_SET, implSummary, pptgenSummary, exampleVariants, snippetOf, previewMd, matches } from '../lib/layout-library';
 import { clientCompileMarkdown, BUNDLED_STYLES } from '../lib/client-compiler';
 import { SHORTCODE_DOCS } from '../../config/shortcode-guide';
-// @ts-ignore — 순수 JS 생성 모듈
 import { LAYOUTS } from '../../scripts/library-map.mjs';
 
 /**

@@ -1,17 +1,11 @@
 import { describe, it, expect } from 'vitest';
 // 정본(canonical) 공유 숏코드 렌더러 — guide/presentation/client 가 모두 사용
-// @ts-ignore — 순수 JS 공유 모듈
 import { renderShortcode } from '../../scripts/shortcode-render.mjs';
-// @ts-ignore — 공유 숏코드 CSS (단일 출처)
 import { SHORTCODE_CSS } from '../../scripts/shortcode-styles.mjs';
-// @ts-ignore
 import { pptxRegistry } from '../../scripts/pptx-renderers/registry.mjs';
-// @ts-ignore
 import { resolveShortcode } from '../../scripts/library-names.mjs';
 import { clientCompileMarkdown, FALLBACK_STYLES } from '../lib/client-compiler';
-// @ts-ignore — 환경 비의존 코어 (client 가 위임하는 server 코드 경로)
 import { buildHtml as guideCore } from '../../scripts/guide-core.mjs';
-// @ts-ignore
 import { buildPresentationHtml as presCore } from '../../scripts/presentation-core.mjs';
 import fs from 'node:fs';
 import path from 'node:path';

@@ -317,3 +317,11 @@
   - 검증: `SHORTCODE_CSS` 동일, md_src·카탈로그 예시 628블록 렌더 동일(탭 id 난수 제외), md_src 150개 산출물 동일, `npm test` 485, `build:standalone`·`build`, 헤드리스(standalone 오류는 기존 `/api/list-styles` 폴백뿐).
   - 남은 200줄 초과(이번 범위 밖, 기존부터 큼): `PptxInspectorSuite.tsx`·`designspec-md-to-html.mjs`·`presentation-core.mjs`·`MarkdownCompiler.tsx`·`md-to-pptx.mjs`·`vite-api-plugin.ts`·`pptx-browser.ts`·`pptx-analyzer.js`·`exportGuide.ts`·`build-guide-hub.mjs`·`build-folder.mjs`·`guide-core.mjs`, shadcn `ui/*`, 생성본 `library-map.mjs`. 특히 `md-to-pptx.mjs` 와 `pptx-browser.ts` 는 같은 변환을 두 벌 가진 구조라 나누기 전에 공용 코어로 합치는 일이 먼저다(별도 작업).
 - **pptgen 쪽(coding)**: v2 렌더러 수치 → `config/layout.json`, `helpers.js`·`render_spec.js`·`gen_data.js`·`shape_style.js`·`build_deck.js` 분리(lib 전부 200줄 이하, 슬라이드 XML 전후 동일).
+
+## 2026-10-14 — 세션 27: PPTX 공용 코어 · CI
+
+- **왜**: `pptx-browser.ts` 는 2026-06-23 `md-to-pptx.mjs` 의 복사 포트로 생겼고, HTML 은 06-26 공용 코어로 합쳤지만 PPTX 는 두 벌로 남아 갈라져 있었다(함수 22개 중 9개 내용 다름 — 브라우저만 블록 크기 인수 무시, 표지·마무리·오류 글자 크기 하드코딩, 발표 노트는 오늘 C 단계에서 따로 고침).
+- **한 일**: `scripts/pptx-core/`(8파일) 공용 코어, CLI 948→121줄·브라우저 642→28줄 래퍼. 갈라진 부분은 CLI(config 를 읽는 쪽)로 통일. 코어는 config 를 복사해 쓰고 전역 `D` 복원 코드를 없앰.
+- **검증**: md_src 150개 산출물 전후 동일, md_src 50개 브라우저 PPTX == CLI, standalone 화면 다운로드 PPTX == CLI(같은 테마), 새 `pptx-core.test.ts`(옛 브라우저 코드로 돌리면 2건 실패 — 드리프트를 잡는 테스트임을 확인), `npm test` 489.
+- **CI**: `.github/workflows/ci.yml` + `npm run typecheck`. 기존 lint 오류 36(`@ts-ignore` 34 — 불필요, prefer-const 2 — 옛 브라우저 파일)·타입 오류 2(`ThemeFormShape` 이중 선언) 해소 → 깨끗한 체크아웃에서 `npm ci` 부터 전 단계 통과.
+- 남은 것: HTML·PPTX 항목 표준화(`standardizeItem`) 규칙 차이(scripts_guide 5-1c), 나머지 200줄 초과 파일(presentation-core·MarkdownCompiler·PptxInspectorSuite 등).

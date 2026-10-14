@@ -1,16 +1,5 @@
 import { Settings, RotateCcw, Plus } from 'lucide-react';
-
-interface ThemeFormShape {
-  label: string;
-  brand: string;
-  brandDark: string;
-  brandDeep: string;
-  brandLight: string;
-  brandMid: string;
-  border: string;
-  bg: string;
-  [key: string]: any;
-}
+import type { ThemeFormShape, ThemeColorKey } from './theme-form';
 
 interface PaletteBuilderFormProps {
   themeForm: ThemeFormShape;
@@ -21,7 +10,7 @@ interface PaletteBuilderFormProps {
   onRegister: () => void;
 }
 
-const FIELDS: Array<{ key: keyof ThemeFormShape; label: string }> = [
+const FIELDS: Array<{ key: ThemeColorKey; label: string }> = [
   { key: 'brand', label: '메인 주컬러 (Brand)' },
   { key: 'brandDark', label: '서브 어두운톤 (Dark)' },
   { key: 'brandDeep', label: '강조 깊은톤 (Deep)' },

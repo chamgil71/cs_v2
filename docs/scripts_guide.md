@@ -76,7 +76,7 @@ vite-api-plugin.ts (API Router)
        │
        ├─► exec: "node scripts/build-guide.mjs" ────► [HTML 가이드 출력]
        ├─► exec: "node scripts/build-presentation.mjs" ──► [슬라이드 HTML 출력]
-       └─► exec: "node scripts/md-to-pptx.mjs" ────► [PPTX 바이너리 출력]
+       └─► exec: "node scripts/md-to-pptx.mjs" ────► [PPTX 바이너리 출력]   (변환은 scripts/pptx-core/ — 브라우저 pptx-browser.ts 와 같은 코어)
                                     │
                                     ▼ (config/styles.json 읽기)
                           지정된 테마의 HSL/HEX 색상 및 
@@ -347,6 +347,30 @@ cs_v2/library/*.json (복사본)  →  scripts/library-map.mjs (생성본: LAYOU
 - `ctx` = 블록마다 한 번 만드는 공유 값 `{ items, alt, renderAccent, renderTextColor, renderCompareNote, cols, blockBullet, layoutAlign, gridStyle, itemBullet, badgeOf, a, args, type, body, renderNative }`(+ cols/bullet/align 정규식 결과). 다른 분기로 넘길 때는 `ctx.renderNative`(예: `compare-split` 항목 1개 → `compare-grid`).
 - **새 옛 숏코드 분기는 만들지 않는다**(새 배치는 기능 이름 구현 `shortcode-ext/` 로 — 5-1a). 고칠 때는 해당 파일의 항목만 고치고, 템플릿 문자열 안 들여쓰기는 출력에 그대로 나가므로 바꾸지 않는다.
 - 나눌 때 검증: `SHORTCODE_CSS` 문자열 동일, md_src 와 카탈로그 예시(변형·옛 이름 포함) 628블록 `renderShortcode` 출력 동일(탭 id 난수만 다름), md_src 150개 산출물 동일.
+
+### 5-1c. PPTX 공용 코어 `scripts/pptx-core/` (2026-10-14)
+
+HTML 의 guide-core·presentation-core 와 같은 구조로, MD → PPTX 변환 전체를 fs 없는 코어 하나가 갖는다.
+
+```
+md-to-pptx.mjs (CLI)          : fs 로 config·md 읽기 ─┐                         ┌─ 파일 저장(잠기면 _<시각>.pptx)
+                                                       ├─► buildPptx(md, opts) ─┤
+src/lib/pptx-browser.ts (웹)  : ?raw config·편집기 md ─┘   → { prs, D, … }      └─ prs.writeFile → 다운로드
+```
+
+| 파일 | 담당 |
+|---|---|
+| `index.mjs` | `buildPptx(raw, { styles, design, fontAliases, styleOverride, noCover, verbose, label })` — config 복사 → 테마·머리말 덮어쓰기 → 팔레트·서식 세트 → 표지·섹션·마무리. `parseJsonc` |
+| `doc.mjs` | md → 섹션·카드·블록(`#` 섹션, `##` 카드, `::: 블록`, `slide-config`) |
+| `items.mjs` | 숏코드 본문 → 항목(6대 키 표준화) |
+| `blocks.mjs` / `cards.mjs` | 마크다운 블록·카드·숏코드 항목의 높이 추정과 그리기(숏코드는 `pptx-renderers` 레지스트리) |
+| `cover.mjs` / `section.mjs` | 표지·마무리 / 섹션 슬라이드(머리 띠, 영역 넘치면 다음 장, 발표 노트) |
+| `util.mjs` | 색 정리·줄 수 추정·팔레트·글꼴 별칭 |
+
+- 함수는 이 변환의 디자인 설정 `D` 를 첫 인수로 받는다(전역 상태 없음). 섹션 `slide-config` 의 크기 덮어쓰기는 그 섹션 복사본에만.
+- 래퍼에 변환 로직을 두지 않는다. 브라우저에서만 필요한 것은 config 를 `?raw` 로 받는 것과 다운로드뿐이다.
+- 통합 때 갈라진 부분(브라우저만 `title-size`·`desc-size` 무시, 표지·마무리·오류 글자 크기 하드코딩)은 전부 CLI 쪽(config 를 읽는 쪽)으로 맞췄다. `pptx-core.test.ts` 가 브라우저 == CLI 를 잠근다.
+- 알아 둘 것: HTML 의 `standardizeItem`(shortcode-render/parse.mjs)과 PPTX 의 것(pptx-core/items.mjs)은 아직 규칙이 조금 다르다(HTML 만 `tag ← type`, `/n` 줄바꿈, 원래 키 보존). 합치면 PPTX 출력이 바뀌므로 별도 작업으로 확인 후 진행.
 
 구현 ID(`IMPL_SHORTCODES` — `shortcode-render.mjs` 분기·`pptx-renderers` 타입)는 **내부 이름**이라 문서·예시·화면에 쓰지 않는다(pptgen 의 `c01-p07` 과 같은 위치).
 md 의 옛 이름 일괄 변환: `scripts/migrate-names.mjs`(`npm run migrate:names -- <경로>`, `--check`) — 대응표는 코드가 아니라 카탈로그에서 읽고, 코드 펜스·이스케이프한 문법 예시(`\:::`) 줄도 바꾼다.

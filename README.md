@@ -74,7 +74,7 @@ sequenceDiagram
   - `scripts/shortcode-render.mjs` **(공유 숏코드 렌더러)**: 숏코드 → HTML 변환 순수 함수. **guide-core** 가 사용(슬라이드는 presentation-core 자체 렌더러).
   - `scripts/shortcode-styles.mjs` **(공유 숏코드 CSS)**: 숏코드 컴포넌트 CSS. `var(--*)` 기반 테마 독립.
   - `scripts/build-guide.mjs` / `scripts/build-presentation.mjs`: 위 코어를 호출하는 **얇은 CLI 래퍼**(파일읽기+config로드+출력경로). 가이드 HTML / 16:9 웹 슬라이드.
-  - `scripts/md-to-pptx.mjs`: 마크다운 ➡️ PowerPoint PPTX 파일 빌드. (폰트·크기 수치는 `config/pptdesign.config.json` 에서 로드 — 하드코딩 없음)
+  - `scripts/pptx-core/` **(정본 코어)** + `scripts/md-to-pptx.mjs`(CLI 래퍼): 마크다운 ➡️ PowerPoint PPTX. 변환은 fs 없는 공용 코어 하나 — CLI 와 브라우저(`src/lib/pptx-browser.ts`)가 같은 코어를 불러 **브라우저 PPTX == CLI PPTX**. (폰트·크기 수치는 `config/pptdesign.config.json` 에서 로드 — 하드코딩 없음)
   - `scripts/pptx-analyzer.js` & `spec-parser.js`: PPTX XML 구조 압축 해제 및 디자인 사양 데이터 추출/치환 코어.
   - `scripts/pptx-renderers/`: 각 개별 숏코드(git-flow, editor-box 등)의 PPTX 네이티브 드로잉 코어 렌더러 모듈들.
   - `scripts/library-names.mjs` / `scripts/shape-set.mjs` **(공용 배치 카탈로그 연결)**: pptgen 과 같은 배치 이름(`grid.cards` 등)·색 이름을 cs_v2 숏코드로 해석하고, 서식 세트(외곽선·그림자·둥글기·보조 카드색)를 HTML 변수/PPTX 카드 서식으로 바꿉니다. 원본 카탈로그는 `library/`(복사본) — `npm run sync:library`. 상세: [`library/README.md`](library/README.md)
@@ -167,7 +167,8 @@ cs_v2/
 │   ├── hub-config.mjs      # md_src/<dir>/hub.config.json 로더 — 카테고리 라벨·순서·UI 옵션 단일 출처
 │   ├── sync-guides-index.mjs # md_src/guides → src/data/guides.json 동기화 (hub-config.mjs 기준으로 정렬)
 │   ├── build-publish.mjs   # md_src 전체를 public/에 일괄 빌드하는 독립 유틸(현재 GUI에서는 호출 안 됨, 수동 실행용)
-│   ├── md-to-pptx.mjs      # 마크다운 ➡️ PPTX 컴파일 엔진 (config 폰트 로드, npm run build:pptx)
+│   ├── md-to-pptx.mjs      # 마크다운 ➡️ PPTX CLI 래퍼 (npm run build:pptx) — 변환은 pptx-core/
+│   ├── pptx-core/          # [정본 코어] MD → PPTX (fs 없음, CLI·브라우저 공용)
 │   ├── library-names.mjs   # 공용 배치 카탈로그 이름 해석(기능 이름·별칭 → 숏코드) + ::: 블록 정규식·제목 속성 제거·색 이름 단일 출처
 │   ├── shape-set.mjs       # 서식 세트 → HTML CSS 변수 / PPTX 카드 서식(pal.shape)
 │   ├── library-map.mjs     # [자동 생성] library 카탈로그의 import 용 생성본 (손으로 고치지 않음)
@@ -190,7 +191,8 @@ cs_v2/
 │   ├── font-aliases.json   # 폰트 alias → 실제 폰트명 매핑
 │   └── shortcode-guide.ts  # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, 분류·기능 이름은 카탈로그에서)
 ├── library/                # [라이브러리 층] 공용 배치 카탈로그 복사본(layouts.json 66종·shape-sets.json 6종) — pptgen 과 같은 규칙(npm run sync:library)
-├── src/__tests__/          # Vitest — shortcode-conformance(정합성 130) + library-catalog(카탈로그 145) + shape-set(서식 세트 7) + layout-ext(배치 인수 54) + layout-library(배치 라이브러리 74) 등 485건
+├── src/__tests__/          # Vitest — shortcode-conformance(정합성 130) + library-catalog(카탈로그 145) + shape-set(서식 세트 7) + layout-ext(배치 인수 54) + layout-library(배치 라이브러리 74) + pptx-core(브라우저==CLI 4) 등 489건
+├── .github/workflows/ci.yml # CI — PR·main 푸시마다 lint·typecheck·test·옛 이름 검사·PPTX 왕복·build·standalone
 ├── md_src/                 # 마크다운 원천 소스 보관 폴더 (하위 폴더마다 hub.config.json 선택적 배치)
 ├── public/                 # [산출물, gitignore] 웹 GUI "가이드 컬렉션 저장" 시 Vite 개발서버가 서빙하는 재빌드 위치
 ├── publish/                # [산출물, gitignore] CLI 빌드 파이프라인(build-folder.mjs 등)의 기본 출력 위치

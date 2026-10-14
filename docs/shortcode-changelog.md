@@ -5,6 +5,18 @@
 
 ---
 
+## Phase 11 — PPTX 공용 코어 · CI (2026-10-14)
+
+### 바뀐 것
+- **MD → PPTX 변환을 공용 코어 하나로**: `scripts/pptx-core/`(fs 없음). `md-to-pptx.mjs`(CLI)·`src/lib/pptx-browser.ts`(웹)는 입출력 래퍼만. 예전 브라우저 쪽은 CLI 복사본이라 갈라져 있었다.
+- **브라우저 PPTX 가 고쳐진 것**: 블록 인수 `title-size=`·`desc-size=` 반영(전엔 무시), 표지 stats·마무리·오류 글자 크기를 config 에서(전엔 숫자 하드코딩).
+- **CI**: `.github/workflows/ci.yml` — lint·typecheck·test·`migrate:names:check`·`verify:pptx`·build·standalone. `npm run typecheck` 추가. 불필요한 `@ts-ignore` 34곳 제거, `ThemeFormShape` 단일 출처.
+
+### 영향 없음(확인)
+- CLI PPTX·HTML: md_src 150개 산출물 전후 동일. 브라우저 PPTX: md_src 50개가 CLI 와 같음(md_src 는 갈라진 기능을 쓰지 않아 예전 브라우저 출력과도 같음).
+
+---
+
 ## Phase 10 — 설정·라이브러리·코드 층 정리 · 200줄 분리 (2026-10-14, 인계서 E)
 
 ### 바뀐 것

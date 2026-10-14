@@ -1,13 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-// @ts-ignore — 순수 JS 공유 모듈
 import { renderShortcode } from '../../scripts/shortcode-render.mjs';
-// @ts-ignore
 import { LAYOUTS, LAYOUT_EXAMPLES, resolveShortcode, markAltItems, emphOf, layoutArgs } from '../../scripts/library-names.mjs';
-// @ts-ignore
 import { EXT_RENDERERS, EXT_CSS } from '../../scripts/shortcode-ext/index.mjs';
-// @ts-ignore
 import { SHORTCODE_CSS } from '../../scripts/shortcode-styles.mjs';
-// @ts-ignore
 import { helpers } from '../../scripts/pptx-renderers/registry.mjs';
 import pptxgen from 'pptxgenjs';
 import JSZip from 'jszip';

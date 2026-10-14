@@ -50,13 +50,14 @@ export function shapeSetCss(name) {
 
 /**
  * PPTX: 팔레트(pal)에 붙일 카드 서식 — helpers.cardBox 가 읽는다.
- * template 이면 null → 렌더러가 원래 서식(흰 채움 + 테두리 0.75pt)을 그대로 쓴다.
+ * template 이면 inherit → 렌더러의 원래 서식(흰 채움 + 테두리 baseBorderWidth pt — pptdesign.config.json card.borderWidth).
  */
-export function shapeSetPptx(name, pal) {
+export function shapeSetPptx(name, pal, { baseBorderWidth } = {}) {
   const key = pickShapeSet(name), s = SHAPE_SETS.sets[key];
   const tpl = SHAPE_SETS.sets.template || {};
   const altFill = tokenPal(((s.card_alt || tpl.card_alt || {}).fill) || "secondary-light", pal);
-  if (s.inherit) return { name: key, inherit: true, altFill };
+  const baseLine = { color: pal.border, width: baseBorderWidth };
+  if (s.inherit) return { name: key, inherit: true, altFill, line: baseLine };
   const card = s.card || {}, out = s.outline || {}, sh = SHAPE_SETS.shadow[s.shadow || "none"];
   return {
     name: key, inherit: false, altFill,

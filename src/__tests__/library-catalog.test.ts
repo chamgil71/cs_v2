@@ -50,6 +50,9 @@ describe('카탈로그 — 모든 기능 이름이 HTML·PPTX 로 그려진다',
       expect(pptxRegistry.has(r.type), `${name}: PPTX 렌더러 없음 (${r.type})`).toBe(true);
     });
   }
+  it('근사 숏코드(카탈로그 fallback.cs_v2)도 고유 이름표에 있다', () => {
+    expect(NATIVE_SHORTCODES.has(resolveShortcode('text.avatar').type)).toBe(true);
+  });
   it('카탈로그가 가리키는 cs_v2 숏코드는 전부 고유 이름표(NATIVE_SHORTCODES)에 있다', () => {
     const missing = Object.entries<any>(LAYOUTS).filter(([, e]) => e.shortcode && !NATIVE_SHORTCODES.has(e.shortcode)).map(([k]) => k);
     expect(missing).toEqual([]);
@@ -117,8 +120,10 @@ describe('서식 세트 — 테마를 따르는 모양 층', () => {
   });
   it('PPTX template 카드 서식 = 렌더러 원래 서식(흰 채움 + 테두리 0.75pt)', () => {
     const pal: any = { white: 'FFFFFF', border: 'D8DCFB', brandLight: 'EEF2FF', bgLight: 'FAFBFD', brand: '2789F5', brandDark: '1A5FB4', text: '1A1A2E' };
-    pal.shape = shapeSetPptx('template', pal);
-    expect(helpers.cardBox(pal, { radius: 0.08 })).toEqual({ rectRadius: 0.08, fill: { color: 'FFFFFF' }, line: { color: 'D8DCFB', width: 0.75 } });
+    // 테두리 굵기는 config(pptdesign.config.json card.borderWidth)에서 — 코드에 수치 없음
+    const D = JSON.parse(fs.readFileSync(path.join(ROOT, 'config/pptdesign.config.json'), 'utf8').replace(/\/\/[^\n]*/g, ''));
+    pal.shape = shapeSetPptx('template', pal, { baseBorderWidth: D.card.borderWidth });
+    expect(helpers.cardBox(pal, { radius: 0.08 })).toEqual({ rectRadius: 0.08, fill: { color: 'FFFFFF' }, line: { color: 'D8DCFB', width: D.card.borderWidth } });
     expect(helpers.cardBox(pal, { alt: true, radius: 0.08 }).fill.color).not.toBe('FFFFFF');
     pal.shape = shapeSetPptx('elevated', pal);
     expect(helpers.cardBox(pal, { radius: 0.08 }).shadow).toBeTruthy();

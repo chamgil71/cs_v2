@@ -743,3 +743,7 @@ export const COLOR_TOKENS = {
   "aliases": []
  }
 };
+export const LAYOUT_FALLBACK = {
+ "_doc": "구현 상태가 markdown·none 인 배치를 블록(:::)으로 썼을 때 대신 그릴 것. cs_v2 = 숏코드 이름(제목·설명·meta 목록을 그대로 보여 주는 것)",
+ "cs_v2": "summary-box"
+};

@@ -48,7 +48,7 @@ shape: elevated        # 서식 세트(없으면 styles.json 테마의 shapeSet 
 ```
 
 - 이름 해석: `scripts/library-names.mjs` (`resolveShortcode`) — cs_v2 고유 이름은 그대로, 기능 이름·pptgen 옛 이름은 카탈로그로 숏코드를 찾습니다.
-  cs_v2 구현이 `fallback`(근사)인 배치는 가장 가까운 숏코드로, `markdown`/`none` 인 배치는 `summary-box` 로 근사합니다.
+  cs_v2 구현이 `fallback`(근사)인 배치는 가장 가까운 숏코드로, `markdown`/`none` 인 배치는 카탈로그 `fallback.cs_v2`(지금 `summary-box`)로 근사합니다.
 - 서식 세트: `scripts/shape-set.mjs` — HTML 은 `--set-card-bg`·`--card-alt-bg`·`--card-border-width`·`--card-border-color`·`--card-shadow`·`--card-radius` 변수,
   PPTX 는 `pal.shape` → `helpers.cardBox()`. `template` 은 기존 출력과 같습니다(보조 카드색만 정함).
 - 아직 cs_v2 에 없는 것: 항목 하나만 보조색으로 바꾸는 `tag: alt`(pptgen 전용), pptgen 전용 인수(`badge`·`header`·`connector`·`emphasis`·`grow` 등 — 카탈로그 `args.*.cs_v2=false`).

@@ -614,7 +614,7 @@ export async function convertMdToPptxBrowser(
     const cb = hexClean(fm.brandColor);
     if (cb) { pal.brand = cb; pal.brandDark = cb; pal.brandDeep = cb; pal.brandLight = 'F0F7FF'; }
   }
-  pal.shape = shapeSetPptx(pickShapeSet(style.shapeSet, fm.shape), pal);   // 서식 세트 → helpers.cardBox (brandColor 반영 뒤)
+  pal.shape = shapeSetPptx(pickShapeSet(style.shapeSet, fm.shape), pal, { baseBorderWidth: D.card.borderWidth });   // 서식 세트 → helpers.cardBox (brandColor 반영 뒤)
 
   const prs = new pptxgen();
   if (D.slide.layout && D.slide.widthIn && D.slide.heightIn) {

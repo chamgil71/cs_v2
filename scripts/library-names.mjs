@@ -16,7 +16,7 @@
  *  - 이 파일의 숏코드 블록 정규식(SHORTCODE_BLOCK_SOURCE)을 4개 파서(guide-core·presentation-core·md-to-pptx·pptx-browser)가 같이 쓴다.
  *    이름에 '.' 을 허용한다(기능 이름).
  */
-import { LAYOUTS, LAYOUT_ALIASES, LAYOUT_GROUPS, SHAPE_SETS, COLOR_TOKENS } from "./library-map.mjs";
+import { LAYOUTS, LAYOUT_ALIASES, LAYOUT_GROUPS, SHAPE_SETS, COLOR_TOKENS, LAYOUT_FALLBACK } from "./library-map.mjs";
 
 export { LAYOUTS, LAYOUT_ALIASES, LAYOUT_GROUPS, SHAPE_SETS, COLOR_TOKENS };
 
@@ -53,8 +53,8 @@ export const NATIVE_SHORTCODES = new Set([
   "slide-config", "arrow",
 ]);
 
-/** cs_v2 에 대응 숏코드가 없는 배치(markdown/none)를 그릴 때 쓰는 근사 숏코드 — 제목·설명·meta 목록을 그대로 보여준다 */
-export const PLAIN_FALLBACK = "summary-box";
+/** cs_v2 에 대응 숏코드가 없는 배치(markdown/none)를 그릴 때 쓰는 근사 숏코드 — 카탈로그 fallback.cs_v2 (코드에 정책 값을 두지 않는다) */
+export const PLAIN_FALLBACK = LAYOUT_FALLBACK.cs_v2;
 
 /**
  * 블록 이름 → cs_v2 가 그릴 숏코드.

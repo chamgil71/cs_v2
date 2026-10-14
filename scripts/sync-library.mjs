@@ -58,6 +58,7 @@ export const LAYOUTS = ${JSON.stringify(L, null, 1)};
 export const LAYOUT_ALIASES = ${JSON.stringify(ALIAS, null, 1)};
 export const SHAPE_SETS = ${JSON.stringify(sets, null, 1)};
 export const COLOR_TOKENS = ${JSON.stringify(layouts.color_tokens || {}, null, 1)};
+export const LAYOUT_FALLBACK = ${JSON.stringify(layouts.fallback || {}, null, 1)};
 `;
 
 const outputs = [

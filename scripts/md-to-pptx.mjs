@@ -858,7 +858,7 @@ export async function convertMdToPptx(mdPath, opts = {}) {
       pal.brandLight = "F0F7FF"; // Prevent 8-digit hex, use 6-digit pastel blue
     }
   }
-  pal.shape = shapeSetPptx(pickShapeSet(style.shapeSet, fm.shape), pal);   // 서식 세트 → helpers.cardBox (brandColor 반영 뒤)
+  pal.shape = shapeSetPptx(pickShapeSet(style.shapeSet, fm.shape), pal, { baseBorderWidth: D.card.borderWidth });   // 서식 세트 → helpers.cardBox (brandColor 반영 뒤)
 
   if (verbose) {
     console.log(`  📄 ${basename(mdPath)}  style: ${styleKey}`);

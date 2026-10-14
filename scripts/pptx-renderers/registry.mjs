@@ -52,12 +52,12 @@ export const helpers = {
   },
 
   // 카드 서식 — 공용 서식 세트(pal.shape, scripts/shape-set.mjs)를 반영한 roundRect 옵션 묶음.
-  //   template 세트(기본)이면 렌더러의 원래 서식(흰 채움 + 테두리 0.75pt, 그림자 없음) 그대로 → 기존 출력과 같다.
+  //   template 세트(기본)이면 렌더러의 원래 서식(흰 채움 + 테두리 pptdesign card.borderWidth, 그림자 없음) 그대로 → 기존 출력과 같다.
   //   alt=true 면 채움만 서식 세트의 보조 카드색(블록 인수 bg=alt). 색 강조(it.color) 카드는 호출하는 쪽이 자기 서식을 쓴다.
   cardBox(pal, { alt = false, radius } = {}) {
     const s = pal && pal.shape;
     const fill = { color: alt && s ? s.altFill : (s && !s.inherit ? s.fill : pal.white) };
-    if (!s || s.inherit) return { rectRadius: radius, fill, line: { color: pal.border, width: 0.75 } };
+    if (!s || s.inherit) return { rectRadius: radius, fill, line: { ...((s && s.line) || { color: pal.border }) } };
     return { rectRadius: s.radius ?? radius, fill, line: { ...s.line }, ...(s.shadow ? { shadow: { ...s.shadow } } : {}) };
   },
 

@@ -271,3 +271,11 @@
 - 검증: `npm test` 288/288, 기존 md(가이드 3개+showcase) 가이드·프레젠테이션 마크업 변경 전후 동일(CSS 만 변수화), `npm run build:standalone` 4종, 헤드리스로 standalone 모듈2 미리보기(기능 이름·제목 속성·`bg=alt`·elevated 그림자)와 프레젠테이션 다크/라이트 카드색, LibreOffice 로 PPTX 세트별(template·elevated·tinted) 렌더 확인. pptgen 견본(`examples/all-layouts.md`, 기능 이름 46종)을 cs_v2 3종으로 빌드 무오류.
 - 남은 것: 항목 단위 `tag: alt`(pptgen 전용), pptgen 전용 인수(badge·header·connector·emphasis·grow)의 cs_v2 구현, 카탈로그 원본의 cs_v2 이동(지금은 경로만 준비).
 
+## 2026-10-14 — 세션 22: 하드코딩 점검 · 이름 통일 결정 · CLI 인계
+
+- **공용 md 의 종형·횡형 HTML 확인**: 가트너 v2 예시·pptgen `all-layouts.md` 를 `build-guide`·`build-presentation`·`md-to-pptx` 로 — 잔존 `:::`·제목 속성 없음, 헤드리스 화면 확인. (cs_v2 미지원 인수 `header=` 머리띠는 HTML 에 안 나옴 — 다음 작업 C)
+- **하드코딩 제거**: 카드 테두리 0.75pt → `pptdesign.config.json card.borderWidth`, 근사 숏코드 정책 → 카탈로그 `fallback.cs_v2`. template PPTX XML 변경 전후 동일, `npm test` 289.
+- **점검으로 확인한 남은 하드코딩·층 혼재**: pptgen v2 렌더러 수치 약 290개, cs_v2 `config/library`(라이브러리가 설정 폴더에), `shortcode-guide.ts` 설명 데이터, 미사용 `config/layout.json`.
+- **사용자 결정**: 이름은 기능 이름 하나로 운영(옛 이름은 읽기 호환 별칭). 모양이 다른 옛 이름 2종(`compare-grid`·`workflow-flow`)은 렌더러를 읽어 확인 후 인수(`variant=plain`·`connector=arrow`)로 옮기는 설계 확정.
+- **CLI 인계**: 남은 작업(이름 통일·이전 도구, cs_v2 미구현 기능, 카탈로그 example 단일 출처 → slide-library views·cs_v2 웹 라이브러리 화면, dev API → pptgen, 층 정리·200줄 분리)은 coding `_templates/skillreview/다음작업_CLI인계.md` 순서대로.
+

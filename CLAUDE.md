@@ -232,6 +232,11 @@ npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 
 ### 기능 이름 — 공용 배치 카탈로그 (2026-10-14, pptgen 과 같은 규칙)
 
+> ⚠️ **방향 확정(2026-10-14 사용자 결정) — 이름은 기능 이름 하나로 운영한다.** 아래 "고유 이름은 해석하지 않고 그대로"는 **과도기 상태**다.
+> 다음 단계에서 옛 이름(`icon-grid` 등)은 읽기 호환 별칭·내부 구현 ID로만 남기고, md_src·UI·스니펫·문서·테스트를 전부 기능 이름으로 전환한다
+> (모양이 다른 옛 이름은 인수로: `compare-grid`→`grid.columns variant=plain`, `workflow-flow`→`process.track connector=arrow`, `step-flow`→`process.track connector=none`, `skill-list`→`grid.cards align=left`, `checkpoint-grid`→`grid.cards align=row`).
+> 작업 지시서: coding 저장소 `_templates/skillreview/다음작업_CLI인계.md`.
+
 숏코드 이름은 이제 **기능·표현 기준 `<그룹>.<형태>`** 이 정식입니다(pptgen 과 같은 이름, 단일 출처 `config/library/layouts.json` — `npm run sync:library`).
 학습 콘텐츠용으로 붙였던 이름·분류(콘텐츠 그리드·정보 & 알림 등)는 범용 그룹으로 바뀌었고, **기존 고유 이름은 하위 호환으로 그대로 동작**합니다(기존 문서 출력 동일 — 회귀 확인).
 

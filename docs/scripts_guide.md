@@ -302,6 +302,12 @@ cs_v2/config/library/*.json (복사본)  →  scripts/library-map.mjs (생성본
 5. 반환 `{ type: 구현 ID, layout: 기능 이름, args: 정규화된 인수, status, alias }` — `renderShortcode`·`md-to-pptx`·`pptx-browser` 가 같은 결과를 쓴다(HTML·PPTX 같은 해석).
 6. **매체**: 세 번째 인수 `medium = "pptx"`(md-to-pptx·pptx-browser) 면 기능 이름 구현(HTML 전용) 대신 카탈로그 `impl.cs_v2.pptx_shortcode`(옛 숏코드 근사 — 예 `process.staircase` → `level-grid`). cs_v2 PPTX 는 빠른 근사, 정밀 PPTX 는 pptgen.
 
+### 5-0. 생성본 `library-map.mjs` 의 `LAYOUTS[이름]` (sync-library 가 만든다)
+
+`group`·`label`·`fields`·`status`·`shortcode`·`pptx_shortcode`·`variants`(인수 → 구현 ID)·`defaults`(인수 기본값 — 렌더러가 `layoutArgs()` 로 읽음)·
+`args`(인수 표: `values`·`default`·`cs_v2`·`pptgen`·`note` — 웹 배치 라이브러리 화면)·`pptgen`(`status`·`pattern`·`theme` — pptgen 이 그리는 방법)·`aliases`(옛 이름 — 화면 검색).
+화면·렌더러·테스트가 이 생성본만 읽으므로 카탈로그를 고치면 `npm run sync:library` 한 번으로 전부 따라온다.
+
 ### 5-1a. 기능 이름 구현 `scripts/shortcode-ext/` (2026-10-14, 인계서 C)
 
 예전에 "가장 가까운 숏코드"로 근사하던 36종을 모양 그대로 그리는 HTML 렌더러. 구현 ID = 기능 이름(카탈로그 `impl.cs_v2.shortcode`).

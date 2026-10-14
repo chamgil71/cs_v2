@@ -36,7 +36,7 @@
 - [ ] **CLAUDE.md** — 아키텍처/규칙/이슈 이력에 영향이 있으면 갱신 (특히 「주요 이슈 이력」 표)
 - [ ] **README.md** — 폴더 구조·스크립트·기능 설명에 변경이 있으면 갱신 (숏코드 개수 등 수치 표기 포함)
 - [ ] **docs/** — `scripts_guide.md`(개발자), `guide.md`(사용자), `shortcode-reference.md`, `shortcode-changelog.md`(변경이력 **추가**) 중 해당 문서 갱신
-- [ ] **정합성 테스트** — 숏코드/렌더러 변경 시 `npm test` (정합성 130건·카탈로그 151건·배치 인수 54건 포함) 통과 확인
+- [ ] **정합성 테스트** — 숏코드/렌더러 변경 시 `npm test` (정합성 130건·카탈로그 151건·배치 인수 54건·배치 라이브러리 72건 포함) 통과 확인
 - [ ] 시점 기록 문서(`docs/report/*_YYYY-MM-DD.md`)는 **수정하지 말고 새 항목/새 파일로 추가** (역사 보존)
 
 > 문서화는 작업의 일부다. "코드만 고치고 문서는 나중에"는 이 프로젝트의 반복 이슈(드리프트)의 원인이므로 금지.
@@ -61,16 +61,20 @@ cs_v2/
 │   │   ├── MarkdownCompiler.tsx   # 메인 에디터 UI (숏코드 툴바 포함, 브라우저 내 컴파일)
 │   │   ├── PptxInspectorSuite.tsx # PPTX 인스펙터 & 리매퍼 (구 PptxAnalyzer.tsx 후속본)
 │   │   ├── VisualAdjuster.tsx     # 테마 빌더 (styles.json 실시간 편집)
+│   │   ├── DesignSystemSuite.tsx  # 모듈 1 셸 — 테마 조율 / 보조 유틸리티 / 배치 라이브러리 서브탭
+│   │   ├── layout-library/        # 배치 라이브러리 화면(LayoutLibrary·List·Preview·Detail) — 공용 카탈로그 66종, 예시를 코어로 미리보기
 │   │   ├── SubUtilities.tsx       # 보조 유틸 (파일 변환 도구 모음)
 │   │   └── ErrorBoundary.tsx      # React 에러 경계
 │   ├── lib/
 │   │   ├── client-compiler.ts     # 브라우저 컴파일러 — guide-core/presentation-core 에 위임(자체 렌더러 없음, standalone==server)
 │   │   ├── pptx-browser.ts        # 브라우저 전용 MD→PPTX (md-to-pptx.mjs 포트)
+│   │   ├── layout-library.ts      # 배치 라이브러리 데이터(카탈로그 → 화면 항목·스니펫·미리보기 md, 구현 상태 요약)
 │   │   ├── exportGuide.ts         # 가이드 HTML 내보내기 헬퍼
 │   │   ├── wcag.ts                # WCAG 색상 대비 계산 유틸
 │   │   └── utils.ts               # clsx/tailwind 유틸
-│   ├── __tests__/                 # 전체 410개 (아래 7개 파일 합산)
+│   ├── __tests__/                 # 전체 482개 (아래 8개 파일 합산)
 │   │   ├── layout-ext.test.ts     # 기능 이름 배치 전용 HTML·배치 인수·tag: alt·브라우저 PPTX 노트 (54개)
+│   │   ├── layout-library.test.ts # 배치 라이브러리 데이터 — 카탈로그 66종 그대로, 예시가 가이드·슬라이드로 그려짐 (72개)
 │   │   ├── library-catalog.test.ts # 공용 배치 카탈로그 연결 (151개) — 기능 이름 66종 HTML·PPTX 커버리지, 옛 이름 = 기능 이름+인수 출력 동일, md_src 옛 이름 0, 생성본==복사본, 서식 세트, 선 없음 표기
 │   │   ├── client-compiler.test.ts # 브라우저 컴파일러 유닛 테스트 (24개)
 │   │   ├── shortcode-conformance.test.ts # 정합성 130개(기능 이름 기준) — 공유 렌더러+PPTX 커버리지 + CSS 커버리지 가드 + standalone==server 동치 잠금
@@ -192,7 +196,7 @@ npm run build
 npm run build:standalone
 
 # 테스트 실행
-npm test             # vitest run (410개 — 정합성 130개 + 카탈로그 151개 + 배치 인수 54개 포함)
+npm test             # vitest run (482개 — 정합성 130개 + 카탈로그 151개 + 배치 인수 54개 + 배치 라이브러리 72개 포함)
 npm run migrate:names -- <경로>   # md 의 옛 배치 이름 → 기능 이름(+인수). --check 는 확인만(md_src 기본)
 npm run test:watch   # watch 모드
 
@@ -261,6 +265,7 @@ npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 - `:::` 정규식은 `.` 을 허용(`shortcodeBlockRe`, 4개 파서 공유). 제목 끝 속성 `## 제목 {master=…}` 은 지우고 읽는다(`stripHeadingAttrs`).
 - 색 이름(`color:`)은 카탈로그 `color_tokens` 단일 출처: `primary·secondary·accent·accent2·light·dark·ink·gray`(+`main·sub·deep·mid·brand`) 또는 `#hex`.
 - 가이드 패널·삽입 메뉴(`config/shortcode-guide.ts`)는 카탈로그에서 목록·그룹·**스니펫(example)** 을 만든다 — pptgen 견본과 같은 예시.
+- **배치 라이브러리 화면**(모듈 1 서브탭, `src/components/layout-library/` + `src/lib/layout-library.ts`, 2026-10-14): 카탈로그 66종을 그룹·검색(옛 이름 포함)으로 찾고, 예시를 `clientCompileMarkdown`(서버와 같은 코어)으로 테마·서식 세트·인수 변형·종형/횡형 미리보기, 구현 상태·항목 칸·배치 인수·스니펫 복사. 화면 값은 전부 생성본 `library-map.mjs`(`sync:library` 가 `args`·`pptgen`·`aliases` 도 넣음)에서 — pptgen `views/layouts.pptx` 와 같은 예시.
 
 ### 서식 세트 — 테마를 따르는 도형 서식 층 (2026-10-14)
 
@@ -429,7 +434,7 @@ done:
 ## 테스트
 
 ```bash
-npm test          # vitest run (src/__tests__/ 하위 전체, 410개)
+npm test          # vitest run (src/__tests__/ 하위 전체, 482개)
 npm run sync:library        # 공용 배치 카탈로그 원본 → config/library + scripts/library-map.mjs
 npm run sync:library:check  # 원본과 다르면 종료코드 1
 npm run test:watch
@@ -440,6 +445,7 @@ npm run test:watch
 - `pptx-analyzer.test.ts` (23개): PPTX XML 분석기 유닛 테스트
 - `pptx-transform.test.ts` (10개): PPTX 왕복(round-trip) 변환 검증
 - `wcag.test.ts` (18개): `getContrast()`, `getLuminance()` 계산 검증
+- `layout-library.test.ts` (72개): 웹 배치 라이브러리 데이터 — 화면 목록 = 카탈로그 66종(순서 그대로), 직접 64·근사 2, 옛 이름 검색, 예시 66종×변형이 가이드·슬라이드 코어로 그려지고 `:::` 가 남지 않음
 - `layout-ext.test.ts` (54개): 기능 이름 배치 전용 HTML(카탈로그 예시·변형 렌더, `sx-*` 클래스 CSS 커버리지, 이스케이프), 배치 인수(기본값 = 카탈로그), 항목 `tag: alt`(HTML·PPTX), 브라우저 PPTX 발표스크립트
 - `library-catalog.test.ts` (151개): 공용 배치 카탈로그 — 생성본(library-map)==복사본(config/library), 기능 이름 66종이 전부 HTML·PPTX 로 그려짐, 옛 이름 42개 = 기능 이름+인수와 출력 동일, 변형(인수 → 구현 ID), md_src 옛 이름 0, callout 인수 파싱, `.` 이름 블록·제목 속성 제거, 서식 세트(template=기존 서식, 색은 테마 변수만), `bg=alt`, PPTX `line:{width:0}` 금지
 

@@ -104,7 +104,16 @@
   "_doc": "pptgen node lib/run.js examples 가 만드는 견본 md 머리말(테마 corporate-blue = 회사 패턴 예시도 그려지게)",
   "title": "배치 견본 — 공용 카탈로그 66종",
   "subtitle": "같은 md 를 pptgen 과 cs_v2 가 읽는다",
-  "theme": "corporate-blue"
+  "theme": "corporate-blue",
+  "shape_samples": [
+   "grid.cards",
+   "grid.columns",
+   "compare.pair",
+   "process.steps",
+   "data.stats",
+   "grid.box-3"
+  ],
+  "_doc_shape": "pptgen previews-all 의 views/shape-sets.pptx: 서식 세트(shape-sets.json)마다 이 배치들의 예시를 그려 나란히 비교한다(카드형 위주 — 외곽선·그림자·둥글기·보조 카드색이 잘 보이는 것)"
  },
  "layouts": {
   "grid.cards": {

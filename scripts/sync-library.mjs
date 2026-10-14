@@ -50,8 +50,12 @@ for (const [name, e] of Object.entries(layouts.layouts)) {
   const c = (e.impl || {}).cs_v2 || {};
   // defaults = 인수 기본값(빈 값 제외) — 렌더러는 블록 인수 > 이 값 순서로 읽는다(수치를 코드에 두지 않음)
   const defaults = Object.fromEntries(Object.entries(e.args || {}).filter(([, a]) => a.default !== "" && a.default != null).map(([k, a]) => [k, String(a.default)]));
+  // args = 인수 표(웹 배치 라이브러리 화면 — 값·기본값·도구별 지원·설명), pptgen = pptgen 구현 요약(같은 배치를 pptgen 이 어떻게 그리는지)
+  const args = Object.fromEntries(Object.entries(e.args || {}).map(([k, a]) => [k, { values: a.values, default: a.default ?? "", cs_v2: !!a.cs_v2, pptgen: !!a.pptgen, note: a.note || "" }]));
+  const p = (e.impl || {}).pptgen || {};
   L[name] = { group: e.group, label: e.label, fields: e.fields || {}, status: c.status || "none", shortcode: c.shortcode || null,
-    pptx_shortcode: c.pptx_shortcode || null, variants: c.variants || [], defaults };
+    pptx_shortcode: c.pptx_shortcode || null, variants: c.variants || [], defaults, args,
+    pptgen: { status: p.status || "none", pattern: p.pattern || null, theme: p.theme || null }, aliases: e.aliases || [] };
   for (const a of e.aliases || []) ALIAS[a] = name;
   Object.assign(ALIAS_ARGS, e.alias_args || {});
   if (e.example) EXAMPLES[name] = e.example;

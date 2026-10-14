@@ -32,7 +32,68 @@ export const LAYOUTS = {
    "align": "center",
    "badge": "icon",
    "bg": "base"
-  }
+  },
+  "args": {
+   "cols": {
+    "values": "1~6",
+    "default": "항목 수에 맞춤",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": ""
+   },
+   "align": {
+    "values": "center|left|row",
+    "default": "center",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "left=왼쪽 아이콘, row=가로 한 줄형"
+   },
+   "badge": {
+    "values": "icon|number|none",
+    "default": "icon",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "카드·노드의 원 칸에 아이콘/번호/없음"
+   },
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "본문 위 머리띠 한 줄"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "icon-grid",
+   "skill-list",
+   "checkpoint-grid"
+  ]
  },
  "grid.features": {
   "group": "grid",
@@ -50,7 +111,52 @@ export const LAYOUTS = {
   "defaults": {
    "cols": "항목 수에 맞춤",
    "bg": "base"
-  }
+  },
+  "args": {
+   "cols": {
+    "values": "1~6",
+    "default": "항목 수에 맞춤",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": ""
+   },
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "본문 위 머리띠 한 줄"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "feature-grid"
+  ]
  },
  "grid.badges": {
   "group": "grid",
@@ -67,7 +173,45 @@ export const LAYOUTS = {
   "defaults": {
    "cols": "항목 수에 맞춤",
    "bg": "base"
-  }
+  },
+  "args": {
+   "cols": {
+    "values": "1~6",
+    "default": "항목 수에 맞춤",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": ""
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "badge-grid"
+  ]
  },
  "grid.list": {
   "group": "grid",
@@ -85,7 +229,39 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "tool-list",
+   "tool-box"
+  ]
  },
  "grid.tiers": {
   "group": "grid",
@@ -104,7 +280,45 @@ export const LAYOUTS = {
   "defaults": {
    "cols": "항목 수에 맞춤",
    "bg": "base"
-  }
+  },
+  "args": {
+   "cols": {
+    "values": "1~6",
+    "default": "항목 수에 맞춤",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": ""
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "plan-grid"
+  ]
  },
  "grid.columns": {
   "group": "grid",
@@ -130,7 +344,60 @@ export const LAYOUTS = {
    "cols": "항목 수에 맞춤",
    "bg": "base",
    "variant": "card"
-  }
+  },
+  "args": {
+   "cols": {
+    "values": "1~6",
+    "default": "항목 수에 맞춤",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": ""
+   },
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "본문 위 머리띠 한 줄"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "variant": {
+    "values": "card|plain",
+    "default": "card",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "plain = 상단 색 띠 없는 담백한 카드(옛 compare-grid)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "columns-grid",
+   "compare-grid"
+  ]
  },
  "grid.main-plus-3": {
   "group": "grid",
@@ -144,7 +411,24 @@ export const LAYOUTS = {
   "shortcode": "grid.main-plus-3",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p01",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p01"
+  ]
  },
  "grid.cards-icon-3": {
   "group": "grid",
@@ -158,7 +442,24 @@ export const LAYOUTS = {
   "shortcode": "grid.cards-icon-3",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p03",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p03"
+  ]
  },
  "grid.wide-narrow-titled": {
   "group": "grid",
@@ -172,7 +473,24 @@ export const LAYOUTS = {
   "shortcode": "grid.wide-narrow-titled",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p04",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p04"
+  ]
  },
  "grid.narrow-wide-titled": {
   "group": "grid",
@@ -186,7 +504,24 @@ export const LAYOUTS = {
   "shortcode": "grid.narrow-wide-titled",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p05",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p05"
+  ]
  },
  "grid.box-1": {
   "group": "grid",
@@ -200,7 +535,24 @@ export const LAYOUTS = {
   "shortcode": "grid.box-1",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p11",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p11"
+  ]
  },
  "grid.box-2": {
   "group": "grid",
@@ -214,7 +566,24 @@ export const LAYOUTS = {
   "shortcode": "grid.box-2",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p12",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p12"
+  ]
  },
  "grid.box-3": {
   "group": "grid",
@@ -228,7 +597,24 @@ export const LAYOUTS = {
   "shortcode": "grid.box-3",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p13",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p13"
+  ]
  },
  "grid.box-4": {
   "group": "grid",
@@ -242,7 +628,24 @@ export const LAYOUTS = {
   "shortcode": "grid.box-4",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p14",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p14"
+  ]
  },
  "grid.narrow-wide": {
   "group": "grid",
@@ -256,7 +659,24 @@ export const LAYOUTS = {
   "shortcode": "grid.narrow-wide",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p15",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p15"
+  ]
  },
  "grid.wide-narrow": {
   "group": "grid",
@@ -270,7 +690,24 @@ export const LAYOUTS = {
   "shortcode": "grid.wide-narrow",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p16",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p16"
+  ]
  },
  "grid.circle-3": {
   "group": "grid",
@@ -284,7 +721,24 @@ export const LAYOUTS = {
   "shortcode": "grid.circle-3",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p17",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p17"
+  ]
  },
  "grid.band-box-3": {
   "group": "grid",
@@ -298,7 +752,24 @@ export const LAYOUTS = {
   "shortcode": "grid.band-box-3",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸(머리띠 등)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p18",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p18"
+  ]
  },
  "compare.pair": {
   "group": "compare",
@@ -315,7 +786,39 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "compare-split",
+   "split-2box"
+  ]
  },
  "compare.before-after": {
   "group": "compare",
@@ -330,7 +833,40 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "before-after",
+   "compare-diff",
+   "compare-before-after"
+  ]
  },
  "compare.main-sub": {
   "group": "compare",
@@ -347,7 +883,45 @@ export const LAYOUTS = {
   "defaults": {
    "ratio": "0.64",
    "bg": "base"
-  }
+  },
+  "args": {
+   "ratio": {
+    "values": "0.5~0.75",
+    "default": "0.64",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "주 칸 비율"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "asymmetric-split"
+  ]
  },
  "compare.balance": {
   "group": "compare",
@@ -363,7 +937,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "balance-beam"
+  ]
  },
  "compare.hbars": {
   "group": "compare",
@@ -381,7 +986,45 @@ export const LAYOUTS = {
   "defaults": {
    "emphasis": "none",
    "bg": "base"
-  }
+  },
+  "args": {
+   "emphasis": {
+    "values": "last|first|none|<번호>",
+    "default": "none",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "stacked-bars"
+  ]
  },
  "compare.pair-summary": {
   "group": "compare",
@@ -395,7 +1038,24 @@ export const LAYOUTS = {
   "shortcode": "compare.pair-summary",
   "pptx_shortcode": "compare-split",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p08",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p08"
+  ]
  },
  "process.track": {
   "group": "process",
@@ -423,7 +1083,63 @@ export const LAYOUTS = {
    "badge": "icon",
    "emphasis": "none",
    "bg": "base"
-  }
+  },
+  "args": {
+   "connector": {
+    "values": "arrow|line|none",
+    "default": "line",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "항목 사이 연결. line = 단계 사이 가는 선, arrow = 화살표로 이은 단계(옛 workflow-flow), none = 연결 없음(옛 step-flow — 화살표는 type: arrow 항목으로)"
+   },
+   "badge": {
+    "values": "icon|number|none",
+    "default": "icon",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "카드·노드의 원 칸에 아이콘/번호/없음"
+   },
+   "emphasis": {
+    "values": "last|first|none|<번호>",
+    "default": "none",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "step-flow",
+   "workflow-flow",
+   "workflow-strip",
+   "flow",
+   "flow-track"
+  ]
  },
  "process.steps": {
   "group": "process",
@@ -440,7 +1156,45 @@ export const LAYOUTS = {
   "defaults": {
    "badge": "number",
    "bg": "base"
-  }
+  },
+  "args": {
+   "badge": {
+    "values": "icon|number|none",
+    "default": "number",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "카드·노드의 원 칸에 아이콘/번호/없음"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "step-list"
+  ]
  },
  "process.staircase": {
   "group": "process",
@@ -460,7 +1214,59 @@ export const LAYOUTS = {
    "grow": "1.35",
    "emphasis": "last",
    "bg": "base"
-  }
+  },
+  "args": {
+   "grow": {
+    "values": "1.0~1.6",
+    "default": "1.35",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "한 단마다 높이 배율(1.0 = 같은 높이)"
+   },
+   "emphasis": {
+    "values": "last|first|none|<번호>",
+    "default": "last",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+   },
+   "caption": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "아래 캡션 상자"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "staircase"
+  ]
  },
  "process.levels": {
   "group": "process",
@@ -480,7 +1286,59 @@ export const LAYOUTS = {
    "grow": "1.0",
    "emphasis": "none",
    "bg": "base"
-  }
+  },
+  "args": {
+   "cols": {
+    "values": "1~6",
+    "default": "항목 수에 맞춤",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": ""
+   },
+   "grow": {
+    "values": "1.0~1.6",
+    "default": "1.0",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "뒤 카드일수록 높게"
+   },
+   "emphasis": {
+    "values": "last|first|none|<번호>",
+    "default": "none",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "level-grid"
+  ]
  },
  "process.branch": {
   "group": "process",
@@ -498,7 +1356,46 @@ export const LAYOUTS = {
   "defaults": {
    "connector": "line",
    "bg": "base"
-  }
+  },
+  "args": {
+   "connector": {
+    "values": "arrow|line|none",
+    "default": "line",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "항목 사이 연결"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "git-flow",
+   "git-flow-strip"
+  ]
  },
  "process.growth": {
   "group": "process",
@@ -514,7 +1411,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "growth-panel"
+  ]
  },
  "process.cycle-3": {
   "group": "process",
@@ -530,7 +1458,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "triangle-cycle"
+  ]
  },
  "process.zigzag": {
   "group": "process",
@@ -547,7 +1506,45 @@ export const LAYOUTS = {
   "defaults": {
    "emphasis": "none",
    "bg": "base"
-  }
+  },
+  "args": {
+   "emphasis": {
+    "values": "last|first|none|<번호>",
+    "default": "none",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "zigzag-path"
+  ]
  },
  "process.cards-arrow-4": {
   "group": "process",
@@ -561,7 +1558,24 @@ export const LAYOUTS = {
   "shortcode": "process.cards-arrow-4",
   "pptx_shortcode": "step-flow",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p02",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p02"
+  ]
  },
  "process.input-circles-4": {
   "group": "process",
@@ -575,7 +1589,24 @@ export const LAYOUTS = {
   "shortcode": "process.input-circles-4",
   "pptx_shortcode": "step-flow",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p06",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p06"
+  ]
  },
  "process.band-columns-3": {
   "group": "process",
@@ -589,7 +1620,24 @@ export const LAYOUTS = {
   "shortcode": "process.band-columns-3",
   "pptx_shortcode": "step-flow",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p07",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p07"
+  ]
  },
  "process.steps-checklist-3": {
   "group": "process",
@@ -603,7 +1651,24 @@ export const LAYOUTS = {
   "shortcode": "process.steps-checklist-3",
   "pptx_shortcode": "step-flow",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "고정 칸"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p10",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p10"
+  ]
  },
  "structure.hub": {
   "group": "structure",
@@ -620,7 +1685,39 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "network-box",
+   "hub-spoke"
+  ]
  },
  "structure.pillars": {
   "group": "structure",
@@ -636,7 +1733,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "pillars-on-base"
+  ]
  },
  "structure.rings": {
   "group": "structure",
@@ -652,7 +1780,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "concentric-rings"
+  ]
  },
  "structure.venn": {
   "group": "structure",
@@ -669,7 +1828,39 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "venn-diagram",
+   "venn"
+  ]
  },
  "structure.groups-2x3": {
   "group": "structure",
@@ -683,7 +1874,16 @@ export const LAYOUTS = {
   "shortcode": "structure.groups-2x3",
   "pptx_shortcode": "columns-grid",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p09",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p09"
+  ]
  },
  "data.stats": {
   "group": "data",
@@ -702,7 +1902,53 @@ export const LAYOUTS = {
    "cols": "항목 수에 맞춤",
    "emphasis": "none",
    "bg": "base"
-  }
+  },
+  "args": {
+   "cols": {
+    "values": "1~6",
+    "default": "항목 수에 맞춤",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": ""
+   },
+   "emphasis": {
+    "values": "last|first|none|<번호>",
+    "default": "none",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "stat-grid",
+   "stat-row"
+  ]
  },
  "data.summary-bar": {
   "group": "data",
@@ -717,7 +1963,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "summary-bar"
+  ]
  },
  "data.bars": {
   "group": "data",
@@ -735,7 +2012,52 @@ export const LAYOUTS = {
    "scale": "sqrt",
    "emphasis": "none",
    "bg": "base"
-  }
+  },
+  "args": {
+   "scale": {
+    "values": "linear|sqrt",
+    "default": "sqrt",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "막대 길이 척도"
+   },
+   "emphasis": {
+    "values": "last|first|none|<번호>",
+    "default": "none",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "강조할 항목(테마 accent). 항목 tag: highlight/active 도 같은 뜻"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "bar-chart"
+  ]
  },
  "data.quadrant": {
   "group": "data",
@@ -752,7 +2074,52 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "xLabel": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": ""
+   },
+   "yLabel": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": ""
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "quadrant-chart"
+  ]
  },
  "data.gauge": {
   "group": "data",
@@ -768,7 +2135,52 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "left": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "호 양 끝 이름"
+   },
+   "right": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "호 양 끝 이름"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "gauge-arc"
+  ]
  },
  "sample.chart-pair": {
   "group": "sample",
@@ -780,7 +2192,16 @@ export const LAYOUTS = {
   "shortcode": "stat-grid",
   "pptx_shortcode": null,
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p19",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p19"
+  ]
  },
  "text.statement": {
   "group": "text",
@@ -796,7 +2217,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "text-only"
+  ]
  },
  "text.body": {
   "group": "text",
@@ -810,7 +2262,22 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": []
  },
  "text.quote": {
   "group": "text",
@@ -825,7 +2292,16 @@ export const LAYOUTS = {
   "shortcode": "text.quote",
   "pptx_shortcode": "takeaway-banner",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "quote-hero"
+  ]
  },
  "text.takeaway": {
   "group": "text",
@@ -841,7 +2317,39 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "takeaway-banner",
+   "takeaway"
+  ]
  },
  "text.callout": {
   "group": "text",
@@ -858,7 +2366,45 @@ export const LAYOUTS = {
   "defaults": {
    "variant": "info",
    "bg": "base"
-  }
+  },
+  "args": {
+   "variant": {
+    "values": "tip|info|warning|danger|success",
+    "default": "info",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "warn·caution 은 warning 별칭. 첫 위치 인수로도 됨(::: text.callout tip)"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "alert-box"
+  ]
  },
  "text.summary": {
   "group": "text",
@@ -874,7 +2420,39 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "summary-box",
+   "bottom-list"
+  ]
  },
  "text.section": {
   "group": "text",
@@ -891,7 +2469,39 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "part-banner",
+   "part-deck"
+  ]
  },
  "text.icon-statement": {
   "group": "text",
@@ -907,7 +2517,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "icon-caption"
+  ]
  },
  "text.avatar": {
   "group": "text",
@@ -921,7 +2562,16 @@ export const LAYOUTS = {
   "shortcode": "text.avatar",
   "pptx_shortcode": "summary-box",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "initial-avatar"
+  ]
  },
  "code.editor": {
   "group": "code",
@@ -937,7 +2587,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "editor-box"
+  ]
  },
  "code.console": {
   "group": "code",
@@ -953,7 +2634,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "console-box"
+  ]
  },
  "code.command": {
   "group": "code",
@@ -969,7 +2681,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "cmd-box"
+  ]
  },
  "nav.faq": {
   "group": "nav",
@@ -984,7 +2727,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "faq-list"
+  ]
  },
  "nav.tabs": {
   "group": "nav",
@@ -999,7 +2773,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "os-tabs"
+  ]
  },
  "nav.chapters": {
   "group": "nav",
@@ -1016,7 +2821,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "chapter-list"
+  ]
  },
  "media.cards-image": {
   "group": "media",
@@ -1032,7 +2868,45 @@ export const LAYOUTS = {
   "defaults": {
    "side": "right",
    "bg": "base"
-  }
+  },
+  "args": {
+   "side": {
+    "values": "left|right",
+    "default": "right",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "이미지 쪽"
+   },
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "box-image-split"
+  ]
  },
  "media.banner": {
   "group": "media",
@@ -1046,7 +2920,38 @@ export const LAYOUTS = {
   "variants": [],
   "defaults": {
    "bg": "base"
-  }
+  },
+  "args": {
+   "bg": {
+    "values": "base|alt",
+    "default": "base",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+   },
+   "title-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   },
+   "desc-size": {
+    "values": "비율(0.9) 또는 CSS 값",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": false,
+    "note": "cs_v2 공통 — 카드 제목/설명 크기"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "bottom-image-banner"
+  ]
  },
  "media.full": {
   "group": "media",
@@ -1058,7 +2963,16 @@ export const LAYOUTS = {
   "shortcode": "media.full",
   "pptx_shortcode": "summary-box",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "placeholder"
+  ]
  },
  "sample.infographic-2": {
   "group": "sample",
@@ -1070,7 +2984,16 @@ export const LAYOUTS = {
   "shortcode": "grid.box-2",
   "pptx_shortcode": "summary-box",
   "variants": [],
-  "defaults": {}
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c01-p20",
+   "theme": "company-01"
+  },
+  "aliases": [
+   "c01-p20"
+  ]
  }
 };
 export const LAYOUT_ALIASES = {

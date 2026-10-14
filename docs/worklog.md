@@ -299,3 +299,13 @@
 - **문서**: CLAUDE.md(규칙 표·구조·이름 절·지원 현황·이슈 2행), README, scripts_guide 5-1a, guide, shortcode-reference(64종·배치 인수 표·「기능 이름 배치」 절 — 카탈로그 example 에서 생성), changelog Phase 9, 스킬 참조 카탈로그 재생성.
 - 다음: 인계서 D(미리보기 — pptgen previews-all·cs_v2 웹 배치 라이브러리 화면), E(층 정리, 사용자 확인 후).
 
+## 2026-10-14 — 세션 25: 미리보기 — 웹 배치 라이브러리 화면 (CLI 인계서 D 단계)
+
+- **모듈 1 배치 라이브러리 서브탭**(`src/components/layout-library/` 4파일 + `src/lib/layout-library.ts`, 각 200줄 이하): 카탈로그 66종을 그룹 버튼·검색(기능 이름·설명·옛 이름)으로 찾고,
+  카탈로그 예시를 `clientCompileMarkdown`(서버 CLI 와 같은 코어)으로 미리보기 — 테마·서식 세트 6종·종형/횡형·인수 변형(`more`). 오른쪽에 구현 상태(cs_v2 HTML·PPTX, pptgen), 항목 칸, 배치 인수 표, 옛 이름, 스니펫 복사.
+  미리보기는 편집기와 같은 방식으로 가상 화면(1280×720 / 1200 폭)을 칸 너비에 맞춰 축소하고, 표지 다음(배치가 있는 곳)으로 iframe 안에서만 이동.
+- **생성본 확장**: `sync:library` 가 `LAYOUTS[이름]` 에 `args`·`pptgen`·`aliases` 를 넣음(화면 값의 단일 출처).
+- **pptgen 쪽(coding)**: `views/layouts.pptx`(66종 예시)·`views/shape-sets.pptx`(서식 세트 비교) 를 같은 카탈로그 예시로 — `node lib/run.js layout-views`.
+- 검증: `npm test` 482(새 `layout-library.test.ts` 72 — 66종 예시×변형이 가이드·슬라이드로 그려짐), `build:standalone`·`build`, 헤드리스로 탭·검색·서식 세트·횡형 미리보기 확인(계단 배치 렌더, 콘솔 오류는 standalone 의 기존 `/api/list-styles` 폴백뿐).
+- 다음: 인계서 E(설정·라이브러리·코드 층 정리 — 사용자 확인 후), F(마무리).
+

@@ -61,7 +61,7 @@ sequenceDiagram
 * **역할**: 사용자가 직접 웹 브라우저에서 조작하는 **3모듈 통합 디자인 스위트**입니다. `dashboard.html`(dev server) / `webdesignsuite.html`(standalone)이 3모듈을 탭으로 묶고, 각 모듈은 `design-system.html` / `guide-authoring.html` / `pptx-inspector.html`로 단독 배포도 가능합니다(워크플로 순서로 번호 부여 — 테마부터 정하고, 그 테마로 콘텐츠를 쓰고, 기존 PPTX 분석은 완전히 별개).
 * **주요 구성**:
   - `src/main.tsx`: 3모듈(디자인 시스템/가이드북 저작/PPTX 인스펙터)을 동급 탭으로 배치하는 대시보드 셸.
-  - `src/components/DesignSystemSuite.tsx` (**모듈 1**): `VisualAdjuster.tsx`(HSL 테마 조율·`styles.json` 등록)와 `SubUtilities.tsx`(대비 검사기·커스텀 배색 빌더·컬러 리매퍼)를 서브탭 2개로 묶은 통합 UI.
+  - `src/components/DesignSystemSuite.tsx` (**모듈 1**): `VisualAdjuster.tsx`(HSL 테마 조율·`styles.json` 등록), `SubUtilities.tsx`(대비 검사기·커스텀 배색 빌더·컬러 리매퍼), `layout-library/`(**배치 라이브러리** — 공용 카탈로그 66종을 그룹·검색으로 찾고 예시를 테마·서식 세트·인수 변형으로 미리 보며 스니펫 복사, 데이터는 `src/lib/layout-library.ts`)를 서브탭 3개로 묶은 통합 UI.
   - `src/components/MarkdownCompiler.tsx` (**모듈 2**): 실시간 마크다운 에디터, split-pane 미리보기 iframe 윈도우, 단일/일괄 폴더 변환 실행 및 컴파일 설정 패널.
   - `src/components/PptxInspectorSuite.tsx` (**모듈 3**): 벤치마킹할 PPTX를 로드하여 분석하고 색상을 XML 수준에서 1:1 리매핑하는 UI. 1·2번 모듈과 독립된 별개 워크플로.
   - `src/standalone/*-main.tsx`: 각 모듈을 서버 없이 단독 구동시키는 진입점(`design-system-main.tsx`/`guide-authoring-main.tsx`/`pptx-inspector-main.tsx`).
@@ -135,7 +135,8 @@ cs_v2/
 │   │   ├── useThemeEditor.ts     # 테마 프리셋 로드·선택 상태 (VisualAdjuster 3패널 공유, ≤200L)
 │   │   └── useThemeMutations.ts  # 테마 추가/수정/삭제 + styles.json 서버 저장 로직
 │   └── components/
-│       ├── DesignSystemSuite.tsx # Module 1. VisualAdjuster+SubUtilities 통합 셸 (연계형, 저장은 서버 전용)
+│       ├── DesignSystemSuite.tsx # Module 1. VisualAdjuster+SubUtilities+배치 라이브러리 통합 셸 (연계형, 저장은 서버 전용)
+│       ├── layout-library/       # Module 1 배치 라이브러리 화면(목록·미리보기·설명, 각 200줄 이하)
 │       ├── VisualAdjuster.tsx    # (Module 1 서브탭) HSL 스타일 조율기 — useThemeEditor 훅 + 3패널 조합 오케스트레이터
 │       ├── visual-adjuster/      # VisualAdjuster 하위 패널 (좌: 프리셋 목록 / 중: 편집 폼 / 우: 실시간 프리뷰)
 │       │   ├── ThemePresetPanel.tsx, ThemeEditorPanel.tsx, ThemeLivePreviewPanel.tsx
@@ -190,7 +191,7 @@ cs_v2/
 │   ├── shortcode-guide.ts  # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, 분류·기능 이름은 카탈로그에서)
 │   ├── library/            # 공용 배치 카탈로그 복사본(layouts.json 66종·shape-sets.json 6종) — pptgen 과 같은 규칙
 │   └── layout.json         # PPTX 분석 가공 오프셋 보관 JSON
-├── src/__tests__/          # Vitest — shortcode-conformance(정합성 130) + library-catalog(카탈로그 151) + layout-ext(배치 인수 54) 등 410건
+├── src/__tests__/          # Vitest — shortcode-conformance(정합성 130) + library-catalog(카탈로그 151) + layout-ext(배치 인수 54) + layout-library(배치 라이브러리 72) 등 482건
 ├── md_src/                 # 마크다운 원천 소스 보관 폴더 (하위 폴더마다 hub.config.json 선택적 배치)
 ├── public/                 # [산출물, gitignore] 웹 GUI "가이드 컬렉션 저장" 시 Vite 개발서버가 서빙하는 재빌드 위치
 ├── publish/                # [산출물, gitignore] CLI 빌드 파이프라인(build-folder.mjs 등)의 기본 출력 위치

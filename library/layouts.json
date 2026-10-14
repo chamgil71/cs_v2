@@ -113,7 +113,13 @@
    "data.stats",
    "grid.box-3"
   ],
-  "_doc_shape": "pptgen previews-all 의 views/shape-sets.pptx: 서식 세트(shape-sets.json)마다 이 배치들의 예시를 그려 나란히 비교한다(카드형 위주 — 외곽선·그림자·둥글기·보조 카드색이 잘 보이는 것)"
+  "_doc_shape": "pptgen previews-all 의 views/shape-sets.pptx: 서식 세트(shape-sets.json)마다 이 배치들의 예시를 그려 나란히 비교한다(카드형 위주 — 외곽선·그림자·둥글기·보조 카드색이 잘 보이는 것)",
+  "theme_samples": [
+   "process.track",
+   "compare.pair",
+   "data.stats"
+  ],
+  "_doc_theme": "pptgen theme-compare 의 views/theme-compare.pptx: 테마마다 표지 + 이 배치들의 예시를 그려 비교한다"
  },
  "layouts": {
   "grid.cards": {

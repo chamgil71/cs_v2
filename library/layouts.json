@@ -137,9 +137,10 @@
    "args": {
     "cols": {
      "values": "1~6",
-     "default": "항목 수에 맞춤",
+     "default": "",
      "pptgen": true,
-     "cs_v2": true
+     "cs_v2": true,
+     "note": "비우면 항목 수에 맞춤."
     },
     "align": {
      "values": "center|left|row",
@@ -164,10 +165,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": true,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -233,9 +234,10 @@
    "args": {
     "cols": {
      "values": "1~6",
-     "default": "항목 수에 맞춤",
+     "default": "",
      "pptgen": true,
-     "cs_v2": true
+     "cs_v2": true,
+     "note": "비우면 항목 수에 맞춤."
     },
     "header": {
      "values": "문자열",
@@ -246,10 +248,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": true,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -300,16 +302,17 @@
    "args": {
     "cols": {
      "values": "1~6",
-     "default": "항목 수에 맞춤",
+     "default": "",
      "pptgen": true,
-     "cs_v2": true
+     "cs_v2": true,
+     "note": "비우면 항목 수에 맞춤."
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": true,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -362,10 +365,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": true,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -419,16 +422,17 @@
    "args": {
     "cols": {
      "values": "1~6",
-     "default": "항목 수에 맞춤",
+     "default": "",
      "pptgen": true,
-     "cs_v2": true
+     "cs_v2": true,
+     "note": "비우면 항목 수에 맞춤."
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -480,9 +484,10 @@
    "args": {
     "cols": {
      "values": "1~6",
-     "default": "항목 수에 맞춤",
+     "default": "",
      "pptgen": true,
-     "cs_v2": true
+     "cs_v2": true,
+     "note": "비우면 항목 수에 맞춤."
     },
     "header": {
      "values": "문자열",
@@ -493,10 +498,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": true,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1076,10 +1081,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": true,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1131,10 +1136,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": true,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1194,10 +1199,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": true,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1250,10 +1255,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1313,10 +1318,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1434,10 +1439,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1526,10 +1531,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1603,10 +1608,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1664,9 +1669,10 @@
    "args": {
     "cols": {
      "values": "1~6",
-     "default": "항목 수에 맞춤",
+     "default": "",
      "pptgen": false,
-     "cs_v2": true
+     "cs_v2": true,
+     "note": "비우면 항목 수에 맞춤."
     },
     "grow": {
      "values": "1.0~1.6",
@@ -1684,10 +1690,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1749,10 +1755,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1804,10 +1810,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1860,10 +1866,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -1923,10 +1929,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2148,10 +2154,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2204,10 +2210,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2260,10 +2266,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2315,10 +2321,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2405,9 +2411,10 @@
    "args": {
     "cols": {
      "values": "1~6",
-     "default": "항목 수에 맞춤",
+     "default": "",
      "pptgen": true,
-     "cs_v2": true
+     "cs_v2": true,
+     "note": "비우면 항목 수에 맞춤."
     },
     "emphasis": {
      "values": "last|first|none|<번호>",
@@ -2418,10 +2425,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": true,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2476,10 +2483,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": true,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2544,10 +2551,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2613,10 +2620,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2682,10 +2689,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2768,10 +2775,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2823,10 +2830,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     }
    },
    "impl": {
@@ -2899,10 +2906,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -2954,17 +2961,17 @@
    "args": {
     "variant": {
      "values": "tip|info|warning|danger|success",
-     "default": "info",
+     "default": "tip",
      "pptgen": true,
      "cs_v2": true,
      "note": "warn·caution 은 warning 별칭. 첫 위치 인수로도 됨(::: text.callout tip)"
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3019,10 +3026,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3075,10 +3082,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3130,10 +3137,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3218,10 +3225,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3272,10 +3279,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3326,10 +3333,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3379,10 +3386,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3432,10 +3439,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3487,10 +3494,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3547,10 +3554,10 @@
     },
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",
@@ -3600,10 +3607,10 @@
    "args": {
     "bg": {
      "values": "base|alt",
-     "default": "base",
+     "default": "",
      "pptgen": false,
      "cs_v2": true,
-     "note": "이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
+     "note": "비우면 배치 고유 모양(대부분 base, pptgen 의 compare.pair·main-sub 왼쪽 칸·data.summary-bar 띠는 보조색). 이 블록의 카드 배경 — alt = 서식 세트의 보조 카드색(한 슬라이드에 카드 배경 2종). 항목 하나만이면 그 항목 tag: alt"
     },
     "title-size": {
      "values": "비율(0.9) 또는 CSS 값",

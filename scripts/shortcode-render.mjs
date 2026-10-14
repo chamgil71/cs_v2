@@ -556,7 +556,7 @@ function renderNative(type, body, args, a = argKeys(args)) {
     return items.map(it => {
       // 종류 = variant=… 또는 첫 위치 인수(::: text.callout tip) — 인수 문자열 전체를 종류로 쓰지 않는다(bg=alt 등과 함께 써도 안전)
       const pos = String(args || "").trim().split(/\s+/).find((w) => w && !w.includes("="));
-      const raw = (argKeys(args).variant || pos || it.type || it.tag || "tip").trim().toLowerCase();
+      const raw = String(argKeys(args).variant || pos || it.type || it.tag || a.variant || "").trim().toLowerCase();   // 마지막은 카탈로그 기본값(tip)
       const t = CALLOUT_ALIAS[raw] || raw;
       const color = typeColors[t] || "var(--brand)";
       return `<div class="alert-box alert-${t}" style="--alert-color:${color}">

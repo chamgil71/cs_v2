@@ -41,6 +41,18 @@ describe('카탈로그 — 생성본(library-map.mjs) == 복사본(library/layou
   });
 });
 
+describe('카탈로그 — 인수 기본값은 값이다(두 도구가 그대로 깔아 쓰므로)', () => {
+  it('default 는 빈 값, 숫자, 또는 values 목록 중 하나', () => {
+    const json = JSON.parse(fs.readFileSync(path.join(ROOT, 'library/layouts.json'), 'utf8'));
+    const bad: string[] = [];
+    for (const [k, e] of Object.entries<any>(json.layouts)) for (const [n, a] of Object.entries<any>(e.args || {})) {
+      const d = a.default ?? '';
+      if (d !== '' && !/^-?\d+(\.\d+)?$/.test(d) && !String(a.values).split('|').includes(d)) bad.push(`${k}.${n}=${d}`);
+    }
+    expect(bad).toEqual([]);
+  });
+});
+
 describe('카탈로그 — 모든 기능 이름이 HTML·PPTX 로 그려진다', () => {
   for (const name of Object.keys(LAYOUTS)) {
     it(`${name} → ${resolveShortcode(name).type}`, () => {

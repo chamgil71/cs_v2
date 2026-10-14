@@ -5,6 +5,18 @@
 
 ---
 
+## Phase 10 — 설정·라이브러리·코드 층 정리 · 200줄 분리 (2026-10-14, 인계서 E)
+
+### 바뀐 것
+- **층 분리**: 공용 카탈로그 복사본 `config/library/` → 최상위 `library/`(사람이 고르는 설정과 여러 도구가 같이 쓰는 정의를 나눔). 아무도 읽지 않던 `config/layout.json` 삭제.
+- **설명·기본값은 카탈로그 하나에서**: 가이드 패널의 배치 설명(`LAYOUT_DESC`)을 카탈로그 `emoji`·`desc` 로, 칸 안내는 `fields` + `args` 로. 배치 인수 기본값은 카탈로그 `args.default` 만(값이어야 함 — 빈 값·숫자·values 중 하나, 테스트로 잠금). `bg` 기본 = 빈 값(배치 원래 모양), `text.callout` 기본 종류 = `tip`(pptgen 도 같게).
+- **파일 나눔(출력 동일)**: `shortcode-render.mjs`(1003줄) → 입구 + `shortcode-render/`(글자 도구·파서·옛 숏코드 분기 표 6개), `shortcode-styles.mjs`(469줄) → `SHORTCODE_CSS` 입구 + `shortcode-styles/` 3부분. 테스트 `library-catalog.test.ts` 의 서식 세트·선 없음·slide-config 묶음은 `shape-set.test.ts` 로.
+
+### 영향 없음(확인)
+- 숏코드 이름·인수·마크업·CSS 그대로: `SHORTCODE_CSS` 문자열 동일, 628블록 렌더 동일, md_src 150개 산출물 동일, `npm test` 485, standalone·Vite 빌드.
+
+---
+
 ## Phase 9 — cs_v2 에 없던 배치·인수 추가: 근사 36종 전용 HTML + pptgen 과 같은 배치 인수 (2026-10-14)
 
 ### 배경

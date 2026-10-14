@@ -154,9 +154,9 @@ cs_v2/
 │   ├── vite-api-plugin.ts  # Vite 개발 서버 API 미들웨어 (Bridge) — 웹 GUI의 저장/일괄변환 API
 │   ├── pptx-analyzer.js    # PPTX XML 구조 파싱 코어 엔진
 │   ├── spec-parser.js      # PPTX 디자인 스펙 데이터 파서
-│   ├── shortcode-render.mjs   # [정본] 숏코드 → HTML 공유 렌더러 (3개 HTML 출력 공용)
+│   ├── shortcode-render.mjs   # [정본] 숏코드 → HTML 공유 렌더러 입구 (3개 HTML 출력 공용) — 부분은 shortcode-render/(글자 도구·파서·분기 표)
 │   ├── shortcode-ext/         # [정본] 기능 이름 배치 HTML 36종(계단·기둥·게이지·막대·인용·이미지·회사 패턴 상자…) + CSS
-│   ├── shortcode-styles.mjs   # [정본] 숏코드 컴포넌트 CSS (var(--*) 테마 독립)
+│   ├── shortcode-styles.mjs   # [정본] 숏코드 컴포넌트 CSS (var(--*) 테마 독립) — SHORTCODE_CSS 하나, 부분은 shortcode-styles/
 │   ├── guide-core.mjs      # 정본 코어: MD → 가이드 HTML (fs/path 비의존, CLI+client 공유)
 │   ├── presentation-core.mjs # 정본 코어: MD → 16:9 슬라이드 HTML (fs/path 비의존, CLI+client 공유)
 │   ├── build-guide.mjs     # guide-core 호출 CLI 래퍼 (npm run build:guide)
@@ -190,7 +190,7 @@ cs_v2/
 │   ├── font-aliases.json   # 폰트 alias → 실제 폰트명 매핑
 │   └── shortcode-guide.ts  # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, 분류·기능 이름은 카탈로그에서)
 ├── library/                # [라이브러리 층] 공용 배치 카탈로그 복사본(layouts.json 66종·shape-sets.json 6종) — pptgen 과 같은 규칙(npm run sync:library)
-├── src/__tests__/          # Vitest — shortcode-conformance(정합성 130) + library-catalog(카탈로그 151) + layout-ext(배치 인수 54) + layout-library(배치 라이브러리 72) 등 482건
+├── src/__tests__/          # Vitest — shortcode-conformance(정합성 130) + library-catalog(카탈로그 145) + shape-set(서식 세트 7) + layout-ext(배치 인수 54) + layout-library(배치 라이브러리 74) 등 485건
 ├── md_src/                 # 마크다운 원천 소스 보관 폴더 (하위 폴더마다 hub.config.json 선택적 배치)
 ├── public/                 # [산출물, gitignore] 웹 GUI "가이드 컬렉션 저장" 시 Vite 개발서버가 서빙하는 재빌드 위치
 ├── publish/                # [산출물, gitignore] CLI 빌드 파이프라인(build-folder.mjs 등)의 기본 출력 위치

@@ -309,3 +309,11 @@
 - 검증: `npm test` 482(새 `layout-library.test.ts` 72 — 66종 예시×변형이 가이드·슬라이드로 그려짐), `build:standalone`·`build`, 헤드리스로 탭·검색·서식 세트·횡형 미리보기 확인(계단 배치 렌더, 콘솔 오류는 standalone 의 기존 `/api/list-styles` 폴백뿐).
 - 다음: 인계서 E(설정·라이브러리·코드 층 정리 — 사용자 확인 후), F(마무리).
 
+## 2026-10-14 — 세션 26: 설정·라이브러리·코드 층 정리 · 200줄 분리 (CLI 인계서 E 단계)
+
+- **E1~E3**: `config/library/` → `library/`, 미사용 `config/layout.json` 삭제, 가이드 설명은 카탈로그 `emoji`·`desc`(`shortcode-guide.ts` 의 `LAYOUT_DESC` 제거).
+- **E5-1 인수 기본값**: 카탈로그 `args.default` 가 값이 되도록 정리(bg="", cols="", callout=tip) — 렌더러의 기본 수치 리터럴 없음. pptgen 도 같은 기본값(`names.argsOf`).
+- **E5 200줄 분리**(맨 마지막, 출력 동일): `shortcode-render.mjs` → `shortcode-render/`(text·parse·cards·lists·boxes·diagrams·sections·config — 옛 if 사슬을 순서 있는 분기 표로), `shortcode-styles.mjs` → `shortcode-styles/`(3부분), 테스트 `shape-set.test.ts` 분리.
+  - 검증: `SHORTCODE_CSS` 동일, md_src·카탈로그 예시 628블록 렌더 동일(탭 id 난수 제외), md_src 150개 산출물 동일, `npm test` 485, `build:standalone`·`build`, 헤드리스(standalone 오류는 기존 `/api/list-styles` 폴백뿐).
+  - 남은 200줄 초과(이번 범위 밖, 기존부터 큼): `PptxInspectorSuite.tsx`·`designspec-md-to-html.mjs`·`presentation-core.mjs`·`MarkdownCompiler.tsx`·`md-to-pptx.mjs`·`vite-api-plugin.ts`·`pptx-browser.ts`·`pptx-analyzer.js`·`exportGuide.ts`·`build-guide-hub.mjs`·`build-folder.mjs`·`guide-core.mjs`, shadcn `ui/*`, 생성본 `library-map.mjs`. 특히 `md-to-pptx.mjs` 와 `pptx-browser.ts` 는 같은 변환을 두 벌 가진 구조라 나누기 전에 공용 코어로 합치는 일이 먼저다(별도 작업).
+- **pptgen 쪽(coding)**: v2 렌더러 수치 → `config/layout.json`, `helpers.js`·`render_spec.js`·`gen_data.js`·`shape_style.js`·`build_deck.js` 분리(lib 전부 200줄 이하, 슬라이드 XML 전후 동일).

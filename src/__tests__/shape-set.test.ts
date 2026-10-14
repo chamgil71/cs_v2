@@ -1,11 +1,7 @@
 import { describe, it, expect } from 'vitest';
-// @ts-ignore
 import { renderShortcode } from '../../scripts/shortcode-render.mjs';
-// @ts-ignore
 import { helpers } from '../../scripts/pptx-renderers/registry.mjs';
-// @ts-ignore
 import { shapeSetCss, shapeSetPptx, pickShapeSet } from '../../scripts/shape-set.mjs';
-// @ts-ignore
 import { SHAPE_SETS } from '../../scripts/library-map.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -59,6 +55,7 @@ describe('PPTX — 선 없음 표기', () => {
   it('렌더러·변환기 어디에도 line: { width: 0 } 이 없다', () => {
     const files = [
       ...fs.readdirSync(path.join(ROOT, 'scripts/pptx-renderers')).map((f) => path.join('scripts/pptx-renderers', f)),
+      ...fs.readdirSync(path.join(ROOT, 'scripts/pptx-core')).map((f) => path.join('scripts/pptx-core', f)),
       'scripts/md-to-pptx.mjs', 'src/lib/pptx-browser.ts', 'scripts/shape-set.mjs',
     ];
     const bad = files.filter((f) => /line:\s*\{\s*width:\s*0\s*\}/.test(fs.readFileSync(path.join(ROOT, f), 'utf8')));
@@ -68,7 +65,6 @@ describe('PPTX — 선 없음 표기', () => {
 
 describe('slide-config — pptgen 과 같은 규칙', () => {
   it('`key: |` 여러 줄 값과 `\\n` 리터럴이 모두 줄바꿈', async () => {
-    // @ts-ignore
     const { parseSlideConfig } = await import('../../scripts/shortcode-render.mjs');
     expect(parseSlideConfig('notes: |\n  첫 줄\n  둘째 줄\nsource: 매체')).toEqual({ notes: '첫 줄\n둘째 줄', source: '매체' });
     expect(parseSlideConfig('- notes: "가\\n나"\nbg: "#111"')).toEqual({ notes: '가\n나', bg: '#111' });

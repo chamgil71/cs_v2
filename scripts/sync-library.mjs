@@ -37,6 +37,7 @@ if (!SRC) {
 }
 
 const read = (p) => readFileSync(p, "utf8");
+const eol = (s) => s.replace(/\r\n/g, "\n");
 const layoutsTxt = read(join(SRC, "layouts.json"));
 const setsTxt = read(join(SRC, "shape-sets.json"));
 const layouts = JSON.parse(layoutsTxt), sets = JSON.parse(setsTxt);
@@ -81,7 +82,8 @@ const outputs = [
 ];
 let stale = 0;
 for (const [p, txt] of outputs) {
-  const same = existsSync(p) && read(p) === txt;
+  // 줄바꿈은 비교에서 뺀다 — Windows(core.autocrlf)는 체크아웃 파일이 CRLF 라 내용이 같아도 LF 생성본과 달라 보인다
+  const same = existsSync(p) && eol(read(p)) === eol(txt);
   if (CHECK) { if (!same) { stale++; console.error(`✗ 동기화 필요: ${p}`); } continue; }
   if (!same) writeFileSync(p, txt);
   console.log(`${same ? "=" : "✓"} ${p.replace(ROOT + "/", "")}`);

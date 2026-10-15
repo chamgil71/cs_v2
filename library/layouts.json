@@ -212,7 +212,7 @@
    },
    "example": {
     "args": "cols=3",
-    "body": "- icon: \"🚀\"\n  title: \"빠른 퍼포먼스\"\n  desc: \"최적화된 빌드와 빌트인 파서 탑재\"\n- icon: \"🎨\"\n  title: \"디자인 테마 선택\"\n  desc: \"다양한 테마 조합 가능\"",
+    "body": "- icon: \"🚀\"\n  title: \"빠른 퍼포먼스\"\n  desc: \"최적화된 빌드와 빌트인 파서 탑재\"\n- icon: \"🎨\"\n  title: \"디자인 테마 선택\"\n  desc: \"다양한 테마 조합 가능\"\n- icon: \"🧩\"\n  title: \"배치 라이브러리\"\n  desc: \"66종 배치를 같은 이름으로 사용\"",
     "more": [
      "align=left cols=2",
      "align=row"
@@ -346,7 +346,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- icon: \"🌟\"\n  title: \"신속성\"\n  tag: \"Fast\"\n- icon: \"🔒\"\n  title: \"보안성\"\n  tag: \"Secure\""
+    "body": "- icon: \"🌟\"\n  title: \"신속성\"\n  tag: \"Fast\"\n- icon: \"🔒\"\n  title: \"보안성\"\n  tag: \"Secure\"\n- icon: \"🧭\"\n  title: \"일관성\"\n  tag: \"Consistent\"\n- icon: \"🔧\"\n  title: \"확장성\"\n  tag: \"Extensible\""
    }
   },
   "grid.list": {
@@ -2745,6 +2745,7 @@
      "status": "ready",
      "side": true,
      "pattern": "c01-p19",
+     "keep_size": true,
      "theme": "company-01"
     },
     "cs_v2": {
@@ -3423,7 +3424,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"Q. 숏코드가 정상적으로 렌더링되지 않아요.\"\n  desc: \"A. 숏코드 내부 인덴트(여백)나 문법이 V2 규격(::: 숏코드명)과 일치하는지 확인하십시오.\""
+    "body": "- title: \"Q. 숏코드가 정상적으로 렌더링되지 않아요.\"\n  desc: \"A. 숏코드 내부 인덴트(여백)나 문법이 V2 규격(::: 숏코드명)과 일치하는지 확인하십시오.\"\n- title: \"Q. pptgen 과 cs_v2 에 같은 md 를 써도 되나요?\"\n  desc: \"A. 네. 형식 v2 는 두 도구가 변환 없이 같은 배치 이름으로 읽습니다.\""
    }
   },
   "nav.tabs": {
@@ -3693,6 +3694,7 @@
      "status": "ready",
      "side": true,
      "pattern": "c01-p20",
+     "keep_size": true,
      "theme": "company-01"
     },
     "cs_v2": {

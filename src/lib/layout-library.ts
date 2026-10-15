@@ -51,7 +51,7 @@ export function implSummary(e: LayoutEntry): { html: string; pptx: string; direc
 /** pptgen 구현 요약 */
 export function pptgenSummary(e: LayoutEntry): string {
   if (e.pptgen.status !== 'ready') return '없음';
-  return e.pptgen.pattern ? `패턴 ${e.pptgen.pattern}${e.pptgen.theme ? ` · ${e.pptgen.theme} 테마 전용` : ''}` : '내장 렌더러';
+  return e.pptgen.pattern ? `패턴 ${e.pptgen.pattern}${e.pptgen.theme ? ` · 출처 ${e.pptgen.theme}` : ''}` : '내장 렌더러';
 }
 
 /** 예시 변형 인수 목록(기본 + more) */

@@ -63,7 +63,7 @@ cs_v2/
 │   │   ├── PptxInspectorSuite.tsx # PPTX 인스펙터 & 리매퍼 (구 PptxAnalyzer.tsx 후속본)
 │   │   ├── VisualAdjuster.tsx     # 테마 빌더 (styles.json 실시간 편집)
 │   │   ├── DesignSystemSuite.tsx  # 모듈 1 셸 — 테마 조율 / 보조 유틸리티 / 배치 라이브러리 서브탭
-│   │   ├── layout-library/        # 배치 라이브러리 화면(LayoutLibrary·List·Preview·Detail) — 공용 카탈로그 66종, 예시를 코어로 미리보기
+│   │   ├── layout-library/        # 배치 라이브러리 화면(LayoutLibrary·List·Preview·Detail) — 공용 카탈로그 전부(2026-10-23 88종), 예시를 코어로 미리보기
 │   │   ├── SubUtilities.tsx       # 보조 유틸 (파일 변환 도구 모음)
 │   │   └── ErrorBoundary.tsx      # React 에러 경계
 │   ├── lib/
@@ -75,7 +75,7 @@ cs_v2/
 │   │   └── utils.ts               # clsx/tailwind 유틸
 │   ├── __tests__/                 # 전체 489개 (아래 10개 파일 합산)
 │   │   ├── layout-ext.test.ts     # 기능 이름 배치 전용 HTML·배치 인수·tag: alt·브라우저 PPTX 노트 (54개)
-│   │   ├── layout-library.test.ts # 배치 라이브러리 데이터 — 카탈로그 66종 그대로, 예시가 가이드·슬라이드로 그려짐 (74개)
+│   │   ├── layout-library.test.ts # 배치 라이브러리 데이터 — 카탈로그 그대로(배치 수·서식 세트는 카탈로그에서 셈), 예시가 가이드·슬라이드로 그려짐
 │   │   ├── library-catalog.test.ts # 공용 배치 카탈로그 연결 (145개) — 기능 이름 66종 HTML·PPTX 커버리지, 옛 이름 = 기능 이름+인수 출력 동일, md_src 옛 이름 0, 생성본==복사본, 인수 기본값
 │   │   ├── shape-set.test.ts      # 서식 세트·PPTX 선 없음 표기·slide-config 규칙 (7개)
 │   │   ├── pptx-core.test.ts      # PPTX 공용 코어 — 브라우저 PPTX == CLI PPTX 잠금, 블록 크기 인수, config 불변 (4개)
@@ -145,7 +145,7 @@ cs_v2/
 │   ├── htmldesign.config.json     # HTML 폰트·크기 토큰 (JSONC, htmlSize guide/presentation 프로파일 + scale)
 │   ├── font-aliases.json          # 폰트 alias → 실제 폰트명 매핑
 │   └── shortcode-guide.ts         # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, MarkdownCompiler가 import — 분류·기능 이름·설명은 카탈로그에서)
-├── library/                       # [라이브러리 층] 공용 배치 카탈로그 복사본 — layouts.json(배치 66종·그룹·색 이름·예시) + shape-sets.json(서식 세트 6종). pptgen 과 같은 규칙. README.md 참조 (2026-10-14 config/ 에서 분리 — config 는 사람이 고르는 설정값만)
+├── library/                       # [라이브러리 층] 공용 배치 카탈로그 복사본 — layouts.json(배치 88종·그룹·색 이름·예시) + shape-sets.json(서식 세트 9종) — 2026-10-23. pptgen 과 같은 규칙. README.md 참조 (2026-10-14 config/ 에서 분리 — config 는 사람이 고르는 설정값만)
 ├── md_src/                        # 마크다운 원본 소스
 │   ├── claudeguide/               # Claude 가이드 문서
 │   ├── guides/                    # AI 툴별 가이드 문서 (30+ 파일)
@@ -292,7 +292,7 @@ npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 
 ### HTML·PPTX 지원 현황
 
-HTML(종형·횡형)은 64종을 모양 그대로 그린다. cs_v2 자체 PPTX 는 **빠른 근사**(역할 분담 — 정밀 PPTX 는 pptgen): 옛 숏코드 28종은 같은 모양, 기능 이름 구현 36종은 카탈로그 `pptx_shortcode`(예: `process.staircase` → level-grid). `library-catalog.test.ts`·`layout-ext.test.ts`·`shortcode-conformance.test.ts` 가 66종 HTML·PPTX 커버리지·CSS 커버리지·렌더러 등록을 잠금. 옛 이름 → 기능 이름 + 인수 표: `docs/shortcode-reference.md` 맨 아래.
+HTML(종형·횡형)은 64종을 모양 그대로 그린다. 그 밖의 배치(pptgen 회사·데코 패턴 24종)는 카탈로그 `impl.cs_v2.status: fallback` — 가장 가까운 배치(`near`)의 구현 ID 로 근사(원본 `slide-library/data/sources/deco-design/cs_v2_fallback.py`). cs_v2 자체 PPTX 는 **빠른 근사**(역할 분담 — 정밀 PPTX 는 pptgen): 옛 숏코드 28종은 같은 모양, 기능 이름 구현 36종은 카탈로그 `pptx_shortcode`(예: `process.staircase` → level-grid). `library-catalog.test.ts`·`layout-ext.test.ts`·`shortcode-conformance.test.ts` 가 66종 HTML·PPTX 커버리지·CSS 커버리지·렌더러 등록을 잠금. 옛 이름 → 기능 이름 + 인수 표: `docs/shortcode-reference.md` 맨 아래.
 
 ---
 
@@ -452,7 +452,7 @@ npm run test:watch
 - `pptx-analyzer.test.ts` (23개): PPTX XML 분석기 유닛 테스트
 - `pptx-transform.test.ts` (10개): PPTX 왕복(round-trip) 변환 검증
 - `wcag.test.ts` (18개): `getContrast()`, `getLuminance()` 계산 검증
-- `layout-library.test.ts` (74개): 웹 배치 라이브러리 데이터 — 화면 목록 = 카탈로그 66종(순서 그대로), 직접 64·근사 2, 옛 이름 검색, 예시 66종×변형이 가이드·슬라이드 코어로 그려지고 `:::` 가 남지 않음
+- `layout-library.test.ts` (74개): 웹 배치 라이브러리 데이터 — 화면 목록 = 카탈로그 전부(순서 그대로 — 숫자를 박지 않고 카탈로그에서 셈), 직접 64·근사 2, 옛 이름 검색, 예시 66종×변형이 가이드·슬라이드 코어로 그려지고 `:::` 가 남지 않음
 - `layout-ext.test.ts` (54개): 기능 이름 배치 전용 HTML(카탈로그 예시·변형 렌더, `sx-*` 클래스 CSS 커버리지, 이스케이프), 배치 인수(기본값 = 카탈로그), 항목 `tag: alt`(HTML·PPTX), 브라우저 PPTX 발표스크립트
 - `library-catalog.test.ts` (145개): 공용 배치 카탈로그 — 생성본(library-map)==복사본(library), 인수 기본값은 값(빈 값·숫자·values 중 하나), 기능 이름 66종이 전부 HTML·PPTX 로 그려짐, 옛 이름 42개 = 기능 이름+인수와 출력 동일, 변형(인수 → 구현 ID), md_src 옛 이름 0, callout 인수 파싱, `.` 이름 블록·제목 속성 제거
 - `pptx-core.test.ts` (4개): PPTX 공용 코어 — 브라우저 PPTX == CLI PPTX(갈라졌던 기능 묶음·showcase.md 슬라이드·노트 XML), 블록 크기 인수 반영, 코어가 config 를 바꾸지 않음

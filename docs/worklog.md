@@ -325,3 +325,11 @@
 - **검증**: md_src 150개 산출물 전후 동일, md_src 50개 브라우저 PPTX == CLI, standalone 화면 다운로드 PPTX == CLI(같은 테마), 새 `pptx-core.test.ts`(옛 브라우저 코드로 돌리면 2건 실패 — 드리프트를 잡는 테스트임을 확인), `npm test` 489.
 - **CI**: `.github/workflows/ci.yml` + `npm run typecheck`. 기존 lint 오류 36(`@ts-ignore` 34 — 불필요, prefer-const 2 — 옛 브라우저 파일)·타입 오류 2(`ThemeFormShape` 이중 선언) 해소 → 깨끗한 체크아웃에서 `npm ci` 부터 전 단계 통과.
 - 남은 것: HTML·PPTX 항목 표준화(`standardizeItem`) 규칙 차이(scripts_guide 5-1c), 나머지 200줄 초과 파일(presentation-core·MarkdownCompiler·PptxInspectorSuite 등).
+
+## 2026-10-23 — 공용 카탈로그 동기화(88종·서식 세트 9종) · Windows 테스트 실패 2건
+
+- **동기화**: `npm run sync:library` — 배치 66→88종(pptgen 회사 패턴 5종 + 데코 배치 19종), 서식 세트 6→9종(paper·pill-outline·header-box).
+- **실패 5건 원인**: 카탈로그의 회사 패턴 5종이 `impl.cs_v2.shortcode` 에 기능 이름(`grid.columns` 등)을 적어 cs_v2 렌더러에 없는 구현 ID 가 됐다. 공용 카탈로그(원본)에서 대신 그릴 배치의 구현 ID 를 옮겨 적음(`status: fallback`, `near`) — 데코 19종도 같은 방식. 레시피 `coding/_templates/slide-library/data/sources/deco-design/cs_v2_fallback.py`.
+- **실패 3건**: `layout-library.test.ts` 가 배치 수 66·서식 세트 6개를 박아 둠 → 카탈로그에서 세도록(앞 6개 세트 이름은 그대로 확인).
+- **실패 2건(전부터)**: `pptx-core.test.ts` — Windows(`core.autocrlf=true`)에서 `#!` 로 시작하는 `scripts/*.mjs` 를 CRLF 로 받으면 vitest 가 SyntaxError. CI(Linux)는 통과라 안 보였음. `.gitattributes` `scripts/**/*.mjs text eol=lf` + 작업본 LF 로(내용 변화 없음).
+- **검증**: `npm test` 552 전부 통과, lint 오류 0(경고 33), typecheck, `sync:library:check`, `migrate:names:check`, `verify:pptx`.

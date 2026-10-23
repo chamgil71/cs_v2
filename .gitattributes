@@ -1,0 +1,3 @@
+# scripts/*.mjs 는 LF 로 받는다 — Windows(core.autocrlf=true)에서 CRLF 로 받으면 #! 첫 줄이 있는 스크립트(md-to-pptx.mjs 등)를
+# vitest 가 읽지 못해 pptx-core 테스트 2건이 SyntaxError 로 실패했다(2026-10-23, CI 는 Linux 라 안 보였음)
+scripts/**/*.mjs text eol=lf

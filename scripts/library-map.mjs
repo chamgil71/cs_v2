@@ -1,6 +1,6 @@
 // ⚠️ 자동 생성 파일 — 손으로 고치지 마세요. 원본: slide-library/catalog (npm run sync:library)
-// 카탈로그 갱신일 layouts=2026-10-14 shape-sets=2026-10-14
-export const LIBRARY_UPDATED = "2026-10-14";
+// 카탈로그 갱신일 layouts=2026-10-23 shape-sets=2026-10-23
+export const LIBRARY_UPDATED = "2026-10-23";
 export const LAYOUT_GROUPS = {
  "grid": "분할·카드 — 관계 없는 대등한 N개를 칸·카드로 나란히",
  "compare": "비교·대조 — 둘 이상을 맞대어 차이를 보임",
@@ -423,7 +423,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p01",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p01"
@@ -456,7 +456,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p03",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p03"
@@ -489,7 +489,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p04",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p04"
@@ -522,7 +522,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p05",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p05"
@@ -555,7 +555,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p11",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p11"
@@ -588,7 +588,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p12",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p12"
@@ -621,7 +621,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p13",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p13"
@@ -654,7 +654,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p14",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p14"
@@ -687,7 +687,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p15",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p15"
@@ -720,7 +720,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p16",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p16"
@@ -753,7 +753,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p17",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p17"
@@ -786,10 +786,60 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p18",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p18"
+  ]
+ },
+ "grid.category-3": {
+  "group": "grid",
+  "label": "범주 3개(색 머리띠 + 긴 내용 칸)",
+  "emoji": "🗂️",
+  "desc": "범주마다 색 머리띠(primary·secondary·accent)와 아래 긴 내용 칸 3열 — 사업·과제를 세 갈래로 나눠 각각 글머리로 펼칠 때. NIPA 템플릿(C 그룹 27번) 출처. 위 강조 문구는 본문 틀 main 의 부제 칸.",
+  "fields": {
+   "title": "머리띠 글(범주 이름)",
+   "meta": "내용 글머리(｜ 구분)",
+   "desc": "내용 글(글머리 뒤에 이어 붙임)"
+  },
+  "status": "fallback",
+  "shortcode": "columns-grid",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c02-p01",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "c02-p01"
+  ]
+ },
+ "grid.narrow-wide-band": {
+  "group": "grid",
+  "label": "좁은 칸 + 넓은 칸(색 머리띠, 1:2)",
+  "emoji": "📐",
+  "desc": "왼쪽 1 : 오른쪽 2 상자, 상자마다 색 머리띠(제목)와 아래 내용 — 정책(왼쪽)과 사업(오른쪽)처럼 근거와 실행을 나란히 둘 때. NIPA 템플릿(nipa-sky 22번) 출처. 위 강조 줄은 본문 틀 sky 의 부제 칸.",
+  "fields": {
+   "title": "머리띠 글(상자 제목)",
+   "meta": "내용 글머리(｜ 구분)",
+   "desc": "내용 글(글머리 앞에)"
+  },
+  "status": "fallback",
+  "shortcode": "grid.narrow-wide-titled",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c03-p01",
+   "theme": "nipa-sky"
+  },
+  "aliases": [
+   "c03-p01"
   ]
  },
  "compare.pair": {
@@ -1076,7 +1126,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p08",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p08"
@@ -1603,7 +1653,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p02",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p02"
@@ -1636,7 +1686,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p06",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p06"
@@ -1669,7 +1719,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p07",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p07"
@@ -1702,7 +1752,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p10",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p10"
@@ -1919,7 +1969,7 @@ export const LAYOUTS = {
   "pptgen": {
    "status": "ready",
    "pattern": "c01-p09",
-   "theme": "company-01"
+   "theme": "corporate-blue"
   },
   "aliases": [
    "c01-p09"
@@ -2221,29 +2271,6 @@ export const LAYOUTS = {
   },
   "aliases": [
    "gauge-arc"
-  ]
- },
- "sample.chart-pair": {
-  "group": "sample",
-  "label": "견본: 막대 차트 2개(원본 내용 포함)",
-  "emoji": "📉",
-  "desc": "견본: 막대 차트 2개(원본 패턴의 내용 포함) — 회사 템플릿 견본.",
-  "fields": {
-   "title": "칸"
-  },
-  "status": "fallback",
-  "shortcode": "stat-grid",
-  "pptx_shortcode": null,
-  "variants": [],
-  "defaults": {},
-  "args": {},
-  "pptgen": {
-   "status": "ready",
-   "pattern": "c01-p19",
-   "theme": "company-01"
-  },
-  "aliases": [
-   "c01-p19"
   ]
  },
  "text.statement": {
@@ -3025,27 +3052,604 @@ export const LAYOUTS = {
    "placeholder"
   ]
  },
- "sample.infographic-2": {
-  "group": "sample",
-  "label": "견본: 2단 인포그래픽(원본 내용 포함)",
-  "emoji": "🗺️",
-  "desc": "견본: 2단 인포그래픽(원본 패턴의 내용 포함) — 회사 템플릿 견본.",
+ "grid.icon-band-2": {
+  "group": "grid",
+  "label": "아이콘 + 머리띠 + 내용 2열",
+  "emoji": "🧩",
+  "desc": "좌우 2열, 열마다 위 아이콘 · 가운데 머리띠(제목) · 아래 내용 글머리 — 두 분야(예: 지원 분야·지원 기능)를 나란히. NIPA 템플릿(nipa-robot 26번) 출처.",
   "fields": {
-   "title": "칸"
+   "title": "머리띠 글(열 제목)",
+   "meta": "내용 글머리(｜ 구분)",
+   "desc": "내용 글(글머리 앞에)"
   },
   "status": "fallback",
-  "shortcode": "grid.box-2",
-  "pptx_shortcode": "summary-box",
+  "shortcode": "grid.narrow-wide-titled",
+  "pptx_shortcode": "columns-grid",
   "variants": [],
   "defaults": {},
   "args": {},
   "pptgen": {
    "status": "ready",
-   "pattern": "c01-p20",
-   "theme": "company-01"
+   "pattern": "c04-p01",
+   "theme": "nipa-robot"
   },
   "aliases": [
-   "c01-p20"
+   "c04-p01"
+  ]
+ },
+ "data.icon-stat-3": {
+  "group": "data",
+  "label": "아이콘 원 + 수치 3개",
+  "emoji": "📊",
+  "desc": "가로 3칸, 칸마다 아이콘 원 + 2줄 글(이름·수치) — 기관 규모(인력·예산·지원 수)처럼 핵심 수치 세 개를 한 줄로. NIPA 템플릿(nipa-globe 24번 위) 출처.",
+  "fields": {
+   "title": "이름(첫 줄)",
+   "meta": "수치(둘째 줄)"
+  },
+  "status": "fallback",
+  "shortcode": "stat-grid",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c05-p01",
+   "theme": "nipa-globe"
+  },
+  "aliases": [
+   "c05-p01"
+  ]
+ },
+ "grid.tag-box-2": {
+  "group": "grid",
+  "label": "태그 제목 + 큰 상자 2",
+  "emoji": "🗂️",
+  "desc": "큰 상자 2개를 나란히, 상자마다 왼쪽 위 알약 태그(제목)와 아래 내용 글머리 — 두 영역(예: 역할·조직)을 크게 나눠 보일 때. NIPA 템플릿(nipa-globe 24번 아래) 출처.",
+  "fields": {
+   "title": "태그 글(상자 제목)",
+   "meta": "내용 글머리(｜ 구분)",
+   "desc": "내용 글(글머리 앞에)"
+  },
+  "status": "fallback",
+  "shortcode": "grid.box-2",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "c05-p02",
+   "theme": "nipa-globe"
+  },
+  "aliases": [
+   "c05-p02"
+  ]
+ },
+ "grid.columns-check-4": {
+  "group": "grid",
+  "label": "4열 비교 카드(머리띠 + 체크 글머리 + 그림)",
+  "emoji": "🧩",
+  "desc": "4열 비교 카드(머리띠 + 체크 글머리 + 그림). 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "columns-grid",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p01",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p01"
+  ]
+ },
+ "process.grow-cards-3": {
+  "group": "process",
+  "label": "오른쪽으로 커지는 사진 카드 3단 + 아래 요약",
+  "emoji": "🧩",
+  "desc": "오른쪽으로 커지는 사진 카드 3단 + 아래 요약. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "process.growth",
+  "pptx_shortcode": "before-after",
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p02",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p02"
+  ]
+ },
+ "structure.flow-hub-3": {
+  "group": "structure",
+  "label": "왼쪽 목록 → 가운데 큰 상자(그림 격자) → 오른쪽 원 아이콘",
+  "emoji": "🧩",
+  "desc": "왼쪽 목록 → 가운데 큰 상자(그림 격자) → 오른쪽 원 아이콘. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "network-box",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "planned",
+   "pattern": "r01-p03",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p03"
+  ]
+ },
+ "grid.pinned-cards-3": {
+  "group": "grid",
+  "label": "파란 머리 + 핀 + 흰 카드 3열",
+  "emoji": "🧩",
+  "desc": "파란 머리 + 핀 + 흰 카드 3열. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "icon-grid",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p04",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p04"
+  ]
+ },
+ "grid.columns-diagram-3": {
+  "group": "grid",
+  "label": "3열 카드 — 머리띠 + 열마다 다른 도식 + 사진 바닥",
+  "emoji": "🧩",
+  "desc": "3열 카드 — 머리띠 + 열마다 다른 도식 + 사진 바닥. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "columns-grid",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p05",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p05"
+  ]
+ },
+ "grid.photo-columns-4": {
+  "group": "grid",
+  "label": "알약 머리 + 문장 2단 + 번호 사진 카드 4열",
+  "emoji": "🧩",
+  "desc": "알약 머리 + 문장 2단 + 번호 사진 카드 4열. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "media.cards-image",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "글",
+    "default": "",
+    "cs_v2": false,
+    "pptgen": true,
+    "note": "머리 글(큰 문장·제목)"
+   },
+   "header-tag": {
+    "values": "글",
+    "default": "",
+    "cs_v2": false,
+    "pptgen": true,
+    "note": "머리 글 위 알약 이름표"
+   },
+   "items-tag": {
+    "values": "글",
+    "default": "",
+    "cs_v2": false,
+    "pptgen": true,
+    "note": "항목 묶음 위 이름표"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p06",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p06"
+  ]
+ },
+ "structure.icon-ring": {
+  "group": "structure",
+  "label": "가운데 큰 원 + 둘레 원 아이콘",
+  "emoji": "🧩",
+  "desc": "가운데 큰 원 + 둘레 원 아이콘. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "network-box",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p07",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p07"
+  ]
+ },
+ "structure.list-converge-5": {
+  "group": "structure",
+  "label": "알약 목록 5줄이 선으로 오른쪽 원에 모인다",
+  "emoji": "🧩",
+  "desc": "알약 목록 5줄이 선으로 오른쪽 원에 모인다. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "network-box",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p08",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p08"
+  ]
+ },
+ "structure.list-diverge-5": {
+  "group": "structure",
+  "label": "왼쪽 원에서 목록 5줄로 퍼진다",
+  "emoji": "🧩",
+  "desc": "왼쪽 원에서 목록 5줄로 퍼진다. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "network-box",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p09",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p09"
+  ]
+ },
+ "grid.icon-pills-4": {
+  "group": "grid",
+  "label": "위 작은 아이콘 + 알약 라벨 4개",
+  "emoji": "🧩",
+  "desc": "위 작은 아이콘 + 알약 라벨 4개. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "icon-grid",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p10",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p10"
+  ]
+ },
+ "process.tab-cards-4": {
+  "group": "process",
+  "label": "번호 사다리꼴 탭 + 카드 4단계 + 화살표",
+  "emoji": "🧩",
+  "desc": "번호 사다리꼴 탭 + 카드 4단계 + 화살표. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "step-list",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p11",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p11"
+  ]
+ },
+ "text.icon-tab-arch": {
+  "group": "text",
+  "label": "위 아이콘 + 탭 제목 + 반원 바탕 글(단독 강조)",
+  "emoji": "🧩",
+  "desc": "위 아이콘 + 탭 제목 + 반원 바탕 글(단독 강조). 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "text.icon-statement",
+  "pptx_shortcode": "takeaway-banner",
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "planned",
+   "pattern": "r01-p12",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p12"
+  ]
+ },
+ "structure.converge-tree-6": {
+  "group": "structure",
+  "label": "원 6개가 선으로 아래 단계 3개에 모인다",
+  "emoji": "🧩",
+  "desc": "원 6개가 선으로 아래 단계 3개에 모인다. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "network-box",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "글",
+    "default": "",
+    "cs_v2": false,
+    "pptgen": true,
+    "note": "머리 글(큰 문장·제목)"
+   },
+   "sub": {
+    "values": "글",
+    "default": "",
+    "cs_v2": false,
+    "pptgen": true,
+    "note": "머리 글 아래 한 줄"
+   },
+   "items-tag": {
+    "values": "글",
+    "default": "",
+    "cs_v2": false,
+    "pptgen": true,
+    "note": "항목 묶음 위 이름표"
+   },
+   "footer": {
+    "values": "글",
+    "default": "",
+    "cs_v2": false,
+    "pptgen": true,
+    "note": "아래 모이는 칸 글"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p13",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p13"
+  ]
+ },
+ "grid.image-rows-2x3": {
+  "group": "grid",
+  "label": "머리띠 + 그림 3장 두 단을 + 로 묶음",
+  "emoji": "🧩",
+  "desc": "머리띠 + 그림 3장 두 단을 + 로 묶음. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "media.cards-image",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p14",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p14"
+  ]
+ },
+ "process.image-boxes-2": {
+  "group": "process",
+  "label": "그림·목록 상자 2단계 — 번호 띠 + 화살표",
+  "emoji": "🧩",
+  "desc": "그림·목록 상자 2단계 — 번호 띠 + 화살표. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "media.cards-image",
+  "pptx_shortcode": "columns-grid",
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p15",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p15"
+  ]
+ },
+ "structure.triangle-flow-3": {
+  "group": "structure",
+  "label": "세 주체 상자 + 번호 화살표 + 가운데 강조 리본",
+  "emoji": "🧩",
+  "desc": "세 주체 상자 + 번호 화살표 + 가운데 강조 리본. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "process.cycle-3",
+  "pptx_shortcode": "step-flow",
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p16",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p16"
+  ]
+ },
+ "nav.numbered-tabs-3": {
+  "group": "nav",
+  "label": "머리띠 + 사진 띠 + 번호 탭 목록 3줄",
+  "emoji": "🧩",
+  "desc": "머리띠 + 사진 띠 + 번호 탭 목록 3줄. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "os-tabs",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p17",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p17"
+  ]
+ },
+ "structure.two-circles-cycle": {
+  "group": "structure",
+  "label": "두 원 + 점선 순환 화살표 + 아이콘",
+  "emoji": "🧩",
+  "desc": "두 원 + 점선 순환 화살표 + 아이콘. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "process.cycle-3",
+  "pptx_shortcode": "step-flow",
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p18",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p18"
+  ]
+ },
+ "structure.venn-icon-2": {
+  "group": "structure",
+  "label": "벤 두 원 + 가운데 아이콘 + 위 아이콘·화살표",
+  "emoji": "🧩",
+  "desc": "벤 두 원 + 가운데 아이콘 + 위 아이콘·화살표. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "fields": {
+   "title": "열 첫 칸",
+   "desc": "열 둘째 칸",
+   "meta": "나머지 칸(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "venn-diagram",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": "r01-p19",
+   "theme": "nipa-blue"
+  },
+  "aliases": [
+   "r01-p19"
   ]
  }
 };
@@ -3072,6 +3676,8 @@ export const LAYOUT_ALIASES = {
  "c01-p16": "grid.wide-narrow",
  "c01-p17": "grid.circle-3",
  "c01-p18": "grid.band-box-3",
+ "c02-p01": "grid.category-3",
+ "c03-p01": "grid.narrow-wide-band",
  "compare-split": "compare.pair",
  "split-2box": "compare.pair",
  "before-after": "compare.before-after",
@@ -3111,7 +3717,6 @@ export const LAYOUT_ALIASES = {
  "bar-chart": "data.bars",
  "quadrant-chart": "data.quadrant",
  "gauge-arc": "data.gauge",
- "c01-p19": "sample.chart-pair",
  "text-only": "text.statement",
  "quote-hero": "text.quote",
  "takeaway-banner": "text.takeaway",
@@ -3132,7 +3737,28 @@ export const LAYOUT_ALIASES = {
  "box-image-split": "media.cards-image",
  "bottom-image-banner": "media.banner",
  "placeholder": "media.full",
- "c01-p20": "sample.infographic-2"
+ "c04-p01": "grid.icon-band-2",
+ "c05-p01": "data.icon-stat-3",
+ "c05-p02": "grid.tag-box-2",
+ "r01-p01": "grid.columns-check-4",
+ "r01-p02": "process.grow-cards-3",
+ "r01-p03": "structure.flow-hub-3",
+ "r01-p04": "grid.pinned-cards-3",
+ "r01-p05": "grid.columns-diagram-3",
+ "r01-p06": "grid.photo-columns-4",
+ "r01-p07": "structure.icon-ring",
+ "r01-p08": "structure.list-converge-5",
+ "r01-p09": "structure.list-diverge-5",
+ "r01-p10": "grid.icon-pills-4",
+ "r01-p11": "process.tab-cards-4",
+ "r01-p12": "text.icon-tab-arch",
+ "r01-p13": "structure.converge-tree-6",
+ "r01-p14": "grid.image-rows-2x3",
+ "r01-p15": "process.image-boxes-2",
+ "r01-p16": "structure.triangle-flow-3",
+ "r01-p17": "nav.numbered-tabs-3",
+ "r01-p18": "structure.two-circles-cycle",
+ "r01-p19": "structure.venn-icon-2"
 };
 export const ALIAS_ARGS = {
  "skill-list": {
@@ -3236,6 +3862,14 @@ export const LAYOUT_EXAMPLES = {
  "grid.band-box-3": {
   "args": "header=\"구축 기반 → 지능형 실행 → 보안·신뢰·주권\"",
   "body": "- title: \"THE ARCHITECT · 구축 기반\"\n  meta: \"AI 네이티브 개발 플랫폼 | AI 슈퍼컴퓨팅 플랫폼 | 기밀 컴퓨팅\"\n- title: \"THE SYNTHESIST · 지능형 결합\"\n  meta: \"멀티에이전트 시스템 | 도메인 특화 언어 모델 | 피지컬 AI\"\n- title: \"THE VANGUARD · 보안·신뢰·주권\"\n  meta: \"선제적 사이버 보안 | 디지털 출처 검증 | AI 보안 플랫폼\""
+ },
+ "grid.category-3": {
+  "args": "",
+  "body": "- title: \"인프라 확충\"\n  meta: \"GPU 확보 | 데이터센터 상면\"\n- title: \"운영 체계\"\n  meta: \"민관 합동 | 이행 점검\"\n- title: \"서비스 지원\"\n  meta: \"소형 DC 발굴 | 바우처\""
+ },
+ "grid.narrow-wide-band": {
+  "args": "",
+  "body": "- title: \"정부 정책\"\n  meta: \"디지털 전략 2.0 | AI 안전 정상회의 | AI 반도체 전략\"\n- title: \"NIPA 주요 사업\"\n  meta: \"초거대 AI 플래그십 | K-클라우드 AI 반도체 | 디지털헬스 신시장 | 지역 AI 거점\""
  },
  "compare.pair": {
   "args": "",
@@ -3363,10 +3997,6 @@ export const LAYOUT_EXAMPLES = {
   "args": "left=\"신중\" right=\"낙관\"",
   "body": "- title: 학계\n  icon: 30\n- title: 산업계\n  icon: 75"
  },
- "sample.chart-pair": {
-  "args": "",
-  "body": "- title: \"AI 시장은 연평균 35% 이상 성장\"\n  desc: \"AI 시장 규모 전망\"\n  meta: \"2.5조 달러 | 13.5배 성장 | 0.18조 달러 | 2033 | 2024 | * 출처 예시\"\n- title: \"도입 기업은 2년 새 두 배\"\n  desc: \"AI 도입 기업 비율\"\n  meta: \"72% | 2배 | 35% | 2025 | 2023 | * 출처 예시\""
- },
  "text.statement": {
   "args": "",
   "body": "- title: 모델이 아니라 시스템이 경쟁력이다\n  desc: 구축 · 실행 · 신뢰를 함께 설계한다\n  meta: 구축 | 실행 | 신뢰"
@@ -3443,15 +4073,99 @@ export const LAYOUT_EXAMPLES = {
   "args": "",
   "body": "- title: \"현장 사진\"\n  desc: \"a wide photo of a modern factory floor with collaborative robots, natural light\""
  },
- "sample.infographic-2": {
+ "grid.icon-band-2": {
   "args": "",
-  "body": "- title: \"지역 디지털 혁신 확산\"\n  desc: \"기술 중심 생태계\"\n  meta: \"거점 확산과 대규모 프로젝트 | 전북 | 대구 | 광주 | 경남 | 권역별 강점 산업 | 지역 특화 실증\"\n- title: \"산업별 AX 확대\"\n  desc: \"업종 맞춤 지원\"\n  meta: \"제조·물류·농업 실증 | 제조 | 물류 | 농업 | 조선 | 업종별 모델 | 신사업 발굴\""
+  "body": "- title: \"지원 분야 (Domain)\"\n  meta: \"인공지능 | 클라우드 | 메타버스\"\n- title: \"지원 기능 (Function)\"\n  meta: \"기업지원 | 지역융합 | 인재양성\""
+ },
+ "data.icon-stat-3": {
+  "args": "",
+  "body": "- title: \"인력\"\n  meta: \"500명\"\n- title: \"'26년 예산\"\n  meta: \"3조 1천억원\"\n- title: \"지원기업 수\"\n  meta: \"연간 1,700개\""
+ },
+ "grid.tag-box-2": {
+  "args": "",
+  "body": "- title: \"주요 역할\"\n  meta: \"기업 지원 | 글로벌 진출 | 인재 양성\"\n- title: \"조직\"\n  meta: \"원장 | 부원장 | 8개 본부\""
+ },
+ "grid.columns-check-4": {
+  "args": "",
+  "body": "- title: \"HW 경쟁력\"\n  desc: \"세계 최강 반도체 경쟁력\"\n  meta: \"반도체 인재 및 기술 저력 보유\"\n- title: \"SW 경쟁력\"\n  desc: \"세계 3번째 LLM 개발國\"\n  meta: \"빅테크 못지 않은 초거대 AI 우수한 경량화 AI 모델 보유\"\n- title: \"독자적 산업 생태계\"\n  desc: \"제조업 경쟁력 세계 4위(’20, UNIDO)\"\n  meta: \"건설〮석유화학 등 기간산업 반도체〮디스플레이, 자동차〮철강 방위산업까지 세계적 경쟁력 보유 | 글로벌 8위 수출 강국('23)\"\n- title: \"국민적 관심\"\n  desc: \"AI 등 신기술에 대한 국민적 열망과 적응력 高\"\n  meta: \"10인 이상 기업 AI 도입률 OECD 1위( ‘22) | 국민 AI 관심도 72.2%(NIA, '23) 교육〮미디어 등 전 조사분야에서 AI적용으로 인한 변화를 긍정적 평가\""
+ },
+ "process.grow-cards-3": {
+  "args": "",
+  "body": "- title: \"IDCInternet Data Center\"\n  desc: \"대용량 데이터 처리를 위한서버 구매, 임차 데이터센터\"\n  meta: \"• 대용량 데이터 처리\"\n- title: \"AIDCAI Data Center\"\n  desc: \"CDCCloud Data Center\"\n  meta: \"인공지능 워크로드 제공에 특화 고성능 컴퓨팅 자원,                                                          대규모 데이터  처리 지원 | 클라우드 서비스 제공에 최적화된데이터센터 | • 확장 가능성 | • 비용 효율성 | • 유연성 | • 더 빠른 동적 리소스 확장\""
+ },
+ "structure.flow-hub-3": {
+  "args": "",
+  "body": "- title: \"SaaS공급\""
+ },
+ "grid.pinned-cards-3": {
+  "args": "",
+  "body": "- title: \"카드 제목 1\"\n- title: \"카드 제목 2\"\n- title: \"미국 거짓판례를 제출한 변호사\"\n  desc: \"5,000달러 벌금\""
+ },
+ "grid.columns-diagram-3": {
+  "args": "",
+  "body": "- title: \"인공지능(AI)\"\n  desc: \"초격차 기술 확보\"\n  meta: \"선순환 AI 생태계 | AI반도체 | AI | 민간투자 유인 | 미개척 첨단 R&D 집중 | 격차는 늘리고 | 투자 활성화 | 정부투자 (공공수요 창출) | AI-반도체 인프라 완비 | 컴퓨팅파워 | 데이터 | SW·HW | 인재\"\n- title: \"첨단바이오\"\n  desc: \"바이오 기술과타분야 융합\"\n  meta: \"체계화된검증데이터 | 혁신 기반기술 | 고품질데이터 | 체감가치 | 서비스플랫폼 | 기존 한계 극복,시장 창출 | 빠른 속도,높은 신뢰성\"\n- title: \"양자(Quantum)\"\n  desc: \"추격  :  퀀텀 코어기술\"\n  meta: \"선도국에서 앞서 발전해온 코어기술의 빠른 추격 | (퀀텀 프로세서, 알고리즘 및 SW, 네트워크, 센싱) | 선도  :  퀀텀 엔지니어링 | 퀸텀 코어기술의 시스템화 선도 | (퀀텀 소부장, 소자·공정, 디지털-퀀텀 하이브리드) | 개척  : 퀀텀 활용 및 서비스 | 퀀텀을 적용한 혁신사례 창출로 新영역 개척 | (퀀텀 킬러 애플리케이션, 퀀텀 AI)\""
+ },
+ "grid.photo-columns-4": {
+  "args": "header=\"세계 최고 AI 혁신 생태계를 토대로 사회 전반의 AI 대전환을 촉진하고, 변화의 온전한 수용을 위한 새로운 디지털 질서 정립\" header-tag=\"추진전략\" items-tag=\"중점 추진과제\"",
+  "body": "- title: \"[ R&D ]\"\n  desc: \"글로벌 선도 수준\\nAI 기술 혁신\"\n- title: \"[ 인프라 ]\"\n  desc: \"AI 컴퓨팅자원 및\\n인재 확보\"\n- title: \"[ 사회 ]\"\n  desc: \"국민 일상에\\n선도적 AI 도입\"\n- title: \"[ 글로벌 선도 ]\"\n  desc: \"새로운\\n디지털 질서 정립\""
+ },
+ "structure.icon-ring": {
+  "args": "",
+  "body": "- title: \"제목\""
+ },
+ "structure.list-converge-5": {
+  "args": "",
+  "body": "- title: \"AI 산업의 핵심 기반인 AI 컴퓨팅 인프라 경쟁력 강화\"\n  desc: \"산업·지역·사회 전반의 AI 대전환을 선도\"\n  meta: \"AI·AX 전문인력 양성 및 기술 개발 지원 | AI 산업의 지속가능한 성장환경 구현 | 해외거점 연계를 통한 K-AI의 글로벌 리더십 확보\"\n- title: \"NIPA\\n역할\""
+ },
+ "structure.list-diverge-5": {
+  "args": "",
+  "body": "- title: \"국정\\n과제\"\n- title: \"AI 3대 강국 도약을 위한 AI 고속도로 구축\"\n  desc: \"국정과제 20\"\n  meta: \"세계에서 AI를 가장 잘 쓰는 나라 구현 | 국정과제 21 | 초격차 AI 선도 기술·인재 확보 | 국정과제 22 | 안전과 책임 기반의 AI 기본 사회 실현 | 국정과제 23 | 세계 1위 AI 정부 실현 | 국정과제 24\""
+ },
+ "grid.icon-pills-4": {
+  "args": "",
+  "body": "- title: \"AI 산업본부2개 본부로 확대\"\n- title: \"생성형AI팀정규직제로 개편\"\n- title: \"AI안전센터TF신설\"\n- title: \"지역디지털본부신설\""
+ },
+ "process.tab-cards-4": {
+  "args": "",
+  "body": "- title: \"01\"\n  desc: \"사업공고\\n\\n\\n3월 중순 예정\"\n- title: \"02\"\n  desc: \"과제 선정평가 및 \\n협약체결\\n\\n4월 ~ 5월\"\n- title: \"03\"\n  desc: \"과제수행 및\\n사업비 교부\\n\\n5월 – 12월\"\n- title: \"04\"\n  desc: \"과제 결과평가 및 \\n사업비 정산\\n\\n12월 – ’26년 1월\""
+ },
+ "text.icon-tab-arch": {
+  "args": "",
+  "body": "- title: \"제목\""
+ },
+ "structure.converge-tree-6": {
+  "args": "header=\"全 산업의 서비스화 확산\" sub=\"기존 산업(물류, 교통 등)과 SW\" items-tag=\"X(산업)\" footer=\"As a Service\"",
+  "body": "- title: \"교통\"\n- title: \"의료\"\n- title: \"금융\"\n- title: \"제조\"\n- title: \"교육\"\n- title: \"문화\""
+ },
+ "grid.image-rows-2x3": {
+  "args": "",
+  "body": "- title: \"초거대 AI 모델(파운데이션)\"\n  desc: \"오픈 AI,\\nChatGPT\"\n  meta: \"구글, 제미나이\"\n- title: \"AI 반도체\"\n  desc: \"엔비디아, H200\"\n  meta: \"AMD, MI300X | 딥엑스, DX-H1\""
+ },
+ "process.image-boxes-2": {
+  "args": "",
+  "body": "- title: \"B200\"\n  desc: \"H100\"\n  meta: \"메모리 | 대규모 GPU 자원 확보 | 1\"\n- title: \"가칭 World Best LLM프로젝트\"\n  desc: \"참여기업 등\"\n  meta: \"기업 | 대학 | AI 컴퓨팅 인프라 지원 | 2\""
+ },
+ "structure.triangle-flow-3": {
+  "args": "",
+  "body": "- title: \"제목\""
+ },
+ "nav.numbered-tabs-3": {
+  "args": "",
+  "body": "- title: \"Policy\"\n  desc: \"Policy\"\n  meta: \"Policy\"\n- title: \"1\"\n  desc: \"2\"\n  meta: \"3\"\n- title: \"정부 정책\"\n  desc: \"2024 주요 정책\"\n  meta: \"대한민국 디지털 전략 2.0 | AI안전 정상회의 | AI반도체 추진 전략\""
+ },
+ "structure.two-circles-cycle": {
+  "args": "",
+  "body": "- title: \"국 가\"\n- title: \"산 업\""
+ },
+ "structure.venn-icon-2": {
+  "args": "",
+  "body": "- title: \"지역산업\"\n- title: \"SW신산업\""
  }
 };
 export const SHAPE_SETS = {
  "schema": 1,
- "_doc": "공용 서식 세트(도형 서식 층) — pptgen 과 cs_v2 가 같은 이름으로 카드의 채움·보조 카드색·외곽선·그림자·둥글기를 고른다. 세트는 '모양'만 정하고 색은 테마 색 이름(tokens)으로만 가리킨다 → 테마를 바꾸면 같은 세트가 그 테마 색으로 다시 칠해진다(테마와 따로 놀지 않는다). 'template' 은 테마(회사 템플릿 등)가 가진 원래 서식을 그대로 쓴다는 뜻 — 기본값. 고르는 곳: 머리말/조합 shape=<세트>, 블록 인수 bg=alt(보조 카드색), 항목 tag: alt. 규칙: catalog/README.md '서식 세트'.",
- "updated": "2026-10-14",
+ "_doc": "공용 서식 세트(도형 서식 층) — pptgen 과 cs_v2 가 같은 이름으로 카드의 채움·보조 카드색·외곽선·그림자·둥글기를 고른다. 세트는 '모양'만 정하고 색은 테마 색 이름(tokens)으로만 가리킨다 → 테마를 바꾸면 같은 세트가 그 테마 색으로 다시 칠해진다(테마와 따로 놀지 않는다). 'template' 은 테마(회사 템플릿 등)가 가진 원래 서식을 그대로 쓴다는 뜻 — 기본값. 고르는 곳: 머리말/조합 shape=<세트>, 블록 인수 bg=alt(보조 카드색), 항목 tag: alt. 규칙: catalog/README.md '서식 세트'. 강조 면: 세트의 section_title(머리띠 — fill·text)·dot_accent(아이콘 원 — fill)를 정하면 테마 서식 대신 그 색 이름으로 그린다 — fill 이 이름 하나면 단색, [시작, 끝] 이면 왼→오 그라데이션(template·elevated 는 테마 원래 서식).",
+ "updated": "2026-10-23",
  "default": "template",
  "tokens": {
   "_doc": "세트가 쓰는 색 이름 → 매체별 실제 색. pptgen = 테마 팔레트 키(왼쪽이 없으면 \"|\" 뒤), cs_v2 = CSS 값(테마 변수 기반 — 다크/라이트 셸 모두에서 읽히도록 카드 바탕 var(--card-bg) 에 섞는다), cs_v2_pptx = cs_v2 PPTX 팔레트 키(md-to-pptx makePalette).",
@@ -3472,6 +4186,11 @@ export const SHAPE_SETS = {
   },
   "secondary": {
    "pptgen": "sub",
+   "cs_v2": "var(--brand-dark)",
+   "cs_v2_pptx": "brandDark"
+  },
+  "dark": {
+   "pptgen": "dark|sub",
    "cs_v2": "var(--brand-dark)",
    "cs_v2_pptx": "brandDark"
   },
@@ -3561,7 +4280,14 @@ export const SHAPE_SETS = {
     "width_pt": 0.75,
     "color": "border"
    },
-   "shadow": "none"
+   "shadow": "none",
+   "section_title": {
+    "fill": "primary",
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": "primary"
+   }
   },
   "soft": {
    "label": "부드러운 그림자 — 외곽선 없음",
@@ -3570,13 +4296,26 @@ export const SHAPE_SETS = {
     "radius": "md"
    },
    "card_alt": {
-    "fill": "secondary-light"
+    "fill": "primary-light"
    },
    "outline": {
     "width_pt": 0,
     "color": "border"
    },
-   "shadow": "soft"
+   "shadow": "soft",
+   "section_title": {
+    "fill": [
+     "dark",
+     "primary"
+    ],
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": [
+     "dark",
+     "primary"
+    ]
+   }
   },
   "outline": {
    "label": "윤곽 강조 — 대표색 외곽선",
@@ -3591,7 +4330,14 @@ export const SHAPE_SETS = {
     "width_pt": 1.5,
     "color": "primary"
    },
-   "shadow": "none"
+   "shadow": "none",
+   "section_title": {
+    "fill": "primary-light",
+    "text": "primary"
+   },
+   "dot_accent": {
+    "fill": "primary"
+   }
   },
   "elevated": {
    "label": "떠 있는 카드 — 큰 그림자",
@@ -3621,7 +4367,86 @@ export const SHAPE_SETS = {
     "width_pt": 0,
     "color": "border"
    },
-   "shadow": "none"
+   "shadow": "none",
+   "section_title": {
+    "fill": "primary",
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": "primary"
+   }
+  },
+  "paper": {
+   "label": "종이 카드 — 흰 바탕·각진 모서리·진한 그림자",
+   "from": "데코_도형디자인참고 p.17 종이 박스",
+   "card": {
+    "fill": "white",
+    "radius": "none"
+   },
+   "card_alt": {
+    "fill": "surface"
+   },
+   "outline": {
+    "width_pt": 0,
+    "color": "border"
+   },
+   "shadow": "strong",
+   "section_title": {
+    "fill": "dark",
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": "primary"
+   },
+   "added": "2026-10-23 — 후보(candidates)에서 정식으로(사용자 확정)"
+  },
+  "pill-outline": {
+   "label": "테두리 알약 — 흰 바탕·크게 둥근 모서리·대표색 테두리",
+   "from": "데코_도형디자인참고 p.19 테두리 알약 박스",
+   "card": {
+    "fill": "white",
+    "radius": "lg"
+   },
+   "card_alt": {
+    "fill": "primary-light"
+   },
+   "outline": {
+    "width_pt": 1.25,
+    "color": "primary"
+   },
+   "shadow": "soft",
+   "section_title": {
+    "fill": "primary",
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": "primary"
+   },
+   "added": "2026-10-23 — 후보(candidates)에서 정식으로(사용자 확정)"
+  },
+  "header-box": {
+   "label": "머리 띠 박스 — 옅은 회색 바탕·얇은 테두리·진한 머리띠",
+   "from": "데코_도형디자인참고 p.20·21 머리 띠 박스",
+   "card": {
+    "fill": "surface",
+    "radius": "none"
+   },
+   "card_alt": {
+    "fill": "white"
+   },
+   "outline": {
+    "width_pt": 0.75,
+    "color": "border"
+   },
+   "shadow": "none",
+   "section_title": {
+    "fill": "dark",
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": "dark"
+   },
+   "added": "2026-10-23 — 후보(candidates)에서 정식으로(사용자 확정)"
   }
  }
 };

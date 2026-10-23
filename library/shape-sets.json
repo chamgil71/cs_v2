@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "_doc": "공용 서식 세트(도형 서식 층) — pptgen 과 cs_v2 가 같은 이름으로 카드의 채움·보조 카드색·외곽선·그림자·둥글기를 고른다. 세트는 '모양'만 정하고 색은 테마 색 이름(tokens)으로만 가리킨다 → 테마를 바꾸면 같은 세트가 그 테마 색으로 다시 칠해진다(테마와 따로 놀지 않는다). 'template' 은 테마(회사 템플릿 등)가 가진 원래 서식을 그대로 쓴다는 뜻 — 기본값. 고르는 곳: 머리말/조합 shape=<세트>, 블록 인수 bg=alt(보조 카드색), 항목 tag: alt. 규칙: catalog/README.md '서식 세트'.",
- "updated": "2026-10-14",
+ "_doc": "공용 서식 세트(도형 서식 층) — pptgen 과 cs_v2 가 같은 이름으로 카드의 채움·보조 카드색·외곽선·그림자·둥글기를 고른다. 세트는 '모양'만 정하고 색은 테마 색 이름(tokens)으로만 가리킨다 → 테마를 바꾸면 같은 세트가 그 테마 색으로 다시 칠해진다(테마와 따로 놀지 않는다). 'template' 은 테마(회사 템플릿 등)가 가진 원래 서식을 그대로 쓴다는 뜻 — 기본값. 고르는 곳: 머리말/조합 shape=<세트>, 블록 인수 bg=alt(보조 카드색), 항목 tag: alt. 규칙: catalog/README.md '서식 세트'. 강조 면: 세트의 section_title(머리띠 — fill·text)·dot_accent(아이콘 원 — fill)를 정하면 테마 서식 대신 그 색 이름으로 그린다 — fill 이 이름 하나면 단색, [시작, 끝] 이면 왼→오 그라데이션(template·elevated 는 테마 원래 서식).",
+ "updated": "2026-10-23",
  "default": "template",
  "tokens": {
   "_doc": "세트가 쓰는 색 이름 → 매체별 실제 색. pptgen = 테마 팔레트 키(왼쪽이 없으면 \"|\" 뒤), cs_v2 = CSS 값(테마 변수 기반 — 다크/라이트 셸 모두에서 읽히도록 카드 바탕 var(--card-bg) 에 섞는다), cs_v2_pptx = cs_v2 PPTX 팔레트 키(md-to-pptx makePalette).",
@@ -22,6 +22,11 @@
   },
   "secondary": {
    "pptgen": "sub",
+   "cs_v2": "var(--brand-dark)",
+   "cs_v2_pptx": "brandDark"
+  },
+  "dark": {
+   "pptgen": "dark|sub",
    "cs_v2": "var(--brand-dark)",
    "cs_v2_pptx": "brandDark"
   },
@@ -111,7 +116,14 @@
     "width_pt": 0.75,
     "color": "border"
    },
-   "shadow": "none"
+   "shadow": "none",
+   "section_title": {
+    "fill": "primary",
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": "primary"
+   }
   },
   "soft": {
    "label": "부드러운 그림자 — 외곽선 없음",
@@ -120,13 +132,26 @@
     "radius": "md"
    },
    "card_alt": {
-    "fill": "secondary-light"
+    "fill": "primary-light"
    },
    "outline": {
     "width_pt": 0,
     "color": "border"
    },
-   "shadow": "soft"
+   "shadow": "soft",
+   "section_title": {
+    "fill": [
+     "dark",
+     "primary"
+    ],
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": [
+     "dark",
+     "primary"
+    ]
+   }
   },
   "outline": {
    "label": "윤곽 강조 — 대표색 외곽선",
@@ -141,7 +166,14 @@
     "width_pt": 1.5,
     "color": "primary"
    },
-   "shadow": "none"
+   "shadow": "none",
+   "section_title": {
+    "fill": "primary-light",
+    "text": "primary"
+   },
+   "dot_accent": {
+    "fill": "primary"
+   }
   },
   "elevated": {
    "label": "떠 있는 카드 — 큰 그림자",
@@ -171,7 +203,86 @@
     "width_pt": 0,
     "color": "border"
    },
-   "shadow": "none"
+   "shadow": "none",
+   "section_title": {
+    "fill": "primary",
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": "primary"
+   }
+  },
+  "paper": {
+   "label": "종이 카드 — 흰 바탕·각진 모서리·진한 그림자",
+   "from": "데코_도형디자인참고 p.17 종이 박스",
+   "card": {
+    "fill": "white",
+    "radius": "none"
+   },
+   "card_alt": {
+    "fill": "surface"
+   },
+   "outline": {
+    "width_pt": 0,
+    "color": "border"
+   },
+   "shadow": "strong",
+   "section_title": {
+    "fill": "dark",
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": "primary"
+   },
+   "added": "2026-10-23 — 후보(candidates)에서 정식으로(사용자 확정)"
+  },
+  "pill-outline": {
+   "label": "테두리 알약 — 흰 바탕·크게 둥근 모서리·대표색 테두리",
+   "from": "데코_도형디자인참고 p.19 테두리 알약 박스",
+   "card": {
+    "fill": "white",
+    "radius": "lg"
+   },
+   "card_alt": {
+    "fill": "primary-light"
+   },
+   "outline": {
+    "width_pt": 1.25,
+    "color": "primary"
+   },
+   "shadow": "soft",
+   "section_title": {
+    "fill": "primary",
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": "primary"
+   },
+   "added": "2026-10-23 — 후보(candidates)에서 정식으로(사용자 확정)"
+  },
+  "header-box": {
+   "label": "머리 띠 박스 — 옅은 회색 바탕·얇은 테두리·진한 머리띠",
+   "from": "데코_도형디자인참고 p.20·21 머리 띠 박스",
+   "card": {
+    "fill": "surface",
+    "radius": "none"
+   },
+   "card_alt": {
+    "fill": "white"
+   },
+   "outline": {
+    "width_pt": 0.75,
+    "color": "border"
+   },
+   "shadow": "none",
+   "section_title": {
+    "fill": "dark",
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": "dark"
+   },
+   "added": "2026-10-23 — 후보(candidates)에서 정식으로(사용자 확정)"
   }
  }
 }

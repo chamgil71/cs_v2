@@ -2,20 +2,24 @@ import { describe, it, expect } from 'vitest';
 import { LAYOUT_ENTRIES, GROUP_KEYS, SHAPE_SET_NAMES, DEFAULT_SHAPE_SET, implSummary, pptgenSummary, exampleVariants, snippetOf, previewMd, matches } from '../lib/layout-library';
 import { clientCompileMarkdown, BUNDLED_STYLES } from '../lib/client-compiler';
 import { SHORTCODE_DOCS } from '../../config/shortcode-guide';
-import { LAYOUTS } from '../../scripts/library-map.mjs';
+import { LAYOUTS, SHAPE_SETS } from '../../scripts/library-map.mjs';
+
+// 배치 수·서식 세트 이름은 카탈로그에서 센다(공용 카탈로그가 늘 때마다 테스트 숫자를 고치지 않게 — 2026-10-23 66→88종, 세트 6→9)
+const N = Object.keys(LAYOUTS).length;
 
 /**
  * 웹 배치 라이브러리(모듈 1) 데이터 — 화면에 보이는 값이 전부 공용 카탈로그에서 오는지, 예시가 실제 렌더러로 그려지는지.
  */
 describe('배치 라이브러리 — 카탈로그 그대로', () => {
-  it('카탈로그 66종 전부, 카탈로그 순서', () => {
+  it('카탈로그 배치 전부, 카탈로그 순서', () => {
     expect(LAYOUT_ENTRIES.map((e) => e.name)).toEqual(Object.keys(LAYOUTS));
-    expect(LAYOUT_ENTRIES.length).toBe(66);
+    expect(LAYOUT_ENTRIES.length).toBe(N);
   });
   it('그룹·서식 세트 목록', () => {
     expect(GROUP_KEYS).toContain('grid');
     expect(GROUP_KEYS).toContain('media');
-    expect(SHAPE_SET_NAMES).toEqual(['template', 'flat', 'soft', 'outline', 'elevated', 'tinted']);
+    expect(SHAPE_SET_NAMES).toEqual(Object.keys((SHAPE_SETS as any).sets));
+    expect(SHAPE_SET_NAMES.slice(0, 6)).toEqual(['template', 'flat', 'soft', 'outline', 'elevated', 'tinted']);
     expect(SHAPE_SET_NAMES).toContain(DEFAULT_SHAPE_SET);
   });
   it('구현 상태 요약 — 직접 64 · 근사 2(견본)', () => {
@@ -29,12 +33,12 @@ describe('배치 라이브러리 — 카탈로그 그대로', () => {
     const find = (q: string) => LAYOUT_ENTRIES.filter((e) => matches(e, q)).map((e) => e.name);
     expect(find('icon-grid')).toEqual(['grid.cards']);   // 옛 이름으로도 찾는다
     expect(find('계단')).toContain('process.staircase');
-    expect(find('')).toHaveLength(66);
+    expect(find('')).toHaveLength(N);
   });
 });
 
 describe('설명은 카탈로그 하나에서 (emoji·desc → 가이드 패널·배치 라이브러리)', () => {
-  it('66종 모두 emoji·desc 가 있다', () => {
+  it('모든 배치에 emoji·desc 가 있다', () => {
     expect(LAYOUT_ENTRIES.filter((e) => !e.emoji || !e.desc).map((e) => e.name)).toEqual([]);
   });
   it('가이드 패널(SHORTCODE_DOCS)의 설명·이름 = 카탈로그 값, 칸 안내는 fields·args 에서', () => {

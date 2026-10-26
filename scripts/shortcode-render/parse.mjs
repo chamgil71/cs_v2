@@ -13,13 +13,17 @@ export function parseSlideConfig(src) {
   const cfg = {};
   let lit = null;
   for (const line of String(src || "").split(/\r?\n/)) {
+    // "key: |" 안의 빈 줄 = 문단 나눔(2026-10-26 — 전에는 빈 줄에서 값이 끝나 그 뒤 노트가 사라졌다. pptgen parse_v2.js 와 같은 규칙)
+    if (lit && !line.trim()) { if (cfg[lit]) cfg[lit] += "\n"; continue; }
     if (lit && /^\s+\S/.test(line)) { cfg[lit] = cfg[lit] ? `${cfg[lit]}\n${line.trim()}` : line.trim(); continue; }
+    if (lit) cfg[lit] = cfg[lit].replace(/\n+$/, "");
     lit = null;
     const m = line.match(/^\s*(?:-\s*)?([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
     if (!m) continue;
     const v = cleanValue(m[2]);
     if (v === "|") { lit = m[1]; cfg[lit] = ""; } else cfg[m[1]] = v.replace(/\\n/g, "\n");
   }
+  if (lit) cfg[lit] = cfg[lit].replace(/\n+$/, "");
   return cfg;
 }
 

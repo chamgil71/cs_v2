@@ -4504,19 +4504,20 @@ export const SHAPE_SETS = {
    }
   },
   "elevated": {
-   "label": "떠 있는 카드 — 큰 그림자",
+   "label": "떠 있는 카드 — 큰 그림자 + 옅은 회색 카드",
    "card": {
-    "fill": "white",
+    "fill": "surface",
     "radius": "lg"
    },
    "card_alt": {
-    "fill": "surface"
+    "fill": "white"
    },
    "outline": {
     "width_pt": 0,
     "color": "border"
    },
-   "shadow": "medium"
+   "shadow": "strong",
+   "changed": "2026-10-26 — 그림자 medium → strong, 카드 흰색 → 옅은 회색(soft 와 구분, 사용자 선택: 비교 그림 제안 B)"
   },
   "tinted": {
    "label": "옅은 색 카드 — 대표색 옅은 바탕",

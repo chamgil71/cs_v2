@@ -5,6 +5,10 @@
 
 ---
 
+## slide-config 노트 빈 줄 (2026-10-26)
+
+- `parseSlideConfig`: `notes: |` 안의 빈 줄에서 값이 끝나 뒤 줄이 사라지던 버그 — 빈 줄 = 문단 나눔으로 이어 읽음(pptgen `lib/parse_v2.js` 와 같은 규칙). 시험 `src/__tests__/slide-config.test.ts`.
+
 ## Phase 12 — 공용 카탈로그 동기화(91종·서식 세트 10종) · media.video (2026-10-26)
 
 ### 바뀐 것

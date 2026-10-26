@@ -22,9 +22,9 @@ describe('배치 라이브러리 — 카탈로그 그대로', () => {
     expect(SHAPE_SET_NAMES.slice(0, 6)).toEqual(['template', 'flat', 'soft', 'outline', 'elevated', 'tinted']);
     expect(SHAPE_SET_NAMES).toContain(DEFAULT_SHAPE_SET);
   });
-  it('구현 상태 요약 — 직접 64 · 근사 2(견본)', () => {
+  it('구현 상태 요약 — 직접 65 · 근사 2(견본)', () => {   // 2026-10-26 media.video 직접 구현(64 → 65)
     const direct = LAYOUT_ENTRIES.filter((e) => implSummary(e).direct);
-    expect(direct.length).toBe(64);
+    expect(direct.length).toBe(65);
     expect(implSummary(LAYOUT_ENTRIES.find((e) => e.name === 'process.staircase')!).pptx).toBe('근사 — level-grid');
     expect(implSummary(LAYOUT_ENTRIES.find((e) => e.name === 'grid.cards')!).pptx).toBe('모양 그대로');
     expect(pptgenSummary(LAYOUT_ENTRIES.find((e) => e.name === 'grid.box-3')!)).toMatch(/패턴 c01-p13/);

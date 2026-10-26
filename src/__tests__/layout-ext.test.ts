@@ -147,3 +147,16 @@ describe('카탈로그 기본값 생성본', () => {
     }
   });
 });
+
+describe('media.video — 영상·그림 화면(2026-10-26, pptgen 과 같은 카탈로그 배치)', () => {
+  it('유튜브 → iframe(start·end), 쇼츠 t= 는 시작, 파일 → video #t, 그림 → img', () => {
+    const yt = R('media.video', '- url: https://www.youtube.com/watch?v=TsiNuMoqg-Y\n  title: 시험', 'start=0:15 end=0:45');
+    expect(yt).toContain('src="https://www.youtube.com/embed/TsiNuMoqg-Y?start=15&amp;end=45"');
+    expect(yt).toContain('allowfullscreen');
+    const many = R('media.video', '- url: https://youtu.be/YFwx_VFFxSE?t=12\n- url: ./a.mp4\n- url: ./b.jpg', 'cols=3 end=30');
+    expect(many).toContain('embed/YFwx_VFFxSE?start=12&amp;end=30');
+    expect(many).toContain('<video controls preload="metadata" src="./a.mp4#t=0,30"');
+    expect(many).toContain('<img src="./b.jpg"');
+    expect(many).toContain('--sx-video-cols: 3');
+  });
+});

@@ -1,6 +1,6 @@
 // ⚠️ 자동 생성 파일 — 손으로 고치지 마세요. 원본: slide-library/catalog (npm run sync:library)
-// 카탈로그 갱신일 layouts=2026-10-23 shape-sets=2026-10-23
-export const LIBRARY_UPDATED = "2026-10-23";
+// 카탈로그 갱신일 layouts=2026-10-26 shape-sets=2026-10-26
+export const LIBRARY_UPDATED = "2026-10-26";
 export const LAYOUT_GROUPS = {
  "grid": "분할·카드 — 관계 없는 대등한 N개를 칸·카드로 나란히",
  "compare": "비교·대조 — 둘 이상을 맞대어 차이를 보임",
@@ -93,6 +93,41 @@ export const LAYOUTS = {
    "icon-grid",
    "skill-list",
    "checkpoint-grid"
+  ]
+ },
+ "grid.pill-cards-3": {
+  "group": "grid",
+  "label": "머리 알약 카드(번호·제목 + 설명 + 아래 그라데이션 칸)",
+  "emoji": "💊",
+  "desc": "카드마다 위 알약(번호·제목) · 가운데 설명 · 아래 옅은 대표색 그라데이션 칸(결론 한 줄). 가로 균등 1~3개. 데코_도형디자인참고 p.18·p.37(데코_배치후보 3·14쪽) — 2026-10-26 사용자 결정",
+  "fields": {
+   "icon": "알약 번호(비우면 1·2·3)",
+   "title": "알약 제목",
+   "desc": "가운데 설명",
+   "note": "아래 칸 결론(굵게)",
+   "meta": "아래 칸 덧붙임(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "icon-grid",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {
+   "cols": {
+    "values": "1~3",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "비우면 항목 수"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "pill-cards"
   ]
  },
  "grid.features": {
@@ -1626,6 +1661,91 @@ export const LAYOUTS = {
    "zigzag-path"
   ]
  },
+ "process.roadmap-circles": {
+  "group": "process",
+  "label": "원 로드맵(가로) — 원 → 원, 아래 날짜·설명",
+  "emoji": "⭕",
+  "desc": "로드맵·일정용. 반원 테두리 원(단계 이름)을 화살표로 잇고 원 아래 날짜 알약(tag)·설명. 가로 2~5개. 데코_도형디자인참고 p.18·p.37(데코_배치후보 3·14쪽) — 2026-10-26 사용자 결정",
+  "fields": {
+   "title": "원 안 단계 이름",
+   "tag": "날짜 알약",
+   "desc": "설명",
+   "meta": "덧붙임(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "step-flow",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "roadmap-circles"
+  ]
+ },
+ "process.roadmap-circles-v": {
+  "group": "process",
+  "label": "원 로드맵(세로) — 원 ↓ 원, 오른쪽 날짜·설명",
+  "emoji": "⭕",
+  "desc": "로드맵·일정용 세로형. 같은 원을 위→아래로 잇고 원 오른쪽에 날짜 알약(tag)·설명. 2~5개. 데코_도형디자인참고 p.18·p.37(데코_배치후보 3·14쪽) — 2026-10-26 사용자 결정",
+  "fields": {
+   "title": "원 안 단계 이름",
+   "tag": "날짜 알약",
+   "desc": "설명",
+   "meta": "글머리(｜ 구분)"
+  },
+  "status": "fallback",
+  "shortcode": "step-list",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {},
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "roadmap-circles-v"
+  ]
+ },
+ "process.chevron-roadmap": {
+  "group": "process",
+  "label": "쉐브론 로드맵 — 꺾쇠 띠 + 날짜 알약",
+  "emoji": "➡️",
+  "desc": "로드맵·일정용. 쉐브론(꺾쇠) 띠를 왼→오로 이어 칸마다 단계 제목·설명과 날짜 알약(tag). 앞 칸은 옅고 뒤로 갈수록 진한 대표색. 2~6개, 인수 header 로 위 머리띠. 데코_도형디자인참고 p.18·p.37(데코_배치후보 3·14쪽) — 2026-10-26 사용자 결정",
+  "fields": {
+   "title": "단계 제목",
+   "desc": "설명",
+   "tag": "날짜 알약"
+  },
+  "status": "fallback",
+  "shortcode": "step-flow",
+  "pptx_shortcode": null,
+  "variants": [],
+  "defaults": {},
+  "args": {
+   "header": {
+    "values": "문자열",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "띠 위 머리띠 한 줄(예: 추진 경과 및 향후 계획)"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "chevron-roadmap"
+  ]
+ },
  "process.cards-arrow-4": {
   "group": "process",
   "label": "카드 4단계 + 화살표(원·하단 목록)",
@@ -3052,6 +3172,80 @@ export const LAYOUTS = {
    "placeholder"
   ]
  },
+ "media.video": {
+  "group": "media",
+  "label": "영상·그림 화면",
+  "emoji": "🎬",
+  "desc": "본문 칸 안에 영상(유튜브·영상 파일) 또는 그림을 화면처럼 띄운다 — 슬라이드쇼에서 누르면 그 칸에서 재생(play=fullscreen 이면 전체 화면). 제목·부제·출처는 테마 마스터 칸에. start·end 로 구간만(영상 파일은 ffmpeg 로 잘라 넣음).",
+  "fields": {
+   "url": "영상·그림 주소(유튜브 · 상대/절대 경로)",
+   "poster": "표지 그림(선택)",
+   "title": "화면 아래 캡션 제목(선택)",
+   "desc": "화면 아래 캡션 설명(선택)"
+  },
+  "status": "ready",
+  "shortcode": "media.video",
+  "pptx_shortcode": "summary-box",
+  "variants": [],
+  "defaults": {
+   "play": "inline",
+   "embed": "file",
+   "ratio": "auto"
+  },
+  "args": {
+   "start": {
+    "values": "초(30) 또는 분:초(1:30)",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "재생 시작 — 비우면 처음부터(유튜브 주소의 t= 도 읽음)"
+   },
+   "end": {
+    "values": "초 또는 분:초",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "재생 끝 — 비우면 끝까지. 영상 파일만 지켜진다(ffmpeg 로 잘라 넣음). 유튜브는 PowerPoint 가 end 에서 멈추지 않는다(2026-10-26 확인)"
+   },
+   "play": {
+    "values": "inline|fullscreen",
+    "default": "inline",
+    "cs_v2": false,
+    "pptgen": true,
+    "note": "누르면 본문 칸 안에서(inline) / 전체 화면으로(fullscreen — 영상 파일만. PowerPoint 는 온라인 영상의 전체 화면 재생을 지원하지 않음)"
+   },
+   "embed": {
+    "values": "file|link",
+    "default": "file",
+    "cs_v2": false,
+    "pptgen": true,
+    "note": "영상 파일을 pptx 안에 넣음(file — pptx 하나만 옮기면 됨) / 절대 경로로 연결(link — 큰 파일을 같은 PC 에서만. PowerPoint 는 상대 경로를 읽지 않아 옮기면 끊김)"
+   },
+   "ratio": {
+    "values": "auto|16:9|9:16|4:3|1:1",
+    "default": "auto",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "auto = 쇼츠 9:16 · 그 밖 유튜브 16:9 · 파일은 실제 비율"
+   },
+   "cols": {
+    "values": "1~3",
+    "default": "",
+    "cs_v2": true,
+    "pptgen": true,
+    "note": "여러 화면을 나란히 — 비우면 항목 수"
+   }
+  },
+  "pptgen": {
+   "status": "ready",
+   "pattern": null,
+   "theme": null
+  },
+  "aliases": [
+   "video",
+   "youtube"
+  ]
+ },
  "grid.icon-band-2": {
   "group": "grid",
   "label": "아이콘 + 머리띠 + 내용 2열",
@@ -3174,31 +3368,6 @@ export const LAYOUTS = {
   },
   "aliases": [
    "r01-p02"
-  ]
- },
- "structure.flow-hub-3": {
-  "group": "structure",
-  "label": "왼쪽 목록 → 가운데 큰 상자(그림 격자) → 오른쪽 원 아이콘",
-  "emoji": "🧩",
-  "desc": "왼쪽 목록 → 가운데 큰 상자(그림 격자) → 오른쪽 원 아이콘. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
-  "fields": {
-   "title": "열 첫 칸",
-   "desc": "열 둘째 칸",
-   "meta": "나머지 칸(｜ 구분)"
-  },
-  "status": "fallback",
-  "shortcode": "network-box",
-  "pptx_shortcode": null,
-  "variants": [],
-  "defaults": {},
-  "args": {},
-  "pptgen": {
-   "status": "planned",
-   "pattern": "r01-p03",
-   "theme": "nipa-blue"
-  },
-  "aliases": [
-   "r01-p03"
   ]
  },
  "grid.pinned-cards-3": {
@@ -3423,31 +3592,6 @@ export const LAYOUTS = {
    "r01-p11"
   ]
  },
- "text.icon-tab-arch": {
-  "group": "text",
-  "label": "위 아이콘 + 탭 제목 + 반원 바탕 글(단독 강조)",
-  "emoji": "🧩",
-  "desc": "위 아이콘 + 탭 제목 + 반원 바탕 글(단독 강조). 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
-  "fields": {
-   "title": "열 첫 칸",
-   "desc": "열 둘째 칸",
-   "meta": "나머지 칸(｜ 구분)"
-  },
-  "status": "fallback",
-  "shortcode": "text.icon-statement",
-  "pptx_shortcode": "takeaway-banner",
-  "variants": [],
-  "defaults": {},
-  "args": {},
-  "pptgen": {
-   "status": "planned",
-   "pattern": "r01-p12",
-   "theme": "nipa-blue"
-  },
-  "aliases": [
-   "r01-p12"
-  ]
- },
  "structure.converge-tree-6": {
   "group": "structure",
   "label": "원 6개가 선으로 아래 단계 3개에 모인다",
@@ -3657,6 +3801,7 @@ export const LAYOUT_ALIASES = {
  "icon-grid": "grid.cards",
  "skill-list": "grid.cards",
  "checkpoint-grid": "grid.cards",
+ "pill-cards": "grid.pill-cards-3",
  "feature-grid": "grid.features",
  "badge-grid": "grid.badges",
  "tool-list": "grid.list",
@@ -3700,6 +3845,9 @@ export const LAYOUT_ALIASES = {
  "growth-panel": "process.growth",
  "triangle-cycle": "process.cycle-3",
  "zigzag-path": "process.zigzag",
+ "roadmap-circles": "process.roadmap-circles",
+ "roadmap-circles-v": "process.roadmap-circles-v",
+ "chevron-roadmap": "process.chevron-roadmap",
  "c01-p02": "process.cards-arrow-4",
  "c01-p06": "process.input-circles-4",
  "c01-p07": "process.band-columns-3",
@@ -3737,12 +3885,13 @@ export const LAYOUT_ALIASES = {
  "box-image-split": "media.cards-image",
  "bottom-image-banner": "media.banner",
  "placeholder": "media.full",
+ "video": "media.video",
+ "youtube": "media.video",
  "c04-p01": "grid.icon-band-2",
  "c05-p01": "data.icon-stat-3",
  "c05-p02": "grid.tag-box-2",
  "r01-p01": "grid.columns-check-4",
  "r01-p02": "process.grow-cards-3",
- "r01-p03": "structure.flow-hub-3",
  "r01-p04": "grid.pinned-cards-3",
  "r01-p05": "grid.columns-diagram-3",
  "r01-p06": "grid.photo-columns-4",
@@ -3751,7 +3900,6 @@ export const LAYOUT_ALIASES = {
  "r01-p09": "structure.list-diverge-5",
  "r01-p10": "grid.icon-pills-4",
  "r01-p11": "process.tab-cards-4",
- "r01-p12": "text.icon-tab-arch",
  "r01-p13": "structure.converge-tree-6",
  "r01-p14": "grid.image-rows-2x3",
  "r01-p15": "process.image-boxes-2",
@@ -3786,11 +3934,15 @@ export const ALIAS_ARGS = {
 export const LAYOUT_EXAMPLES = {
  "grid.cards": {
   "args": "cols=3",
-  "body": "- icon: \"🚀\"\n  title: \"빠른 퍼포먼스\"\n  desc: \"최적화된 빌드와 빌트인 파서 탑재\"\n- icon: \"🎨\"\n  title: \"디자인 테마 선택\"\n  desc: \"다양한 테마 조합 가능\"\n- icon: \"🧩\"\n  title: \"배치 라이브러리\"\n  desc: \"66종 배치를 같은 이름으로 사용\"",
+  "body": "- icon: \"🚀\"\n  title: \"빠른 퍼포먼스\"\n  desc: \"최적화된 빌드와 빌트인 파서 탑재\"\n- icon: \"🎨\"\n  title: \"디자인 테마 선택\"\n  desc: \"다양한 테마 조합 가능\"\n- icon: \"🧩\"\n  title: \"배치 라이브러리\"\n  desc: \"공용 배치를 같은 이름으로 사용\"",
   "more": [
    "align=left cols=2",
    "align=row"
   ]
+ },
+ "grid.pill-cards-3": {
+  "args": "",
+  "body": "- title: 데이터센터\n  desc: 민간 주도 자생적 생태계 필요\n  note: AI 데이터센터 산업 진흥 기반 마련\n- title: 반도체\n  desc: 국산 AI 칩 실증 확대\n  note: 공공 클라우드 우선 적용\n- title: 인재\n  desc: 현장형 인력 양성\n  note: 2030년 10만 명"
  },
  "grid.features": {
   "args": "cols=2",
@@ -3938,6 +4090,18 @@ export const LAYOUT_EXAMPLES = {
   "args": "",
   "body": "- title: 도입\n- title: 확산\n- title: 정착\n- title: 고도화\n- title: 혁신"
  },
+ "process.roadmap-circles": {
+  "args": "",
+  "body": "- title: 심사\n  tag: 2026.3\n  desc: 서면·발표 평가\n- title: 계약\n  tag: 2026.4\n  desc: 협약 체결\n- title: 수행\n  tag: 2026.5~11\n  desc: 과제 수행·점검\n- title: 확산\n  tag: 2026.12\n  desc: 성과 공유"
+ },
+ "process.roadmap-circles-v": {
+  "args": "",
+  "body": "- title: 심사\n  tag: 2026.3\n  desc: 서면·발표 평가로 과제를 고른다\n- title: 계약\n  tag: 2026.4\n  desc: 협약을 맺고 사업비를 나눈다\n- title: 확산\n  tag: 2026.12\n  desc: 성과를 공유하고 후속 과제를 정한다"
+ },
+ "process.chevron-roadmap": {
+  "args": "header=\"추진 경과 및 향후 계획\"",
+  "body": "- title: 특별위원회 개최\n  tag: 1월 21일\n  desc: 국가AI컴퓨팅 인프라\n- title: 실행 계획 발표\n  tag: 1월 22일\n  desc: 센터 구축(SPC 설립)\n- title: 사업 공모\n  tag: 1월 23일~6월 13일\n  desc: 센터 구축 공모\n- title: 평가·금융심사\n  tag: 6월~8월\n  desc: 기술정책 평가\n- title: 사업 착수\n  tag: 10월~12월\n  desc: SPC 설립"
+ },
  "process.cards-arrow-4": {
   "args": "",
   "body": "- title: \"진단\"\n  desc: \"업무 분석\"\n  meta: \"인터뷰 | 데이터 수집 | 병목 파악 | 우선순위\"\n- title: \"설계\"\n  desc: \"모델 선정\"\n  meta: \"요구사항 | 아키텍처 | 보안 검토 | 예산\"\n- title: \"구축\"\n  desc: \"시범 적용\"\n  meta: \"개발 | 연동 | 테스트 | 교육\"\n- title: \"확산\"\n  desc: \"전사 적용\"\n  meta: \"운영 | 모니터링 | 개선 | 공유\""
@@ -4073,6 +4237,10 @@ export const LAYOUT_EXAMPLES = {
   "args": "",
   "body": "- title: \"현장 사진\"\n  desc: \"a wide photo of a modern factory floor with collaborative robots, natural light\""
  },
+ "media.video": {
+  "args": "start=0:15 end=0:45",
+  "body": "- url: https://www.youtube.com/watch?v=TsiNuMoqg-Y"
+ },
  "grid.icon-band-2": {
   "args": "",
   "body": "- title: \"지원 분야 (Domain)\"\n  meta: \"인공지능 | 클라우드 | 메타버스\"\n- title: \"지원 기능 (Function)\"\n  meta: \"기업지원 | 지역융합 | 인재양성\""
@@ -4092,10 +4260,6 @@ export const LAYOUT_EXAMPLES = {
  "process.grow-cards-3": {
   "args": "",
   "body": "- title: \"IDCInternet Data Center\"\n  desc: \"대용량 데이터 처리를 위한서버 구매, 임차 데이터센터\"\n  meta: \"• 대용량 데이터 처리\"\n- title: \"AIDCAI Data Center\"\n  desc: \"CDCCloud Data Center\"\n  meta: \"인공지능 워크로드 제공에 특화 고성능 컴퓨팅 자원,                                                          대규모 데이터  처리 지원 | 클라우드 서비스 제공에 최적화된데이터센터 | • 확장 가능성 | • 비용 효율성 | • 유연성 | • 더 빠른 동적 리소스 확장\""
- },
- "structure.flow-hub-3": {
-  "args": "",
-  "body": "- title: \"SaaS공급\""
  },
  "grid.pinned-cards-3": {
   "args": "",
@@ -4129,10 +4293,6 @@ export const LAYOUT_EXAMPLES = {
   "args": "",
   "body": "- title: \"01\"\n  desc: \"사업공고\\n\\n\\n3월 중순 예정\"\n- title: \"02\"\n  desc: \"과제 선정평가 및 \\n협약체결\\n\\n4월 ~ 5월\"\n- title: \"03\"\n  desc: \"과제수행 및\\n사업비 교부\\n\\n5월 – 12월\"\n- title: \"04\"\n  desc: \"과제 결과평가 및 \\n사업비 정산\\n\\n12월 – ’26년 1월\""
  },
- "text.icon-tab-arch": {
-  "args": "",
-  "body": "- title: \"제목\""
- },
  "structure.converge-tree-6": {
   "args": "header=\"全 산업의 서비스화 확산\" sub=\"기존 산업(물류, 교통 등)과 SW\" items-tag=\"X(산업)\" footer=\"As a Service\"",
   "body": "- title: \"교통\"\n- title: \"의료\"\n- title: \"금융\"\n- title: \"제조\"\n- title: \"교육\"\n- title: \"문화\""
@@ -4165,7 +4325,7 @@ export const LAYOUT_EXAMPLES = {
 export const SHAPE_SETS = {
  "schema": 1,
  "_doc": "공용 서식 세트(도형 서식 층) — pptgen 과 cs_v2 가 같은 이름으로 카드의 채움·보조 카드색·외곽선·그림자·둥글기를 고른다. 세트는 '모양'만 정하고 색은 테마 색 이름(tokens)으로만 가리킨다 → 테마를 바꾸면 같은 세트가 그 테마 색으로 다시 칠해진다(테마와 따로 놀지 않는다). 'template' 은 테마(회사 템플릿 등)가 가진 원래 서식을 그대로 쓴다는 뜻 — 기본값. 고르는 곳: 머리말/조합 shape=<세트>, 블록 인수 bg=alt(보조 카드색), 항목 tag: alt. 규칙: catalog/README.md '서식 세트'. 강조 면: 세트의 section_title(머리띠 — fill·text)·dot_accent(아이콘 원 — fill)를 정하면 테마 서식 대신 그 색 이름으로 그린다 — fill 이 이름 하나면 단색, [시작, 끝] 이면 왼→오 그라데이션(template·elevated 는 테마 원래 서식).",
- "updated": "2026-10-23",
+ "updated": "2026-10-26",
  "default": "template",
  "tokens": {
   "_doc": "세트가 쓰는 색 이름 → 매체별 실제 색. pptgen = 테마 팔레트 키(왼쪽이 없으면 \"|\" 뒤), cs_v2 = CSS 값(테마 변수 기반 — 다크/라이트 셸 모두에서 읽히도록 카드 바탕 var(--card-bg) 에 섞는다), cs_v2_pptx = cs_v2 PPTX 팔레트 키(md-to-pptx makePalette).",
@@ -4447,6 +4607,49 @@ export const SHAPE_SETS = {
     "fill": "dark"
    },
    "added": "2026-10-23 — 후보(candidates)에서 정식으로(사용자 확정)"
+  },
+  "gradient-base": {
+   "label": "그라데이션 바닥 카드 — 위 흰색·아래 옅은 대표색, 가는 테두리",
+   "from": "데코_도형디자인참고 p.18(데코_배치후보 3쪽 C · 머리 알약 카드)",
+   "card": {
+    "fill": [
+     "white",
+     "white",
+     "primary-light"
+    ],
+    "radius": "lg"
+   },
+   "card_alt": {
+    "fill": [
+     "white",
+     "secondary-light"
+    ]
+   },
+   "card_grad": {
+    "fill": [
+     "white",
+     "primary-light"
+    ]
+   },
+   "outline": {
+    "width_pt": 0.75,
+    "color": "border"
+   },
+   "shadow": "soft",
+   "section_title": {
+    "fill": [
+     "primary",
+     "secondary"
+    ],
+    "text": "white"
+   },
+   "dot_accent": {
+    "fill": [
+     "primary",
+     "secondary"
+    ]
+   },
+   "added": "2026-10-26 사용자 — 서식 세트로 등록(카드 채움 배열 = 위→아래 그라데이션)"
   }
  }
 };

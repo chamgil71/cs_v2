@@ -20,8 +20,10 @@ export function pickShapeSet(...names) {
   return SHAPE_SETS.sets[key] ? key : SHAPE_SETS.default;
 }
 
-const tokenCss = (t) => ((SHAPE_SETS.tokens[t] || {}).cs_v2) || t;
-const tokenPal = (t, pal) => pal[((SHAPE_SETS.tokens[t] || {}).cs_v2_pptx) || "white"] || pal.white;
+// 채움이 배열이면 위→아래 그라데이션(2026-10-26 gradient-base — pptgen shape_style.js 와 같은 규칙).
+//   HTML = linear-gradient(카드 CSS 가 background 단축 속성으로 쓴다) · PPTX = 가운데 색(pptxgenjs 카드는 단색)
+const tokenCss = (t) => (Array.isArray(t) ? `linear-gradient(to bottom, ${t.map((x) => tokenCss(x)).join(", ")})` : ((SHAPE_SETS.tokens[t] || {}).cs_v2) || t);
+const tokenPal = (t, pal) => (Array.isArray(t) ? tokenPal(t[Math.floor(t.length / 2)], pal) : pal[((SHAPE_SETS.tokens[t] || {}).cs_v2_pptx) || "white"] || pal.white);
 
 /**
  * HTML: `:root, body` 에 넣을 카드 서식 변수 묶음.

@@ -63,7 +63,7 @@ cs_v2/
 │   │   ├── PptxInspectorSuite.tsx # PPTX 인스펙터 & 리매퍼 (구 PptxAnalyzer.tsx 후속본)
 │   │   ├── VisualAdjuster.tsx     # 테마 빌더 (styles.json 실시간 편집)
 │   │   ├── DesignSystemSuite.tsx  # 모듈 1 셸 — 테마 조율 / 보조 유틸리티 / 배치 라이브러리 서브탭
-│   │   ├── layout-library/        # 배치 라이브러리 화면(LayoutLibrary·List·Preview·Detail) — 공용 카탈로그 전부(2026-10-23 88종), 예시를 코어로 미리보기
+│   │   ├── layout-library/        # 배치 라이브러리 화면(LayoutLibrary·List·Preview·Detail) — 공용 카탈로그 전부(2026-10-26 91종), 예시를 코어로 미리보기
 │   │   ├── SubUtilities.tsx       # 보조 유틸 (파일 변환 도구 모음)
 │   │   └── ErrorBoundary.tsx      # React 에러 경계
 │   ├── lib/
@@ -145,7 +145,7 @@ cs_v2/
 │   ├── htmldesign.config.json     # HTML 폰트·크기 토큰 (JSONC, htmlSize guide/presentation 프로파일 + scale)
 │   ├── font-aliases.json          # 폰트 alias → 실제 폰트명 매핑
 │   └── shortcode-guide.ts         # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, MarkdownCompiler가 import — 분류·기능 이름·설명은 카탈로그에서)
-├── library/                       # [라이브러리 층] 공용 배치 카탈로그 복사본 — layouts.json(배치 88종·그룹·색 이름·예시) + shape-sets.json(서식 세트 9종) — 2026-10-23. pptgen 과 같은 규칙. README.md 참조 (2026-10-14 config/ 에서 분리 — config 는 사람이 고르는 설정값만)
+├── library/                       # [라이브러리 층] 공용 배치 카탈로그 복사본 — layouts.json(배치 91종·그룹·색 이름·예시) + shape-sets.json(서식 세트 10종) — 2026-10-26. pptgen 과 같은 규칙. README.md 참조 (2026-10-14 config/ 에서 분리 — config 는 사람이 고르는 설정값만)
 ├── md_src/                        # 마크다운 원본 소스
 │   ├── claudeguide/               # Claude 가이드 문서
 │   ├── guides/                    # AI 툴별 가이드 문서 (30+ 파일)
@@ -267,11 +267,11 @@ npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 - **항목 `tag: alt`**: 그 카드만 서식 세트의 보조 카드색(블록 `bg=alt` 의 항목판). 세 파서가 `markAltItems()`(library-names) 로 `_alt` 표시 → HTML `sc-item-alt` / PPTX `helpers.isAltBlock(item, it)`.
 - **해석 흐름**(`scripts/library-names.mjs` `resolveShortcode(name, args)` 한 곳): 옛 이름이면 기능 이름 + 카탈로그 `alias_args` 로 정규화(블록 인수 우선) → `impl.cs_v2.variants`(인수 → 구현 ID) → `impl.cs_v2.shortcode` → 근사(`fallback.cs_v2`). HTML(`renderShortcode`)·PPTX(md-to-pptx·pptx-browser) 모두 같은 함수 — PPTX 는 `resolveShortcode(name, args, "pptx")` 로 불러 기능 이름 구현(HTML 전용)이면 카탈로그 `pptx_shortcode`(옛 숏코드 근사).
 - **옛 이름 관리**: CLI 빌드는 옛 이름을 만나면 `⚠ 옛 이름 X → Y` 경고. `npm run migrate:names -- <경로>`(이스케이프한 문법 예시 `\:::` 줄도) · `npm run migrate:names:check`.
-- 카탈로그 66종 중 64종을 HTML 로 직접 그린다(옛 숏코드 28 + 기능 이름 구현 36 — `impl.cs_v2.shortcode` 가 기능 이름이면 `scripts/shortcode-ext/`). 견본 2종(`sample.chart-pair`·`sample.infographic-2`)만 근사. pptgen 옛 구현 ID(`staircase`·`c01-p01`)도 받아준다.
+- 카탈로그 91종 중 65종을 HTML 로 직접 그린다(2026-10-26 — 옛 숏코드 28 + 기능 이름 구현 37, media.video 추가 — `impl.cs_v2.shortcode` 가 기능 이름이면 `scripts/shortcode-ext/`). 견본 2종(`sample.chart-pair`·`sample.infographic-2`)만 근사. pptgen 옛 구현 ID(`staircase`·`c01-p01`)도 받아준다.
 - `:::` 정규식은 `.` 을 허용(`shortcodeBlockRe`, 4개 파서 공유). 제목 끝 속성 `## 제목 {master=…}` 은 지우고 읽는다(`stripHeadingAttrs`).
 - 색 이름(`color:`)은 카탈로그 `color_tokens` 단일 출처: `primary·secondary·accent·accent2·light·dark·ink·gray`(+`main·sub·deep·mid·brand`) 또는 `#hex`.
 - 가이드 패널·삽입 메뉴(`config/shortcode-guide.ts`)는 카탈로그에서 목록·그룹·**스니펫(example)** 을 만든다 — pptgen 견본과 같은 예시.
-- **배치 라이브러리 화면**(모듈 1 서브탭, `src/components/layout-library/` + `src/lib/layout-library.ts`, 2026-10-14): 카탈로그 66종을 그룹·검색(옛 이름 포함)으로 찾고, 예시를 `clientCompileMarkdown`(서버와 같은 코어)으로 테마·서식 세트·인수 변형·종형/횡형 미리보기, 구현 상태·항목 칸·배치 인수·스니펫 복사. 화면 값은 전부 생성본 `library-map.mjs`(`sync:library` 가 `args`·`pptgen`·`aliases` 도 넣음)에서 — pptgen `views/layouts.pptx` 와 같은 예시.
+- **배치 라이브러리 화면**(모듈 1 서브탭, `src/components/layout-library/` + `src/lib/layout-library.ts`, 2026-10-14): 카탈로그 전부를 그룹·검색(옛 이름 포함)으로 찾고, 예시를 `clientCompileMarkdown`(서버와 같은 코어)으로 테마·서식 세트·인수 변형·종형/횡형 미리보기, 구현 상태·항목 칸·배치 인수·스니펫 복사. 화면 값은 전부 생성본 `library-map.mjs`(`sync:library` 가 `args`·`pptgen`·`aliases` 도 넣음)에서 — pptgen `views/layouts.pptx` 와 같은 예시.
 
 ### 서식 세트 — 테마를 따르는 도형 서식 층 (2026-10-14)
 
@@ -292,7 +292,7 @@ npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 
 ### HTML·PPTX 지원 현황
 
-HTML(종형·횡형)은 64종을 모양 그대로 그린다. 그 밖의 배치(pptgen 회사·데코 패턴 24종)는 카탈로그 `impl.cs_v2.status: fallback` — 가장 가까운 배치(`near`)의 구현 ID 로 근사(원본 `slide-library/data/sources/deco-design/cs_v2_fallback.py`). cs_v2 자체 PPTX 는 **빠른 근사**(역할 분담 — 정밀 PPTX 는 pptgen): 옛 숏코드 28종은 같은 모양, 기능 이름 구현 36종은 카탈로그 `pptx_shortcode`(예: `process.staircase` → level-grid). `library-catalog.test.ts`·`layout-ext.test.ts`·`shortcode-conformance.test.ts` 가 66종 HTML·PPTX 커버리지·CSS 커버리지·렌더러 등록을 잠금. 옛 이름 → 기능 이름 + 인수 표: `docs/shortcode-reference.md` 맨 아래.
+HTML(종형·횡형)은 65종을 모양 그대로 그린다(2026-10-26). 그 밖의 배치 26종(pptgen 회사·데코 패턴, 데코 후보 본문 레이아웃 4종)은 카탈로그 `impl.cs_v2.status: fallback` — 가장 가까운 배치(`near`)의 구현 ID 로 근사(원본 `slide-library/data/sources/deco-design/cs_v2_fallback.py`). cs_v2 자체 PPTX 는 **빠른 근사**(역할 분담 — 정밀 PPTX 는 pptgen): 옛 숏코드 28종은 같은 모양, 기능 이름 구현 36종은 카탈로그 `pptx_shortcode`(예: `process.staircase` → level-grid). `library-catalog.test.ts`·`layout-ext.test.ts`·`shortcode-conformance.test.ts` 가 66종 HTML·PPTX 커버리지·CSS 커버리지·렌더러 등록을 잠금. 옛 이름 → 기능 이름 + 인수 표: `docs/shortcode-reference.md` 맨 아래.
 
 ---
 
@@ -452,7 +452,7 @@ npm run test:watch
 - `pptx-analyzer.test.ts` (23개): PPTX XML 분석기 유닛 테스트
 - `pptx-transform.test.ts` (10개): PPTX 왕복(round-trip) 변환 검증
 - `wcag.test.ts` (18개): `getContrast()`, `getLuminance()` 계산 검증
-- `layout-library.test.ts` (74개): 웹 배치 라이브러리 데이터 — 화면 목록 = 카탈로그 전부(순서 그대로 — 숫자를 박지 않고 카탈로그에서 셈), 직접 64·근사 2, 옛 이름 검색, 예시 66종×변형이 가이드·슬라이드 코어로 그려지고 `:::` 가 남지 않음
+- `layout-library.test.ts` (74개): 웹 배치 라이브러리 데이터 — 화면 목록 = 카탈로그 전부(순서 그대로 — 숫자를 박지 않고 카탈로그에서 셈), 직접 65·근사 2, 옛 이름 검색, 예시 66종×변형이 가이드·슬라이드 코어로 그려지고 `:::` 가 남지 않음
 - `layout-ext.test.ts` (54개): 기능 이름 배치 전용 HTML(카탈로그 예시·변형 렌더, `sx-*` 클래스 CSS 커버리지, 이스케이프), 배치 인수(기본값 = 카탈로그), 항목 `tag: alt`(HTML·PPTX), 브라우저 PPTX 발표스크립트
 - `library-catalog.test.ts` (145개): 공용 배치 카탈로그 — 생성본(library-map)==복사본(library), 인수 기본값은 값(빈 값·숫자·values 중 하나), 기능 이름 66종이 전부 HTML·PPTX 로 그려짐, 옛 이름 42개 = 기능 이름+인수와 출력 동일, 변형(인수 → 구현 ID), md_src 옛 이름 0, callout 인수 파싱, `.` 이름 블록·제목 속성 제거
 - `pptx-core.test.ts` (4개): PPTX 공용 코어 — 브라우저 PPTX == CLI PPTX(갈라졌던 기능 묶음·showcase.md 슬라이드·노트 XML), 블록 크기 인수 반영, 코어가 config 를 바꾸지 않음
@@ -493,6 +493,7 @@ npm run test:watch
 | 이름 이중 운영(옛 숏코드 이름 + 기능 이름) 정리 — 기능 이름 하나로 (2026-10-14) | 기능 이름 도입 뒤에도 옛 이름(`icon-grid` 등)이 md_src·스니펫·문서·테스트에 그대로 쓰여 이름이 둘이었고, 확장 시 이름 규칙이 흔들릴 위험. 옛 이름 중 `compare-grid`·`workflow-flow` 는 실제로 모양이 달라 단순 별칭이 아니었음 | 옛 이름 → 기능 이름 + 인수(카탈로그 `alias_args`: `compare-grid`=`grid.columns variant=plain`, `workflow-flow`=`process.track connector=arrow` …), 인수 → 구현 ID(`impl.cs_v2.variants`). `migrate-names.mjs` 로 md_src 466곳 이전 — 이전 전후 150개 산출물 비교: HTML 마크업 동일(showcase 의 문법 예시 글만 새 이름), PPTX 는 의도한 2곳만 변경(아래 2행). 가이드 스니펫은 카탈로그 example 에서. 테스트 288→355 |
 | PPTX 에서 `before-after` 가 전·후 대조로 안 나옴 / `skill-list` 글자 겹침 (2026-10-14 발견, 이전부터 존재) | `compare-split.mjs` 가 `compare-diff`·`compare-before-after` 이름일 때만 전·후 모양을 그리고 정식 이름 `before-after` 는 일반 2단으로 그림. `skill-list` 는 PPTX 에서만 단계 목록 모듈(steps)로 가서 카드 글자가 겹침(같은 그림인 `icon-grid align=left` 는 카드 모듈) | 전·후 판정에 `before-after` 포함 / 이름 정규화로 `grid.cards align=left` 는 모두 카드 모듈 — 이름 하나 = 그림 하나 |
 | 설정·라이브러리·코드 층이 섞임 · 큰 파일 (2026-10-14, 인계서 E) | 카탈로그 복사본이 사람이 고르는 설정(`config/`)과 같은 폴더, 아무도 안 읽는 `config/layout.json`, 배치 설명 문구가 `shortcode-guide.ts` 에, 인수 기본값이 렌더러 `|| 기본값` 과 카탈로그 두 곳(callout 기본 종류가 pptgen `info`·cs_v2 `tip` 으로 어긋남), `shortcode-render.mjs`(1003줄)·`shortcode-styles.mjs`(469줄)가 200줄 규칙 초과 | `library/`(라이브러리 층) 분리·`config/layout.json` 삭제·설명은 카탈로그 `emoji`·`desc`·기본값은 카탈로그 `args.default` 하나(callout 은 `tip` 으로 통일). 렌더러는 `shortcode-render/`(글자 도구·파서·옛 숏코드 분기 표 6개 — 예전 if 순서 그대로 첫 번째 맞는 분기), CSS 는 `shortcode-styles/`(3부분을 예전 순서로 이어 `SHORTCODE_CSS` 하나). 전후: `SHORTCODE_CSS` 문자열 동일, md_src·카탈로그 예시 628블록 렌더 동일(탭 id 난수 제외), md_src 150개 산출물 동일, 485 테스트 |
+| media.video 가 근사(summary-box)로만 나옴 | 2026-10-26 pptgen 이 카탈로그에 영상 배치를 먼저 넣음(cs_v2 none) | `shortcode-ext/media.mjs` 직접 구현(유튜브 iframe·video·img, start/end) + 서식 세트 채움 배열 = 그라데이션(`shape-set.mjs`) — 2026-10-26 |
 
 | MD → PPTX 변환이 CLI·브라우저 두 벌 — 브라우저 PPTX 만 다르게 나옴 (2026-10-14) | `pptx-browser.ts` 는 2026-06-23 standalone 도입 때 `md-to-pptx.mjs` 를 복사한 포트였고, HTML 은 06-26 공용 코어로 합쳤지만 PPTX 는 복사본으로 남음. 이후 CLI 만 고쳐지며 갈라짐: 브라우저만 블록 `title-size=`·`desc-size=` 무시, 발표 노트 누락(10-14 C 단계에서 개별 수정), 표지 stats·마무리·오류 글자 크기 하드코딩(19·9.5·36·16·14·10·9.5 — config 값과 같아 아직 차이 없었을 뿐) | 공용 코어 `scripts/pptx-core/`(8파일, 각 200줄 이하)로 합치고 CLI·브라우저는 입출력 래퍼만(948→121줄, 642→28줄). 갈라진 부분은 전부 CLI(=config 를 읽는 쪽)로 통일. md_src 150개 산출물 전후 동일, md_src 50개 브라우저 PPTX == CLI PPTX, standalone 화면 다운로드 PPTX == CLI(같은 테마), 옛 브라우저 코드로 돌리면 실패하는 동치 테스트 `pptx-core.test.ts` |
 | CI 없음 · 린트 오류 36·타입 오류 2 방치 (2026-10-14) | 검사를 사람이 로컬에서만 돌려 PR 마다 보장되지 않았고, `.mjs` import 마다 붙인 불필요한 `@ts-ignore`(34곳 — `noImplicitAny:false` 라 필요 없음)와 `ThemeFormShape` 이중 선언(인덱스 시그니처로 `keyof` 가 number 포함)이 오류로 남음 | `.github/workflows/ci.yml`(lint·typecheck·test·migrate:names:check·verify:pptx·build·build:standalone) + `npm run typecheck`. `@ts-ignore` 제거, `ThemeFormShape` 단일 출처 `sub-utilities/theme-form.ts`. 깨끗한 체크아웃(`npm ci`)에서 전 단계 통과 확인 |

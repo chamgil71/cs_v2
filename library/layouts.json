@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "_doc": "공용 배치 카탈로그 — pptgen(pptx)과 cs_v2(HTML·슬라이드·pptx)가 같은 이름·같은 항목 구조로 본문 배치를 부르게 하는 단일 출처. 규칙: catalog/README.md. 항목 구조는 cs_v2 Universal Schema(icon·title·desc·tag·meta·color + note·featured·fx·fy). impl.<매체>.status: ready(그림) · planned(카탈로그만) · fallback(가장 가까운 것으로 대신 — shortcode 가 대신할 숏코드) · markdown(숏코드 없이 일반 문단) · none(지원 안 함). 옛 이름은 aliases 로 계속 통한다. 옛 이름의 모양 차이는 layouts[*].alias_args(옛 이름 → 인수), cs_v2 구현 선택은 impl.cs_v2.variants(인수 → 구현 ID).",
- "updated": "2026-10-23",
+ "updated": "2026-10-26",
  "groups": {
   "grid": "분할·카드 — 관계 없는 대등한 N개를 칸·카드로 나란히",
   "compare": "비교·대조 — 둘 이상을 맞대어 차이를 보임",
@@ -24,7 +24,9 @@
   "note": "아래 팁·설명",
   "featured": "true = 강조 카드",
   "fx": "가로 위치 0~1(사분면)",
-  "fy": "세로 위치 0~1(사분면)"
+  "fy": "세로 위치 0~1(사분면)",
+  "url": "연결할 파일·주소 — 유튜브 주소 · 영상 파일(mp4·mov·m4v·wmv) · 그림(jpg·png·gif). 상대 경로는 md 파일 폴더 기준(읽기 호환: src·image)",
+  "poster": "영상 표지 그림(jpg·png) — 없으면 유튜브 미리보기 / 영상 시작 장면"
  },
  "color_tokens": {
   "_doc": "항목 color 에 쓰는 색 이름 → 매체별 실제 색. 같은 이름이면 pptgen·cs_v2 가 같은 역할의 테마 색을 쓴다. #hex 도 허용. pptgen = 테마 팔레트 키, cs_v2 = CSS 값, cs_v2_pptx = cs_v2 PPTX 팔레트 키.",
@@ -102,7 +104,7 @@
  },
  "examples_deck": {
   "_doc": "pptgen node lib/run.js examples 가 만드는 견본 md 머리말(테마 corporate-blue = 회사 패턴 예시도 그려지게)",
-  "title": "배치 견본 — 공용 카탈로그 66종",
+  "title": "배치 견본 — 공용 카탈로그 {n}종",
   "subtitle": "같은 md 를 pptgen 과 cs_v2 가 읽는다",
   "theme": "corporate-blue",
   "shape_samples": [
@@ -212,11 +214,54 @@
    },
    "example": {
     "args": "cols=3",
-    "body": "- icon: \"🚀\"\n  title: \"빠른 퍼포먼스\"\n  desc: \"최적화된 빌드와 빌트인 파서 탑재\"\n- icon: \"🎨\"\n  title: \"디자인 테마 선택\"\n  desc: \"다양한 테마 조합 가능\"\n- icon: \"🧩\"\n  title: \"배치 라이브러리\"\n  desc: \"66종 배치를 같은 이름으로 사용\"",
+    "body": "- icon: \"🚀\"\n  title: \"빠른 퍼포먼스\"\n  desc: \"최적화된 빌드와 빌트인 파서 탑재\"\n- icon: \"🎨\"\n  title: \"디자인 테마 선택\"\n  desc: \"다양한 테마 조합 가능\"\n- icon: \"🧩\"\n  title: \"배치 라이브러리\"\n  desc: \"공용 배치를 같은 이름으로 사용\"",
     "more": [
      "align=left cols=2",
      "align=row"
     ]
+   }
+  },
+  "grid.pill-cards-3": {
+   "group": "grid",
+   "label": "머리 알약 카드(번호·제목 + 설명 + 아래 그라데이션 칸)",
+   "emoji": "💊",
+   "desc": "카드마다 위 알약(번호·제목) · 가운데 설명 · 아래 옅은 대표색 그라데이션 칸(결론 한 줄). 가로 균등 1~3개. 데코_도형디자인참고 p.18·p.37(데코_배치후보 3·14쪽) — 2026-10-26 사용자 결정",
+   "fields": {
+    "icon": "알약 번호(비우면 1·2·3)",
+    "title": "알약 제목",
+    "desc": "가운데 설명",
+    "note": "아래 칸 결론(굵게)",
+    "meta": "아래 칸 덧붙임(｜ 구분)"
+   },
+   "items": "1~3",
+   "args": {
+    "cols": {
+     "values": "1~3",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "비우면 항목 수"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "icon-grid",
+     "fit": "근사",
+     "pptx": true,
+     "near": "grid.cards"
+    }
+   },
+   "aliases": [
+    "pill-cards"
+   ],
+   "example": {
+    "args": "",
+    "body": "- title: 데이터센터\n  desc: 민간 주도 자생적 생태계 필요\n  note: AI 데이터센터 산업 진흥 기반 마련\n- title: 반도체\n  desc: 국산 AI 칩 실증 확대\n  note: 공공 클라우드 우선 적용\n- title: 인재\n  desc: 현장형 인력 양성\n  note: 2030년 10만 명"
    }
   },
   "grid.features": {
@@ -2043,6 +2088,115 @@
     "body": "- title: 도입\n- title: 확산\n- title: 정착\n- title: 고도화\n- title: 혁신"
    }
   },
+  "process.roadmap-circles": {
+   "group": "process",
+   "label": "원 로드맵(가로) — 원 → 원, 아래 날짜·설명",
+   "emoji": "⭕",
+   "desc": "로드맵·일정용. 반원 테두리 원(단계 이름)을 화살표로 잇고 원 아래 날짜 알약(tag)·설명. 가로 2~5개. 데코_도형디자인참고 p.18·p.37(데코_배치후보 3·14쪽) — 2026-10-26 사용자 결정",
+   "fields": {
+    "title": "원 안 단계 이름",
+    "tag": "날짜 알약",
+    "desc": "설명",
+    "meta": "덧붙임(｜ 구분)"
+   },
+   "items": "2~5",
+   "args": {},
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "step-flow",
+     "fit": "근사",
+     "pptx": true,
+     "near": "process.track"
+    }
+   },
+   "aliases": [
+    "roadmap-circles"
+   ],
+   "example": {
+    "args": "",
+    "body": "- title: 심사\n  tag: 2026.3\n  desc: 서면·발표 평가\n- title: 계약\n  tag: 2026.4\n  desc: 협약 체결\n- title: 수행\n  tag: 2026.5~11\n  desc: 과제 수행·점검\n- title: 확산\n  tag: 2026.12\n  desc: 성과 공유"
+   }
+  },
+  "process.roadmap-circles-v": {
+   "group": "process",
+   "label": "원 로드맵(세로) — 원 ↓ 원, 오른쪽 날짜·설명",
+   "emoji": "⭕",
+   "desc": "로드맵·일정용 세로형. 같은 원을 위→아래로 잇고 원 오른쪽에 날짜 알약(tag)·설명. 2~5개. 데코_도형디자인참고 p.18·p.37(데코_배치후보 3·14쪽) — 2026-10-26 사용자 결정",
+   "fields": {
+    "title": "원 안 단계 이름",
+    "tag": "날짜 알약",
+    "desc": "설명",
+    "meta": "글머리(｜ 구분)"
+   },
+   "items": "2~5",
+   "args": {},
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "step-list",
+     "fit": "근사",
+     "pptx": true,
+     "near": "process.steps"
+    }
+   },
+   "aliases": [
+    "roadmap-circles-v"
+   ],
+   "example": {
+    "args": "",
+    "body": "- title: 심사\n  tag: 2026.3\n  desc: 서면·발표 평가로 과제를 고른다\n- title: 계약\n  tag: 2026.4\n  desc: 협약을 맺고 사업비를 나눈다\n- title: 확산\n  tag: 2026.12\n  desc: 성과를 공유하고 후속 과제를 정한다"
+   }
+  },
+  "process.chevron-roadmap": {
+   "group": "process",
+   "label": "쉐브론 로드맵 — 꺾쇠 띠 + 날짜 알약",
+   "emoji": "➡️",
+   "desc": "로드맵·일정용. 쉐브론(꺾쇠) 띠를 왼→오로 이어 칸마다 단계 제목·설명과 날짜 알약(tag). 앞 칸은 옅고 뒤로 갈수록 진한 대표색. 2~6개, 인수 header 로 위 머리띠. 데코_도형디자인참고 p.18·p.37(데코_배치후보 3·14쪽) — 2026-10-26 사용자 결정",
+   "fields": {
+    "title": "단계 제목",
+    "desc": "설명",
+    "tag": "날짜 알약"
+   },
+   "items": "2~6",
+   "args": {
+    "header": {
+     "values": "문자열",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "띠 위 머리띠 한 줄(예: 추진 경과 및 향후 계획)"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "step-flow",
+     "fit": "근사",
+     "pptx": true,
+     "near": "process.track"
+    }
+   },
+   "aliases": [
+    "chevron-roadmap"
+   ],
+   "example": {
+    "args": "header=\"추진 경과 및 향후 계획\"",
+    "body": "- title: 특별위원회 개최\n  tag: 1월 21일\n  desc: 국가AI컴퓨팅 인프라\n- title: 실행 계획 발표\n  tag: 1월 22일\n  desc: 센터 구축(SPC 설립)\n- title: 사업 공모\n  tag: 1월 23일~6월 13일\n  desc: 센터 구축 공모\n- title: 평가·금융심사\n  tag: 6월~8월\n  desc: 기술정책 평가\n- title: 사업 착수\n  tag: 10월~12월\n  desc: SPC 설립"
+   }
+  },
   "process.cards-arrow-4": {
    "group": "process",
    "label": "카드 4단계 + 화살표(원·하단 목록)",
@@ -3721,6 +3875,85 @@
     "body": "- title: \"현장 사진\"\n  desc: \"a wide photo of a modern factory floor with collaborative robots, natural light\""
    }
   },
+  "media.video": {
+   "group": "media",
+   "label": "영상·그림 화면",
+   "emoji": "🎬",
+   "desc": "본문 칸 안에 영상(유튜브·영상 파일) 또는 그림을 화면처럼 띄운다 — 슬라이드쇼에서 누르면 그 칸에서 재생(play=fullscreen 이면 전체 화면). 제목·부제·출처는 테마 마스터 칸에. start·end 로 구간만(영상 파일은 ffmpeg 로 잘라 넣음).",
+   "fields": {
+    "url": "영상·그림 주소(유튜브 · 상대/절대 경로)",
+    "poster": "표지 그림(선택)",
+    "title": "화면 아래 캡션 제목(선택)",
+    "desc": "화면 아래 캡션 설명(선택)"
+   },
+   "items": "1~3",
+   "args": {
+    "start": {
+     "values": "초(30) 또는 분:초(1:30)",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "재생 시작 — 비우면 처음부터(유튜브 주소의 t= 도 읽음)"
+    },
+    "end": {
+     "values": "초 또는 분:초",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "재생 끝 — 비우면 끝까지. 영상 파일만 지켜진다(ffmpeg 로 잘라 넣음). 유튜브는 PowerPoint 가 end 에서 멈추지 않는다(2026-10-26 확인)"
+    },
+    "play": {
+     "values": "inline|fullscreen",
+     "default": "inline",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "누르면 본문 칸 안에서(inline) / 전체 화면으로(fullscreen — 영상 파일만. PowerPoint 는 온라인 영상의 전체 화면 재생을 지원하지 않음)"
+    },
+    "embed": {
+     "values": "file|link",
+     "default": "file",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "영상 파일을 pptx 안에 넣음(file — pptx 하나만 옮기면 됨) / 절대 경로로 연결(link — 큰 파일을 같은 PC 에서만. PowerPoint 는 상대 경로를 읽지 않아 옮기면 끊김)"
+    },
+    "ratio": {
+     "values": "auto|16:9|9:16|4:3|1:1",
+     "default": "auto",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "auto = 쇼츠 9:16 · 그 밖 유튜브 16:9 · 파일은 실제 비율"
+    },
+    "cols": {
+     "values": "1~3",
+     "default": "",
+     "pptgen": true,
+     "cs_v2": true,
+     "note": "여러 화면을 나란히 — 비우면 항목 수"
+    }
+   },
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false
+    },
+    "cs_v2": {
+     "status": "ready",
+     "shortcode": "media.video",
+     "fit": "직접",
+     "pptx": false,
+     "pptx_shortcode": "summary-box",
+     "note": "HTML = iframe(유튜브)·video·img — end 도 지켜진다. PPTX 정밀본은 pptgen"
+    }
+   },
+   "aliases": [
+    "video",
+    "youtube"
+   ],
+   "example": {
+    "args": "start=0:15 end=0:45",
+    "body": "- url: https://www.youtube.com/watch?v=TsiNuMoqg-Y"
+   }
+  },
   "grid.icon-band-2": {
    "group": "grid",
    "label": "아이콘 + 머리띠 + 내용 2열",
@@ -3900,42 +4133,6 @@
    "example": {
     "args": "",
     "body": "- title: \"IDCInternet Data Center\"\n  desc: \"대용량 데이터 처리를 위한서버 구매, 임차 데이터센터\"\n  meta: \"• 대용량 데이터 처리\"\n- title: \"AIDCAI Data Center\"\n  desc: \"CDCCloud Data Center\"\n  meta: \"인공지능 워크로드 제공에 특화 고성능 컴퓨팅 자원,                                                          대규모 데이터  처리 지원 | 클라우드 서비스 제공에 최적화된데이터센터 | • 확장 가능성 | • 비용 효율성 | • 유연성 | • 더 빠른 동적 리소스 확장\""
-   }
-  },
-  "structure.flow-hub-3": {
-   "group": "structure",
-   "label": "왼쪽 목록 → 가운데 큰 상자(그림 격자) → 오른쪽 원 아이콘",
-   "emoji": "🧩",
-   "desc": "왼쪽 목록 → 가운데 큰 상자(그림 격자) → 오른쪽 원 아이콘. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
-   "fields": {
-    "title": "열 첫 칸",
-    "desc": "열 둘째 칸",
-    "meta": "나머지 칸(｜ 구분)"
-   },
-   "items": "1",
-   "args": {},
-   "impl": {
-    "pptgen": {
-     "status": "planned",
-     "side": false,
-     "pattern": "r01-p03",
-     "theme": "nipa-blue",
-     "note": "2026-10-23 등록했으나 큰 상자·목록의 제목 글이 빠진다(반복 단위가 잘못 잡힘) — 글 칸 대응을 손봐야 쓴다(데이터 patterns/deco-design.json 은 있음)"
-    },
-    "cs_v2": {
-     "status": "fallback",
-     "shortcode": "network-box",
-     "fit": "근사",
-     "pptx": true,
-     "near": "structure.hub"
-    }
-   },
-   "aliases": [
-    "r01-p03"
-   ],
-   "example": {
-    "args": "",
-    "body": "- title: \"SaaS공급\""
    }
   },
   "grid.pinned-cards-3": {
@@ -4241,43 +4438,6 @@
    "example": {
     "args": "",
     "body": "- title: \"01\"\n  desc: \"사업공고\\n\\n\\n3월 중순 예정\"\n- title: \"02\"\n  desc: \"과제 선정평가 및 \\n협약체결\\n\\n4월 ~ 5월\"\n- title: \"03\"\n  desc: \"과제수행 및\\n사업비 교부\\n\\n5월 – 12월\"\n- title: \"04\"\n  desc: \"과제 결과평가 및 \\n사업비 정산\\n\\n12월 – ’26년 1월\""
-   }
-  },
-  "text.icon-tab-arch": {
-   "group": "text",
-   "label": "위 아이콘 + 탭 제목 + 반원 바탕 글(단독 강조)",
-   "emoji": "🧩",
-   "desc": "위 아이콘 + 탭 제목 + 반원 바탕 글(단독 강조). 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
-   "fields": {
-    "title": "열 첫 칸",
-    "desc": "열 둘째 칸",
-    "meta": "나머지 칸(｜ 구분)"
-   },
-   "items": "",
-   "args": {},
-   "impl": {
-    "pptgen": {
-     "status": "planned",
-     "side": false,
-     "pattern": "r01-p12",
-     "theme": "nipa-blue",
-     "note": "2026-10-23 등록했으나 탭·반원 글이 빠진다(열 묶음 1개라 항목이 들어가지 않음) — 글 칸 대응을 손봐야 쓴다(데이터 patterns/deco-design.json 은 있음)"
-    },
-    "cs_v2": {
-     "status": "fallback",
-     "shortcode": "text.icon-statement",
-     "fit": "근사",
-     "pptx": false,
-     "near": "text.icon-statement",
-     "pptx_shortcode": "takeaway-banner"
-    }
-   },
-   "aliases": [
-    "r01-p12"
-   ],
-   "example": {
-    "args": "",
-    "body": "- title: \"제목\""
    }
   },
   "structure.converge-tree-6": {

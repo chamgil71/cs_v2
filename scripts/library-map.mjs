@@ -1713,11 +1713,11 @@ export const LAYOUTS = {
    "roadmap-circles-v"
   ]
  },
- "process.chevron-roadmap": {
+ "process.roadmap-chevron": {
   "group": "process",
   "label": "쉐브론 로드맵 — 꺾쇠 띠 + 날짜 알약",
   "emoji": "➡️",
-  "desc": "로드맵·일정용. 쉐브론(꺾쇠) 띠를 왼→오로 이어 칸마다 단계 제목·설명과 날짜 알약(tag). 앞 칸은 옅고 뒤로 갈수록 진한 대표색. 2~6개, 인수 header 로 위 머리띠. 데코_도형디자인참고 p.18·p.37(데코_배치후보 3·14쪽) — 2026-10-26 사용자 결정",
+  "desc": "로드맵·일정용. 쉐브론(꺾쇠) 띠를 왼→오로 이어 칸마다 단계 제목·설명과 날짜 알약(tag). 앞 칸은 옅고 뒤로 갈수록 진한 대표색. 2~6개, 인수 header 로 위 머리띠. 데코_도형디자인참고 p.18·p.37(데코_배치후보 3·14쪽) — 2026-10-26 사용자 결정 (2026-10-26 이름 process.chevron-roadmap → process.roadmap-chevron — roadmap-circles 와 짝, 옛 이름도 통함)",
   "fields": {
    "title": "단계 제목",
    "desc": "설명",
@@ -1743,7 +1743,9 @@ export const LAYOUTS = {
    "theme": null
   },
   "aliases": [
-   "chevron-roadmap"
+   "roadmap-chevron",
+   "chevron-roadmap",
+   "process.chevron-roadmap"
   ]
  },
  "process.cards-arrow-4": {
@@ -3847,7 +3849,9 @@ export const LAYOUT_ALIASES = {
  "zigzag-path": "process.zigzag",
  "roadmap-circles": "process.roadmap-circles",
  "roadmap-circles-v": "process.roadmap-circles-v",
- "chevron-roadmap": "process.chevron-roadmap",
+ "roadmap-chevron": "process.roadmap-chevron",
+ "chevron-roadmap": "process.roadmap-chevron",
+ "process.chevron-roadmap": "process.roadmap-chevron",
  "c01-p02": "process.cards-arrow-4",
  "c01-p06": "process.input-circles-4",
  "c01-p07": "process.band-columns-3",
@@ -4098,7 +4102,7 @@ export const LAYOUT_EXAMPLES = {
   "args": "",
   "body": "- title: 심사\n  tag: 2026.3\n  desc: 서면·발표 평가로 과제를 고른다\n- title: 계약\n  tag: 2026.4\n  desc: 협약을 맺고 사업비를 나눈다\n- title: 확산\n  tag: 2026.12\n  desc: 성과를 공유하고 후속 과제를 정한다"
  },
- "process.chevron-roadmap": {
+ "process.roadmap-chevron": {
   "args": "header=\"추진 경과 및 향후 계획\"",
   "body": "- title: 특별위원회 개최\n  tag: 1월 21일\n  desc: 국가AI컴퓨팅 인프라\n- title: 실행 계획 발표\n  tag: 1월 22일\n  desc: 센터 구축(SPC 설립)\n- title: 사업 공모\n  tag: 1월 23일~6월 13일\n  desc: 센터 구축 공모\n- title: 평가·금융심사\n  tag: 6월~8월\n  desc: 기술정책 평가\n- title: 사업 착수\n  tag: 10월~12월\n  desc: SPC 설립"
  },

@@ -8,7 +8,7 @@
 ## Phase 12 — 공용 카탈로그 동기화(91종·서식 세트 10종) · media.video (2026-10-26)
 
 ### 바뀐 것
-- **카탈로그 동기화**(pptgen 쪽 변경): 배치 87 → 91종 — `media.video`(영상·그림 화면) 추가, 데코 후보에서 만든 `grid.pill-cards-3`·`process.roadmap-circles`·`process.roadmap-circles-v`·`process.chevron-roadmap`(cs_v2 는 근사 — `near` 배치의 구현), 보류였던 `structure.flow-hub-3`·`text.icon-tab-arch` 삭제. 서식 세트 `gradient-base` 추가.
+- **카탈로그 동기화**(pptgen 쪽 변경): 배치 87 → 91종 — `media.video`(영상·그림 화면) 추가, 데코 후보에서 만든 `grid.pill-cards-3`·`process.roadmap-circles`·`process.roadmap-circles-v`·`process.roadmap-chevron`(옛 이름 chevron-roadmap 별칭, cs_v2 는 근사 — `near` 배치의 구현), 보류였던 `structure.flow-hub-3`·`text.icon-tab-arch` 삭제. 서식 세트 `gradient-base` 추가.
 - **`media.video` HTML 직접 구현**(`scripts/shortcode-ext/media.mjs`): 항목 `url`(읽기 호환 `src`·`image`) — 유튜브는 iframe(`embed/<id>?start=&end=`, 주소의 `t=` 도 시작), 영상 파일은 `<video>`(`#t=시작,끝`), 그림은 `<img>`. `cols` 1~3, `ratio`(쇼츠 9:16 자동). HTML 은 브라우저가 `end` 를 지킨다(PowerPoint 는 유튜브 end·전체 화면을 지원하지 않음 — pptgen 기록).
 - **서식 세트 채움 배열 = 위→아래 그라데이션**(`scripts/shape-set.mjs`): HTML `linear-gradient(to bottom, …)`, PPTX 는 가운데 색(단색 카드).
 - 테스트: 직접 구현 64 → 65종, `media.video` 렌더 1건 추가.

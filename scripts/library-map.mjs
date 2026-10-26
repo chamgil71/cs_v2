@@ -4659,8 +4659,9 @@ export const SHAPE_SETS = {
  }
 };
 export const COLOR_TOKENS = {
- "_doc": "항목 color 에 쓰는 색 이름 → 매체별 실제 색. 같은 이름이면 pptgen·cs_v2 가 같은 역할의 테마 색을 쓴다. #hex 도 허용. pptgen = 테마 팔레트 키, cs_v2 = CSS 값, cs_v2_pptx = cs_v2 PPTX 팔레트 키.",
+ "_doc": "항목 color 에 쓰는 색 이름 → 매체별 실제 색. 같은 이름이면 pptgen·cs_v2 가 같은 역할의 테마 색을 쓴다. #hex 도 허용. pptgen = 테마 팔레트 키, cs_v2 = CSS 값, cs_v2_pptx = cs_v2 PPTX 팔레트 키. role = 그 색이 맡는 일(2026-10-26 색 역할 규칙 — 단일 출처. 원칙: 한 장에 역할 색 primary·secondary·accent·accent2 중 최대 3개, 같은 뜻은 덱 전체에서 같은 색, accent 계열은 글자색 말고 면·테두리·배지에. 테마마다 실제 색은 달라도 역할은 같다)",
  "primary": {
+  "role": "덱의 얼굴 — 지금 보는 것·현재 단계·첫 번째 계열·핵심 수치 하나(한 장 비중 약 60%)",
   "pptgen": "main",
   "cs_v2": "var(--brand)",
   "cs_v2_pptx": "brand",
@@ -4670,6 +4671,7 @@ export const COLOR_TOKENS = {
   ]
  },
  "secondary": {
+  "role": "두 번째 목소리 — 비교 상대(B)·두 번째 계열·다음 단계·보조 아이콘(약 25%)",
   "pptgen": "sub",
   "cs_v2": "var(--brand-dark)",
   "cs_v2_pptx": "brandDark",
@@ -4680,6 +4682,7 @@ export const COLOR_TOKENS = {
   ]
  },
  "accent": {
+  "role": "눈길 끌기, 짧고 드물게 — 배지·태그·숫자 하이라이트·새로 바뀐 것·목표(약 10%)",
   "pptgen": "accent1",
   "cs_v2": "var(--brand-mid)",
   "cs_v2_pptx": "brandMid",
@@ -4691,6 +4694,7 @@ export const COLOR_TOKENS = {
   ]
  },
  "accent2": {
+  "role": "결론·무게, 장마다 한 곳 — takeaway·callout 띠·요약 결론·featured 카드(약 5%)",
   "pptgen": "accent2",
   "cs_v2": "var(--brand-deep)",
   "cs_v2_pptx": "brandDeep",
@@ -4701,6 +4705,7 @@ export const COLOR_TOKENS = {
   ]
  },
  "light": {
+  "role": "바탕용 — 옅은 면(역할 색 아님)",
   "pptgen": "lightMain",
   "cs_v2": "var(--brand-light)",
   "cs_v2_pptx": "brandLight",
@@ -4710,18 +4715,21 @@ export const COLOR_TOKENS = {
   ]
  },
  "dark": {
+  "role": "글·띠 바탕용 진한 색(역할 색 아님 — 테마에 따라 역할 색 하나와 같은 색일 수 있다)",
   "pptgen": "dark",
   "cs_v2": "var(--text)",
   "cs_v2_pptx": "text",
   "aliases": []
  },
  "ink": {
+  "role": "본문 글자",
   "pptgen": "textDark",
   "cs_v2": "var(--text)",
   "cs_v2_pptx": "text",
   "aliases": []
  },
  "gray": {
+  "role": "끄기·과거 — 비활성·지난 단계·버린 쪽(before)·보조 설명",
   "pptgen": "gray",
   "cs_v2": "var(--text-3)",
   "cs_v2_pptx": "muted",

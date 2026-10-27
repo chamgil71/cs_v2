@@ -17,6 +17,7 @@ import { buildSlideData } from "./doc.mjs";
 import { hexClean, makePalette, resolveFont, resolveDFonts } from "./util.mjs";
 import { renderCover, renderDoneSlide } from "./cover.mjs";
 import { renderSectionSlide } from "./section.mjs";
+import { attachNotesFormatter } from "./notes.mjs";
 
 /** JSONC(줄·블록 주석 허용) 문자열 → 객체 — CLI·브라우저가 config 를 읽을 때 같이 쓴다 */
 export function parseJsonc(src) {
@@ -73,5 +74,6 @@ export function buildPptx(rawMd, { styles, design, fontAliases = {}, styleOverri
   if (!noCover) renderCover(D, prs, fm, pal);
   for (const section of sections) renderSectionSlide(D, prs, section, pal, verbose);
   renderDoneSlide(D, prs, fm, pal);
+  attachNotesFormatter(prs);   // 발표 노트: 줄마다 문단 · **굵게**(pptgen 과 같은 규칙 — notes.mjs)
   return { prs, fm, sections, styleKey, D };
 }

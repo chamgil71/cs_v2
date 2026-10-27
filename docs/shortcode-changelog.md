@@ -5,6 +5,10 @@
 
 ---
 
+## PPTX 발표 노트 문단·굵게 (2026-10-26)
+
+- `scripts/pptx-core/notes.mjs`: pptxgenjs 가 노트를 문단 하나에 넣고 `**굵게**` 를 별표 그대로 두던 것 → 줄마다 문단, `**…**` 는 굵은 글. `buildPptx` 가 `prs.exportPresentation` 을 감싸 CLI·브라우저(writeFile·write) 모두 적용. pptgen `lib/notes_format.py` 와 같은 규칙. 시험 `src/__tests__/notes-format.test.ts`.
+
 ## slide-config 노트 빈 줄 (2026-10-26)
 
 - `parseSlideConfig`: `notes: |` 안의 빈 줄에서 값이 끝나 뒤 줄이 사라지던 버그 — 빈 줄 = 문단 나눔으로 이어 읽음(pptgen `lib/parse_v2.js` 와 같은 규칙). 시험 `src/__tests__/slide-config.test.ts`.

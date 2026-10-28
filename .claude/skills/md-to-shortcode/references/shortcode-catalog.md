@@ -133,7 +133,7 @@ type: 참조
 |---|---|---|---|
 | `media.cards-image` | 정보 카드 N개 + 이미지(side 인수로 이미지 쪽). 항목 src 가 있으면 그 그림, 없으면 이미지 자리. | title 카드 제목 · desc 설명 | side=left\|right (right) |
 | `media.banner` | 위 핵심 문장 두세 줄 + 아래 넓은 이미지 띠. | title 글머리 | — |
-| `media.full` | 본문 전체 이미지 자리 — desc 에 이미지 프롬프트, src 가 있으면 그림. | desc 이미지 프롬프트 | — |
+| `media.image` | 본문 전체 이미지 자리 — desc 에 이미지 프롬프트, src 가 있으면 그림. | desc 이미지 프롬프트 | — |
 
 # 변형은 인수로
 

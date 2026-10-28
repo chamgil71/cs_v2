@@ -260,7 +260,7 @@ npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 | 서술·강조 (`text`) | `text.takeaway` `text.callout` `text.summary` `text.section` **`text.statement` `text.body` `text.quote` `text.icon-statement` `text.avatar`** |
 | 코드·터미널 (`code`) | `code.editor` `code.console` `code.command` |
 | 탐색·목록 (`nav`) | `nav.faq` `nav.tabs` `nav.chapters` |
-| 이미지 (`media`) | **`media.cards-image` `media.banner` `media.full`** (항목 `src` 가 있으면 그림, 없으면 프롬프트를 적은 이미지 자리) |
+| 이미지 (`media`) | **`media.cards-image` `media.banner` `media.image`** (항목 `src` 가 있으면 그림, 없으면 프롬프트를 적은 이미지 자리) |
 
 - **모양 변형은 인수로**: `grid.cards align=center|left|row` · `grid.columns variant=card|plain` · `process.track connector=line|arrow|none` · `text.callout tip|info|warning|danger|success`(첫 인수 또는 `variant=`) · 모든 배치 `bg=alt`.
 - **배치 인수(2026-10-14 C 단계, pptgen 과 같은 뜻)**: `badge=icon|number|none`(grid.cards·process.track·process.steps) · `connector`(process.track·process.branch) · `emphasis=last|first|none|<번호>`(track·levels·staircase·zigzag·stats·bars·hbars — 항목 `tag: highlight/active` 가 우선) · `grow`(levels·staircase) · `header`(grid.cards·features·columns·패턴 — 본문 위 머리띠, pair-summary 만 아래 결론 띠) · `caption`(staircase) · `ratio`(main-sub) · `scale`(bars) · `left`/`right`(gauge) · `side`(cards-image). **기본값은 카탈로그 `args.default` 하나**(`layoutArgs()` — 렌더러에 기본 수치 없음). 인수가 기본값이면 예전 마크업 그대로.

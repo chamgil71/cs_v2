@@ -21,7 +21,7 @@
 | 서술·강조 (`text`) | 한 문장·알림·요약 | `text.statement` `text.body` `text.quote` `text.takeaway` `text.callout` `text.summary` `text.section` `text.icon-statement` `text.avatar` |
 | 코드·터미널 (`code`) | 코드·명령 | `code.editor` `code.console` `code.command` |
 | 탐색·목록 (`nav`) | 골라 보는 목록 | `nav.faq` `nav.tabs` `nav.chapters` |
-| 이미지 혼합 (`media`) | 이미지 | `media.cards-image` `media.banner` `media.full` |
+| 이미지 혼합 (`media`) | 이미지 | `media.cards-image` `media.banner` `media.image` |
 
 이름 규칙 전체(문법·형태 어휘·새 배치 추가 절차): 공용 카탈로그 README(coding 저장소 `_templates/slide-library/catalog/README.md` 1절).
 
@@ -1423,13 +1423,13 @@ Part 하위의 챕터 번호·제목·설명·구분 배지 목록화.
 :::
 ```
 
-### `media.full` — 이미지 자리(전면)
+### `media.image` — 이미지 자리(전면)
 
 **필드**: `desc` 이미지 프롬프트  
 **PPTX(cs_v2)**: `summary-box` 근사
 
 ```markdown
-::: media.full
+::: media.image
 - title: "현장 사진"
   desc: "a wide photo of a modern factory floor with collaborative robots, natural light"
 :::
@@ -1505,7 +1505,7 @@ cs_v2 구현 상태가 `ready` 인 64종은 HTML(종형·횡형)을 모양 그�
 | 서술·강조 | `text.takeaway` `text.callout` `text.summary` `text.section` | `text.statement` `text.body` `text.quote` `text.icon-statement` `text.avatar` | - |
 | 코드·터미널 | `code.editor` `code.console` `code.command` | - | - |
 | 탐색·목록 | `nav.faq` `nav.tabs` `nav.chapters` | - | - |
-| 이미지 혼합 | - | `media.cards-image` `media.banner` `media.full` | - |
+| 이미지 혼합 | - | `media.cards-image` `media.banner` `media.image` | - |
 | 견본 | - | - | `sample.chart-pair` `sample.infographic-2` |
 
 ---

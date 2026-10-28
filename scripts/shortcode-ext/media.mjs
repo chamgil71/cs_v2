@@ -1,5 +1,5 @@
 /**
- * shortcode-ext/media.mjs — 이미지·영상 배치 HTML: media.cards-image · media.banner · media.full · media.video(2026-10-26).
+ * shortcode-ext/media.mjs — 이미지·영상 배치 HTML: media.cards-image · media.banner · media.image(옛 이름 media.full — 카탈로그 별칭, 2026-10-28) · media.video(2026-10-26).
  * cs_v2 는 이미지를 만들지 않는다: 항목 src(또는 image) 가 있으면 그 그림을, 없으면 프롬프트를 적은 점선 "이미지 자리"를 그린다
  * (pptgen 도 같은 자리에 이미지 프롬프트를 둔다 — 이미지 생성·삽입은 사람/다른 도구 몫).
  *   cards-image: 정보 카드 N + 이미지(side = left|right, 카탈로그 기본 right). 이미지 = src 가 있는 항목, 없으면 빈 자리
@@ -76,7 +76,7 @@ function video(items, a, h) {
     <figure class="sx-video-item">${screen(it, a, h)}${it.title || it.desc ? `<figcaption>${it.title ? `<div class="sx-title">${h.inline(it.title)}</div>` : ""}${it.desc ? h.desc(it) : ""}</figcaption>` : ""}</figure>`).join("")}</div>`;
 }
 
-export const renderers = { "media.cards-image": cardsImage, "media.banner": banner, "media.full": full, "media.video": video };
+export const renderers = { "media.cards-image": cardsImage, "media.banner": banner, "media.image": full, "media.video": video };
 
 export const css = `
   .sx-ci { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 20px; margin: 25px 0; align-items: stretch; }

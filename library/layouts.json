@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "_doc": "공용 배치 카탈로그 — pptgen(pptx)과 cs_v2(HTML·슬라이드·pptx)가 같은 이름·같은 항목 구조로 본문 배치를 부르게 하는 단일 출처. 규칙: catalog/README.md. 항목 구조는 cs_v2 Universal Schema(icon·title·desc·tag·meta·color + note·featured·fx·fy). impl.<매체>.status: ready(그림) · planned(카탈로그만) · fallback(가장 가까운 것으로 대신 — shortcode 가 대신할 숏코드) · markdown(숏코드 없이 일반 문단) · none(지원 안 함). 옛 이름은 aliases 로 계속 통한다. 옛 이름의 모양 차이는 layouts[*].alias_args(옛 이름 → 인수), cs_v2 구현 선택은 impl.cs_v2.variants(인수 → 구현 ID).",
- "updated": "2026-10-26",
+ "updated": "2026-10-28",
  "groups": {
   "grid": "분할·카드 — 관계 없는 대등한 N개를 칸·카드로 나란히",
   "compare": "비교·대조 — 둘 이상을 맞대어 차이를 보임",
@@ -1151,7 +1151,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"인프라 확충\"\n  meta: \"GPU 확보 | 데이터센터 상면\"\n- title: \"운영 체계\"\n  meta: \"민관 합동 | 이행 점검\"\n- title: \"서비스 지원\"\n  meta: \"소형 DC 발굴 | 바우처\""
+    "body": "- title: \"제목 1\"\n  meta: \"글머리 1 | 글머리 2\"\n- title: \"제목 2\"\n  meta: \"글머리 1 | 글머리 2\"\n- title: \"제목 3\"\n  meta: \"글머리 1 | 글머리 2\""
    }
   },
   "grid.narrow-wide-band": {
@@ -1188,7 +1188,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"정부 정책\"\n  meta: \"디지털 전략 2.0 | AI 안전 정상회의 | AI 반도체 전략\"\n- title: \"NIPA 주요 사업\"\n  meta: \"초거대 AI 플래그십 | K-클라우드 AI 반도체 | 디지털헬스 신시장 | 지역 AI 거점\""
+    "body": "- title: \"제목 1\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3\"\n- title: \"제목 2\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3 | 글머리 4\""
    }
   },
   "compare.pair": {
@@ -3854,16 +3854,25 @@
     "body": "- title: 이미지가 주인공인 슬라이드\n- title: 위에는 핵심 문장 두세 줄"
    }
   },
-  "media.full": {
+  "media.image": {
    "group": "media",
-   "label": "이미지 자리(전면)",
+   "label": "그림(칸 채움)",
    "emoji": "🖼️",
-   "desc": "본문 전체 이미지 자리 — desc 에 이미지 프롬프트, src 가 있으면 그림.",
+   "desc": "그림 블록 — 블록 줄 at=left|center|right 로 칸을 고르면(장 줄 split=\"7:3\"·\"3:4:3\") 그 칸에, at 이 없으면 전체 폭. ratio=fill(칸을 채움, 기본)·3:4·16:9. 항목 url 이 있으면 그 그림(가운데 잘라 채움), 없으면 자리표시 + 프롬프트(desc 또는 slide-config prompt).",
    "fields": {
-    "desc": "이미지 프롬프트"
+    "desc": "이미지 프롬프트(없으면 slide-config prompt)",
+    "url": "그림 파일(md 폴더 기준 · jpg·png·gif)"
    },
    "items": "0~1",
-   "args": {},
+   "args": {
+    "ratio": {
+     "values": "fill|3:4|4:3|16:9|가로:세로",
+     "default": "fill",
+     "pptgen": true,
+     "cs_v2": false,
+     "note": "fill = 칸을 채움. 비율을 주면 칸 안에서 그 비율로 가장 크게, 가운데"
+    }
+   },
    "impl": {
     "pptgen": {
      "status": "ready",
@@ -3871,18 +3880,19 @@
     },
     "cs_v2": {
      "status": "ready",
-     "shortcode": "media.full",
+     "shortcode": "media.image",
      "fit": "직접",
      "pptx": false,
      "pptx_shortcode": "summary-box"
     }
    },
    "aliases": [
+    "media.full",
     "placeholder"
    ],
    "example": {
-    "args": "",
-    "body": "- title: \"현장 사진\"\n  desc: \"a wide photo of a modern factory floor with collaborative robots, natural light\""
+    "args": "ratio=3:4",
+    "body": "- desc: \"a wide photo of a modern factory floor with collaborative robots, natural light\""
    }
   },
   "media.video": {
@@ -3998,19 +4008,19 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"지원 분야 (Domain)\"\n  meta: \"인공지능 | 클라우드 | 메타버스\"\n- title: \"지원 기능 (Function)\"\n  meta: \"기업지원 | 지역융합 | 인재양성\""
+    "body": "- title: \"제목 1\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3\"\n- title: \"제목 2\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3\""
    }
   },
   "data.icon-stat-3": {
    "group": "data",
-   "label": "아이콘 원 + 수치 3개",
+   "label": "아이콘 원 + 수치(2~4개)",
    "emoji": "📊",
    "desc": "가로 3칸, 칸마다 아이콘 원 + 2줄 글(이름·수치) — 기관 규모(인력·예산·지원 수)처럼 핵심 수치 세 개를 한 줄로. NIPA 템플릿(nipa-globe 24번 위) 출처.",
    "fields": {
     "title": "이름(첫 줄)",
     "meta": "수치(둘째 줄)"
    },
-   "items": "3",
+   "items": "2~4",
    "args": {},
    "impl": {
     "pptgen": {
@@ -4033,7 +4043,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"인력\"\n  meta: \"500명\"\n- title: \"'26년 예산\"\n  meta: \"3조 1천억원\"\n- title: \"지원기업 수\"\n  meta: \"연간 1,700개\""
+    "body": "- title: \"제목 1\"\n  meta: \"00\"\n- title: \"제목 2\"\n  meta: \"00\"\n- title: \"제목 3\"\n  meta: \"00\""
    }
   },
   "grid.tag-box-2": {
@@ -4070,12 +4080,12 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"주요 역할\"\n  meta: \"기업 지원 | 글로벌 진출 | 인재 양성\"\n- title: \"조직\"\n  meta: \"원장 | 부원장 | 8개 본부\""
+    "body": "- title: \"제목 1\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3\"\n- title: \"제목 2\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3\""
    }
   },
   "grid.columns-check-4": {
    "group": "grid",
-   "label": "4열 비교 카드(머리띠 + 체크 글머리 + 그림)",
+   "label": "4열 비교 카드(머리띠 + 체크 글머리)",
    "emoji": "🧩",
    "desc": "4열 비교 카드(머리띠 + 체크 글머리 + 그림). 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
    "fields": {
@@ -4091,7 +4101,8 @@
      "side": false,
      "pattern": "r01-p01",
      "theme": "nipa-blue",
-     "note": "2026-10-23 사용자 수정본으로 다시 등록 — 칸 지정(slots.map)"
+     "note": "2026-10-23 사용자 수정본으로 다시 등록 — 칸 지정(slots.map)",
+     "stretch": "x"
     },
     "cs_v2": {
      "status": "fallback",
@@ -4106,7 +4117,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"HW 경쟁력\"\n  desc: \"세계 최강 반도체 경쟁력\"\n  meta: \"반도체 인재 및 기술 저력 보유\"\n- title: \"SW 경쟁력\"\n  desc: \"세계 3번째 LLM 개발國\"\n  meta: \"빅테크 못지 않은 초거대 AI 우수한 경량화 AI 모델 보유\"\n- title: \"독자적 산업 생태계\"\n  desc: \"제조업 경쟁력 세계 4위(’20, UNIDO)\"\n  meta: \"건설〮석유화학 등 기간산업 반도체〮디스플레이, 자동차〮철강 방위산업까지 세계적 경쟁력 보유 | 글로벌 8위 수출 강국('23)\"\n- title: \"국민적 관심\"\n  desc: \"AI 등 신기술에 대한 국민적 열망과 적응력 高\"\n  meta: \"10인 이상 기업 AI 도입률 OECD 1위( ‘22) | 국민 AI 관심도 72.2%(NIA, '23) 교육〮미디어 등 전 조사분야에서 AI적용으로 인한 변화를 긍정적 평가\""
+    "body": "- title: \"제목 1\"\n  desc: \"설명 1\"\n  meta: \"글머리 1\"\n- title: \"제목 2\"\n  desc: \"설명 2\"\n  meta: \"글머리 1\"\n- title: \"제목 3\"\n  desc: \"설명 3\"\n  meta: \"글머리 1 | 글머리 2\"\n- title: \"제목 4\"\n  desc: \"설명 4\"\n  meta: \"글머리 1 | 글머리 2\""
    }
   },
   "process.grow-cards-3": {
@@ -4115,11 +4126,11 @@
    "emoji": "🧩",
    "desc": "오른쪽으로 커지는 사진 카드 3단 + 아래 요약. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
    "fields": {
-    "title": "열 첫 칸",
-    "desc": "열 둘째 칸",
-    "meta": "나머지 칸(｜ 구분)"
+    "title": "카드 제목(사진 위 머리)",
+    "desc": "카드 아래 첫 줄",
+    "meta": "카드 아래 글머리(｜ 구분 — 둘째 카드는 목록)"
    },
-   "items": "2",
+   "items": "3",
    "args": {},
    "impl": {
     "pptgen": {
@@ -4142,7 +4153,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"IDCInternet Data Center\"\n  desc: \"대용량 데이터 처리를 위한서버 구매, 임차 데이터센터\"\n  meta: \"• 대용량 데이터 처리\"\n- title: \"AIDCAI Data Center\"\n  desc: \"CDCCloud Data Center\"\n  meta: \"인공지능 워크로드 제공에 특화 고성능 컴퓨팅 자원,                                                          대규모 데이터  처리 지원 | 클라우드 서비스 제공에 최적화된데이터센터 | • 확장 가능성 | • 비용 효율성 | • 유연성 | • 더 빠른 동적 리소스 확장\""
+    "body": "- title: \"제목 1\"\n  desc: \"설명 1\"\n- title: \"제목 2\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3\"\n- title: \"제목 3\"\n  desc: \"설명 3\""
    }
   },
   "grid.pinned-cards-3": {
@@ -4163,7 +4174,8 @@
      "side": false,
      "pattern": "r01-p04",
      "theme": "nipa-blue",
-     "note": "2026-10-23 사용자 수정본으로 다시 등록 — 칸 지정(slots.map)"
+     "note": "2026-10-23 사용자 수정본으로 다시 등록 — 칸 지정(slots.map)",
+     "stretch": "x"
     },
     "cs_v2": {
      "status": "fallback",
@@ -4178,7 +4190,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"카드 제목 1\"\n- title: \"카드 제목 2\"\n- title: \"미국 거짓판례를 제출한 변호사\"\n  desc: \"5,000달러 벌금\""
+    "body": "- title: \"제목 1\"\n- title: \"제목 2\"\n- title: \"제목 3\"\n  desc: \"설명 3\""
    }
   },
   "grid.columns-diagram-3": {
@@ -4198,7 +4210,8 @@
      "status": "ready",
      "side": false,
      "pattern": "r01-p05",
-     "theme": "nipa-blue"
+     "theme": "nipa-blue",
+     "stretch": "x"
     },
     "cs_v2": {
      "status": "fallback",
@@ -4213,7 +4226,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"인공지능(AI)\"\n  desc: \"초격차 기술 확보\"\n  meta: \"선순환 AI 생태계 | AI반도체 | AI | 민간투자 유인 | 미개척 첨단 R&D 집중 | 격차는 늘리고 | 투자 활성화 | 정부투자 (공공수요 창출) | AI-반도체 인프라 완비 | 컴퓨팅파워 | 데이터 | SW·HW | 인재\"\n- title: \"첨단바이오\"\n  desc: \"바이오 기술과타분야 융합\"\n  meta: \"체계화된검증데이터 | 혁신 기반기술 | 고품질데이터 | 체감가치 | 서비스플랫폼 | 기존 한계 극복,시장 창출 | 빠른 속도,높은 신뢰성\"\n- title: \"양자(Quantum)\"\n  desc: \"추격  :  퀀텀 코어기술\"\n  meta: \"선도국에서 앞서 발전해온 코어기술의 빠른 추격 | (퀀텀 프로세서, 알고리즘 및 SW, 네트워크, 센싱) | 선도  :  퀀텀 엔지니어링 | 퀸텀 코어기술의 시스템화 선도 | (퀀텀 소부장, 소자·공정, 디지털-퀀텀 하이브리드) | 개척  : 퀀텀 활용 및 서비스 | 퀀텀을 적용한 혁신사례 창출로 新영역 개척 | (퀀텀 킬러 애플리케이션, 퀀텀 AI)\""
+    "body": "- title: \"제목 1\"\n  desc: \"설명 1\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3 | 글머리 4 | 글머리 5 | 글머리 6 | 글머리 7 | 글머리 8 | 글머리 9 | 글머리 10 | 글머리 11 | 글머리 12 | 글머리 13\"\n- title: \"제목 2\"\n  desc: \"설명 2\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3 | 글머리 4 | 글머리 5 | 글머리 6 | 글머리 7\"\n- title: \"제목 3\"\n  desc: \"설명 3\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3 | 글머리 4 | 글머리 5 | 글머리 6 | 글머리 7 | 글머리 8\""
    }
   },
   "grid.photo-columns-4": {
@@ -4271,8 +4284,8 @@
     "r01-p06"
    ],
    "example": {
-    "args": "header=\"세계 최고 AI 혁신 생태계를 토대로 사회 전반의 AI 대전환을 촉진하고, 변화의 온전한 수용을 위한 새로운 디지털 질서 정립\" header-tag=\"추진전략\" items-tag=\"중점 추진과제\"",
-    "body": "- title: \"[ R&D ]\"\n  desc: \"글로벌 선도 수준\\nAI 기술 혁신\"\n- title: \"[ 인프라 ]\"\n  desc: \"AI 컴퓨팅자원 및\\n인재 확보\"\n- title: \"[ 사회 ]\"\n  desc: \"국민 일상에\\n선도적 AI 도입\"\n- title: \"[ 글로벌 선도 ]\"\n  desc: \"새로운\\n디지털 질서 정립\""
+    "args": "header=\"머리 문구\" header-tag=\"꼬리표\" items-tag=\"항목 꼬리표\"",
+    "body": "- title: \"제목 1\"\n  desc: \"설명 1\"\n- title: \"제목 2\"\n  desc: \"설명 2\"\n- title: \"제목 3\"\n  desc: \"설명 3\"\n- title: \"제목 4\"\n  desc: \"설명 4\""
    }
   },
   "structure.icon-ring": {
@@ -4307,7 +4320,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"제목\""
+    "body": "- title: \"제목 1\""
    }
   },
   "structure.list-converge-5": {
@@ -4342,7 +4355,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"AI 산업의 핵심 기반인 AI 컴퓨팅 인프라 경쟁력 강화\"\n  desc: \"산업·지역·사회 전반의 AI 대전환을 선도\"\n  meta: \"AI·AX 전문인력 양성 및 기술 개발 지원 | AI 산업의 지속가능한 성장환경 구현 | 해외거점 연계를 통한 K-AI의 글로벌 리더십 확보\"\n- title: \"NIPA\\n역할\""
+    "body": "- title: \"제목 1\"\n  desc: \"설명 1\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3\"\n- title: \"제목 2\""
    }
   },
   "structure.list-diverge-5": {
@@ -4377,7 +4390,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"국정\\n과제\"\n- title: \"AI 3대 강국 도약을 위한 AI 고속도로 구축\"\n  desc: \"국정과제 20\"\n  meta: \"세계에서 AI를 가장 잘 쓰는 나라 구현 | 국정과제 21 | 초격차 AI 선도 기술·인재 확보 | 국정과제 22 | 안전과 책임 기반의 AI 기본 사회 실현 | 국정과제 23 | 세계 1위 AI 정부 실현 | 국정과제 24\""
+    "body": "- title: \"제목 1\"\n- title: \"제목 2\"\n  desc: \"설명 2\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3 | 글머리 4 | 글머리 5 | 글머리 6 | 글머리 7 | 글머리 8\""
    }
   },
   "grid.icon-pills-4": {
@@ -4386,6 +4399,7 @@
    "emoji": "🧩",
    "desc": "위 작은 아이콘 + 알약 라벨 4개. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
    "fields": {
+    "icon": "위 아이콘(라이브러리 아이콘 키 — 비우면 원본 아이콘)",
     "title": "열 첫 칸",
     "desc": "열 둘째 칸",
     "meta": "나머지 칸(｜ 구분)"
@@ -4412,7 +4426,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"AI 산업본부2개 본부로 확대\"\n- title: \"생성형AI팀정규직제로 개편\"\n- title: \"AI안전센터TF신설\"\n- title: \"지역디지털본부신설\""
+    "body": "- title: \"제목 1\"\n- title: \"제목 2\"\n- title: \"제목 3\"\n- title: \"제목 4\""
    }
   },
   "process.tab-cards-4": {
@@ -4447,12 +4461,12 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"01\"\n  desc: \"사업공고\\n\\n\\n3월 중순 예정\"\n- title: \"02\"\n  desc: \"과제 선정평가 및 \\n협약체결\\n\\n4월 ~ 5월\"\n- title: \"03\"\n  desc: \"과제수행 및\\n사업비 교부\\n\\n5월 – 12월\"\n- title: \"04\"\n  desc: \"과제 결과평가 및 \\n사업비 정산\\n\\n12월 – ’26년 1월\""
+    "body": "- title: \"01\"\n  desc: \"설명 1\"\n- title: \"02\"\n  desc: \"설명 2\"\n- title: \"03\"\n  desc: \"설명 3\"\n- title: \"04\"\n  desc: \"설명 4\""
    }
   },
   "structure.converge-tree-6": {
    "group": "structure",
-   "label": "원 6개가 선으로 아래 단계 3개에 모인다",
+   "label": "원 여러 개(4~7)가 선으로 아래 단계에 모인다",
    "emoji": "🧩",
    "desc": "원 6개가 선으로 아래 단계 3개에 모인다. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
    "fields": {
@@ -4460,7 +4474,7 @@
     "desc": "열 둘째 칸",
     "meta": "나머지 칸(｜ 구분)"
    },
-   "items": "6",
+   "items": "4~7",
    "args": {
     "header": {
      "values": "글",
@@ -4511,13 +4525,13 @@
     "r01-p13"
    ],
    "example": {
-    "args": "header=\"全 산업의 서비스화 확산\" sub=\"기존 산업(물류, 교통 등)과 SW\" items-tag=\"X(산업)\" footer=\"As a Service\"",
-    "body": "- title: \"교통\"\n- title: \"의료\"\n- title: \"금융\"\n- title: \"제조\"\n- title: \"교육\"\n- title: \"문화\""
+    "args": "header=\"머리 문구\" sub=\"부제 문구\" items-tag=\"항목 꼬리표\" footer=\"아래 문구\"",
+    "body": "- title: \"제목 1\"\n- title: \"제목 2\"\n- title: \"제목 3\"\n- title: \"제목 4\"\n- title: \"제목 5\"\n- title: \"제목 6\""
    }
   },
   "grid.image-rows-2x3": {
    "group": "grid",
-   "label": "머리띠 + 그림 3장 두 단을 + 로 묶음",
+   "label": "머리띠 + 빈 상자 3장 두 단을 + 로 묶음",
    "emoji": "🧩",
    "desc": "머리띠 + 그림 3장 두 단을 + 로 묶음. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
    "fields": {
@@ -4549,7 +4563,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"초거대 AI 모델(파운데이션)\"\n  desc: \"오픈 AI,\\nChatGPT\"\n  meta: \"구글, 제미나이\"\n- title: \"AI 반도체\"\n  desc: \"엔비디아, H200\"\n  meta: \"AMD, MI300X | 딥엑스, DX-H1\""
+    "body": "- title: \"제목 1\"\n  desc: \"설명 1\"\n  meta: \"글머리 1\"\n- title: \"제목 2\"\n  desc: \"설명 2\"\n  meta: \"글머리 1 | 글머리 2\""
    }
   },
   "process.image-boxes-2": {
@@ -4585,43 +4599,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"B200\"\n  desc: \"H100\"\n  meta: \"메모리 | 대규모 GPU 자원 확보 | 1\"\n- title: \"가칭 World Best LLM프로젝트\"\n  desc: \"참여기업 등\"\n  meta: \"기업 | 대학 | AI 컴퓨팅 인프라 지원 | 2\""
-   }
-  },
-  "structure.triangle-flow-3": {
-   "group": "structure",
-   "label": "세 주체 상자 + 번호 화살표 + 가운데 강조 리본",
-   "emoji": "🧩",
-   "desc": "세 주체 상자 + 번호 화살표 + 가운데 강조 리본. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
-   "fields": {
-    "title": "열 첫 칸",
-    "desc": "열 둘째 칸",
-    "meta": "나머지 칸(｜ 구분)"
-   },
-   "items": "",
-   "args": {},
-   "impl": {
-    "pptgen": {
-     "status": "ready",
-     "side": false,
-     "pattern": "r01-p16",
-     "theme": "nipa-blue"
-    },
-    "cs_v2": {
-     "status": "fallback",
-     "shortcode": "process.cycle-3",
-     "fit": "근사",
-     "pptx": false,
-     "near": "process.cycle-3",
-     "pptx_shortcode": "step-flow"
-    }
-   },
-   "aliases": [
-    "r01-p16"
-   ],
-   "example": {
-    "args": "",
-    "body": "- title: \"제목\""
+    "body": "- title: \"제목 1\"\n  desc: \"설명 1\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3\"\n- title: \"제목 2\"\n  desc: \"설명 2\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3 | 글머리 4\""
    }
   },
   "nav.numbered-tabs-3": {
@@ -4656,14 +4634,51 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"Policy\"\n  desc: \"Policy\"\n  meta: \"Policy\"\n- title: \"1\"\n  desc: \"2\"\n  meta: \"3\"\n- title: \"정부 정책\"\n  desc: \"2024 주요 정책\"\n  meta: \"대한민국 디지털 전략 2.0 | AI안전 정상회의 | AI반도체 추진 전략\""
+    "body": "- title: \"제목 1\"\n  desc: \"설명 1\"\n  meta: \"글머리 1\"\n- title: \"1\"\n  desc: \"2\"\n  meta: \"3\"\n- title: \"제목 3\"\n  desc: \"설명 3\"\n  meta: \"글머리 1 | 글머리 2 | 글머리 3\""
    }
   },
-  "structure.two-circles-cycle": {
-   "group": "structure",
+  "sample.triangle-flow-3": {
+   "group": "sample",
+   "label": "세 주체 상자 + 번호 화살표 + 가운데 강조 리본",
+   "emoji": "🧩",
+   "desc": "세 주체 상자 + 번호 화살표 + 가운데 강조 리본. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로. 견본 — 완성된 도식(원 안 그림이 주인공)이라 재사용보다 참고용.",
+   "fields": {
+    "title": "열 첫 칸",
+    "desc": "열 둘째 칸",
+    "meta": "나머지 칸(｜ 구분)"
+   },
+   "items": "",
+   "args": {},
+   "impl": {
+    "pptgen": {
+     "status": "ready",
+     "side": false,
+     "pattern": "r01-p16",
+     "theme": "nipa-blue"
+    },
+    "cs_v2": {
+     "status": "fallback",
+     "shortcode": "process.cycle-3",
+     "fit": "근사",
+     "pptx": false,
+     "near": "process.cycle-3",
+     "pptx_shortcode": "step-flow"
+    }
+   },
+   "aliases": [
+    "structure.triangle-flow-3",
+    "r01-p16"
+   ],
+   "example": {
+    "args": "",
+    "body": "- title: \"제목 1\""
+   }
+  },
+  "sample.two-circles-cycle": {
+   "group": "sample",
    "label": "두 원 + 점선 순환 화살표 + 아이콘",
    "emoji": "🧩",
-   "desc": "두 원 + 점선 순환 화살표 + 아이콘. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+   "desc": "두 원 + 점선 순환 화살표 + 아이콘. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로. 견본 — 완성된 도식(원 안 그림이 주인공)이라 재사용보다 참고용.",
    "fields": {
     "title": "열 첫 칸",
     "desc": "열 둘째 칸",
@@ -4688,18 +4703,19 @@
     }
    },
    "aliases": [
+    "structure.two-circles-cycle",
     "r01-p18"
    ],
    "example": {
     "args": "",
-    "body": "- title: \"국 가\"\n- title: \"산 업\""
+    "body": "- title: \"제목 1\"\n- title: \"제목 2\""
    }
   },
-  "structure.venn-icon-2": {
-   "group": "structure",
+  "sample.venn-icon-2": {
+   "group": "sample",
    "label": "벤 두 원 + 가운데 아이콘 + 위 아이콘·화살표",
    "emoji": "🧩",
-   "desc": "벤 두 원 + 가운데 아이콘 + 위 아이콘·화살표. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+   "desc": "벤 두 원 + 가운데 아이콘 + 위 아이콘·화살표. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로. 견본 — 완성된 도식(원 안 그림이 주인공)이라 재사용보다 참고용.",
    "fields": {
     "title": "열 첫 칸",
     "desc": "열 둘째 칸",
@@ -4723,11 +4739,12 @@
     }
    },
    "aliases": [
+    "structure.venn-icon-2",
     "r01-p19"
    ],
    "example": {
     "args": "",
-    "body": "- title: \"지역산업\"\n- title: \"SW신산업\""
+    "body": "- title: \"제목 1\"\n- title: \"제목 2\""
    }
   }
  },

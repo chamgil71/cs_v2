@@ -4828,7 +4828,7 @@
    "group": "structure",
    "label": "가운데 큰 원(그림) + 둘레 아이콘 4~10",
    "emoji": "🧩",
-   "desc": "가운데 큰 원 하나와 둘레 아이콘 4~10개 — 첫 항목 = 가운데(url 이 있으면 그 그림을 원으로 잘라 넣고 PowerPoint 「그림 바꾸기」로 교체, 없으면 아이콘 원), 나머지 = 둘레. 이름·설명은 아이콘 바깥(방사 방향)에 놓인다. 반지름은 바깥 글까지 본문 칸(split 이면 그 칸) 안에 들게 줄인다. 데코_도형디자인참고(r01-p07)의 모양을 내장으로 다시 그림(2026-10-28).",
+   "desc": "가운데 큰 원 하나와 둘레 아이콘 4~10개 — 첫 항목 = 가운데(url 이 있으면 그 그림을 원으로 잘라 넣고 PowerPoint 「그림 바꾸기」로 교체, 없으면 아이콘 원), 나머지 = 둘레. 이름·설명은 아이콘 바깥(방사 방향)에 놓인다. 반지름은 바깥 글까지 본문 칸(split 이면 그 칸) 안에 들게 줄인다. 데코_도형디자인참고의 모양을 내장으로 다시 그림(2026-10-28).",
    "fields": {
     "title": "첫 항목 = 가운데 이름(원 아래 알약), 나머지 = 둘레 이름",
     "desc": "둘레 설명(이름 아래 작은 글)",
@@ -4855,9 +4855,6 @@
      "near": "structure.hub"
     }
    },
-   "aliases": [
-    "r01-p07"
-   ],
    "example": {
     "args": "",
     "body": "- title: \"핵심 역량\"\n  icon: \"head-chip-outline\"\n- title: \"데이터\"\n  icon: \"database-window\"\n  desc: \"수집·정제\"\n- title: \"모델\"\n  icon: \"eye-scan\"\n  desc: \"학습·평가\"\n- title: \"인프라\"\n  icon: \"server-network\"\n  desc: \"GPU·클라우드\"\n- title: \"보안\"\n  icon: \"fingerprint\"\n  desc: \"접근 통제\"\n- title: \"인재\"\n  icon: \"team-network\"\n  desc: \"교육·채용\"\n- title: \"서비스\"\n  icon: \"monitor-analytics\"\n  desc: \"현장 적용\""

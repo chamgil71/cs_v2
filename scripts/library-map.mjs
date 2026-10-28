@@ -3485,7 +3485,7 @@ export const LAYOUTS = {
   "group": "structure",
   "label": "가운데 큰 원(그림) + 둘레 아이콘 4~10",
   "emoji": "🧩",
-  "desc": "가운데 큰 원 하나와 둘레 아이콘 4~10개 — 첫 항목 = 가운데(url 이 있으면 그 그림을 원으로 잘라 넣고 PowerPoint 「그림 바꾸기」로 교체, 없으면 아이콘 원), 나머지 = 둘레. 이름·설명은 아이콘 바깥(방사 방향)에 놓인다. 반지름은 바깥 글까지 본문 칸(split 이면 그 칸) 안에 들게 줄인다. 데코_도형디자인참고(r01-p07)의 모양을 내장으로 다시 그림(2026-10-28).",
+  "desc": "가운데 큰 원 하나와 둘레 아이콘 4~10개 — 첫 항목 = 가운데(url 이 있으면 그 그림을 원으로 잘라 넣고 PowerPoint 「그림 바꾸기」로 교체, 없으면 아이콘 원), 나머지 = 둘레. 이름·설명은 아이콘 바깥(방사 방향)에 놓인다. 반지름은 바깥 글까지 본문 칸(split 이면 그 칸) 안에 들게 줄인다. 데코_도형디자인참고의 모양을 내장으로 다시 그림(2026-10-28).",
   "fields": {
    "title": "첫 항목 = 가운데 이름(원 아래 알약), 나머지 = 둘레 이름",
    "desc": "둘레 설명(이름 아래 작은 글)",
@@ -3504,9 +3504,7 @@ export const LAYOUTS = {
    "pattern": null,
    "theme": null
   },
-  "aliases": [
-   "r01-p07"
-  ]
+  "aliases": []
  },
  "structure.list-converge-5": {
   "group": "structure",
@@ -3918,7 +3916,6 @@ export const LAYOUT_ALIASES = {
  "r01-p04": "grid.pinned-cards-3",
  "r01-p05": "grid.columns-diagram-3",
  "r01-p06": "grid.photo-columns-4",
- "r01-p07": "structure.icon-ring",
  "r01-p08": "structure.list-converge-5",
  "r01-p09": "structure.list-diverge-5",
  "r01-p10": "grid.icon-pills-4",

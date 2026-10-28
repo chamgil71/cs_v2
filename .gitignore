@@ -26,3 +26,6 @@ public/*
 
 # V2 Specific Storage Folder (ignored as requested)
 storage/
+
+# FreeFileSync 동기화 잠금 파일(프로젝트와 무관)
+sync.ffs_lock

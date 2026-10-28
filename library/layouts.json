@@ -14,6 +14,150 @@
   "media": "이미지 혼합 — 이미지가 칸의 절반 이상",
   "sample": "견본 — 원본 내용이 박힌 참고용(재사용 비권장)"
  },
+ "structures": [
+  {
+   "name": "나열",
+   "test": "대등한 N개, 순서·관계 없음"
+  },
+  {
+   "name": "선택지·등급",
+   "test": "여러 안 중 하나를 권함"
+  },
+  {
+   "name": "나열 + 머리말",
+   "test": "N개 위에 공통 머리 한 줄"
+  },
+  {
+   "name": "주·부",
+   "test": "하나가 주인공, 나머지가 보조"
+  },
+  {
+   "name": "비교",
+   "test": "둘(이상)을 맞대어 차이를 보임"
+  },
+  {
+   "name": "전→후 변화",
+   "test": "이전 → 이후"
+  },
+  {
+   "name": "수치 비교",
+   "test": "여러 대상의 크기·기간"
+  },
+  {
+   "name": "순서·단계",
+   "test": "시간·절차 순서"
+  },
+  {
+   "name": "순환",
+   "test": "끝이 처음으로 돌아감"
+  },
+  {
+   "name": "갈래·분기",
+   "test": "여러 줄기가 나뉘거나 하나로 모임"
+  },
+  {
+   "name": "성장·상승",
+   "test": "단계가 갈수록 커짐"
+  },
+  {
+   "name": "수준·스펙트럼",
+   "test": "낮음 → 높음 단계"
+  },
+  {
+   "name": "중심-주변",
+   "test": "하나를 중심으로 여러 요소"
+  },
+  {
+   "name": "기반-기둥",
+   "test": "공통 기반 위 여러 축"
+  },
+  {
+   "name": "포함 관계",
+   "test": "A ⊃ B ⊃ C"
+  },
+  {
+   "name": "교집합",
+   "test": "두 영역이 겹치는 가치"
+  },
+  {
+   "name": "그룹 × 요소",
+   "test": "2~3 묶음 각각에 여러 요소"
+  },
+  {
+   "name": "핵심 수치",
+   "test": "숫자 몇 개가 주인공"
+  },
+  {
+   "name": "위치·포지셔닝",
+   "test": "두 축 위의 위치"
+  },
+  {
+   "name": "비율·달성도",
+   "test": "하나의 수치가 전체 중 얼마"
+  },
+  {
+   "name": "한 문장 강조",
+   "test": "핵심 메시지 하나(+요약·질문)"
+  },
+  {
+   "name": "알림·주의",
+   "test": "팁·주의·위험"
+  },
+  {
+   "name": "요약",
+   "test": "앞 내용을 몇 줄로"
+  },
+  {
+   "name": "인물 발언",
+   "test": "인물의 말 한마디가 주인공"
+  },
+  {
+   "name": "코드·명령",
+   "test": "코드·실행 결과·명령"
+  },
+  {
+   "name": "질문·답",
+   "test": "Q&A"
+  },
+  {
+   "name": "갈래별 내용",
+   "test": "같은 주제를 OS·버전별로"
+  },
+  {
+   "name": "목차·장 목록",
+   "test": "이후 장들 소개"
+  },
+  {
+   "name": "이미지 주인공",
+   "test": "사진·삽화가 이해의 중심"
+  },
+  {
+   "name": "자유 내용 칸",
+   "test": "상자 하나에 글·그림을 자유롭게 — 본문 칸(split 이면 그 칸) 전체를 채움"
+  }
+ ],
+ "arrangements": {
+  "열": "카드·상자가 가로로 나란히(N단) — 상자가 주인공(화살표가 있어도)",
+  "행": "줄이 위→아래로 쌓임(목록) — 한 줄 = 한 항목",
+  "격자": "가로×세로 2차원(칩 묶음·2×3)",
+  "비대칭": "큰 칸 + 작은 칸 — 칸 크기로 주·부가 보임",
+  "흐름": "노드·꺾쇠가 선·화살표로 이어져 나아감(가로·세로·지그재그·계단) — 선·노드가 주인공",
+  "방사": "하나와 여럿이 선으로 이어짐(중심-주변·모임·퍼짐)",
+  "도형": "겹친 원·동심원·기둥·천칭·삼각 순환 같은 도식 — 도형 모양 자체가 뜻",
+  "차트": "막대·게이지·사분면 — 축·값이 있음",
+  "띠": "내용 높이만 차지하는 한 줄 바 — 다른 블록 위·아래에 붙임",
+  "글": "문장·문단·인용이 주인공(도형 없음)",
+  "탭": "탭을 눌러 바꿔 보는 갈래",
+  "창": "코드 편집기·콘솔 창(고정폭 글꼴)",
+  "그림": "그림·영상이 칸의 절반 이상"
+ },
+ "extras": {
+  "머리띠": "위 머리띠(공통 제목 칸)",
+  "결론띠": "아래 결론 띠",
+  "그림칸": "사진·그림 자리가 박혀 있음",
+  "화살표": "칸 사이 화살표",
+  "체크": "체크 글머리"
+ },
  "item_fields": {
   "icon": "아이콘 키(라이브러리) · 이모지 · 수치(stat 계열)",
   "title": "제목",
@@ -144,6 +288,10 @@
     "color": "카드 강조색(선택)"
    },
    "items": "2~8",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
    "args": {
     "cols": {
      "values": "1~6",
@@ -242,6 +390,13 @@
     "meta": "아래 칸 덧붙임(｜ 구분)"
    },
    "items": "1~3",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "머리띠"
+   ],
    "args": {
     "cols": {
      "values": "1~3",
@@ -284,6 +439,10 @@
     "desc": "설명"
    },
    "items": "2~6",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
    "args": {
     "cols": {
      "values": "1~6",
@@ -352,6 +511,10 @@
     "tag": "꼬리표"
    },
    "items": "3~12",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "격자",
    "args": {
     "cols": {
      "values": "1~6",
@@ -415,6 +578,13 @@
     "meta": "글머리(｜ 구분)"
    },
    "items": "1~4",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "머리띠"
+   ],
    "args": {
     "bg": {
      "values": "base|alt",
@@ -472,6 +642,10 @@
     "note": "아래 설명"
    },
    "items": "2~4",
+   "structures": [
+    "선택지·등급"
+   ],
+   "arrangement": "열",
    "args": {
     "cols": {
      "values": "1~6",
@@ -534,6 +708,11 @@
     "color": "카드 강조색"
    },
    "items": "2~4",
+   "structures": [
+    "나열",
+    "그룹 × 요소"
+   ],
+   "arrangement": "열",
    "args": {
     "cols": {
      "values": "1~6",
@@ -625,6 +804,11 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "3",
+   "structures": [
+    "주·부"
+   ],
+   "arrangement": "비대칭",
    "args": {
     "header": {
      "values": "문자열",
@@ -667,6 +851,11 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "3",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
    "args": {
     "header": {
      "values": "문자열",
@@ -709,6 +898,14 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "2",
+   "structures": [
+    "주·부"
+   ],
+   "arrangement": "비대칭",
+   "extras": [
+    "머리띠"
+   ],
    "args": {
     "header": {
      "values": "문자열",
@@ -751,6 +948,14 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "2",
+   "structures": [
+    "주·부"
+   ],
+   "arrangement": "비대칭",
+   "extras": [
+    "머리띠"
+   ],
    "args": {
     "header": {
      "values": "문자열",
@@ -793,6 +998,11 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "1",
+   "structures": [
+    "자유 내용 칸"
+   ],
+   "arrangement": "열",
    "args": {
     "header": {
      "values": "문자열",
@@ -835,6 +1045,11 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "2",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
    "args": {
     "header": {
      "values": "문자열",
@@ -877,6 +1092,11 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "3",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
    "args": {
     "header": {
      "values": "문자열",
@@ -919,6 +1139,11 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "4",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
    "args": {
     "header": {
      "values": "문자열",
@@ -961,6 +1186,11 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "2",
+   "structures": [
+    "주·부"
+   ],
+   "arrangement": "비대칭",
    "args": {
     "header": {
      "values": "문자열",
@@ -1003,6 +1233,11 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "2",
+   "structures": [
+    "주·부"
+   ],
+   "arrangement": "비대칭",
    "args": {
     "header": {
      "values": "문자열",
@@ -1045,6 +1280,11 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "3",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
    "args": {
     "header": {
      "values": "문자열",
@@ -1087,6 +1327,14 @@
     "meta": "글머리(｜ 구분)",
     "desc": "글머리로 이어 붙임"
    },
+   "items": "3",
+   "structures": [
+    "나열 + 머리말"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "머리띠"
+   ],
    "args": {
     "header": {
      "values": "문자열",
@@ -1130,6 +1378,14 @@
     "desc": "내용 글(글머리 뒤에 이어 붙임)"
    },
    "items": "3",
+   "structures": [
+    "나열",
+    "그룹 × 요소"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "머리띠"
+   ],
    "args": {},
    "impl": {
     "pptgen": {
@@ -1165,6 +1421,13 @@
     "desc": "내용 글(글머리 앞에)"
    },
    "items": "2",
+   "structures": [
+    "주·부"
+   ],
+   "arrangement": "비대칭",
+   "extras": [
+    "머리띠"
+   ],
    "args": {},
    "impl": {
     "pptgen": {
@@ -1203,6 +1466,10 @@
     "color": "쪽 색"
    },
    "items": "2",
+   "structures": [
+    "비교"
+   ],
+   "arrangement": "열",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -1258,6 +1525,10 @@
     "desc": "설명"
    },
    "items": "2",
+   "structures": [
+    "전→후 변화"
+   ],
+   "arrangement": "열",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -1314,6 +1585,10 @@
     "meta": "글머리"
    },
    "items": "2",
+   "structures": [
+    "주·부"
+   ],
+   "arrangement": "비대칭",
    "args": {
     "ratio": {
      "values": "0.5~0.75",
@@ -1377,6 +1652,10 @@
     "desc": "설명"
    },
    "items": "2",
+   "structures": [
+    "비교"
+   ],
+   "arrangement": "도형",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -1433,6 +1712,10 @@
     "tag": "highlight = 강조"
    },
    "items": "2~6",
+   "structures": [
+    "수치 비교"
+   ],
+   "arrangement": "차트",
    "args": {
     "emphasis": {
      "values": "last|first|none|<번호>",
@@ -1495,6 +1778,14 @@
     "desc": "설명",
     "meta": "글머리(｜ 구분)"
    },
+   "items": "2",
+   "structures": [
+    "비교"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "결론띠"
+   ],
    "args": {
     "header": {
      "values": "문자열",
@@ -1540,6 +1831,10 @@
     "tag": "active = 강조"
    },
    "items": "2~6",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "흐름",
    "args": {
     "connector": {
      "values": "arrow|line|none",
@@ -1646,6 +1941,10 @@
     "color": "번호색"
    },
    "items": "2~6",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "행",
    "args": {
     "badge": {
      "values": "icon|number|none",
@@ -1709,6 +2008,10 @@
     "tag": "highlight = 강조"
    },
    "items": "2~6",
+   "structures": [
+    "성장·상승"
+   ],
+   "arrangement": "흐름",
    "args": {
     "grow": {
      "values": "1.0~1.6",
@@ -1791,6 +2094,11 @@
     "color": "색"
    },
    "items": "2~6",
+   "structures": [
+    "수준·스펙트럼",
+    "성장·상승"
+   ],
+   "arrangement": "열",
    "args": {
     "cols": {
      "values": "1~6",
@@ -1870,6 +2178,10 @@
     "color": "갈래 색"
    },
    "items": "2~8",
+   "structures": [
+    "갈래·분기"
+   ],
+   "arrangement": "흐름",
    "args": {
     "connector": {
      "values": "arrow|line|none",
@@ -1932,6 +2244,10 @@
     "icon": "수치"
    },
    "items": "2",
+   "structures": [
+    "전→후 변화"
+   ],
+   "arrangement": "열",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -1988,6 +2304,10 @@
     "desc": "설명"
    },
    "items": "3",
+   "structures": [
+    "순환"
+   ],
+   "arrangement": "도형",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -2044,6 +2364,10 @@
     "desc": "설명"
    },
    "items": "3~7",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "흐름",
    "args": {
     "emphasis": {
      "values": "last|first|none|<번호>",
@@ -2108,6 +2432,10 @@
     "meta": "덧붙임(｜ 구분)"
    },
    "items": "2~5",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "흐름",
    "args": {},
    "impl": {
     "pptgen": {
@@ -2142,6 +2470,10 @@
     "meta": "글머리(｜ 구분)"
    },
    "items": "2~5",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "흐름",
    "args": {},
    "impl": {
     "pptgen": {
@@ -2175,6 +2507,10 @@
     "tag": "날짜 알약"
    },
    "items": "2~6",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "흐름",
    "args": {
     "header": {
      "values": "문자열",
@@ -2217,6 +2553,14 @@
     "desc": "원 안 글(짧게)",
     "meta": "글머리(｜ 구분)"
    },
+   "items": "4",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "화살표"
+   ],
    "args": {
     "header": {
      "values": "문자열",
@@ -2259,6 +2603,11 @@
     "desc": "원 안 글(짧게)",
     "meta": "글머리(｜ 구분)"
    },
+   "items": "4",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "흐름",
    "args": {
     "header": {
      "values": "문자열",
@@ -2301,6 +2650,14 @@
     "desc": "번호 원 글",
     "meta": "전 | 후 | 전 | 후 … (짝으로 읽어 전 → 후 줄)"
    },
+   "items": "3",
+   "structures": [
+    "전→후 변화"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "머리띠"
+   ],
    "args": {
     "header": {
      "values": "문자열",
@@ -2343,6 +2700,15 @@
     "desc": "번호 원 글",
     "meta": "체크 목록(｜ 구분)"
    },
+   "items": "3",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "머리띠",
+    "체크"
+   ],
    "args": {
     "header": {
      "values": "문자열",
@@ -2387,6 +2753,10 @@
     "color": "색"
    },
    "items": "3~7",
+   "structures": [
+    "중심-주변"
+   ],
+   "arrangement": "방사",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -2443,6 +2813,10 @@
     "icon": "아이콘"
    },
    "items": "3~6",
+   "structures": [
+    "기반-기둥"
+   ],
+   "arrangement": "도형",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -2499,6 +2873,10 @@
     "icon": "마지막 항목 = 중심 아이콘"
    },
    "items": "2~5",
+   "structures": [
+    "포함 관계"
+   ],
+   "arrangement": "도형",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -2554,6 +2932,10 @@
     "color": "원 색"
    },
    "items": "2~3",
+   "structures": [
+    "교집합"
+   ],
+   "arrangement": "도형",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -2608,6 +2990,11 @@
     "desc": "설명",
     "meta": "원(｜ 구분, 3~4개)"
    },
+   "items": "2",
+   "structures": [
+    "그룹 × 요소"
+   ],
+   "arrangement": "격자",
    "args": {},
    "impl": {
     "pptgen": {
@@ -2644,6 +3031,10 @@
     "color": "색"
    },
    "items": "2~4",
+   "structures": [
+    "핵심 수치"
+   ],
+   "arrangement": "열",
    "args": {
     "cols": {
      "values": "1~6",
@@ -2716,6 +3107,10 @@
     "title": "이름"
    },
    "items": "2~6",
+   "structures": [
+    "핵심 수치"
+   ],
+   "arrangement": "띠",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -2770,6 +3165,10 @@
     "tag": "highlight = 강조"
    },
    "items": "2~8",
+   "structures": [
+    "수치 비교"
+   ],
+   "arrangement": "차트",
    "args": {
     "scale": {
      "values": "linear|sqrt",
@@ -2841,6 +3240,10 @@
     "color": "색"
    },
    "items": "2~8",
+   "structures": [
+    "위치·포지셔닝"
+   ],
+   "arrangement": "차트",
    "args": {
     "xLabel": {
      "values": "문자열",
@@ -2908,6 +3311,10 @@
     "desc": "설명"
    },
    "items": "1~3",
+   "structures": [
+    "비율·달성도"
+   ],
+   "arrangement": "차트",
    "args": {
     "left": {
      "values": "문자열",
@@ -2978,6 +3385,10 @@
     "meta": "요약 줄(｜ 구분)"
    },
    "items": "1~3",
+   "structures": [
+    "한 문장 강조"
+   ],
+   "arrangement": "글",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3033,6 +3444,8 @@
     "desc": "문단 또는 글머리 한 줄"
    },
    "items": "1~8",
+   "structures": [],
+   "arrangement": "글",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3074,6 +3487,10 @@
     "desc": "하단 카드"
    },
    "items": "1",
+   "structures": [
+    "인물 발언"
+   ],
+   "arrangement": "글",
    "args": {},
    "impl": {
     "pptgen": {
@@ -3109,6 +3526,10 @@
     "desc": "메시지"
    },
    "items": "1",
+   "structures": [
+    "한 문장 강조"
+   ],
+   "arrangement": "띠",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3164,6 +3585,10 @@
     "color": "색"
    },
    "items": "1~3",
+   "structures": [
+    "알림·주의"
+   ],
+   "arrangement": "띠",
    "args": {
     "variant": {
      "values": "tip|info|warning|danger|success",
@@ -3229,6 +3654,10 @@
     "meta": "칩(｜ 구분)"
    },
    "items": "1~3",
+   "structures": [
+    "요약"
+   ],
+   "arrangement": "띠",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3285,6 +3714,8 @@
     "tag": "꼬리표"
    },
    "items": "1",
+   "structures": [],
+   "arrangement": "띠",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3340,6 +3771,10 @@
     "desc": "보조"
    },
    "items": "1",
+   "structures": [
+    "한 문장 강조"
+   ],
+   "arrangement": "글",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3395,6 +3830,10 @@
     "desc": "소속"
    },
    "items": "1",
+   "structures": [
+    "인물 발언"
+   ],
+   "arrangement": "글",
    "args": {},
    "impl": {
     "pptgen": {
@@ -3428,6 +3867,10 @@
     "desc": "코드(여러 줄)"
    },
    "items": "1",
+   "structures": [
+    "코드·명령"
+   ],
+   "arrangement": "창",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3482,6 +3925,10 @@
     "desc": "출력(여러 줄)"
    },
    "items": "1",
+   "structures": [
+    "코드·명령"
+   ],
+   "arrangement": "창",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3536,6 +3983,10 @@
     "desc": "명령"
    },
    "items": "1~4",
+   "structures": [
+    "코드·명령"
+   ],
+   "arrangement": "창",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3589,6 +4040,10 @@
     "desc": "답변"
    },
    "items": "2~6",
+   "structures": [
+    "질문·답"
+   ],
+   "arrangement": "행",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3642,6 +4097,10 @@
     "desc": "내용"
    },
    "items": "2~4",
+   "structures": [
+    "갈래별 내용"
+   ],
+   "arrangement": "탭",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3697,6 +4156,10 @@
     "tag": "종류(개념·도구·사례…)"
    },
    "items": "2~8",
+   "structures": [
+    "목차·장 목록"
+   ],
+   "arrangement": "행",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3750,6 +4213,10 @@
     "desc": "설명"
    },
    "items": "1~4",
+   "structures": [
+    "이미지 주인공"
+   ],
+   "arrangement": "그림",
    "args": {
     "side": {
      "values": "left|right",
@@ -3810,6 +4277,10 @@
     "title": "글머리"
    },
    "items": "1~5",
+   "structures": [
+    "이미지 주인공"
+   ],
+   "arrangement": "그림",
    "args": {
     "bg": {
      "values": "base|alt",
@@ -3864,6 +4335,10 @@
     "url": "그림 파일(md 폴더 기준 · jpg·png·gif)"
    },
    "items": "0~1",
+   "structures": [
+    "이미지 주인공"
+   ],
+   "arrangement": "그림",
    "args": {
     "ratio": {
      "values": "fill|3:4|4:3|16:9|가로:세로",
@@ -3907,6 +4382,10 @@
     "desc": "화면 아래 캡션 설명(선택)"
    },
    "items": "1~3",
+   "structures": [
+    "이미지 주인공"
+   ],
+   "arrangement": "그림",
    "args": {
     "start": {
      "values": "초(30) 또는 분:초(1:30)",
@@ -3985,6 +4464,14 @@
     "desc": "내용 글(글머리 앞에)"
    },
    "items": "2",
+   "structures": [
+    "나열",
+    "비교"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "머리띠"
+   ],
    "args": {},
    "impl": {
     "pptgen": {
@@ -4021,6 +4508,10 @@
     "meta": "수치(둘째 줄)"
    },
    "items": "2~4",
+   "structures": [
+    "핵심 수치"
+   ],
+   "arrangement": "열",
    "args": {},
    "impl": {
     "pptgen": {
@@ -4057,6 +4548,11 @@
     "desc": "내용 글(글머리 앞에)"
    },
    "items": "2",
+   "structures": [
+    "나열",
+    "비교"
+   ],
+   "arrangement": "열",
    "args": {},
    "impl": {
     "pptgen": {
@@ -4094,6 +4590,15 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "4",
+   "structures": [
+    "나열",
+    "그룹 × 요소"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "머리띠",
+    "체크"
+   ],
    "args": {},
    "impl": {
     "pptgen": {
@@ -4131,6 +4636,14 @@
     "meta": "카드 아래 글머리(｜ 구분 — 둘째 카드는 목록)"
    },
    "items": "3",
+   "structures": [
+    "성장·상승"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "그림칸",
+    "결론띠"
+   ],
    "args": {},
    "impl": {
     "pptgen": {
@@ -4167,6 +4680,13 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "3",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "머리띠"
+   ],
    "args": {},
    "impl": {
     "pptgen": {
@@ -4204,6 +4724,14 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "3",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "머리띠",
+    "그림칸"
+   ],
    "args": {},
    "impl": {
     "pptgen": {
@@ -4240,6 +4768,14 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "4",
+   "structures": [
+    "나열",
+    "이미지 주인공"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "그림칸"
+   ],
    "args": {
     "header": {
      "values": "글",
@@ -4290,22 +4826,26 @@
   },
   "structure.icon-ring": {
    "group": "structure",
-   "label": "가운데 큰 원 + 둘레 원 아이콘",
+   "label": "가운데 큰 원(그림) + 둘레 아이콘 4~10",
    "emoji": "🧩",
-   "desc": "가운데 큰 원 + 둘레 원 아이콘. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+   "desc": "가운데 큰 원 하나와 둘레 아이콘 4~10개 — 첫 항목 = 가운데(url 이 있으면 그 그림을 원으로 잘라 넣고 PowerPoint 「그림 바꾸기」로 교체, 없으면 아이콘 원), 나머지 = 둘레. 이름·설명은 아이콘 바깥(방사 방향)에 놓인다. 반지름은 바깥 글까지 본문 칸(split 이면 그 칸) 안에 들게 줄인다. 데코_도형디자인참고(r01-p07)의 모양을 내장으로 다시 그림(2026-10-28).",
    "fields": {
-    "title": "열 첫 칸",
-    "desc": "열 둘째 칸",
-    "meta": "나머지 칸(｜ 구분)"
+    "title": "첫 항목 = 가운데 이름(원 아래 알약), 나머지 = 둘레 이름",
+    "desc": "둘레 설명(이름 아래 작은 글)",
+    "icon": "아이콘",
+    "url": "첫 항목만 — 가운데 그림 파일(md 폴더 기준)",
+    "color": "색"
    },
-   "items": "",
+   "items": "5~11",
+   "structures": [
+    "중심-주변"
+   ],
+   "arrangement": "방사",
    "args": {},
    "impl": {
     "pptgen": {
      "status": "ready",
-     "side": false,
-     "pattern": "r01-p07",
-     "theme": "nipa-blue"
+     "side": false
     },
     "cs_v2": {
      "status": "fallback",
@@ -4320,7 +4860,7 @@
    ],
    "example": {
     "args": "",
-    "body": "- title: \"제목 1\""
+    "body": "- title: \"핵심 역량\"\n  icon: \"head-chip-outline\"\n- title: \"데이터\"\n  icon: \"database-window\"\n  desc: \"수집·정제\"\n- title: \"모델\"\n  icon: \"eye-scan\"\n  desc: \"학습·평가\"\n- title: \"인프라\"\n  icon: \"server-network\"\n  desc: \"GPU·클라우드\"\n- title: \"보안\"\n  icon: \"fingerprint\"\n  desc: \"접근 통제\"\n- title: \"인재\"\n  icon: \"team-network\"\n  desc: \"교육·채용\"\n- title: \"서비스\"\n  icon: \"monitor-analytics\"\n  desc: \"현장 적용\""
    }
   },
   "structure.list-converge-5": {
@@ -4334,6 +4874,10 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "2",
+   "structures": [
+    "갈래·분기"
+   ],
+   "arrangement": "방사",
    "args": {},
    "impl": {
     "pptgen": {
@@ -4369,6 +4913,10 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "2",
+   "structures": [
+    "갈래·분기"
+   ],
+   "arrangement": "방사",
    "args": {},
    "impl": {
     "pptgen": {
@@ -4405,6 +4953,10 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "4",
+   "structures": [
+    "나열"
+   ],
+   "arrangement": "열",
    "args": {},
    "impl": {
     "pptgen": {
@@ -4440,6 +4992,13 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "4",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "화살표"
+   ],
    "args": {},
    "impl": {
     "pptgen": {
@@ -4475,6 +5034,10 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "4~7",
+   "structures": [
+    "갈래·분기"
+   ],
+   "arrangement": "방사",
    "args": {
     "header": {
      "values": "글",
@@ -4540,6 +5103,13 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "2",
+   "structures": [
+    "그룹 × 요소"
+   ],
+   "arrangement": "격자",
+   "extras": [
+    "머리띠"
+   ],
    "args": {},
    "impl": {
     "pptgen": {
@@ -4577,6 +5147,14 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "2",
+   "structures": [
+    "순서·단계"
+   ],
+   "arrangement": "열",
+   "extras": [
+    "그림칸",
+    "화살표"
+   ],
    "args": {},
    "impl": {
     "pptgen": {
@@ -4613,6 +5191,15 @@
     "meta": "나머지 칸(｜ 구분)"
    },
    "items": "3",
+   "structures": [
+    "목차·장 목록",
+    "나열"
+   ],
+   "arrangement": "행",
+   "extras": [
+    "머리띠",
+    "그림칸"
+   ],
    "args": {},
    "impl": {
     "pptgen": {

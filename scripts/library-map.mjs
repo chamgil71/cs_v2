@@ -3483,13 +3483,15 @@ export const LAYOUTS = {
  },
  "structure.icon-ring": {
   "group": "structure",
-  "label": "가운데 큰 원 + 둘레 원 아이콘",
+  "label": "가운데 큰 원(그림) + 둘레 아이콘 4~10",
   "emoji": "🧩",
-  "desc": "가운데 큰 원 + 둘레 원 아이콘. 데코_도형디자인참고 출처 디자인(NIPA 색 — 덱 테마 색으로 다시 칠함). 항목 하나 = 열(또는 반복 단위) 하나, 열 안 위→아래 칸에 제목·설명·글머리 차례로.",
+  "desc": "가운데 큰 원 하나와 둘레 아이콘 4~10개 — 첫 항목 = 가운데(url 이 있으면 그 그림을 원으로 잘라 넣고 PowerPoint 「그림 바꾸기」로 교체, 없으면 아이콘 원), 나머지 = 둘레. 이름·설명은 아이콘 바깥(방사 방향)에 놓인다. 반지름은 바깥 글까지 본문 칸(split 이면 그 칸) 안에 들게 줄인다. 데코_도형디자인참고(r01-p07)의 모양을 내장으로 다시 그림(2026-10-28).",
   "fields": {
-   "title": "열 첫 칸",
-   "desc": "열 둘째 칸",
-   "meta": "나머지 칸(｜ 구분)"
+   "title": "첫 항목 = 가운데 이름(원 아래 알약), 나머지 = 둘레 이름",
+   "desc": "둘레 설명(이름 아래 작은 글)",
+   "icon": "아이콘",
+   "url": "첫 항목만 — 가운데 그림 파일(md 폴더 기준)",
+   "color": "색"
   },
   "status": "fallback",
   "shortcode": "network-box",
@@ -3499,8 +3501,8 @@ export const LAYOUTS = {
   "args": {},
   "pptgen": {
    "status": "ready",
-   "pattern": "r01-p07",
-   "theme": "nipa-blue"
+   "pattern": null,
+   "theme": null
   },
   "aliases": [
    "r01-p07"
@@ -4299,7 +4301,7 @@ export const LAYOUT_EXAMPLES = {
  },
  "structure.icon-ring": {
   "args": "",
-  "body": "- title: \"제목 1\""
+  "body": "- title: \"핵심 역량\"\n  icon: \"head-chip-outline\"\n- title: \"데이터\"\n  icon: \"database-window\"\n  desc: \"수집·정제\"\n- title: \"모델\"\n  icon: \"eye-scan\"\n  desc: \"학습·평가\"\n- title: \"인프라\"\n  icon: \"server-network\"\n  desc: \"GPU·클라우드\"\n- title: \"보안\"\n  icon: \"fingerprint\"\n  desc: \"접근 통제\"\n- title: \"인재\"\n  icon: \"team-network\"\n  desc: \"교육·채용\"\n- title: \"서비스\"\n  icon: \"monitor-analytics\"\n  desc: \"현장 적용\""
  },
  "structure.list-converge-5": {
   "args": "",

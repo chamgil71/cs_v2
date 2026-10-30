@@ -2,13 +2,13 @@
  * shortcode-guide.ts — 숏코드 가이드 패널 + 삽입 툴바 공용 데이터 (단일 출처).
  * MarkdownCompiler 의 가이드 패널·삽입 메뉴·insertShortcode 가 모두 SHORTCODE_DOCS 를 참조한다.
  *
- * 이름은 하나로 운영한다(공용 배치 카탈로그 규칙) — 키·표시·스니펫 모두 기능 이름(`grid.cards`)만 쓴다.
+ * 이름은 하나로 운영한다(공용 본문 레이아웃 카탈로그 규칙) — 키·표시·스니펫 모두 기능 이름(`grid.cards`)만 쓴다.
  * 옛 숏코드 이름(icon-grid 등)은 읽기 호환 별칭일 뿐 여기 쓰지 않는다(scripts/library-names.mjs, npm run migrate:names).
  *
  * 데이터 출처
  *  - 분류(그룹)·라벨·칸·**스니펫(예시)** = 공용 카탈로그(library → scripts/library-map.mjs 의 LAYOUTS·LAYOUT_EXAMPLES) — pptgen 과 같은 예시
- *  - 메뉴 기호·설명 = 카탈로그 emoji·desc, 칸 안내 = 카탈로그 fields(칸 뜻) + args(cs_v2 가 읽는 배치 인수) — 코드에 설명 문구를 두지 않는다(2026-10-14, 인계서 E)
- *  - 목록에 오르는 배치 = cs_v2 구현 상태가 ready 인 것(근사 배치는 cs_v2 렌더러가 생기면 자동으로 오른다)
+ *  - 메뉴 기호·설명 = 카탈로그 emoji·desc, 칸 안내 = 카탈로그 fields(칸 뜻) + args(cs_v2 가 읽는 본문 레이아웃 인수) — 코드에 설명 문구를 두지 않는다(2026-10-14, 인계서 E)
+ *  - 목록에 오르는 본문 레이아웃 = cs_v2 구현 상태가 ready 인 것(근사 본문 레이아웃은 cs_v2 렌더러가 생기면 자동으로 오른다)
  */
 import { LAYOUTS, LAYOUT_GROUPS, LAYOUT_EXAMPLES } from "../scripts/library-map.mjs";
 

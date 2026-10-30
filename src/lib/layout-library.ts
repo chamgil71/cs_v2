@@ -1,8 +1,8 @@
 /**
- * layout-library.ts — 웹 "배치 라이브러리" 화면(모듈 1)의 데이터 도구.
+ * layout-library.ts — 웹 "본문 레이아웃 라이브러리" 화면(모듈 1)의 데이터 도구.
  *
- * 화면이 보여 주는 모든 값은 공용 배치 카탈로그(library → scripts/library-map.mjs 생성본)에서 온다:
- * 배치 이름·그룹·칸·인수·예시·구현 상태(cs_v2/pptgen)·서식 세트. 이 파일은 그것을 화면용으로 고르고 미리보기 md 를 만들 뿐이다.
+ * 화면이 보여 주는 모든 값은 공용 본문 레이아웃 카탈로그(library → scripts/library-map.mjs 생성본)에서 온다:
+ * 본문 레이아웃 이름·그룹·칸·인수·예시·구현 상태(cs_v2/pptgen)·서식 세트. 이 파일은 그것을 화면용으로 고르고 미리보기 md 를 만들 뿐이다.
  * 같은 예시를 pptgen `node lib/run.js layout-views`(views/layouts.pptx)도 쓴다 — 웹과 pptx 미리보기가 같은 출처.
  */
 import { LAYOUTS, LAYOUT_GROUPS, LAYOUT_EXAMPLES, SHAPE_SETS, LAYOUT_FALLBACK } from '../../scripts/library-map.mjs';
@@ -28,7 +28,7 @@ const L = LAYOUTS as Record<string, Omit<LayoutEntry, 'name' | 'example'>>;
 const EX = LAYOUT_EXAMPLES as Record<string, LayoutEntry['example']>;
 const G = LAYOUT_GROUPS as Record<string, string>;
 
-/** 카탈로그 순서 그대로의 배치 목록 */
+/** 카탈로그 순서 그대로의 본문 레이아웃 목록 */
 export const LAYOUT_ENTRIES: LayoutEntry[] = Object.entries(L).map(([name, e]) => ({ ...e, name, example: EX[name] || null }));
 
 /** 그룹 키 → 짧은 이름(카탈로그 그룹 설명의 " — " 앞) */

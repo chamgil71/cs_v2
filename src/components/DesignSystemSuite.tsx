@@ -3,13 +3,14 @@ import { Palette, Wrench, LayoutGrid } from 'lucide-react';
 import VisualAdjuster from './VisualAdjuster';
 import SubUtilities from './SubUtilities';
 import LayoutLibrary from './layout-library/LayoutLibrary';
+import { LAYOUT_ENTRIES } from '../lib/layout-library';
 
 /**
  * 모듈 1 — 디자인 시스템
  * VisualAdjuster(HSL 테마 조율·styles.json 등록)와 SubUtilities(대비 검사기·
  * 커스텀 배색 빌더·컬러 리매퍼)를 하나의 모듈로 묶는다. 콘텐츠 작성(모듈 2)에
  * 들어가기 전에 먼저 확정하는 기초 작업이라는 워크플로 순서를 반영한다.
- * 배치 라이브러리(2026-10-14): 공용 배치 카탈로그 66종을 예시·인수·서식 세트로 미리 보는 화면(pptgen 미리보기와 같은 예시).
+ * 본문 레이아웃 라이브러리(2026-10-14): 공용 본문 레이아웃 카탈로그 전부를 예시·인수·서식 세트로 미리 보는 화면(pptgen 미리보기와 같은 예시).
  */
 export default function DesignSystemSuite() {
   const [tab, setTab] = useState<'theme' | 'utilities' | 'library'>('theme');
@@ -48,7 +49,7 @@ export default function DesignSystemSuite() {
           }`}
         >
           <LayoutGrid className="h-4 w-4" />
-          배치 라이브러리 (공용 카탈로그 66종)
+          본문 레이아웃 라이브러리 (공용 카탈로그 {LAYOUT_ENTRIES.length}종)
         </button>
       </div>
 

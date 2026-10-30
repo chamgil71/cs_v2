@@ -1,17 +1,17 @@
 # Creative Spark V2 숏코드 레퍼런스
 
-> **이름은 기능 이름 하나로 운영합니다(2026-10-14).** 배치 이름은 pptgen 과 같은 공용 카탈로그의 `<그룹>.<형태>`(예: `grid.cards`, `process.track`)이고,
+> **이름은 기능 이름 하나로 운영합니다(2026-10-14).** 본문 레이아웃 이름은 pptgen 과 같은 공용 카탈로그의 `<그룹>.<형태>`(예: `grid.cards`, `process.track`)이고,
 > 모양 변형은 인수(`align`·`variant`·`connector`…)로 고릅니다. 예전 숏코드 이름(`icon-grid` 등)은 읽기 호환 별칭으로만 남아 있습니다(맨 아래 표).
-> 이 문서는 cs_v2 가 직접 그리는 **64종**(구현 상태 `ready` — 옛 숏코드 28종은 그룹별 절, 2026-10-14 에 추가한 36종은 「기능 이름 배치」 절)을 카탈로그 그룹 순서로 정리합니다. 카탈로그 전체 66종의 이름·인수: `library/layouts.json`.
+> 이 문서는 cs_v2 가 직접 그리는 **64종**(구현 상태 `ready` — 옛 숏코드 28종은 그룹별 절, 2026-10-14 에 추가한 36종은 「기능 이름 본문 레이아웃」 절)을 카탈로그 그룹 순서로 정리합니다. 카탈로그 전체 66종의 이름·인수: `library/layouts.json`.
 > 변경 이력 상세: [shortcode-changelog.md](./shortcode-changelog.md)
 
 ---
 
-## 기능 이름 — 공용 배치 카탈로그 (2026-10-14)
+## 기능 이름 — 공용 본문 레이아웃 카탈로그 (2026-10-14)
 
-배치 이름은 **`<그룹>.<형태>`** 하나입니다(pptgen 과 같은 이름 — 같은 md 를 양쪽에서 빌드). 그룹은 "무엇이 주인공인가"로 정합니다.
+본문 레이아웃 이름은 **`<그룹>.<형태>`** 하나입니다(pptgen 과 같은 이름 — 같은 md 를 양쪽에서 빌드). 그룹은 "무엇이 주인공인가"로 정합니다.
 
-| 그룹 | 주인공 | 배치 (cs_v2 가 직접 그리는 64종) |
+| 그룹 | 주인공 | 본문 레이아웃 (cs_v2 가 직접 그리는 64종) |
 |------|------|------|
 | 분할·카드 (`grid`) | 대등한 N개 | `grid.cards` `grid.features` `grid.badges` `grid.list` `grid.tiers` `grid.columns` `grid.main-plus-3` `grid.cards-icon-3` `grid.wide-narrow-titled` `grid.narrow-wide-titled` `grid.box-1` `grid.box-2` `grid.box-3` `grid.box-4` `grid.narrow-wide` `grid.wide-narrow` `grid.circle-3` `grid.band-box-3` |
 | 비교·대조 (`compare`) | 둘의 차이 | `compare.pair` `compare.before-after` `compare.main-sub` `compare.balance` `compare.hbars` `compare.pair-summary` |
@@ -23,7 +23,7 @@
 | 탐색·목록 (`nav`) | 골라 보는 목록 | `nav.faq` `nav.tabs` `nav.chapters` |
 | 이미지 혼합 (`media`) | 이미지 | `media.cards-image` `media.banner` `media.image` |
 
-이름 규칙 전체(문법·형태 어휘·새 배치 추가 절차): 공용 카탈로그 README(coding 저장소 `_templates/slide-library/catalog/README.md` 1절).
+이름 규칙 전체(문법·형태 어휘·새 본문 레이아웃 추가 절차): 공용 카탈로그 README(coding 저장소 `_templates/slide-library/catalog/README.md` 1절).
 
 - 2026-10-14(C 단계)부터 예전 pptgen 전용이던 배치(`process.staircase`, `structure.pillars`, `data.gauge`, 회사 패턴 상자 등 36종)도 cs_v2 가 HTML 로 모양 그대로 그립니다(아래 「기능 이름 배치」 절). cs_v2 PPTX 는 이들을 가까운 숏코드로 빠르게 근사하고(`impl.cs_v2.pptx_shortcode`), 정밀 PPTX 는 pptgen 이 그립니다. 견본 2종(`sample.*`)만 HTML 도 근사.
 - **항목 `tag: alt`**: 그 카드만 보조 카드색(블록 `bg=alt` 의 항목판).
@@ -95,19 +95,19 @@ shape: soft
 | 옛 이름(읽기 호환 별칭) | 42개(cs_v2) | 새 문서에 쓰지 않음 — `npm run migrate:names` |
 | 내부 특수 토큰 | **2종** | `arrow` (`process.track` 안의 화살표 항목), `slide-config` (슬라이드 설정 — `bg`/`color`/`titleSize`/`bodySize`/**`notes`**(발표스크립트 — `key: \|` 여러 줄 또는 `\n`, PPTX 노트로만 반영)) |
 
-### 같은 배치의 모양 변형은 인수로
+### 같은 본문 레이아웃의 모양 변형은 인수로
 
-| 배치 | 인수 | 모양 |
+| 본문 레이아웃 | 인수 | 모양 |
 |------|------|------|
 | `grid.cards` | `align=center`(기본) · `left` · `row` | 아이콘 중앙 카드 / 왼쪽 아이콘 배경박스 / 아이콘+글 수평 |
 | `grid.columns` | `variant=card`(기본) · `plain` | 상단 색 띠 있는 다단 카드 / 띠 없는 담백한 카드(비교용) |
 | `process.track` | `connector=line`(기본) · `arrow` · `none` | 단계 사이 가는 선 / 화살표로 이은 단계 / 연결 없음(화살표는 `type: arrow` 항목) |
 | `text.callout` | 첫 인수 또는 `variant=` — `tip`·`info`·`warning`·`danger`·`success` | 알림 종류 |
-| 모든 배치 | `bg=alt` | 이 블록 카드를 서식 세트의 보조 카드색으로 |
+| 모든 본문 레이아웃 | `bg=alt` | 이 블록 카드를 서식 세트의 보조 카드색으로 |
 
-### 배치 인수 (pptgen 과 같은 이름·뜻, 기본값은 공용 카탈로그 `args.default`)
+### 본문 레이아웃 인수 (pptgen 과 같은 이름·뜻, 기본값은 공용 카탈로그 `args.default`)
 
-| 인수 | 값 | 받는 배치 | 뜻 |
+| 인수 | 값 | 받는 본문 레이아웃 | 뜻 |
 |---|---|---|---|
 | `badge` | `icon`·`number`·`none` | `grid.cards` `process.track` `process.steps`(기본 number) | 원 칸에 아이콘 / 01·02 번호 / 없음 |
 | `connector` | `line`·`arrow`·`none` | `process.track` `process.branch` | 항목 사이 연결(기본 line) |
@@ -220,7 +220,7 @@ shape: soft
 
 ### [5] `grid.badges` — 미니 스택 / 단어 뱃지 격자
 
-기술 스택 묶음 나열, 관련 도구의 초소형 조밀 배치.
+기술 스택 묶음 나열, 관련 도구의 초소형 조밀한 구성.
 
 **지원 필드**: `icon` (작은 이모지), `title` (키워드/스택명), `tag` (버전/강조), `color`
 
@@ -854,7 +854,7 @@ Part 하위의 챕터 번호·제목·설명·구분 배지 목록화.
 
 ---
 
-## 기능 이름 배치 — 예전 "근사" 36종의 전용 HTML (2026-10-14)
+## 기능 이름 본문 레이아웃 — 예전 "근사" 36종의 전용 HTML (2026-10-14)
 
 > 아래 예시는 공용 카탈로그 `example` 에서 만든 것입니다(pptgen 견본과 같음). 렌더러: `scripts/shortcode-ext/*`. PPTX 열의 숏코드는 cs_v2 PPTX 가 대신 쓰는 근사(정밀 PPTX 는 pptgen).
 

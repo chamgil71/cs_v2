@@ -20,11 +20,11 @@
 | HTML 폰트·크기 토큰 | `config/htmldesign.config.json` (`htmlSize.guide`/`presentation`) | `:root`에 `--size-card-p: 0.92rem` 하드코딩 ❌ |
 | 테마 색상·폰트 | `config/styles.json` (스타일별), `config/font-aliases.json` | 렌더러에 색상 HEX 직접 입력 ❌ |
 | MD → PPTX 변환 | `scripts/pptx-core/*` (공용 코어 — CLI `md-to-pptx.mjs`·브라우저 `pptx-browser.ts` 는 입출력만) | CLI·브라우저에 변환 로직 복사 ❌ (2026-10-14 까지 두 벌이라 갈라짐) |
-| 숏코드 HTML 렌더링 | `scripts/shortcode-render.mjs` (정본 단일 입구 — 부분은 `scripts/shortcode-render/*`) + 기능 이름 배치 `scripts/shortcode-ext/*`(그 모듈이 부름) | build-guide/presentation/client 에 각각 렌더러 중복 ❌ |
-| 배치 인수 기본값(grow·emphasis·badge·connector…) | 카탈로그 `args.default` → `library-map.mjs` `defaults` → `layoutArgs()` | 렌더러에 `grow \|\| 1.35` 같은 기본 수치 ❌ |
+| 숏코드 HTML 렌더링 | `scripts/shortcode-render.mjs` (정본 단일 입구 — 부분은 `scripts/shortcode-render/*`) + 기능 이름 본문 레이아웃 `scripts/shortcode-ext/*`(그 모듈이 부름) | build-guide/presentation/client 에 각각 렌더러 중복 ❌ |
+| 본문 레이아웃 인수 기본값(grow·emphasis·badge·connector…) | 카탈로그 `args.default` → `library-map.mjs` `defaults` → `layoutArgs()` | 렌더러에 `grow \|\| 1.35` 같은 기본 수치 ❌ |
 | 숏코드 컴포넌트 CSS | `scripts/shortcode-styles.mjs` (`var(--*)` 기반, `SHORTCODE_CSS` 하나 — 부분은 `scripts/shortcode-styles/*`) | 셸마다 컴포넌트 CSS 따로 작성 ❌ |
-| 숏코드 가이드/삽입 스니펫 | `config/shortcode-guide.ts` (단일 출처 — 목록·기호·설명·칸 안내·스니펫은 카탈로그 `emoji`·`desc`·`fields`·`args`·`example` 에서 만든다) | 가이드패널·insertShortcode 에 스니펫 중복 ❌, 배치 설명 문구를 코드에 직접 작성 ❌ |
-| 배치 이름·그룹·별칭·색 이름 | `library/layouts.json` (공용 카탈로그 복사본 → `scripts/library-map.mjs` 생성본, 해석은 `scripts/library-names.mjs`) | 렌더러/메뉴에 `"main"→brand` 같은 색 이름 표·그룹 라벨 직접 작성 ❌ (pptgen 과 어긋남) |
+| 숏코드 가이드/삽입 스니펫 | `config/shortcode-guide.ts` (단일 출처 — 목록·기호·설명·칸 안내·스니펫은 카탈로그 `emoji`·`desc`·`fields`·`args`·`example` 에서 만든다) | 가이드패널·insertShortcode 에 스니펫 중복 ❌, 본문 레이아웃 설명 문구를 코드에 직접 작성 ❌ |
+| 본문 레이아웃 이름·그룹·별칭·색 이름 | `library/layouts.json` (공용 카탈로그 복사본 → `scripts/library-map.mjs` 생성본, 해석은 `scripts/library-names.mjs`) | 렌더러/메뉴에 `"main"→brand` 같은 색 이름 표·그룹 라벨 직접 작성 ❌ (pptgen 과 어긋남) |
 | 카드 서식(외곽선·그림자·둥글기·보조 카드색) | `library/shape-sets.json` → `scripts/shape-set.mjs` | CSS 에 `border: 1px solid`·`box-shadow` 를 변수 없이 새로 추가 ❌, PPTX 카드에 `line:{color:pal.border,width:0.75}` 직접 작성 ❌ → `helpers.cardBox()` ✅ |
 
 - **크기 캐스케이드 우선순위**: `config 기본 → styles.json(스타일별 선택) → frontmatter(문서) → 숏코드 블록 인자(title-size=/desc-size=)`. 뒤로 갈수록 우선.
@@ -37,7 +37,7 @@
 - [ ] **CLAUDE.md** — 아키텍처/규칙/이슈 이력에 영향이 있으면 갱신 (특히 「주요 이슈 이력」 표)
 - [ ] **README.md** — 폴더 구조·스크립트·기능 설명에 변경이 있으면 갱신 (숏코드 개수 등 수치 표기 포함)
 - [ ] **docs/** — `scripts_guide.md`(개발자), `guide.md`(사용자), `shortcode-reference.md`, `shortcode-changelog.md`(변경이력 **추가**) 중 해당 문서 갱신
-- [ ] **정합성 테스트** — 숏코드/렌더러 변경 시 `npm test` (정합성 130건·카탈로그 145건·서식 세트 7건·배치 인수 54건·배치 라이브러리 74건·PPTX 코어 동치 4건 포함) + `npm run lint`·`npm run typecheck` 통과 확인 — PR 마다 GitHub Actions CI(`.github/workflows/ci.yml`)가 같은 검사를 돌린다
+- [ ] **정합성 테스트** — 숏코드/렌더러 변경 시 `npm test` (정합성 130건·카탈로그 145건·서식 세트 7건·본문 레이아웃 인수 54건·본문 레이아웃 라이브러리 74건·PPTX 코어 동치 4건 포함) + `npm run lint`·`npm run typecheck` 통과 확인 — PR 마다 GitHub Actions CI(`.github/workflows/ci.yml`)가 같은 검사를 돌린다
 - [ ] 시점 기록 문서(`docs/report/*_YYYY-MM-DD.md`)는 **수정하지 말고 새 항목/새 파일로 추가** (역사 보존)
 
 > 문서화는 작업의 일부다. "코드만 고치고 문서는 나중에"는 이 프로젝트의 반복 이슈(드리프트)의 원인이므로 금지.
@@ -63,7 +63,7 @@ cs_v2/
 │   │   ├── PptxInspectorSuite.tsx # PPTX 인스펙터 & 리매퍼 (구 PptxAnalyzer.tsx 후속본)
 │   │   ├── VisualAdjuster.tsx     # 테마 빌더 (styles.json 실시간 편집)
 │   │   ├── DesignSystemSuite.tsx  # 모듈 1 셸 — 테마 조율 / 보조 유틸리티 / 배치 라이브러리 서브탭
-│   │   ├── layout-library/        # 배치 라이브러리 화면(LayoutLibrary·List·Preview·Detail) — 공용 카탈로그 전부(2026-10-26 91종), 예시를 코어로 미리보기
+│   │   ├── layout-library/        # 본문 레이아웃 라이브러리 화면(LayoutLibrary·List·Preview·Detail) — 공용 카탈로그 전부(2026-10-26 91종), 예시를 코어로 미리보기
 │   │   ├── SubUtilities.tsx       # 보조 유틸 (파일 변환 도구 모음)
 │   │   └── ErrorBoundary.tsx      # React 에러 경계
 │   ├── lib/
@@ -76,7 +76,7 @@ cs_v2/
 │   ├── __tests__/                 # 전체 489개 (아래 10개 파일 합산)
 │   │   ├── layout-ext.test.ts     # 기능 이름 배치 전용 HTML·배치 인수·tag: alt·브라우저 PPTX 노트 (54개)
 │   │   ├── layout-library.test.ts # 배치 라이브러리 데이터 — 카탈로그 그대로(배치 수·서식 세트는 카탈로그에서 셈), 예시가 가이드·슬라이드로 그려짐
-│   │   ├── library-catalog.test.ts # 공용 배치 카탈로그 연결 (145개) — 기능 이름 66종 HTML·PPTX 커버리지, 옛 이름 = 기능 이름+인수 출력 동일, md_src 옛 이름 0, 생성본==복사본, 인수 기본값
+│   │   ├── library-catalog.test.ts # 공용 본문 레이아웃 카탈로그 연결 (145개) — 기능 이름 66종 HTML·PPTX 커버리지, 옛 이름 = 기능 이름+인수 출력 동일, md_src 옛 이름 0, 생성본==복사본, 인수 기본값
 │   │   ├── shape-set.test.ts      # 서식 세트·PPTX 선 없음 표기·slide-config 규칙 (7개)
 │   │   ├── pptx-core.test.ts      # PPTX 공용 코어 — 브라우저 PPTX == CLI PPTX 잠금, 블록 크기 인수, config 불변 (4개)
 │   │   ├── client-compiler.test.ts # 브라우저 컴파일러 유닛 테스트 (24개)
@@ -145,7 +145,7 @@ cs_v2/
 │   ├── htmldesign.config.json     # HTML 폰트·크기 토큰 (JSONC, htmlSize guide/presentation 프로파일 + scale)
 │   ├── font-aliases.json          # 폰트 alias → 실제 폰트명 매핑
 │   └── shortcode-guide.ts         # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, MarkdownCompiler가 import — 분류·기능 이름·설명은 카탈로그에서)
-├── library/                       # [라이브러리 층] 공용 배치 카탈로그 복사본 — layouts.json(배치 91종·그룹·색 이름·예시) + shape-sets.json(서식 세트 10종) — 2026-10-26. pptgen 과 같은 규칙. README.md 참조 (2026-10-14 config/ 에서 분리 — config 는 사람이 고르는 설정값만)
+├── library/                       # [라이브러리 층] 공용 본문 레이아웃 카탈로그 복사본 — layouts.json(배치 91종·그룹·색 이름·예시) + shape-sets.json(서식 세트 10종) — 2026-10-26. pptgen 과 같은 규칙. README.md 참조 (2026-10-14 config/ 에서 분리 — config 는 사람이 고르는 설정값만)
 ├── md_src/                        # 마크다운 원본 소스
 │   ├── claudeguide/               # Claude 가이드 문서
 │   ├── guides/                    # AI 툴별 가이드 문서 (30+ 파일)
@@ -262,8 +262,8 @@ npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 | 탐색·목록 (`nav`) | `nav.faq` `nav.tabs` `nav.chapters` |
 | 이미지 (`media`) | **`media.cards-image` `media.banner` `media.image`** (항목 `src` 가 있으면 그림, 없으면 프롬프트를 적은 이미지 자리) |
 
-- **모양 변형은 인수로**: `grid.cards align=center|left|row` · `grid.columns variant=card|plain` · `process.track connector=line|arrow|none` · `text.callout tip|info|warning|danger|success`(첫 인수 또는 `variant=`) · 모든 배치 `bg=alt`.
-- **배치 인수(2026-10-14 C 단계, pptgen 과 같은 뜻)**: `badge=icon|number|none`(grid.cards·process.track·process.steps) · `connector`(process.track·process.branch) · `emphasis=last|first|none|<번호>`(track·levels·staircase·zigzag·stats·bars·hbars — 항목 `tag: highlight/active` 가 우선) · `grow`(levels·staircase) · `header`(grid.cards·features·columns·패턴 — 본문 위 머리띠, pair-summary 만 아래 결론 띠) · `caption`(staircase) · `ratio`(main-sub) · `scale`(bars) · `left`/`right`(gauge) · `side`(cards-image). **기본값은 카탈로그 `args.default` 하나**(`layoutArgs()` — 렌더러에 기본 수치 없음). 인수가 기본값이면 예전 마크업 그대로.
+- **모양 변형은 인수로**: `grid.cards align=center|left|row` · `grid.columns variant=card|plain` · `process.track connector=line|arrow|none` · `text.callout tip|info|warning|danger|success`(첫 인수 또는 `variant=`) · 모든 본문 레이아웃 `bg=alt`.
+- **본문 레이아웃 인수(2026-10-14 C 단계, pptgen 과 같은 뜻)**: `badge=icon|number|none`(grid.cards·process.track·process.steps) · `connector`(process.track·process.branch) · `emphasis=last|first|none|<번호>`(track·levels·staircase·zigzag·stats·bars·hbars — 항목 `tag: highlight/active` 가 우선) · `grow`(levels·staircase) · `header`(grid.cards·features·columns·패턴 — 본문 위 머리띠, pair-summary 만 아래 결론 띠) · `caption`(staircase) · `ratio`(main-sub) · `scale`(bars) · `left`/`right`(gauge) · `side`(cards-image). **기본값은 카탈로그 `args.default` 하나**(`layoutArgs()` — 렌더러에 기본 수치 없음). 인수가 기본값이면 예전 마크업 그대로.
 - **항목 `tag: alt`**: 그 카드만 서식 세트의 보조 카드색(블록 `bg=alt` 의 항목판). 세 파서가 `markAltItems()`(library-names) 로 `_alt` 표시 → HTML `sc-item-alt` / PPTX `helpers.isAltBlock(item, it)`.
 - **해석 흐름**(`scripts/library-names.mjs` `resolveShortcode(name, args)` 한 곳): 옛 이름이면 기능 이름 + 카탈로그 `alias_args` 로 정규화(블록 인수 우선) → `impl.cs_v2.variants`(인수 → 구현 ID) → `impl.cs_v2.shortcode` → 근사(`fallback.cs_v2`). HTML(`renderShortcode`)·PPTX(md-to-pptx·pptx-browser) 모두 같은 함수 — PPTX 는 `resolveShortcode(name, args, "pptx")` 로 불러 기능 이름 구현(HTML 전용)이면 카탈로그 `pptx_shortcode`(옛 숏코드 근사).
 - **옛 이름 관리**: CLI 빌드는 옛 이름을 만나면 `⚠ 옛 이름 X → Y` 경고. `npm run migrate:names -- <경로>`(이스케이프한 문법 예시 `\:::` 줄도) · `npm run migrate:names:check`.
@@ -271,11 +271,11 @@ npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 - `:::` 정규식은 `.` 을 허용(`shortcodeBlockRe`, 4개 파서 공유). 제목 끝 속성 `## 제목 {master=…}` 은 지우고 읽는다(`stripHeadingAttrs`).
 - 색 이름(`color:`)은 카탈로그 `color_tokens` 단일 출처: `primary·secondary·accent·accent2·light·dark·ink·gray`(+`main·sub·deep·mid·brand`) 또는 `#hex`.
 - 가이드 패널·삽입 메뉴(`config/shortcode-guide.ts`)는 카탈로그에서 목록·그룹·**스니펫(example)** 을 만든다 — pptgen 견본과 같은 예시.
-- **배치 라이브러리 화면**(모듈 1 서브탭, `src/components/layout-library/` + `src/lib/layout-library.ts`, 2026-10-14): 카탈로그 전부를 그룹·검색(옛 이름 포함)으로 찾고, 예시를 `clientCompileMarkdown`(서버와 같은 코어)으로 테마·서식 세트·인수 변형·종형/횡형 미리보기, 구현 상태·항목 칸·배치 인수·스니펫 복사. 화면 값은 전부 생성본 `library-map.mjs`(`sync:library` 가 `args`·`pptgen`·`aliases` 도 넣음)에서 — pptgen `views/layouts.pptx` 와 같은 예시.
+- **본문 레이아웃 라이브러리 화면**(모듈 1 서브탭, `src/components/layout-library/` + `src/lib/layout-library.ts`, 2026-10-14): 카탈로그 전부를 그룹·검색(옛 이름 포함)으로 찾고, 예시를 `clientCompileMarkdown`(서버와 같은 코어)으로 테마·서식 세트·인수 변형·종형/횡형 미리보기, 구현 상태·항목 칸·본문 레이아웃 인수·스니펫 복사. 화면 값은 전부 생성본 `library-map.mjs`(`sync:library` 가 `args`·`pptgen`·`aliases` 도 넣음)에서 — pptgen `views/layouts.pptx` 와 같은 예시.
 
 ### 서식 세트 — 테마를 따르는 도형 서식 층 (2026-10-14)
 
-테마(`styles.json`, 색·글꼴)와 배치(숏코드) 사이에 **서식 세트**(외곽선 굵기·그림자·둥글기·카드 채움·보조 카드 채움)를 둔다. 세트는 모양만 정하고 색은 테마 색 이름으로만 가리키므로, 테마를 바꾸면 같은 세트가 그 테마 색으로 다시 칠해진다(테마와 따로 놀지 않음).
+테마(`styles.json`, 색·글꼴)와 본문 레이아웃(숏코드) 사이에 **서식 세트**(외곽선 굵기·그림자·둥글기·카드 채움·보조 카드 채움)를 둔다. 세트는 모양만 정하고 색은 테마 색 이름으로만 가리키므로, 테마를 바꾸면 같은 세트가 그 테마 색으로 다시 칠해진다(테마와 따로 놀지 않음).
 
 | 고르는 곳 (뒤가 우선) | 예 |
 |---|---|
@@ -292,7 +292,7 @@ npm run build:pptx -- md_src/<폴더>/<파일>.md --out dist/<파일>.pptx
 
 ### HTML·PPTX 지원 현황
 
-HTML(종형·횡형)은 65종을 모양 그대로 그린다(2026-10-26). 그 밖의 배치 26종(pptgen 회사·데코 패턴, 데코 후보 본문 레이아웃 4종)은 카탈로그 `impl.cs_v2.status: fallback` — 가장 가까운 배치(`near`)의 구현 ID 로 근사(원본 `slide-library/data/sources/deco-design/cs_v2_fallback.py`). cs_v2 자체 PPTX 는 **빠른 근사**(역할 분담 — 정밀 PPTX 는 pptgen): 옛 숏코드 28종은 같은 모양, 기능 이름 구현 36종은 카탈로그 `pptx_shortcode`(예: `process.staircase` → level-grid). `library-catalog.test.ts`·`layout-ext.test.ts`·`shortcode-conformance.test.ts` 가 66종 HTML·PPTX 커버리지·CSS 커버리지·렌더러 등록을 잠금. 옛 이름 → 기능 이름 + 인수 표: `docs/shortcode-reference.md` 맨 아래.
+HTML(종형·횡형)은 65종을 모양 그대로 그린다(2026-10-26). 그 밖의 본문 레이아웃 26종(pptgen 회사·데코 패턴, 데코 후보 본문 레이아웃 4종)은 카탈로그 `impl.cs_v2.status: fallback` — 가장 가까운 본문 레이아웃(`near`)의 구현 ID 로 근사(원본 `slide-library/data/sources/deco-design/cs_v2_fallback.py`). cs_v2 자체 PPTX 는 **빠른 근사**(역할 분담 — 정밀 PPTX 는 pptgen): 옛 숏코드 28종은 같은 모양, 기능 이름 구현 36종은 카탈로그 `pptx_shortcode`(예: `process.staircase` → level-grid). `library-catalog.test.ts`·`layout-ext.test.ts`·`shortcode-conformance.test.ts` 가 66종 HTML·PPTX 커버리지·CSS 커버리지·렌더러 등록을 잠금. 옛 이름 → 기능 이름 + 인수 표: `docs/shortcode-reference.md` 맨 아래.
 
 ---
 
@@ -452,9 +452,9 @@ npm run test:watch
 - `pptx-analyzer.test.ts` (23개): PPTX XML 분석기 유닛 테스트
 - `pptx-transform.test.ts` (10개): PPTX 왕복(round-trip) 변환 검증
 - `wcag.test.ts` (18개): `getContrast()`, `getLuminance()` 계산 검증
-- `layout-library.test.ts` (74개): 웹 배치 라이브러리 데이터 — 화면 목록 = 카탈로그 전부(순서 그대로 — 숫자를 박지 않고 카탈로그에서 셈), 직접 65·근사 2, 옛 이름 검색, 예시 66종×변형이 가이드·슬라이드 코어로 그려지고 `:::` 가 남지 않음
-- `layout-ext.test.ts` (54개): 기능 이름 배치 전용 HTML(카탈로그 예시·변형 렌더, `sx-*` 클래스 CSS 커버리지, 이스케이프), 배치 인수(기본값 = 카탈로그), 항목 `tag: alt`(HTML·PPTX), 브라우저 PPTX 발표스크립트
-- `library-catalog.test.ts` (145개): 공용 배치 카탈로그 — 생성본(library-map)==복사본(library), 인수 기본값은 값(빈 값·숫자·values 중 하나), 기능 이름 66종이 전부 HTML·PPTX 로 그려짐, 옛 이름 42개 = 기능 이름+인수와 출력 동일, 변형(인수 → 구현 ID), md_src 옛 이름 0, callout 인수 파싱, `.` 이름 블록·제목 속성 제거
+- `layout-library.test.ts` (74개): 웹 본문 레이아웃 라이브러리 데이터 — 화면 목록 = 카탈로그 전부(순서 그대로 — 숫자를 박지 않고 카탈로그에서 셈), 직접 65·근사 2, 옛 이름 검색, 예시 66종×변형이 가이드·슬라이드 코어로 그려지고 `:::` 가 남지 않음
+- `layout-ext.test.ts` (54개): 기능 이름 본문 레이아웃 전용 HTML(카탈로그 예시·변형 렌더, `sx-*` 클래스 CSS 커버리지, 이스케이프), 본문 레이아웃 인수(기본값 = 카탈로그), 항목 `tag: alt`(HTML·PPTX), 브라우저 PPTX 발표스크립트
+- `library-catalog.test.ts` (145개): 공용 본문 레이아웃 카탈로그 — 생성본(library-map)==복사본(library), 인수 기본값은 값(빈 값·숫자·values 중 하나), 기능 이름 66종이 전부 HTML·PPTX 로 그려짐, 옛 이름 42개 = 기능 이름+인수와 출력 동일, 변형(인수 → 구현 ID), md_src 옛 이름 0, callout 인수 파싱, `.` 이름 블록·제목 속성 제거
 - `pptx-core.test.ts` (4개): PPTX 공용 코어 — 브라우저 PPTX == CLI PPTX(갈라졌던 기능 묶음·showcase.md 슬라이드·노트 XML), 블록 크기 인수 반영, 코어가 config 를 바꾸지 않음
 - `shape-set.test.ts` (7개): 서식 세트(template=기존 서식, 색은 테마 변수만), `bg=alt`, PPTX template 카드 서식, PPTX `line:{width:0}` 금지, slide-config 여러 줄 값
 

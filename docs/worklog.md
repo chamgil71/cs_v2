@@ -333,3 +333,10 @@
 - **실패 3건**: `layout-library.test.ts` 가 배치 수 66·서식 세트 6개를 박아 둠 → 카탈로그에서 세도록(앞 6개 세트 이름은 그대로 확인).
 - **실패 2건(전부터)**: `pptx-core.test.ts` — Windows(`core.autocrlf=true`)에서 `#!` 로 시작하는 `scripts/*.mjs` 를 CRLF 로 받으면 vitest 가 SyntaxError. CI(Linux)는 통과라 안 보였음. `.gitattributes` `scripts/**/*.mjs text eol=lf` + 작업본 LF 로(내용 변화 없음).
 - **검증**: `npm test` 552 전부 통과, lint 오류 0(경고 33), typecheck, `sync:library:check`, `migrate:names:check`, `verify:pptx`.
+
+## 2026-10-30 — 용어 통일: "배치" → "본문 레이아웃" · 화면 탭 개수를 카탈로그에서
+
+- **왜**: pptgen·slide-library 와 같은 용어(coding 저장소 `projects/slide-studio/docs/용어집.md`, pptgen `guide/용어.md` — 2026-10-26 "본문 레이아웃" 확정, 2026-10-30 "디자인 세트·테마" 확정). 같은 날 slide-library 는 `data/themes` → `data/sets`(라이브러리 v14) — cs_v2 는 `catalog` 만 복사해 쓰므로 **구조 영향 없음**(확인: `sync-library.mjs` 는 `layouts.json`·`shape-sets.json` 만, md 머리말은 `style:` 만 읽음).
+- **한 일**: 문서·화면 문구·주석의 "배치"(본문 도형 구성) → "본문 레이아웃"(CLAUDE.md 「주요 이슈 이력」 등 날짜가 적힌 기록은 그대로, 동사 "배치하다" 그대로). cs_v2 의 "테마"(`styles.json` 색·글꼴)는 용어집의 테마와 같은 뜻이라 그대로. 화면 탭 "공용 카탈로그 66종" → `LAYOUT_ENTRIES.length`(규칙 1 — 개수를 코드에 박지 않음, 지금 91종). `library/README.md`·`docs/guide.md` 의 낡은 66종 → 91종(2026-10-30 기준).
+- **검증**: `npm test` 573 전부 통과, lint 오류 0(경고 33 — 바꾸기 전과 같음), typecheck 통과.
+- 남은 것: 이식 후 동결(slide-studio D-19) — 다음 카탈로그 동기화 때 `library/README.md` 를 pptgen 쪽 카탈로그 README 와 다시 맞출 것.

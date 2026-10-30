@@ -13,7 +13,7 @@ export default function LayoutPreview({ entry, args, style, shape, mode, onArgs,
     try { return clientCompileMarkdown(previewMd(entry, args, style, shape), mode, style, BUNDLED_STYLES); }
     catch (err) { return `<pre style="color:#b91c1c;padding:16px">미리보기 실패: ${String(err).replace(/</g, '&lt;')}</pre>`; }
   }, [entry, args, style, shape, mode]);
-  // 코어는 표지(머리말 title)를 늘 먼저 그린다 — 미리보기는 배치가 있는 곳으로 바로 이동(슬라이드: 2장째, 가이드: 첫 절).
+  // 코어는 표지(머리말 title)를 늘 먼저 그린다 — 미리보기는 본문 레이아웃이 있는 곳으로 바로 이동(슬라이드: 2장째, 가이드: 첫 절).
   // scrollIntoView 는 바깥 페이지까지 굴리므로 iframe 안의 스크롤 위치만 바꾼다.
   const jump = (ev: SyntheticEvent<HTMLIFrameElement>) => {
     const d = ev.currentTarget.contentDocument, w = ev.currentTarget.contentWindow;
@@ -63,7 +63,7 @@ export default function LayoutPreview({ entry, args, style, shape, mode, onArgs,
       )}
       <div ref={wrap} className={`relative rounded-lg border border-slate-200 overflow-hidden ${mode === 'presentation' ? 'aspect-video' : 'h-[460px]'}`}>
         <div style={{ width: VW, height: VH, transform: `scale(${scale})`, transformOrigin: 'top left', position: 'absolute', top: 0, left: 0 }}>
-          <iframe title="배치 미리보기" data-testid="layout-preview" srcDoc={html} onLoad={jump} style={{ width: '100%', height: '100%', border: 'none', display: 'block' }} />
+          <iframe title="본문 레이아웃 미리보기" data-testid="layout-preview" srcDoc={html} onLoad={jump} style={{ width: '100%', height: '100%', border: 'none', display: 'block' }} />
         </div>
       </div>
       <p className="text-[11px] text-slate-400">{shapeSetLabel(shape)}</p>

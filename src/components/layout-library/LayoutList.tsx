@@ -3,7 +3,7 @@ import { LAYOUT_ENTRIES, GROUP_KEYS, groupLabel, implSummary, matches, type Layo
 
 type Props = { group: string; query: string; selected: string; onGroup: (g: string) => void; onQuery: (q: string) => void; onSelect: (name: string) => void };
 
-/** 왼쪽 목록 — 그룹 버튼·검색(기능 이름·설명·옛 이름) + 배치 목록(cs_v2 구현 상태 표시) */
+/** 왼쪽 목록 — 그룹 버튼·검색(기능 이름·설명·옛 이름) + 본문 레이아웃 목록(cs_v2 구현 상태 표시) */
 export default function LayoutList({ group, query, selected, onGroup, onQuery, onSelect }: Props) {
   const list: LayoutEntry[] = LAYOUT_ENTRIES.filter((e) => (!group || e.group === group) && matches(e, query));
   const pill = (g: string, label: string, n: number) => (
@@ -39,7 +39,7 @@ export default function LayoutList({ group, query, selected, onGroup, onQuery, o
             </li>
           );
         })}
-        {!list.length && <li className="text-xs text-slate-400 p-3">맞는 배치가 없습니다.</li>}
+        {!list.length && <li className="text-xs text-slate-400 p-3">맞는 본문 레이아웃이 없습니다.</li>}
       </ul>
     </div>
   );

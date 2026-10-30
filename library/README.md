@@ -1,11 +1,11 @@
-# library — 공용 배치 카탈로그 (pptgen 과 같이 쓰는 규칙)
+# library — 공용 본문 레이아웃 카탈로그 (pptgen 과 같이 쓰는 규칙)
 
-cs_v2 와 pptgen(coding 저장소 `_templates/myskill/pptgen`)이 **같은 배치 이름 · 같은 항목 규칙 · 같은 서식 세트 · 같은 색 이름**을 쓰게 하는 단일 출처입니다.
+cs_v2 와 pptgen(coding 저장소 `_templates/myskill/pptgen`)이 **같은 본문 레이아웃 이름 · 같은 항목 규칙 · 같은 서식 세트 · 같은 색 이름**을 쓰게 하는 단일 출처입니다.
 한쪽에서 만든 md 를 다른 쪽에서 그대로 빌드할 수 있게 하는 것이 목적입니다.
 
 | 파일 | 내용 |
 |---|---|
-| `layouts.json` | 배치 66종(`<그룹>.<형태>`), 그룹 10개, 항목 칸(Universal Schema), 색 이름(`color_tokens`), 배치별 인수·구현 상태(pptgen / cs_v2), 옛 이름(별칭) |
+| `layouts.json` | 본문 레이아웃 91종(`<그룹>.<형태>`, 2026-10-30 기준 — 정확한 수는 `layouts.json`), 그룹 10개, 항목 칸(Universal Schema), 색 이름(`color_tokens`), 본문 레이아웃별 인수·구현 상태(pptgen / cs_v2), 옛 이름(별칭) |
 | `shape-sets.json` | 서식 세트 6종(template·flat·soft·outline·elevated·tinted) — 외곽선 굵기·그림자·둥글기·카드 채움·보조 카드 채움. 색은 테마 색 이름으로만 가리킴 |
 
 ## 위치와 동기화
@@ -48,9 +48,9 @@ shape: elevated        # 서식 세트(없으면 styles.json 테마의 shapeSet 
 ```
 
 - 이름 해석: `scripts/library-names.mjs` (`resolveShortcode(name, args)`) — **이름은 기능 이름 하나로 운영**. 옛 이름(cs_v2 숏코드·pptgen 구현 ID)은 기능 이름 + `alias_args` 로 정규화한 뒤, 인수로 구현 ID 를 고릅니다(`impl.cs_v2.variants`). 옛 이름 일괄 변환: `npm run migrate:names`.
-  cs_v2 구현 ID 가 기능 이름이면(`impl.cs_v2.shortcode` = 배치 이름, 36종) `scripts/shortcode-ext/` 가 HTML 을 그리고, PPTX 는 `impl.cs_v2.pptx_shortcode`(옛 숏코드 근사)로 그립니다.
+  cs_v2 구현 ID 가 기능 이름이면(`impl.cs_v2.shortcode` = 본문 레이아웃 이름, 36종) `scripts/shortcode-ext/` 가 HTML 을 그리고, PPTX 는 `impl.cs_v2.pptx_shortcode`(옛 숏코드 근사)로 그립니다.
   `fallback`(근사 — 지금 견본 2종)은 가장 가까운 구현으로, `markdown`/`none` 은 카탈로그 `fallback.cs_v2`(지금 `text.summary`)로 근사합니다.
-  배치 인수 기본값은 `args.default` 하나 — `sync:library` 가 `library-map.mjs` 의 `LAYOUTS[이름].defaults` 로 옮기고 렌더러는 `layoutArgs()` 로 읽습니다.
+  본문 레이아웃 인수 기본값은 `args.default` 하나 — `sync:library` 가 `library-map.mjs` 의 `LAYOUTS[이름].defaults` 로 옮기고 렌더러는 `layoutArgs()` 로 읽습니다.
 - 서식 세트: `scripts/shape-set.mjs` — HTML 은 `--set-card-bg`·`--card-alt-bg`·`--card-border-width`·`--card-border-color`·`--card-shadow`·`--card-radius` 변수,
   PPTX 는 `pal.shape` → `helpers.cardBox()`. `template` 은 기존 출력과 같습니다(보조 카드색만 정함).
 - 아직 cs_v2 에 없는 것: 항목 하나만 보조색으로 바꾸는 `tag: alt`(pptgen 전용), pptgen 전용 인수(`badge`·`header`·`connector`·`emphasis`·`grow` 등 — 카탈로그 `args.*.cs_v2=false`).

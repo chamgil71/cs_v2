@@ -4,7 +4,7 @@ import { groupLabel, implSummary, pptgenSummary, snippetOf, type LayoutEntry } f
 
 type Props = { entry: LayoutEntry; args: string };
 
-/** 배치 설명 — 구현 상태(cs_v2 HTML·PPTX / pptgen), 항목 칸, 배치 인수, 스니펫(복사) */
+/** 본문 레이아웃 설명 — 구현 상태(cs_v2 HTML·PPTX / pptgen), 항목 칸, 본문 레이아웃 인수, 스니펫(복사) */
 export default function LayoutDetail({ entry: e, args }: Props) {
   const [copied, setCopied] = useState(false);
   const s = implSummary(e);
@@ -33,7 +33,7 @@ export default function LayoutDetail({ entry: e, args }: Props) {
       </div>
       {argRows.length > 0 && (
         <div>
-          <div className="font-bold text-slate-700 mb-1">배치 인수</div>
+          <div className="font-bold text-slate-700 mb-1">본문 레이아웃 인수</div>
           <table className="w-full border-collapse">
             <thead><tr className="text-slate-400 text-left"><th className="py-1 pr-2">인수</th><th className="pr-2">값</th><th className="pr-2">기본</th><th className="pr-2">cs_v2</th><th>pptgen</th></tr></thead>
             <tbody>

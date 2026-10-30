@@ -61,7 +61,7 @@ sequenceDiagram
 * **역할**: 사용자가 직접 웹 브라우저에서 조작하는 **3모듈 통합 디자인 스위트**입니다. `dashboard.html`(dev server) / `webdesignsuite.html`(standalone)이 3모듈을 탭으로 묶고, 각 모듈은 `design-system.html` / `guide-authoring.html` / `pptx-inspector.html`로 단독 배포도 가능합니다(워크플로 순서로 번호 부여 — 테마부터 정하고, 그 테마로 콘텐츠를 쓰고, 기존 PPTX 분석은 완전히 별개).
 * **주요 구성**:
   - `src/main.tsx`: 3모듈(디자인 시스템/가이드북 저작/PPTX 인스펙터)을 동급 탭으로 배치하는 대시보드 셸.
-  - `src/components/DesignSystemSuite.tsx` (**모듈 1**): `VisualAdjuster.tsx`(HSL 테마 조율·`styles.json` 등록), `SubUtilities.tsx`(대비 검사기·커스텀 배색 빌더·컬러 리매퍼), `layout-library/`(**배치 라이브러리** — 공용 카탈로그 전부(2026-10-26 91종)를 그룹·검색으로 찾고 예시를 테마·서식 세트·인수 변형으로 미리 보며 스니펫 복사, 데이터는 `src/lib/layout-library.ts`)를 서브탭 3개로 묶은 통합 UI.
+  - `src/components/DesignSystemSuite.tsx` (**모듈 1**): `VisualAdjuster.tsx`(HSL 테마 조율·`styles.json` 등록), `SubUtilities.tsx`(대비 검사기·커스텀 배색 빌더·컬러 리매퍼), `layout-library/`(**본문 레이아웃 라이브러리** — 공용 카탈로그 전부(2026-10-26 91종)를 그룹·검색으로 찾고 예시를 테마·서식 세트·인수 변형으로 미리 보며 스니펫 복사, 데이터는 `src/lib/layout-library.ts`)를 서브탭 3개로 묶은 통합 UI.
   - `src/components/MarkdownCompiler.tsx` (**모듈 2**): 실시간 마크다운 에디터, split-pane 미리보기 iframe 윈도우, 단일/일괄 폴더 변환 실행 및 컴파일 설정 패널.
   - `src/components/PptxInspectorSuite.tsx` (**모듈 3**): 벤치마킹할 PPTX를 로드하여 분석하고 색상을 XML 수준에서 1:1 리매핑하는 UI. 1·2번 모듈과 독립된 별개 워크플로.
   - `src/standalone/*-main.tsx`: 각 모듈을 서버 없이 단독 구동시키는 진입점(`design-system-main.tsx`/`guide-authoring-main.tsx`/`pptx-inspector-main.tsx`).
@@ -77,7 +77,7 @@ sequenceDiagram
   - `scripts/pptx-core/` **(정본 코어)** + `scripts/md-to-pptx.mjs`(CLI 래퍼): 마크다운 ➡️ PowerPoint PPTX. 변환은 fs 없는 공용 코어 하나 — CLI 와 브라우저(`src/lib/pptx-browser.ts`)가 같은 코어를 불러 **브라우저 PPTX == CLI PPTX**. (폰트·크기 수치는 `config/pptdesign.config.json` 에서 로드 — 하드코딩 없음)
   - `scripts/pptx-analyzer.js` & `spec-parser.js`: PPTX XML 구조 압축 해제 및 디자인 사양 데이터 추출/치환 코어.
   - `scripts/pptx-renderers/`: 각 개별 숏코드(git-flow, editor-box 등)의 PPTX 네이티브 드로잉 코어 렌더러 모듈들.
-  - `scripts/library-names.mjs` / `scripts/shape-set.mjs` **(공용 배치 카탈로그 연결)**: pptgen 과 같은 배치 이름(`grid.cards` 등)·색 이름을 cs_v2 숏코드로 해석하고, 서식 세트(외곽선·그림자·둥글기·보조 카드색)를 HTML 변수/PPTX 카드 서식으로 바꿉니다. 원본 카탈로그는 `library/`(복사본) — `npm run sync:library`. 상세: [`library/README.md`](library/README.md)
+  - `scripts/library-names.mjs` / `scripts/shape-set.mjs` **(공용 본문 레이아웃 카탈로그 연결)**: pptgen 과 같은 본문 레이아웃 이름(`grid.cards` 등)·색 이름을 cs_v2 숏코드로 해석하고, 서식 세트(외곽선·그림자·둥글기·보조 카드색)를 HTML 변수/PPTX 카드 서식으로 바꿉니다. 원본 카탈로그는 `library/`(복사본) — `npm run sync:library`. 상세: [`library/README.md`](library/README.md)
 
 ---
 
@@ -190,7 +190,7 @@ cs_v2/
 │   ├── htmldesign.config.json # HTML 폰트·크기 토큰 (guide/presentation 프로파일)
 │   ├── font-aliases.json   # 폰트 alias → 실제 폰트명 매핑
 │   └── shortcode-guide.ts  # 숏코드 가이드 패널+삽입툴바 공용 데이터 (단일 출처, 분류·기능 이름은 카탈로그에서)
-├── library/                # [라이브러리 층] 공용 배치 카탈로그 복사본(layouts.json 91종·shape-sets.json 10종 — 2026-10-26) — pptgen 과 같은 규칙(npm run sync:library)
+├── library/                # [라이브러리 층] 공용 본문 레이아웃 카탈로그 복사본(layouts.json 91종·shape-sets.json 10종 — 2026-10-26) — pptgen 과 같은 규칙(npm run sync:library)
 ├── src/__tests__/          # Vitest — shortcode-conformance(정합성 130) + library-catalog(카탈로그 145) + shape-set(서식 세트 7) + layout-ext(배치 인수 54) + layout-library(배치 라이브러리 74) + pptx-core(브라우저==CLI 4) 등 489건
 ├── .github/workflows/ci.yml # CI — PR·main 푸시마다 lint·typecheck·test·옛 이름 검사·PPTX 왕복·build·standalone
 ├── md_src/                 # 마크다운 원천 소스 보관 폴더 (하위 폴더마다 hub.config.json 선택적 배치)
@@ -224,7 +224,7 @@ cs_v2/
   - **프리셋 복원**: 페이퍼로지 오리지널(블루), AI 챗봇(그린) 등 누락된 대표 배색 프리셋을 목록에 추가하여 즉시 불러와 커스텀 시작점으로 활용할 수 있도록 보강했습니다.
 
 ### 3. 🧩 전체 숏코드 선택 삽입 에디터 툴바 (기능 이름 65종 — 공용 카탈로그 91종 중 cs_v2 직접 구현, 2026-10-26)
-* **개선**: V2 컴파일러가 직접 그리는 **64종 배치** 전체를 드롭다운으로 제공합니다(2026-10-14 C 단계: 예전 "근사" 36종 — 계단·기둥·게이지·막대·천칭·인용·이미지 자리·회사 패턴 상자 — 을 전용 HTML 로. PPTX 는 그중 28종이 같은 모양, 나머지는 가까운 숏코드로 빠르게 근사하고 정밀 PPTX 는 pptgen). pptgen 과 같은 배치 인수(`badge`·`connector`·`emphasis`·`grow`·`header`·`caption`…)와 항목 `tag: alt`(그 카드만 보조 카드색)도 받습니다. 이름은 공용 배치 카탈로그의 **기능 이름 하나**(`grid.cards`, `compare.pair`…)로 운영하며(2026-10-14), 메뉴·스니펫도 카탈로그(pptgen 과 같은 예시)에서 나옵니다. 옛 이름(`icon-grid`…)으로 쓴 문서는 빌드 시 경고가 나오고 `npm run migrate:names` 로 일괄 변환합니다.
+* **개선**: V2 컴파일러가 직접 그리는 **64종 본문 레이아웃** 전체를 드롭다운으로 제공합니다(2026-10-14 C 단계: 예전 "근사" 36종 — 계단·기둥·게이지·막대·천칭·인용·이미지 자리·회사 패턴 상자 — 을 전용 HTML 로. PPTX 는 그중 28종이 같은 모양, 나머지는 가까운 숏코드로 빠르게 근사하고 정밀 PPTX 는 pptgen). pptgen 과 같은 본문 레이아웃 인수(`badge`·`connector`·`emphasis`·`grow`·`header`·`caption`…)와 항목 `tag: alt`(그 카드만 보조 카드색)도 받습니다. 이름은 공용 본문 레이아웃 카탈로그의 **기능 이름 하나**(`grid.cards`, `compare.pair`…)로 운영하며(2026-10-14), 메뉴·스니펫도 카탈로그(pptgen 과 같은 예시)에서 나옵니다. 옛 이름(`icon-grid`…)으로 쓴 문서는 빌드 시 경고가 나오고 `npm run migrate:names` 로 일괄 변환합니다.
 * **단일 출처 데이터**: 가이드 패널 설명과 삽입 스니펫은 `config/shortcode-guide.ts` **한 파일**에서 관리됩니다(중복 제거). 숏코드 설명/예시 수정 시 이 파일만 고치면 가이드 패널·삽입 버튼에 동시 반영됩니다.
 * **기능·표현별 그룹 구성**: 학습 콘텐츠용 옛 분류(콘텐츠 그리드·정보 & 알림 등) 대신 카탈로그 그룹(분할·카드 / 비교·대조 / 순서·흐름 / 구조·관계 / 데이터·수치 / 서술·강조 / 코드·터미널 / 탐색·목록)으로 정리되며(pptgen 과 같음), 선택 삽입 시 YAML 규격 템플릿이 커서 위치에 자동 삽입됩니다.
 
